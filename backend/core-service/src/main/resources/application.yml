@@ -1,17 +1,34 @@
 spring:
   application:
     name: core-service
-
   datasource:
-    url: jdbc:postgresql://70.12.247.249:5432/testdb
+    url: jdbc:postgresql://0.0.0.0:5432/testdb
     username: testuser
     password: 1234
     driver-class-name: org.postgresql.Driver
-
-  jpa:
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: create
+    jpa:
+      database: postgresql
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
+      hibernate:
+        ddl-auto: create
 
     show-sql: true
+#logging
+logging:
+  file:
+    name: "./core-service.log"
+  level:
+    org.hibernate.SQL: INFO
+    org.hibernate.orm.jdbc.bind: trace
+    root: INFO
+    com:
+      lightswitch:
+        core: DEBUG
+    org:
+      springframework:
+        web: INFO
+        apache:
+          tiles: DEBUG
+        springframework:
+          boot: DEBUG
+          security: DEBUG
