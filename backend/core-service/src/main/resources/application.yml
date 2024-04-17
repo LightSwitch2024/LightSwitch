@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: core-service
+  datasource:
+    url: jdbc:postgresql://0.0.0.0:5432/testdb
+    username: testuser
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+    jpa:
+      database: postgresql
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
+      hibernate:
+        ddl-auto: create
+
+      properties:
+        hibernate:
+          format_sql: true
