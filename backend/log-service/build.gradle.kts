@@ -10,6 +10,7 @@ plugins {
 	kotlin("plugin.noarg") version "1.9.23"
 	id("jacoco")
 	id("org.sonarqube") version "4.4.1.3373"
+	id("io.gitlab.arturbosch.detekt") version "1.23.6"
 }
 
 allOpen {

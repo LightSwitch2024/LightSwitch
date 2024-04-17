@@ -14,6 +14,7 @@ plugins {
 	kotlin("plugin.allopen") version "1.9.23"
 	kotlin("plugin.noarg") version "1.9.23"
 	kotlin("kapt") version "1.9.23"
+	id("io.gitlab.arturbosch.detekt") version "1.23.6"
 	idea
 }
 
