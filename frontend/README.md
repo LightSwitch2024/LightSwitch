@@ -1,46 +1,37 @@
-# Getting Started with Create React App
+# Vite + React + Typescript + Eslint + Prettier
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A starter for React with Typescript with the fast Vite and all static code testing with Eslint and formatting with Prettier.
 
-## Available Scripts
+![Vite + React + Typescript + Eslint + Prettier](/resources/screenshot.png)
 
-In the project directory, you can run:
+I found out about Vite and I wanted to have a boilerplate for the technologies that I use. You can find more about these in the following links: [Vite](https://github.com/vitejs/vite), [React](https://reactjs.org/), [Typescript](https://www.typescriptlang.org/), [Eslint](https://eslint.org/), [Prettier](https://prettier.io/).
 
-### `npm start`
+## Installation
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Clone the repo and run `yarn install`
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+or Run command
 
-### `npm test`
+```
+npx degit TheSwordBreaker/vite-reactts-eslint-prettier project-name
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Start
 
-### `npm run build`
+After the successfull installation of the packages: `yarn dev`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Steps in Vscode
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+#### (works with better with this template)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. Install Eslint and prettier extension for vs code.
+2. Make Sure Both are enabled
+3. Make sure all packages are Installed. (Mostly Eslint and prettier in node_modules)
+4. Enable formatOnSave of vs code
+5. Open a .tsx file and check if the bottom right corners of vs code have Eslint and Prettier with a double tick
 
-### `npm run eject`
+![Screenshot (253)_LI](https://user-images.githubusercontent.com/52120562/162486286-7383a737-d555-4f9b-a4dd-c4a81deb7b96.jpg)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+If Everything is Good Then It Should Work, but let me new if something else happens
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Made with ❤️ by theSwordBreaker(we Destory all types of sword ⚡)
