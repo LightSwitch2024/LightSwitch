@@ -14,11 +14,11 @@ plugins {
 }
 
 allOpen {
-	annotation("javax.persistence.Entity")
+	annotation("jakarta.persistence.Entity")
 }
 
 noArg {
-	annotation("javax.persistence.Entity")
+	annotation("jakarta.persistence.Entity")
 }
 
 // build시 불필요한 jar파일 생성하지 않도록 함.
