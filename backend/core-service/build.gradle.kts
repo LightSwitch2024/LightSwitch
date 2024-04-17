@@ -6,6 +6,8 @@ version = "0.0.1-SNAPSHOT"
 plugins {
 	id("org.springframework.boot") version "3.2.4"
 	id("io.spring.dependency-management") version "1.1.4"
+	id("jacoco")
+	id("org.sonarqube") version "4.4.1.3373"
 	kotlin("jvm") version "1.9.23"
 	kotlin("plugin.spring") version "1.9.23"
 	kotlin("plugin.jpa") version "1.9.23"
@@ -94,5 +96,65 @@ idea {
 		val kaptMain = file("build/generated/source/kapt/main")
 		sourceDirs.add(kaptMain)
 		generatedSourceDirs.add(kaptMain)
+	}
+}
+
+
+jacoco {
+	toolVersion = "0.8.8"
+}
+
+tasks.jacocoTestReport {
+	reports {
+		xml.required.set(true)
+		csv.required.set(false)
+		html.required.set(false)
+	}
+}
+
+plugins.withType<JacocoPlugin> {
+	tasks["test"].finalizedBy("jacocoTestReport")
+}
+tasks.jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			enabled = true // 이 rule을 적용할 것이다.
+			element = "CLASS" // class 단위로
+
+			// 브랜치 커버리지 최소 50%
+			limit {
+				counter = "BRANCH"
+				value = "COVEREDRATIO"
+				minimum = "0.50".toBigDecimal()
+			}
+
+			// 라인 커버리지 최소한 80%
+			limit {
+				counter = "LINE"
+				value = "COVEREDRATIO"
+				minimum = "0.80".toBigDecimal()
+			}
+
+			// 빈 줄을 제외한 코드의 라인수 최대 300라인
+			limit {
+				counter = "LINE"
+				value = "TOTALCOUNT"
+				maximum = "300".toBigDecimal()
+			}
+		}
+	}
+}
+
+sonarqube {
+	properties {
+		property ("sonar.projectKey", "s202-core")
+		property ("sonar.projectName", "s202-core")
+		property ("sonar.host.url", "https://sonarqube.ssafy.com")
+		property ("sonar.login", "2e8a55857b93867d8387040731ce81621da959ac")
+		property ("sonar.language", "java")
+		property ("sonar.sourceEncoding", "UTF-8")
+		property ("sonar.profile", "Sonar way")
+		property ("sonar.test.inclusions", "**/*Test.java")
+		property ("sonar.coverage.jacoco.xmlReportPaths", "${layout.buildDirectory}/reports/jacoco/test/jacocoTestReport.xml")
 	}
 }

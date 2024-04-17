@@ -30,6 +30,6 @@ class CoreServiceApplicationTests @Autowired constructor(
 		val result = queryFactory.selectFrom(qTest).fetchOne()
 
 		assertThat(result).isEqualTo(test)
-		assertThat(result?.id).isEqualTo(test.id);
+		assertThat(result?.id).isEqualTo(test.id)
 	}
 }
