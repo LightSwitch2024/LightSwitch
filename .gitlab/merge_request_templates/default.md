@@ -1,7 +1,10 @@
 ## 어떤 이유로 MR를 하셨나요?
 - [ ] feature 병합(feature issue #를 남겨주세요)
 - [ ] 버그 수정(아래에 issue #를 남겨주세요)
-- [ ] 코드 개선
+- [ ] 코드 스타일 변경(Code style update) (formatting, local variables)
+- [ ] 리팩토링 (no functional changes, no api changes)
+- [ ] 빌드 관련 변경
+- [ ] 문서 내용 변경
 - [ ] 기타(아래에 자세한 내용 기입해주세요)
 
 ## 스크린샷 및 세부 내용 
