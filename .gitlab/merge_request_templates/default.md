@@ -13,7 +13,6 @@
 
 ## MR하기 전에 확인해주세요
 - [ ] local code lint 검사를 진행하셨나요?
-- [ ] local ci test를 진행하셨나요 ?
 
 ## relevant issue number
 - 관련된 이슈 넘버가 있으면 이곳에 기입해주세요
