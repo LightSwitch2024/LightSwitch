@@ -11,14 +11,18 @@ plugins {
 	kotlin("plugin.jpa") version "1.9.23"
 	kotlin("plugin.allopen") version "1.9.23"
 	kotlin("plugin.noarg") version "1.9.23"
+	kotlin("kapt") version "1.9.23"
+	idea
 }
 
 allOpen {
-	annotation("javax.persistence.Entity")
+	annotation("jakarta.persistence.Entity")
+	annotation("jakarta.persistence.MappedSuperclass")
+	annotation("jakarta.persistence.Embeddable")
 }
 
 noArg {
-	annotation("javax.persistence.Entity")
+	annotation("jakarta.persistence.Entity")
 }
 
 // build시 불필요한 jar파일 생성하지 않도록 함.
@@ -60,6 +64,12 @@ dependencies {
 //	runtimeOnly("com.mysql:mysql-connector-j")
 	runtimeOnly("com.h2database:h2")
 
+	// queryDsl
+	implementation ("com.querydsl:querydsl-jpa:5.0.0:jakarta")
+	kapt ("com.querydsl:querydsl-apt:5.0.0:jakarta")
+	kapt ("jakarta.annotation:jakarta.annotation-api")
+	kapt ("jakarta.persistence:jakarta.persistence-api")
+
 	// lombok
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
@@ -77,4 +87,12 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+idea {
+	module {
+		val kaptMain = file("build/generated/source/kapt/main")
+		sourceDirs.add(kaptMain)
+		generatedSourceDirs.add(kaptMain)
+	}
 }
