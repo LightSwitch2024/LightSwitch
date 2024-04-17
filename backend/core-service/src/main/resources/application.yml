@@ -15,3 +15,22 @@ spring:
       properties:
         hibernate:
           format_sql: true
+#logging
+logging:
+  file:
+    name: "./core-service.log"
+  level:
+    org.hibernate.SQL: INFO
+    org.hibernate.orm.jdbc.bind: trace
+    root: INFO
+    com:
+      lightswitch:
+        core: DEBUG
+    org:
+      springframework:
+        web: INFO
+        apache:
+          tiles: DEBUG
+        springframework:
+          boot: DEBUG
+          security: DEBUG
