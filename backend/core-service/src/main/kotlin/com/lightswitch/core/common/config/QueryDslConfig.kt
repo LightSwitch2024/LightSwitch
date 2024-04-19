@@ -1,4 +1,4 @@
-package com.lightswitch.core.config
+package com.lightswitch.core.common.config
 
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.context.annotation.Bean

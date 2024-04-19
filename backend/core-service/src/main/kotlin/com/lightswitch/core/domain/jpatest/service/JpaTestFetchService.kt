@@ -9,7 +9,15 @@ class JpaTestFetchService (
     private val jpaTestFetchRepository: JpaTestFetchRepository
 ) {
 
-    fun addJpaTestFetch(jpaTestFetch: JpaTestFetch) {
-        jpaTestFetchRepository.save(jpaTestFetch)
+    fun addJpaTestFetch(jpaTestFetch: JpaTestFetch): JpaTestFetch {
+        return jpaTestFetchRepository.save(jpaTestFetch)
+    }
+
+    fun findByName(name: String): List<JpaTestFetch> {
+        return jpaTestFetchRepository.findByName(name)
+    }
+
+    fun deleteAll() {
+        jpaTestFetchRepository.deleteAll()
     }
 }
