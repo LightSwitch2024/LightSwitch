@@ -1,4 +1,4 @@
-package com.lightswitch.core.domain.log.controller
+package com.lightswitch.core.domain.test.controller
 
 
 import io.swagger.v3.oas.annotations.Operation

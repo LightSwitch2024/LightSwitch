@@ -1,4 +1,4 @@
-package com.lightswitch.core.domain.log.entity
+package com.lightswitch.core.domain.test.entity
 
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
