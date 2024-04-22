@@ -1,5 +1,6 @@
 package com.lightswitch.core.domain.user.service
 
+import com.lightswitch.core.common.service.PasswordService
 import com.lightswitch.core.domain.user.dto.req.SignupReqDto
 import com.lightswitch.core.domain.user.entity.Member
 import com.lightswitch.core.domain.user.repository.MemberRepository
@@ -14,11 +15,13 @@ class MemberServiceTest (
     @Autowired
     private val memberService: MemberService,
     @Autowired
-    private val memberRepository: MemberRepository
+    private val memberRepository: MemberRepository,
+    @Autowired
+    private val passwordService: PasswordService
 ) {
     @BeforeEach
     fun setUp() {
-
+        memberRepository.deleteAll()
     }
 
     @Test
@@ -30,6 +33,9 @@ class MemberServiceTest (
 
         assertThat(member.memberId).isEqualTo(findMember.memberId)
         assertThat(member.email).isEqualTo(findMember.email)
-        assertThat(member.password).isEqualTo(findMember.password)
+        assertThat(passwordService.matches("1234", member.password)).isTrue()
+        assertThat(passwordService.matches("1234", findMember.password)).isTrue()
     }
+
+
 }

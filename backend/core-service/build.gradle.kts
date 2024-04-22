@@ -54,6 +54,12 @@ repositories {
 }
 
 dependencies {
+	// redis
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
+	// spring security
+	implementation("org.springframework.security:spring-security-crypto")
+
 	// spring mail
 	implementation("org.springframework.boot:spring-boot-starter-mail")
 

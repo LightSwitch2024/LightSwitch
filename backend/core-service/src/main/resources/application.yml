@@ -2,7 +2,7 @@ spring:
   application:
     name: core-service
   profiles:
-    active: prod
+    active: dev
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -26,6 +26,11 @@ spring:
 #          timeout: 20000
 #          connection-timeout: 20000
 #          writetimeout: 20000
+  data:
+    redis:
+      host: k10s202.p.ssafy.io
+      port: 6379
+      password: switchlight2024!
 
 #logging
 logging:
