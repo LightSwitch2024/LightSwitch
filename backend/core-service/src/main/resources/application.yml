@@ -1,18 +1,32 @@
 spring:
   application:
     name: core-service
-  datasource:
-    url: jdbc:postgresql://15.165.127.196:5432/testdb
-    username: testuser
-    password: 1234
-    driver-class-name: org.postgresql.Driver
+  profiles:
+    active: prod
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
-
     show-sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: lightswitch2024@gmail.com
+    password: vqzwtrcffaseolyt
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+#            required: true
+#
+#          timeout: 20000
+#          connection-timeout: 20000
+#          writetimeout: 20000
+
 #logging
 logging:
   file:
