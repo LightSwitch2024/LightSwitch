@@ -64,7 +64,7 @@ dependencies {
 
 	// database
 	runtimeOnly("org.postgresql:postgresql") // 추가
-//	runtimeOnly("com.mysql:mysql-connector-j")
+	developmentOnly("com.mysql:mysql-connector-j")
 	runtimeOnly("com.h2database:h2")
 
 	// queryDsl
