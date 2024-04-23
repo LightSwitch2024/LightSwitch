@@ -16,8 +16,7 @@ class TagTest {
 
     @Test
     fun `tag 저장 테스트`() {
-        tagRepository.deleteAll()
-
+        // given
         val tag1 = Tag(
             colorHex = "#FFFFFF",
             content = "test"
@@ -28,6 +27,14 @@ class TagTest {
             content = "test2"
         )
 
+        // when
         tagRepository.saveAll(listOf(tag1, tag2))
+
+        // then
+        assertNotNull(tag1.content)
+        assertNotNull(tag2.content)
+
+        assertEquals(tag1.colorHex, "#FFFFFF")
+        assertEquals(tag2.colorHex, "#000000")
     }
 }

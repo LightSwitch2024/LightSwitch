@@ -1,5 +1,6 @@
 package com.lightswitch.core.domain.flag.repository.entity
 
+import com.lightswitch.core.domain.flag.common.enum.FlagType
 import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.flag.repository.VariationRepository
 import org.junit.jupiter.api.Assertions.*
@@ -18,22 +19,20 @@ class VariationTest {
 
     @Test
     fun `variation 저장 테스트`() {
-        flagRepository.deleteAll()
-        variationRepository.deleteAll()
-
+        // given
         val flag = Flag(
             title = "test",
             description = "test test",
             maintainerId = 1L,
-            type = "BOOLEAN",
+            type = FlagType.BOOLEAN,
         )
-        val savedFlag= flagRepository.save(flag)
+        val savedFlag = flagRepository.save(flag)
 
         val variationOfTrue = Variation(
             flagId = savedFlag,
             portion = 100,
             description = "test",
-            variationType = "BOOLEAN",
+            variationType = FlagType.BOOLEAN,
             value = "TRUE",
         )
 
@@ -41,11 +40,19 @@ class VariationTest {
             flagId = savedFlag,
             portion = 0,
             description = "test",
-            variationType = "BOOLEAN",
+            variationType = FlagType.BOOLEAN,
             value = "FALSE",
         )
 
+        // when
         variationRepository.save(variationOfTrue)
         variationRepository.save(variationOfFalse)
+
+        // then
+        assertNotNull(variationOfTrue.variationId)
+        assertNotNull(variationOfFalse.variationId)
+        assertEquals(variationOfTrue.portion + variationOfFalse.portion, 100)
+        assertEquals(variationOfTrue.flagId, savedFlag)
+        assertEquals(variationOfFalse.flagId, savedFlag)
     }
 }
