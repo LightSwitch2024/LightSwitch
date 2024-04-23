@@ -267,58 +267,40 @@ pipeline {
                 }
             }
         }
-        stage ('[Service]') {
-            stage ('Service Stop') {
-                steps {
-                    echo 'Service Stop'
-                    sh'''
-                        docker-compose down
-                    '''
-                }
-                post{
-                    success {
-                        echo 'Success Service Stop'
-                    }
-                    failure {
-                        error 'Fail Service Stop'
-                    }
-                }
+        stage ('Service Stop') {
+            steps {
+                echo 'Service Stop'
+                sh'''
+                    docker-compose down
+                '''
             }
-            stage ('Service Start') {
-                steps {
-                    echo 'Service Start'
-                    sh'''
-                        docker-compose pull
-                        docker-compose start
-                    '''
+            post{
+                success {
+                    echo 'Success Service Stop'
                 }
-                post{
-                    success {
-                        echo 'Success Service Start'
-                    }
-                    failure {
-                        error 'Fail Service Start'
-                    }
-                }
-            }
-            stage ('SDK deploy') {
-                steps {
-                    echo 'JS SDK - Sonar start'
-                    dir ('sdk/js/js-sdk'){
-                        sh'''
-                        '''
-                    }
-                }
-                post{
-                    success {
-                        echo 'JS SDK - Success Test'
-                    }
-                    failure {
-                        error 'JS SDK - Fail Test'
-                    }
+                failure {
+                    error 'Fail Service Stop'
                 }
             }
         }
+        stage ('Service Start') {
+            steps {
+                echo 'Service Start'
+                sh'''
+                    docker-compose pull
+                    docker-compose start
+                '''
+            }
+            post{
+                success {
+                    echo 'Success Service Start'
+                }
+                failure {
+                    error 'Fail Service Start'
+                }
+            }
+        }
+    }
         post {
             success {
                 script {
