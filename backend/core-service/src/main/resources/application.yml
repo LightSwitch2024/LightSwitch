@@ -31,6 +31,8 @@ spring:
       host: k10s202.p.ssafy.io
       port: 6379
       password: switchlight2024!
+      code:
+        signup: signup-authentication-code
 
 #logging
 logging:
@@ -51,3 +53,17 @@ logging:
         springframework:
           boot: DEBUG
           security: DEBUG
+
+#actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - info
+          - health
+          - loggers
+          - mappings
+          - metrics
+          - shutdown
+          - prometheus

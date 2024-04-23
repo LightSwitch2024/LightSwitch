@@ -1,4 +1,4 @@
-package com.lightswitch.core.domain.user.dto.req
+package com.lightswitch.core.domain.member.dto.req
 
 import jakarta.validation.constraints.NotBlank
 

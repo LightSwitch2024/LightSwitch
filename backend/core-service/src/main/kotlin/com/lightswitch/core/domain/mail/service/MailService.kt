@@ -1,6 +1,8 @@
 package com.lightswitch.core.domain.mail.service
 
+import com.lightswitch.core.domain.redis.service.RedisService
 import jakarta.mail.internet.MimeMessage
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ClassPathResource
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
@@ -12,7 +14,10 @@ import java.util.*
 
 @Service
 class MailService(
-    private var javaMailSender: JavaMailSender
+    private val javaMailSender: JavaMailSender,
+    private val redisService: RedisService,
+    @Value("\${spring.data.redis.code.signup}")
+    val signupCode: String
 ) {
     fun sendMail(
         to: String,
@@ -59,6 +64,9 @@ class MailService(
 
         //메일 전송(setTo 파라미터에 문자열 리스트를 넘기면 한번에 여러명에게 전송 가능)
         javaMailSender.send(message)
+        val redisValue: String? = redisService.find("$signupCode:$to")
+        if(redisValue != null) redisService.delete("$signupCode:$to")
+        redisService.saveWithExpire("$signupCode:$to", authenticationCode, 60*5L)
     }
 
     fun createNumber(): String {

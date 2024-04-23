@@ -1,4 +1,4 @@
-package com.lightswitch.core.domain.user.entity
+package com.lightswitch.core.domain.member.entity
 
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
