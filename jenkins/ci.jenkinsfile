@@ -95,7 +95,7 @@ pipeline {
                         echo 'FE - SonarScanner start'
                         dir ('frontend'){
                             sh'''
-                                sonar-scanner -Dproject.settings=./sonar-scanner.properties
+                                 /opt/sonar-scanner/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner -Dproject.settings=./sonar-scanner.properties
                             '''
                         }
                     }
