@@ -1,5 +1,6 @@
 package com.lightswitch.core.domain.flag.repository.entity
 
+import com.lightswitch.core.domain.flag.common.enum.FlagType
 import jakarta.persistence.*
 import lombok.Getter
 
@@ -17,10 +18,9 @@ class Flag(
     // @JoinColumn(name = "user_id")
     val maintainerId: Long,
 
-//    var type : FlagType
-    val type: String,
+    var type : FlagType,
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinTable(
         name = "flag_tag",
         joinColumns = [JoinColumn(name = "flag_id")],
