@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    tools {
-        nodejs "nodejs"
-    }
 
     stages {
         stage ('[Git Clone]') {
@@ -144,18 +141,6 @@ pipeline {
                 }
             }
         }
-        // stage('[Download private file]') {
-        //     steps {
-        //         echo 'BE - Download private file start'
-        //         sh 'pwd'
-        //         withCredentials([file(credentialsId: 'application-private', variable: 'privateConfigFile')]) {
-        //             sh 'cp -f ${privateConfigFile}  backend/backend/src/main/resources/application-private.yml'
-        //         }
-        //         withCredentials([file(credentialsId: 'batch-application-private', variable: 'batchPrivateConfigFile')]) {
-        //             sh 'cp -f ${batchPrivateConfigFile}  backend/batch/src/main/resources/application-private.yml'
-        //         }
-        //     }
-        // }
         stage ('[Build]') {
             parallel {
                 stage ('BE Build') {
@@ -211,8 +196,9 @@ pipeline {
                             error 'JS SDK - Fail Test'
                         }
                     }
-            }
+                }
 
+            }
         }
     }
     post {
