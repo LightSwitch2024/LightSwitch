@@ -67,7 +67,7 @@ class MailService(
 //        List<MultipartFile> multipartFileList = Arrays.asList(multipartFile);
 
         //메일 전송(setTo 파라미터에 문자열 리스트를 넘기면 한번에 여러명에게 전송 가능)
-        // javaMailSender.send(message)
+        javaMailSender.send(message)
         val redisValue: String? = redisService.find("$signupCode:$to")
         if (redisValue != null) redisService.delete("$signupCode:$to")
         redisService.saveWithExpire("$signupCode:$to", authenticationCode, 60 * 5L)
@@ -92,5 +92,11 @@ class MailService(
             }
         }
         return key.toString()
+    }
+
+    fun checkMail(email: String, authCode: String): Boolean {
+        val redisValue: String = redisService.find("$signupCode:$email") ?: return false
+
+        return redisValue == authCode
     }
 }
