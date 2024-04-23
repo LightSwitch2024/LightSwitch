@@ -17,6 +17,7 @@ class Variation(
     @JoinColumn(name = "flag_id")
     val flagId: Flag,
 
+    @Enumerated(EnumType.STRING)
     val variationType: FlagType,
     val value: String
 )

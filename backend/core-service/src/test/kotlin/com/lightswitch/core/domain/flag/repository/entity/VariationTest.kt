@@ -23,7 +23,7 @@ class VariationTest {
         val flag = Flag(
             title = "test",
             description = "test test",
-            maintainerId = 1L,
+            maintainerId = 1,
             type = FlagType.BOOLEAN,
         )
         val savedFlag = flagRepository.save(flag)
