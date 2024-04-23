@@ -1,5 +1,7 @@
 package com.lightswitch.core.domain.mail.controller
 
+import com.lightswitch.core.common.dto.BaseResponse
+import com.lightswitch.core.common.dto.success
 import com.lightswitch.core.domain.mail.dto.req.MailReqDto
 import com.lightswitch.core.domain.mail.service.MailService
 import lombok.extern.slf4j.Slf4j
@@ -17,8 +19,8 @@ class MailController (
 ) {
 
     @GetMapping("/send")
-    fun send(@RequestBody mailReqDto: MailReqDto): ResponseEntity<String> {
+    fun send(@RequestBody mailReqDto: MailReqDto): BaseResponse<String> {
         mailService.sendMail(mailReqDto.email)
-        return ResponseEntity.ok().body("문자 메일이 성공적으로 발송 되었습니다.")
+        return success("문자 메일이 성공적으로 발송 되었습니다.")
     }
 }
