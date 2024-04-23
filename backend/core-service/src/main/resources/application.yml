@@ -1,44 +1,8 @@
 spring:
   application:
     name: core-service
-  datasource:
-    url: jdbc:postgresql://15.165.127.196:5432/testdb
-    username: testuser
-    password: 1234
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: update
+  profiles:
+    active: dev
 
-    show-sql: true
-
-springdoc:
-  packages-to-scan: com.colabear754.springdoc_example.controllers
-  default-consumes-media-type: application/json;charset=UTF-8
-  default-produces-media-type: application/json;charset=UTF-8
-  swagger-ui:
-    path: /
-    disable-swagger-default-url: true
-    display-request-duration: true
-    operations-sorter: alpha
-#logging
-logging:
-  file:
-    name: "./core-service.log"
-  level:
-    org.hibernate.SQL: INFO
-    org.hibernate.orm.jdbc.bind: trace
-    root: INFO
-    com:
-      lightswitch:
-        core: DEBUG
-    org:
-      springframework:
-        web: INFO
-        apache:
-          tiles: DEBUG
-        springframework:
-          boot: DEBUG
-          security: DEBUG
+server:
+  port: 8000

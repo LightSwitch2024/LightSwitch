@@ -1,3 +1,5 @@
+applcation-dev.yml
+
 HELP.md
 .gradle
 build/
@@ -41,3 +43,4 @@ out/
 
 ### Log ###
 /core-service.*
+/src/main/resources/application-dev.yml
