@@ -107,14 +107,14 @@ class FlagServiceTest {
     }
 
     @Test
-    fun createFlagTest() {
+    fun `flag 생성 test 1 _ 일반값 Boolean`() {
         // given
-        val tag1: TagRequestDto = TagRequestDto(
+        val tag1 = TagRequestDto(
             colorHex = "#FFFFFF",
             content = "test"
         )
 
-        val tag2: TagRequestDto = TagRequestDto(
+        val tag2 = TagRequestDto(
             colorHex = "#000000",
             content = "test2"
         )
@@ -140,6 +140,93 @@ class FlagServiceTest {
         assertNotNull(flagResponseDto.flagId)
         assertEquals(flagRequestDto.title, flagResponseDto.title)
         assertEquals(flagRequestDto.description, flagResponseDto.description)
-        assertEquals(flagRequestDto.tags.size, 2)
+        for (tag in flagResponseDto.tags) {
+            val tagFoundByContent = tagRepository.findByContent(tag.content)
+            if (tagFoundByContent != null) {
+                assertEquals(tagFoundByContent.colorHex, tag.colorHex)
+            }
+        }
+    }
+
+    fun `flag 생성 test 1 _ 일반값 String`() {
+        // given
+        val tag1 = TagRequestDto(
+            colorHex = "#FFFFFF",
+            content = "test"
+        )
+
+        val tag2 = TagRequestDto(
+            colorHex = "#000000",
+            content = "test2"
+        )
+
+        val flagRequestDto = FlagRequestDto(
+            title = "test",
+            tags = listOf(tag1, tag2),
+            description = "test",
+            type = FlagType.STRING,
+            defaultValue = "A",
+            defaultValuePortion = 100,
+            defaultValueDescription = "test",
+            variation = "B",
+            variationPortion = 0,
+            variationDescription = "test",
+            userId = 1L
+        )
+
+        // when
+        val flagResponseDto = flagService.createFlag(flagRequestDto)
+
+        // then
+        assertNotNull(flagResponseDto.flagId)
+        assertEquals(flagRequestDto.title, flagResponseDto.title)
+        assertEquals(flagRequestDto.description, flagResponseDto.description)
+        for (tag in flagResponseDto.tags) {
+            val tagFoundByContent = tagRepository.findByContent(tag.content)
+            if (tagFoundByContent != null) {
+                assertEquals(tagFoundByContent.colorHex, tag.colorHex)
+            }
+        }
+    }
+
+    fun `flag 생성 test 1 _ 일반값 Integer`() {
+        // given
+        val tag1 = TagRequestDto(
+            colorHex = "#FFFFFF",
+            content = "test"
+        )
+
+        val tag2 = TagRequestDto(
+            colorHex = "#000000",
+            content = "test2"
+        )
+
+        val flagRequestDto = FlagRequestDto(
+            title = "test",
+            tags = listOf(tag1, tag2),
+            description = "test",
+            type = FlagType.INTEGER,
+            defaultValue = "1",
+            defaultValuePortion = 100,
+            defaultValueDescription = "test",
+            variation = "2",
+            variationPortion = 0,
+            variationDescription = "test",
+            userId = 1L
+        )
+
+        // when
+        val flagResponseDto = flagService.createFlag(flagRequestDto)
+
+        // then
+        assertNotNull(flagResponseDto.flagId)
+        assertEquals(flagRequestDto.title, flagResponseDto.title)
+        assertEquals(flagRequestDto.description, flagResponseDto.description)
+        for (tag in flagResponseDto.tags) {
+            val tagFoundByContent = tagRepository.findByContent(tag.content)
+            if (tagFoundByContent != null) {
+                assertEquals(tagFoundByContent.colorHex, tag.colorHex)
+            }
+        }
     }
 }

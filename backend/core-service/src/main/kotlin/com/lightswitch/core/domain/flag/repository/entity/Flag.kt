@@ -19,7 +19,7 @@ class Flag(
     val maintainerId: Long,
 
     @Enumerated(EnumType.STRING)
-    var type : FlagType,
+    var type: FlagType,
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinTable(
