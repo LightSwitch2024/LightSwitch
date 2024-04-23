@@ -18,7 +18,8 @@ class Flag(
     // @JoinColumn(name = "user_id")
     val maintainerId: Long,
 
-    var type : FlagType,
+    @Enumerated(EnumType.STRING)
+    var type: FlagType,
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinTable(
