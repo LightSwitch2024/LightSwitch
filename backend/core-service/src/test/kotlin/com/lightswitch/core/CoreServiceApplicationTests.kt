@@ -1,7 +1,7 @@
 package com.lightswitch.core
 
-import com.lightswitch.core.domain.log.entity.QTests
-import com.lightswitch.core.domain.log.entity.Tests
+import com.lightswitch.core.domain.test.entity.QTests
+import com.lightswitch.core.domain.test.entity.Tests
 import com.querydsl.jpa.impl.JPAQueryFactory
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
