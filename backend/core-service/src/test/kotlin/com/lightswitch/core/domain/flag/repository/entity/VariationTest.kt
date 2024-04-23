@@ -3,8 +3,8 @@ package com.lightswitch.core.domain.flag.repository.entity
 import com.lightswitch.core.domain.flag.common.enum.FlagType
 import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.flag.repository.VariationRepository
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -29,7 +29,7 @@ class VariationTest {
         val savedFlag = flagRepository.save(flag)
 
         val variationOfTrue = Variation(
-            flagId = savedFlag,
+            flag = savedFlag,
             portion = 100,
             description = "test",
             variationType = FlagType.BOOLEAN,
@@ -37,7 +37,7 @@ class VariationTest {
         )
 
         val variationOfFalse = Variation(
-            flagId = savedFlag,
+            flag = savedFlag,
             portion = 0,
             description = "test",
             variationType = FlagType.BOOLEAN,
@@ -52,7 +52,7 @@ class VariationTest {
         assertNotNull(variationOfTrue.variationId)
         assertNotNull(variationOfFalse.variationId)
         assertEquals(variationOfTrue.portion + variationOfFalse.portion, 100)
-        assertEquals(variationOfTrue.flagId, savedFlag)
-        assertEquals(variationOfFalse.flagId, savedFlag)
+        assertEquals(variationOfTrue.flag.flagId, savedFlag.flagId)
+        assertEquals(variationOfFalse.flag.flagId, savedFlag.flagId)
     }
 }
