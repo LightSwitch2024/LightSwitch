@@ -1,8 +1,8 @@
 package com.lightswitch.core.domain.flag.repository
 
-import com.lightswitch.core.domain.flag.repository.entity.Variation
+import com.lightswitch.core.domain.flag.repository.entity.Tag
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface VariationRepository : JpaRepository<Variation, Long>
+interface TagRepository : JpaRepository<Tag, Long>
