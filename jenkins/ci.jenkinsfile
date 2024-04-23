@@ -67,6 +67,23 @@ pipeline {
                         }
                     }
                 }
+                stage ('SDK Test') {
+                    steps {
+                        echo 'JS SDK - Test start'
+                        dir ('sdk/js/js-sdk'){
+                            sh'''
+                            '''
+                        }
+                    }
+                    post{
+                        success {
+                            echo 'JS SDK - Success Test'
+                        }
+                        failure {
+                            error 'JS SDK - Fail Test'
+                        }
+                    }
+                }
             }
         }
          stage ('[SonarQube Reporting]') {
@@ -105,6 +122,23 @@ pipeline {
                         }
                         failure {
                             error 'BE - Fail SonarQube Reporting'
+                        }
+                    }
+                }
+                stage ('SDK Sonar') {
+                    steps {
+                        echo 'JS SDK - Sonar start'
+                        dir ('sdk/js/js-sdk'){
+                            sh'''
+                            '''
+                        }
+                    }
+                    post{
+                        success {
+                            echo 'JS SDK - Success Test'
+                        }
+                        failure {
+                            error 'JS SDK - Fail Test'
                         }
                     }
                 }
@@ -161,6 +195,22 @@ pipeline {
                         }
                     }    
                 }
+                 stage ('SDK Build') {
+                    steps {
+                        echo 'JS SDK - Build start'
+                        dir ('sdk/js/js-sdk'){
+                            sh'''
+                            '''
+                        }
+                    }
+                    post{
+                        success {
+                            echo 'JS SDK - Success Test'
+                        }
+                        failure {
+                            error 'JS SDK - Fail Test'
+                        }
+                    }
             }
 
         }
