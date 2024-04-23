@@ -1,7 +1,7 @@
 package com.lightswitch.core.domain.flag.service
 
-import com.lightswitch.core.common.dto.BaseResponse
-import com.lightswitch.core.common.dto.success
+import com.lightswitch.core.common.dto.ResponseCode
+import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
 import com.lightswitch.core.domain.flag.dto.res.FlagResponseDto
 import com.lightswitch.core.domain.flag.dto.res.TagResponseDto
@@ -62,15 +62,16 @@ class FlagService(
 
         // variation 저장
         val defaultVariation = Variation(
-            flagId = savedFlag,
+            flag = savedFlag,
             description = flagRequestDto.defaultValueDescription,
             portion = flagRequestDto.defaultValuePortion,
             variationType = flagRequestDto.type,
             value = flagRequestDto.defaultValue,
+            defaultFlag = true,
         )
 
         val variation = Variation(
-            flagId = savedFlag,
+            flag = savedFlag,
             description = flagRequestDto.variationDescription,
             portion = flagRequestDto.variationPortion,
             variationType = flagRequestDto.type,
@@ -98,5 +99,35 @@ class FlagService(
         )
 
         return flagResponseDto
+    }
+
+    fun getFlag(flagId: Long): FlagResponseDto {
+        val flag = flagRepository.findById(flagId).get()
+        val defaultVariation = variationRepository.findByFlagAndDefaultFlag(flag, true)
+        val variation = variationRepository.findByFlagAndDefaultFlag(flag, false)
+        val tagList = flag.tags.map { TagResponseDto(it.colorHex, it.content) }
+
+        if (defaultVariation == null || variation == null) {
+            throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
+        }
+
+        return FlagResponseDto(
+            flagId = flag.flagId!!,
+            title = flag.title,
+            tags = tagList,
+            description = flag.description,
+            type = flag.type,
+            defaultValue = defaultVariation.value,
+            defaultValuePortion = defaultVariation.portion,
+            defaultValueDescription = defaultVariation.description,
+            variation = variation.value,
+            variationPortion = variation.portion,
+            variationDescription = variation.description,
+            userId = flag.maintainerId,
+
+            //Todo : BaseEntity 상속받아서 createdAt, updatedAt 사용
+            createdAt = LocalDateTime.now().toString(),
+            updatedAt = LocalDateTime.now().toString(),
+        )
     }
 }
