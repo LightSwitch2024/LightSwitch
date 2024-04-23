@@ -3,10 +3,16 @@ package com.lightswitch.core.domain.flag.repository.entity
 import com.lightswitch.core.domain.flag.common.enum.FlagType
 import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.flag.repository.TagRepository
-import org.junit.jupiter.api.Assertions.assertNotNull
+import com.lightswitch.core.domain.flag.repository.VariationRepository
+import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.assertj.core.api.Assertions.assertThat
 
 @SpringBootTest
 class FlagTest {
@@ -47,5 +53,6 @@ class FlagTest {
 
         // then
         assertNotNull(savedFlag.flagId)
+        assertThat(savedFlag.active).isFalse()
     }
 }

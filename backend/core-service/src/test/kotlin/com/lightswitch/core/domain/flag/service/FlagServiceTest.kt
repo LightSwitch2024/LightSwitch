@@ -15,6 +15,9 @@ import org.springframework.boot.test.context.SpringBootTest
 class FlagServiceTest {
 
     @Autowired
+    private lateinit var flagRepository: FlagRepository
+
+    @Autowired
     private lateinit var flagService: FlagService
 
 //    @Autowired
@@ -191,5 +194,16 @@ class FlagServiceTest {
         assertThat(testFlagResponseDto.defaultValue).isNotNull
         assertThat(testFlagResponseDto.variation).isNotNull
         assertThat(testFlagResponseDto.tags.size).isEqualTo(2)
+    }
+
+    @Test
+    fun getAllFlag() {
+        // given
+
+        // when
+        val flagList = flagService.getAllFlag()
+
+        // then
+        assertThat(flagList.size).isEqualTo(flagRepository.countBy())
     }
 }
