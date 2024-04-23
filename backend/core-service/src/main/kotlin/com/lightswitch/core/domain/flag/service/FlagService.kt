@@ -4,6 +4,7 @@ import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
 import com.lightswitch.core.domain.flag.dto.res.FlagResponseDto
+import com.lightswitch.core.domain.flag.dto.res.FlagSummaryDto
 import com.lightswitch.core.domain.flag.dto.res.TagResponseDto
 import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.flag.repository.TagRepository
@@ -99,6 +100,21 @@ class FlagService(
         )
 
         return flagResponseDto
+    }
+
+    fun getAllFlag(): List<FlagSummaryDto> {
+        val flagList = flagRepository.findAll()
+        return flagList.map { flag ->
+            FlagSummaryDto(
+                flagId = flag.flagId!!,
+                title = flag.title,
+                description = flag.description,
+                tags = flag.tags.map { TagResponseDto(it.colorHex, it.content) },
+                active = flag.active,
+                //Todo : User 기능 구현 후 maintainerName 변경
+                maintainerName = "test",
+            )
+        }
     }
 
     fun getFlag(flagId: Long): FlagResponseDto {
