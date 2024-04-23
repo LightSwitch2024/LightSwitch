@@ -23,9 +23,6 @@ class FlagTest {
     @Autowired
     private lateinit var tagRepository: TagRepository
 
-    @Autowired
-    private lateinit var variationRepository: VariationRepository
-
     @Test
     fun setUp() {
 
