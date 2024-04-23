@@ -11,11 +11,11 @@ import org.springframework.context.annotation.Configuration
 class SwaggerConfig {
     @Bean
     fun openAPI(): OpenAPI = OpenAPI()
-            .components(Components())
-            .info(apiInfo())
+        .components(Components())
+        .info(apiInfo())
 
     private fun apiInfo() = Info()
-            .title("Springdoc 테스트")
-            .description("Springdoc을 사용한 Swagger UI 테스트")
-            .version("1.0.0")
+        .title("Springdoc 테스트")
+        .description("Springdoc을 사용한 Swagger UI 테스트")
+        .version("1.0.0")
 }

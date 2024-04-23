@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
-class MemberService (
+class MemberService(
     private val memberRepository: MemberRepository,
     private val passwordService: PasswordService,
     private val redisService: RedisService,
@@ -23,7 +23,11 @@ class MemberService (
             throw MemberException("이미 가입된 이메일 입니다.")
         }
 
-        val redisAuthCode: String = redisService.find("$signupCode:$email") ?: throw MemberException("코드 만료 시간이 지났습니다.")
+        redisService.find("$signupCode:$email") ?: throw MemberException("코드 만료 시간이 지났습니다.")
+
+        if (authCode != redisService.find("$signupCode:$email")) {
+            throw MemberException("인증 코드가 일치하지 않습니다.")
+        }
 
         val encodedPassword = passwordService.encode(password)
 

@@ -7,9 +7,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.stereotype.Service
 
 @Service
-class JpaTestRepositoryCustomImpl (
+class JpaTestRepositoryCustomImpl(
     private val jpaQueryFactory: JPAQueryFactory
-): JpaTestRepositoryCustom {
+) : JpaTestRepositoryCustom {
     override fun findByName(name: String): List<JpaTest> {
         val jpaTest = QJpaTest.jpaTest
 
@@ -24,6 +24,16 @@ class JpaTestRepositoryCustomImpl (
         return jpaQueryFactory.selectFrom(jpaTest)
             .where(jpaTest.jpaTestId.eq(id).and(jpaTest.name.eq(name)))
             .fetch()
+    }
+
+    override fun deleteAll() {
+        val jpaTest = QJpaTest.jpaTest
+
+        return jpaQueryFactory.delete(jpaTest)
+            .execute()
+    }
+
+    override fun saveAll(jpaTests: List<JpaTest>) {
     }
 
 }

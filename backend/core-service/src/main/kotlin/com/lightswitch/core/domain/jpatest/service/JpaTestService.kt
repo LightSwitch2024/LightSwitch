@@ -5,8 +5,9 @@ import com.lightswitch.core.domain.jpatest.repository.JpaTestRepository
 import org.springframework.stereotype.Service
 
 @Service
-class JpaTestService (
-    private val jpaTestRepository: JpaTestRepository) {
+class JpaTestService(
+    private val jpaTestRepository: JpaTestRepository
+) {
 
     fun addJpaTest(jpaTest: JpaTest): JpaTest {
         return jpaTestRepository.save(jpaTest)

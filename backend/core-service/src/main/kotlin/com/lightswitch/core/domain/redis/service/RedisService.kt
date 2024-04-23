@@ -4,7 +4,7 @@ import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Service
 
 @Service
-class RedisService (
+class RedisService(
     private val redisTemplate: StringRedisTemplate
 ) {
     fun save(key: String, value: String) {

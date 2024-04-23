@@ -3,7 +3,7 @@ package com.lightswitch.core.domain.flag.repository.entity
 import jakarta.persistence.*
 import lombok.Getter
 
-@Entity(name="tag")
+@Entity(name = "tag")
 class Tag(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

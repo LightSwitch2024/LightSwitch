@@ -1,15 +1,16 @@
 package com.lightswitch.core.common.config
 
 import com.querydsl.jpa.impl.JPAQueryFactory
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 
 @Configuration
-class QuerydslConfig (
-        @PersistenceContext
-        private val entityManager: EntityManager
+class QueryDslConfig(
+    @PersistenceContext
+    private val entityManager: EntityManager
 ) {
-    @Bean fun jpaQueryFactory(): JPAQueryFactory = JPAQueryFactory(entityManager)
+    @Bean
+    fun jpaQueryFactory(): JPAQueryFactory = JPAQueryFactory(entityManager)
 }

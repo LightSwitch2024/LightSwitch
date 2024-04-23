@@ -2,12 +2,12 @@ package com.lightswitch.core.domain.member.service
 
 import com.lightswitch.core.common.service.PasswordService
 import com.lightswitch.core.domain.mail.service.MailService
-import com.lightswitch.core.domain.member.dto.req.SignupReqDto
 import com.lightswitch.core.domain.member.entity.Member
 import com.lightswitch.core.domain.member.exception.MemberException
 import com.lightswitch.core.domain.member.repository.MemberRepository
 import com.lightswitch.core.domain.redis.service.RedisService
-import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -58,7 +58,7 @@ class MemberServiceTest (
 
         memberRepository.save(member)
         assertThatExceptionOfType(MemberException::class.java).isThrownBy {
-            memberRepository.save(member)
+            memberService.signUp(email, password, "1234")
         }
     }
 

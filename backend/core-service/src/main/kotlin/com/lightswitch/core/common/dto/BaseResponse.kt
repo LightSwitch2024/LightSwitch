@@ -1,10 +1,11 @@
 package com.lightswitch.core.common.dto
 
-class BaseResponse<T> (
+class BaseResponse<T>(
     val code: Int,
     val message: String,
     val data: T
 )
+
 fun <T> success(data: T): BaseResponse<T> {
     return BaseResponse(ResponseCode.OK.code, ResponseCode.OK.message, data)
 }

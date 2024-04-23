@@ -12,9 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest
 class TagTest {
 
     @Autowired
-    private lateinit var flagRepository: FlagRepository
-
-    @Autowired
     private lateinit var tagRepository: TagRepository
 
     @Test

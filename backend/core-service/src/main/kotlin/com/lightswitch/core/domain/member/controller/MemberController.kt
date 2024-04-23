@@ -1,6 +1,5 @@
 package com.lightswitch.core.domain.member.controller
 
-import com.fasterxml.jackson.databind.ser.Serializers.Base
 import com.lightswitch.core.common.dto.BaseResponse
 import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.dto.success
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/users")
-class MemberController (
+class MemberController(
     private val memberService: MemberService
 ) {
 

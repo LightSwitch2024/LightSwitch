@@ -52,7 +52,7 @@ configurations {
 detekt {
 	buildUponDefaultConfig = true
 	allRules = false
-//    config = files("$rootDir/config/detekt.yml")
+    config.from(files("$rootDir/config/detekt.yml"))
 }
 
 repositories {
