@@ -301,27 +301,26 @@ pipeline {
             }
         }
     }
-        post {
-            success {
-                script {
-                    def Author_Name = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
-                    mattermostSend (color: 'good',
-                    message: "Succeeded: Job '${env.JOB_NAME}' [#${env.BUILD_NUMBER}] by ${Author_Name} (<${env.BUILD_URL}|Details>)",
-                    endpoint: 'https://meeting.ssafy.com/hooks/a7gaycppptyo7ksza6wbpistbc',
-                    channel: 'lunit-builds'
-                    )
-                }
+    post {
+        success {
+            script {
+                def Author_Name = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                mattermostSend (color: 'good',
+                message: "Succeeded: Job '${env.JOB_NAME}' [#${env.BUILD_NUMBER}] by ${Author_Name} (<${env.BUILD_URL}|Details>)",
+                endpoint: 'https://meeting.ssafy.com/hooks/a7gaycppptyo7ksza6wbpistbc',
+                channel: 'lunit-builds'
+                )
             }
-            failure {
-                script {
-                    def Author_Name = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
-                    mattermostSend (color: 'danger',
-                    message: "Failed: Job '${env.JOB_NAME}' [#${env.BUILD_NUMBER}] by ${Author_Name} (<${env.BUILD_URL}|Details>)",
-                    endpoint: 'https://meeting.ssafy.com/hooks/a7gaycppptyo7ksza6wbpistbc',
-                    channel: 'lunit-builds'
-                    )
-                }
+        }
+        failure {
+            script {
+                def Author_Name = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                mattermostSend (color: 'danger',
+                message: "Failed: Job '${env.JOB_NAME}' [#${env.BUILD_NUMBER}] by ${Author_Name} (<${env.BUILD_URL}|Details>)",
+                endpoint: 'https://meeting.ssafy.com/hooks/a7gaycppptyo7ksza6wbpistbc',
+                channel: 'lunit-builds'
+                )
             }
-        }  
-    }
+        }
+    }  
 }
