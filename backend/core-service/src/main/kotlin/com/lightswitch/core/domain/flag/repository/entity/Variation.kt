@@ -1,5 +1,6 @@
 package com.lightswitch.core.domain.flag.repository.entity
 
+import com.lightswitch.core.domain.flag.common.enum.FlagType
 import jakarta.persistence.*
 import lombok.Getter
 
@@ -16,7 +17,6 @@ class Variation(
     @JoinColumn(name = "flag_id")
     val flagId: Flag,
 
-    // Todo : Change to VariationType ENUM
-    val variationType: String,
+    val variationType: FlagType,
     val value: String
 )
