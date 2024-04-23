@@ -24,11 +24,6 @@ spring:
           auth: true
           starttls:
             enable: true
-#            required: true
-#
-#          timeout: 20000
-#          connection-timeout: 20000
-#          writetimeout: 20000
   data:
     redis:
       host: k10s202.p.ssafy.io
@@ -36,26 +31,6 @@ spring:
       password: switchlight2024!
       code:
         signup: signup-authentication-code
-
-#logging
-logging:
-  file:
-    name: "./core-service.log"
-  level:
-    org.hibernate.SQL: INFO
-    org.hibernate.orm.jdbc.bind: trace
-    root: INFO
-    com:
-      lightswitch:
-        core: DEBUG
-    org:
-      springframework:
-        web: INFO
-        apache:
-          tiles: DEBUG
-        springframework:
-          boot: DEBUG
-          security: DEBUG
 
 #actuator
 management:
