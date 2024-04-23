@@ -10,5 +10,10 @@ enum class ResponseCode(
     OK(HttpStatus.OK.value(), "OK"),
 
     // Sample
-    SAMPLE_EXCEPTION(9999, "샘플예외 입니다.")
+    SAMPLE_EXCEPTION(9999, "샘플예외 입니다."),
+
+    // 1000 Flag Exception
+//    FLAG_NOT_FOUND(1000, "해당하는 Flag가 없습니다."),
+    VARIATION_NOT_FOUND(1001, "해당하는 Variation이 없습니다."),
+
 }
