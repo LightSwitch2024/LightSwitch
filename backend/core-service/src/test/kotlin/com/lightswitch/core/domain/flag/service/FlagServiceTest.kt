@@ -24,87 +24,14 @@ class FlagServiceTest {
     @Autowired
     private lateinit var flagService: FlagService
 
-    @Autowired
-    private lateinit var flagRepository: FlagRepository
+//    @Autowired
+//    private lateinit var flagRepository: FlagRepository
 
     @Autowired
     private lateinit var tagRepository: TagRepository
 
-    @Autowired
-    private lateinit var variationRepository: VariationRepository
-
-    fun createFlag(flagRequestDto: FlagRequestDto): FlagResponseDto {
-        // flag 저장
-        val savedFlag = flagRepository.save(
-            Flag(
-                title = flagRequestDto.title,
-                description = flagRequestDto.description,
-                type = flagRequestDto.type,
-                maintainerId = flagRequestDto.userId,
-            )
-        )
-
-        // tag 저장
-        val savedTagList = mutableListOf<Tag>()
-        val tagList = flagRequestDto.tags
-        for (tag in tagList) {
-            val searchedTag = tagRepository.findByContent(tag.content)
-            if (searchedTag == null) {
-                val savedTag = tagRepository.save(
-                    Tag(
-                        colorHex = tag.colorHex,
-                        content = tag.content,
-                    )
-                )
-                savedTagList.add(savedTag)
-                println(savedTag.content)
-            } else {
-                savedTagList.add(searchedTag)
-                println(searchedTag.content)
-            }
-        }
-        savedFlag.tags.addAll(savedTagList)
-        flagRepository.save(savedFlag)
-
-        // variation 저장
-        val defaultVariation = Variation(
-            flagId = savedFlag,
-            description = flagRequestDto.defaultValueDescription,
-            portion = flagRequestDto.defaultValuePortion,
-            variationType = flagRequestDto.type,
-            value = flagRequestDto.defaultValue,
-        )
-
-        val variation = Variation(
-            flagId = savedFlag,
-            description = flagRequestDto.variationDescription,
-            portion = flagRequestDto.variationPortion,
-            variationType = flagRequestDto.type,
-            value = flagRequestDto.variation,
-        )
-        val savedDefaultVariation = variationRepository.save(defaultVariation)
-        val savedVariation = variationRepository.save(variation)
-
-        // 반환값 조립
-        val flagResponseDto = FlagResponseDto(
-            flagId = savedFlag.flagId!!,
-            title = savedFlag.title,
-            tags = savedFlag.tags.map { TagResponseDto(it.colorHex, it.content) },
-            description = savedFlag.description,
-            type = savedFlag.type,
-            defaultValue = savedDefaultVariation.value,
-            defaultValuePortion = savedDefaultVariation.portion,
-            defaultValueDescription = savedDefaultVariation.description,
-            variation = savedVariation.value,
-            variationPortion = savedVariation.portion,
-            variationDescription = savedVariation.description,
-            userId = savedFlag.maintainerId,
-            createdAt = LocalDateTime.now().toString(),
-            updatedAt = LocalDateTime.now().toString(),
-        )
-
-        return flagResponseDto
-    }
+//    @Autowired
+//    private lateinit var variationRepository: VariationRepository
 
     @Test
     fun `flag 생성 test 1 _ 일반값 Boolean`() {
@@ -148,6 +75,7 @@ class FlagServiceTest {
         }
     }
 
+    @Test
     fun `flag 생성 test 1 _ 일반값 String`() {
         // given
         val tag1 = TagRequestDto(
@@ -189,6 +117,7 @@ class FlagServiceTest {
         }
     }
 
+    @Test
     fun `flag 생성 test 1 _ 일반값 Integer`() {
         // given
         val tag1 = TagRequestDto(
