@@ -47,6 +47,67 @@ pipeline {
                         }
                     }
                 }
+                stage ('FE Test') {
+                    steps {
+                        echo 'FE - Test start'
+                        dir ('frontend'){
+                            sh'''
+                                yarn cache clean
+                                yarn install
+                                yarn test
+                            '''
+                        }
+                    }
+                    post{
+                        success {
+                            echo 'BE - Success Test'
+                        }
+                        failure {
+                            error 'BE - Fail Test'
+                        }
+                    }
+                }
+            }
+        }
+         stage ('[SonarQube Reporting]') {
+            parallel {
+                stage ('BE Sonar') {
+                    steps {
+                        echo 'BE - Sonar start'
+                        dir ('backend/core-service'){
+                            sh'''
+                                chmod +x gradlew
+                                ./gradlew sonar
+                            '''
+                        }
+                    }
+                    post{
+                        success {
+                            echo 'BE - Success SonarQube Reporting'
+                        }
+                        failure {
+                            error 'BE - Fail SonarQube Reporting'
+                        }
+                    }
+                }
+                stage ('FE Sonar') {
+                    steps {
+                        echo 'FE - SonarScanner start'
+                        dir ('frontend'){
+                            sh'''
+                                sonar-scanner -Dproject.settings=./sonar-scanner.properties
+                            '''
+                        }
+                    }
+                    post{
+                        success {
+                            echo 'BE - Success SonarQube Reporting'
+                        }
+                        failure {
+                            error 'BE - Fail SonarQube Reporting'
+                        }
+                    }
+                }
             }
         }
         // stage('[Download private file]') {
@@ -87,11 +148,7 @@ pipeline {
                         echo 'FE - Build start'
                         dir ('frontend'){
                             sh'''
-                                rm -rf /root/.npm/_cacache
-                                npm cache clean --force
-                                rm -rf node_modules package-lock.json
-                                npm install --save
-                                npm run build
+                                yarn build
                             '''
                         }
                     }
