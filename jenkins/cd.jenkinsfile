@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    tools {
-        nodejs "nodejs"
-    }
 
     stages {
         stage ('[Git Clone]') {
@@ -112,11 +109,11 @@ pipeline {
                         echo 'FE - SonarScanner start'
                         dir ('frontend'){
                             sh'''
-                                 /opt/sonar-scanner/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner -Dproject.settings=./sonar-scanner.properties
+                                /opt/sonar-scanner/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner -Dproject.settings=./sonar-scanner.properties
                             '''
                         }
                     }
-                    post{
+                    post {
                         success {
                             echo 'BE - Success SonarQube Reporting'
                         }
@@ -133,7 +130,7 @@ pipeline {
                             '''
                         }
                     }
-                    post{
+                    post {
                         success {
                             echo 'JS SDK - Success Test'
                         }
@@ -213,135 +210,136 @@ pipeline {
                     }
             }
         }
+        }
+        stage ('[Deploy]') {
+            stage ('BE deploy') {
+                steps {
+                    echo 'BE - Sonar start'
+                    dir ('backend/core-service'){
+                        sh'''
+                            docker build -t ls-backend .
+                        '''
+                    }
+                }
+                post{
+                    success {
+                        echo 'BE - Success SonarQube Reporting'
+                    }
+                    failure {
+                        error 'BE - Fail SonarQube Reporting'
+                    }
+                }
+            }
+            stage ('FE deploy') {
+                steps {
+                    echo 'FE - SonarScanner start'
+                    dir ('frontend'){
+                        sh'''
+                            yarn build
+                            cp -r /dist/. /var/www/html/.
+                        '''
+                    }
+                }
+                post{
+                    success {
+                        echo 'BE - Success SonarQube Reporting'
+                    }
+                    failure {
+                        error 'BE - Fail SonarQube Reporting'
+                    }
+                }
+            }
+            stage ('SDK deploy') {
+                steps {
+                    echo 'JS SDK - Sonar start'
+                    dir ('sdk/js/js-sdk'){
+                        sh'''
+                        '''
+                    }
+                }
+                post{
+                    success {
+                        echo 'JS SDK - Success Test'
+                    }
+                    failure {
+                        error 'JS SDK - Fail Test'
+                    }
+                }
+            }
+        }
+        stage ('[Service]') {
+            stage ('Service Stop') {
+                steps {
+                    echo 'Service Stop'
+                    sh'''
+                        docker-compose down
+                    '''
+                }
+                post{
+                    success {
+                        echo 'Success Service Stop'
+                    }
+                    failure {
+                        error 'Fail Service Stop'
+                    }
+                }
+            }
+            stage ('Service Start') {
+                steps {
+                    echo 'Service Start'
+                    sh'''
+                        docker-compose pull
+                        docker-compose start
+                    '''
+                }
+                post{
+                    success {
+                        echo 'Success Service Start'
+                    }
+                    failure {
+                        error 'Fail Service Start'
+                    }
+                }
+            }
+            stage ('SDK deploy') {
+                steps {
+                    echo 'JS SDK - Sonar start'
+                    dir ('sdk/js/js-sdk'){
+                        sh'''
+                        '''
+                    }
+                }
+                post{
+                    success {
+                        echo 'JS SDK - Success Test'
+                    }
+                    failure {
+                        error 'JS SDK - Fail Test'
+                    }
+                }
+            }
+        }
+        post {
+            success {
+                script {
+                    def Author_Name = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                    mattermostSend (color: 'good',
+                    message: "Succeeded: Job '${env.JOB_NAME}' [#${env.BUILD_NUMBER}] by ${Author_Name} (<${env.BUILD_URL}|Details>)",
+                    endpoint: 'https://meeting.ssafy.com/hooks/a7gaycppptyo7ksza6wbpistbc',
+                    channel: 'lunit-builds'
+                    )
+                }
+            }
+            failure {
+                script {
+                    def Author_Name = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                    mattermostSend (color: 'danger',
+                    message: "Failed: Job '${env.JOB_NAME}' [#${env.BUILD_NUMBER}] by ${Author_Name} (<${env.BUILD_URL}|Details>)",
+                    endpoint: 'https://meeting.ssafy.com/hooks/a7gaycppptyo7ksza6wbpistbc',
+                    channel: 'lunit-builds'
+                    )
+                }
+            }
+        }  
     }
-    stage ('[Deploy]') {
-        stage ('BE deploy') {
-            steps {
-                echo 'BE - Sonar start'
-                dir ('backend/core-service'){
-                    sh'''
-                        docker build -t ls-backend .
-                    '''
-                }
-            }
-            post{
-                success {
-                    echo 'BE - Success SonarQube Reporting'
-                }
-                failure {
-                    error 'BE - Fail SonarQube Reporting'
-                }
-            }
-        }
-        stage ('FE deploy') {
-            steps {
-                echo 'FE - SonarScanner start'
-                dir ('frontend'){
-                    sh'''
-                        yarn build
-                        cp -r /dist/. /var/www/html/.
-                    '''
-                }
-            }
-            post{
-                success {
-                    echo 'BE - Success SonarQube Reporting'
-                }
-                failure {
-                    error 'BE - Fail SonarQube Reporting'
-                }
-            }
-        }
-        stage ('SDK deploy') {
-            steps {
-                echo 'JS SDK - Sonar start'
-                dir ('sdk/js/js-sdk'){
-                    sh'''
-                    '''
-                }
-            }
-            post{
-                success {
-                    echo 'JS SDK - Success Test'
-                }
-                failure {
-                    error 'JS SDK - Fail Test'
-                }
-            }
-        }
-    }
-    stage ('[Service]') {
-        stage ('Service Stop') {
-            steps {
-                echo 'Service Stop'
-                sh'''
-                    docker-compose down
-                '''
-            }
-            post{
-                success {
-                    echo 'Success Service Stop'
-                }
-                failure {
-                    error 'Fail Service Stop'
-                }
-            }
-        }
-        stage ('Service Start') {
-            steps {
-                echo 'Service Start'
-                sh'''
-                    docker-compose pull
-                    docker-compose start
-                '''
-            }
-            post{
-                success {
-                    echo 'Success Service Start'
-                }
-                failure {
-                    error 'Fail Service Start'
-                }
-            }
-        }
-        stage ('SDK deploy') {
-            steps {
-                echo 'JS SDK - Sonar start'
-                dir ('sdk/js/js-sdk'){
-                    sh'''
-                    '''
-                }
-            }
-            post{
-                success {
-                    echo 'JS SDK - Success Test'
-                }
-                failure {
-                    error 'JS SDK - Fail Test'
-                }
-            }
-        }
-    }
-    post {
-        success {
-            script {
-                def Author_Name = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
-                mattermostSend (color: 'good',
-                message: "Succeeded: Job '${env.JOB_NAME}' [#${env.BUILD_NUMBER}] by ${Author_Name} (<${env.BUILD_URL}|Details>)",
-                endpoint: 'https://meeting.ssafy.com/hooks/a7gaycppptyo7ksza6wbpistbc',
-                channel: 'lunit-builds'
-                )
-            }
-        }
-        failure {
-            script {
-                def Author_Name = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
-                mattermostSend (color: 'danger',
-                message: "Failed: Job '${env.JOB_NAME}' [#${env.BUILD_NUMBER}] by ${Author_Name} (<${env.BUILD_URL}|Details>)",
-                endpoint: 'https://meeting.ssafy.com/hooks/a7gaycppptyo7ksza6wbpistbc',
-                channel: 'lunit-builds'
-                )
-            }
-        }
-    }  
 }
