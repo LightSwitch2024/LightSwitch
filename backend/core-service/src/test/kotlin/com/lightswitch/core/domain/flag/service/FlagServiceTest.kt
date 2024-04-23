@@ -1,22 +1,15 @@
 package com.lightswitch.core.domain.flag.service
 
-import com.lightswitch.core.common.dto.BaseResponse
 import com.lightswitch.core.domain.flag.common.enum.FlagType
 import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
 import com.lightswitch.core.domain.flag.dto.req.TagRequestDto
-import com.lightswitch.core.domain.flag.dto.res.FlagResponseDto
-import com.lightswitch.core.domain.flag.dto.res.TagResponseDto
-import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.flag.repository.TagRepository
-import com.lightswitch.core.domain.flag.repository.VariationRepository
-import com.lightswitch.core.domain.flag.repository.entity.Flag
-import com.lightswitch.core.domain.flag.repository.entity.Tag
-import com.lightswitch.core.domain.flag.repository.entity.Variation
-import org.junit.jupiter.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import java.time.LocalDateTime
 
 @SpringBootTest
 class FlagServiceTest {
@@ -157,5 +150,46 @@ class FlagServiceTest {
                 assertEquals(tagFoundByContent.colorHex, tag.colorHex)
             }
         }
+    }
+
+    @Test
+    fun `Flag 단건 조회 by flag_id`() {
+        // given
+        val tag1 = TagRequestDto(
+            colorHex = "#FFFFFF",
+            content = "test"
+        )
+
+        val tag2 = TagRequestDto(
+            colorHex = "#000000",
+            content = "test2"
+        )
+
+        val flagRequestDto = FlagRequestDto(
+            title = "test",
+            tags = listOf(tag1, tag2),
+            description = "test",
+            type = FlagType.INTEGER,
+            defaultValue = "1",
+            defaultValuePortion = 100,
+            defaultValueDescription = "test",
+            variation = "2",
+            variationPortion = 0,
+            variationDescription = "test",
+            userId = 1L
+        )
+        val flagResponseDto = flagService.createFlag(flagRequestDto)
+
+        val flagId = flagResponseDto.flagId
+
+        // when
+        val testFlagResponseDto = flagService.getFlag(flagId)
+
+        // then
+        assertThat(testFlagResponseDto).isNotNull
+        assertThat(testFlagResponseDto.flagId).isEqualTo(flagResponseDto.flagId)
+        assertThat(testFlagResponseDto.defaultValue).isNotNull
+        assertThat(testFlagResponseDto.variation).isNotNull
+        assertThat(testFlagResponseDto.tags.size).isEqualTo(2)
     }
 }
