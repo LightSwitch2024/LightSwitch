@@ -12,7 +12,7 @@ import React, { useEffect, useState } from 'react';
 import { getFlagList } from '@/api/main/flagTableAxios';
 
 interface FlagListItem {
-  id: number;
+  flagId: number;
   title: string;
   tags: Array<{ content: string; colorHex: string }>;
   description: string;
@@ -50,11 +50,11 @@ const FlagTable = () => {
         <TableBody>
           {flagList.map((row) => (
             <TableRow
-              key={row.id}
+              key={row.flagId}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {row.id}
+                {row.flagId}
               </TableCell>
               <TableCell component="th" scope="row">
                 {row.title}
