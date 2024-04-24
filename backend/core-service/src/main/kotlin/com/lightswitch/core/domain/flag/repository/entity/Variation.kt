@@ -15,9 +15,11 @@ class Variation(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flag_id")
-    val flagId: Flag,
+    val flag: Flag,
 
     @Enumerated(EnumType.STRING)
     val variationType: FlagType,
-    val value: String
+    val value: String,
+
+    val defaultFlag: Boolean = false,
 )
