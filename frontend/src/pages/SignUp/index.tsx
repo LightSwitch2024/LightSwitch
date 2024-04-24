@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
 
-import { instance } from '../../api/instance';
-import * as S from './indexStyle';
+import { instance } from '@/api/instance';
+import * as S from '@/pages/signup/indexStyle';
 
 type SendAuthCodeData = {
   email: string;
