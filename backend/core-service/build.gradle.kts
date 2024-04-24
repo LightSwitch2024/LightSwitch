@@ -30,12 +30,8 @@ noArg {
 
 // build시 불필요한 jar파일 생성하지 않도록 함.
 // reference : https://www.devkuma.com/docs/gradle/bootjar-jar/
-tasks.getByName("bootJar") {
-    enabled = false
-}
-
 tasks.getByName("jar") {
-    enabled = true
+    enabled = false
 }
 
 
