@@ -38,8 +38,8 @@ export default defineConfig({
         replacement: '/src/pages',
       },
       {
-        find: '@styles',
-        replacement: '/src/styles',
+        find: '@router',
+        replacement: '/src/router',
       },
     ],
   },
