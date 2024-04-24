@@ -2,6 +2,7 @@ package com.lightswitch.core.domain.member.service
 
 import com.lightswitch.core.common.service.PasswordService
 import com.lightswitch.core.domain.member.dto.req.SignupReqDto
+import com.lightswitch.core.domain.member.dto.res.MemberResDto
 import com.lightswitch.core.domain.member.entity.Member
 import com.lightswitch.core.domain.member.exception.MemberException
 import com.lightswitch.core.domain.member.repository.MemberRepository
@@ -76,4 +77,43 @@ class MemberService(
         val matcher: Matcher = pattern.matcher(password)
         return matcher.matches()
     }
+
+    fun logIn(email: String, password: String): Boolean {
+
+        val savedMember: Member? = memberRepository.findByEmail(email)
+        var savedPassword: String = ""
+
+        savedMember?.let {
+            savedPassword = savedMember.password
+        }
+
+        val encodedPassword = passwordService.encode(password)
+
+        if(savedPassword == encodedPassword){
+            return true
+        } else {
+            throw MemberException("비밀번호가 틀렸습니다.")
+        }
+    }
+
+    // 이름, 전화번호 변경
+    fun modifyUserdata(email: String, newData: MemberResDto):Member? {
+        val oldData: Member? = memberRepository.findByEmail(email)
+        oldData?.let{
+            oldData.firstName = newData.firstName
+            oldData.lastName = newData.lastName
+            oldData.telNumber = newData.telNumber
+        }
+        return oldData?.let { memberRepository.save(it) }
+    }
+
+    // 비밀번호 변경
+    fun modifyPassword(email: String, newPassword: String): Member? {
+        val user: Member? = memberRepository.findByEmail(email)
+        user?.let{
+            user.password = newPassword
+        }
+        return user?.let { memberRepository.save(it) }
+    }
+
 }
