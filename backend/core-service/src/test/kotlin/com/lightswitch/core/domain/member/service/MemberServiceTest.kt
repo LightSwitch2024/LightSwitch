@@ -158,4 +158,23 @@ class MemberServiceTest(
         assertThat(memberService.validatePassword("abc1234!@")).isTrue()
         assertThat(memberService.validatePassword("abcbabcb")).isFalse()
     }
+
+
+//    @Test
+//    fun login() {
+//        val email: String = "huni19541@gmail.com"
+//
+//        val member: Boolean = memberService.logIn(email, "1234")
+//        assertThat(member).isTrue()
+//    }
+//
+//    @Test
+//    fun notOurMember() {
+//        // 회원가입한적 없는 멤버인경우 에러발생
+//    }
+//
+//    @Test
+//    fun notCorrectPassword() {
+//        // 비밀번호가 틀린 경우 에러발생
+//    }
 }
