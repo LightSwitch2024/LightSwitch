@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
-import { getFlagList } from '@/api/main/flagTableAxios';
+import { getFlagList } from '@api/main/mainAxios';
 
 interface FlagListItem {
   flagId: number;
