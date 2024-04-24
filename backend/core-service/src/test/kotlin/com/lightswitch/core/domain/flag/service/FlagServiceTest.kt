@@ -3,6 +3,7 @@ package com.lightswitch.core.domain.flag.service
 import com.lightswitch.core.domain.flag.common.enum.FlagType
 import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
 import com.lightswitch.core.domain.flag.dto.req.TagRequestDto
+import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.flag.repository.TagRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -13,6 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
 class FlagServiceTest {
+
+    @Autowired
+    private lateinit var flagRepository: FlagRepository
 
     @Autowired
     private lateinit var flagService: FlagService
@@ -191,5 +195,16 @@ class FlagServiceTest {
         assertThat(testFlagResponseDto.defaultValue).isNotNull
         assertThat(testFlagResponseDto.variation).isNotNull
         assertThat(testFlagResponseDto.tags.size).isEqualTo(2)
+    }
+
+    @Test
+    fun `Flag 전체 조회`() {
+        // given
+
+        // when
+        val flagList = flagService.getAllFlag()
+
+        // then
+        assertThat(flagList.size).isEqualTo(flagRepository.countBy())
     }
 }
