@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
 
-import { instance } from '@/api/instance';
+import axios from '@/api/axios';
 import * as S from '@/pages/signup/indexStyle';
 
 type SendAuthCodeData = {
@@ -112,7 +112,7 @@ const SignUp = () => {
       email: email,
     };
 
-    instance.post('/mails/send', sendAuthCodeData);
+    axios.post('/mails/send', sendAuthCodeData);
   };
 
   const handleConfirmAuthCode = (): void => {
@@ -121,7 +121,7 @@ const SignUp = () => {
       authCode: authCode,
     };
 
-    instance.post('/mails/confirm', confirmAuthCodeData).then((res) => {
+    axios.post('/mails/confirm', confirmAuthCodeData).then((res) => {
       if (res && res.data && res.data.data) {
         setIsAuth(res.data.data);
       }
@@ -147,7 +147,7 @@ const SignUp = () => {
       authCode: authCode,
     };
 
-    instance.post('/users', signUpData).then(() => {
+    axios.post('/users', signUpData).then(() => {
       // Todo... 회원가입 성공 시 페이지 이동 처리
     });
   };
