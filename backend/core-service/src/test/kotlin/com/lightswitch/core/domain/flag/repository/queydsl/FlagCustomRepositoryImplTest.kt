@@ -3,8 +3,10 @@ package com.lightswitch.core.domain.flag.repository.queydsl
 import com.lightswitch.core.domain.flag.common.enum.FlagType
 import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.flag.repository.TagRepository
+import com.lightswitch.core.domain.flag.repository.VariationRepository
 import com.lightswitch.core.domain.flag.repository.entity.Flag
 import com.lightswitch.core.domain.flag.repository.entity.Tag
+import com.lightswitch.core.domain.flag.service.FlagService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -19,7 +21,11 @@ class FlagCustomRepositoryImplTest(
     @Autowired
     private val flagRepository: FlagRepository,
     @Autowired
-    private val tagRepository: TagRepository
+    private val tagRepository: TagRepository,
+    @Autowired
+    private val variationRepository: VariationRepository,
+    @Autowired
+    private val flagService: FlagService
 ) {
 
     private var flag: Flag? = null
@@ -33,7 +39,8 @@ class FlagCustomRepositoryImplTest(
 
     @BeforeEach
     fun setUp() {
-        flagRepository.deleteAll()
+        variationRepository.deleteAll()
+        flagService.deleteAllFlag()
         tagRepository.deleteAll()
 
         flag = Flag(

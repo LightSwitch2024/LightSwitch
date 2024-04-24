@@ -12,6 +12,7 @@ import com.lightswitch.core.domain.flag.repository.VariationRepository
 import com.lightswitch.core.domain.flag.repository.entity.Flag
 import com.lightswitch.core.domain.flag.repository.entity.Tag
 import com.lightswitch.core.domain.flag.repository.entity.Variation
+import com.lightswitch.core.domain.flag.repository.queydsl.FlagCustomRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -28,6 +29,9 @@ class FlagService(
 
     @Autowired
     private var variationRepository: VariationRepository,
+
+    @Autowired
+    private var flagCustomRepository: FlagCustomRepository
 ) {
 
     fun createFlag(flagRequestDto: FlagRequestDto): FlagResponseDto {
@@ -145,5 +149,45 @@ class FlagService(
             createdAt = LocalDateTime.now().toString(),
             updatedAt = LocalDateTime.now().toString(),
         )
+    }
+
+    fun filteredFlags(tags: List<String>): List<FlagResponseDto> {
+        val filteredFlags = flagCustomRepository.findByTagContents(tags)
+        return filteredFlags.map { flag ->
+            val defaultVariation = variationRepository.findByFlagAndDefaultFlag(flag, true)
+            val variation = variationRepository.findByFlagAndDefaultFlag(flag, false)
+            val tagList = flag.tags.map { TagResponseDto(it.colorHex, it.content) }
+
+            if (defaultVariation == null || variation == null) {
+                throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
+            }
+
+            FlagResponseDto(
+                flagId = flag.flagId!!,
+                title = flag.title,
+                tags = tagList,
+                description = flag.description,
+                type = flag.type,
+                defaultValue = defaultVariation.value,
+                defaultValuePortion = defaultVariation.portion,
+                defaultValueDescription = defaultVariation.description,
+                variation = variation.value,
+                variationPortion = variation.portion,
+                variationDescription = variation.description,
+                userId = flag.maintainerId,
+
+                //Todo : BaseEntity 상속받아서 createdAt, updatedAt 사용
+                createdAt = LocalDateTime.now().toString(),
+                updatedAt = LocalDateTime.now().toString(),
+            )
+        }
+    }
+
+    @Transactional
+    fun deleteAllFlag() {
+        val flags: List<Flag> = flagRepository.findAll()
+        for (flag in flags) {
+            flag.tags.clear()
+        }
     }
 }
