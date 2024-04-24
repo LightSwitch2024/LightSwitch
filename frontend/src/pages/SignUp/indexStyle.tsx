@@ -30,6 +30,13 @@ export const SignUpText = styled.div`
   font-weight: 500;
 `;
 
+export const SignUpWarnText = styled.div`
+  align-self: flex-end;
+  font-size: 0.6rem;
+  color: red;
+  font-weight: 500;
+`;
+
 export const SignUpInputBox = styled.div`
   display: flex;
   flex-direction: column;
@@ -47,7 +54,7 @@ export const CancleButton = styled.button`
   cursor: pointer;
 `;
 
-export const OKButton = styled.button<{ $isAuth: boolean }>`
+export const OKButton = styled.button<{ $signUpFlag: boolean }>`
   width: 100%;
   padding: 0.3rem 1rem;
   border-radius: 0.5rem;
@@ -56,8 +63,8 @@ export const OKButton = styled.button<{ $isAuth: boolean }>`
   background-color: #00c9ea;
   color: #fff;
   cursor: pointer;
-  opacity: ${({ $isAuth }) => ($isAuth ? '1' : '0.5')};
-  pointer-events: ${({ $isAuth }) => ($isAuth ? 'auto' : 'none')};
+  opacity: ${({ $signUpFlag }) => ($signUpFlag ? '1' : '0.3')};
+  pointer-events: ${({ $signUpFlag }) => ($signUpFlag ? 'auto' : 'none')};
 `;
 
 export const ButtonWrapper = styled.div`
@@ -80,14 +87,14 @@ export const SendMailButton = styled.button`
 export const AuthConfirmWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
   gap: 0.5rem;
 `;
 
 export const ConfirmButton = styled.button<{ $isAuth: boolean }>`
-  width: 4.5rem;
-  padding: 0.5rem 1rem;
+  width: 5rem;
+  padding: 1rem 0.5rem;
   border-radius: 0.5rem;
   font-size: 1rem;
   background-color: #031c58;

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useEffect } from 'react';
 
 import { instance } from '../../api/instance';
 import * as S from './indexStyle';
@@ -15,48 +16,96 @@ type ConfirmAuthCodeData = {
 type SignUpData = {
   firstName: string;
   lastName: string;
-  phoneNumber: string;
+  telNumber: string;
   email: string;
   password: string;
+  authCode: string;
 };
 
 const SignUp = () => {
   const [firstName, setFirstName] = useState<string>('');
+  const [firstNameCheck, setFirstNameCheck] = useState<boolean>(false);
   const [lastName, setLastName] = useState<string>('');
-  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [lastNameCheck, setLastNameCheck] = useState<boolean>(false);
+  const [telNumber, settelNumber] = useState<string>('');
+  const [telNumberCheck, settelNumberCheck] = useState<boolean>(false);
   const [email, setEmail] = useState<string>('');
+  const [emailCheck, setEmailCheck] = useState<boolean>(false);
   const [password, setPassword] = useState<string>('');
-  const [passwordCheck, setPasswordCheck] = useState<string>('');
+  const [passwordCheck, setPasswordCheck] = useState<boolean>(false);
+  const [rePassword, setRePassword] = useState<string>('');
   const [authCode, setAuthCode] = useState<string>('');
   const [isAuth, setIsAuth] = useState<boolean>(false);
+  const [signUpFlag, setSignUpFlag] = useState<boolean>(false);
+
+  const validateHangle = (hangle: string): boolean => {
+    const hangle_regex = /^[가-힣]+$/g;
+    if (!hangle_regex.test(hangle)) {
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setFirstName(e.target.value);
+    setFirstNameCheck(validateHangle(e.target.value));
     console.log(e.target.value);
   };
 
   const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setLastName(e.target.value);
+    setLastNameCheck(validateHangle(e.target.value));
     console.log(e.target.value);
   };
 
-  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setPhoneNumber(e.target.value);
+  const validatetelNumber = (telNumber: string): boolean => {
+    const phone_regex = /^01(0|1|[6-9])[0-9]{3,4}[0-9]{4}$/;
+    if (!phone_regex.test(telNumber)) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  const handletelNumberChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    settelNumber(e.target.value);
+    settelNumberCheck(validatetelNumber(e.target.value));
     console.log(e.target.value);
+  };
+
+  const validateEmail = (email: string): boolean => {
+    const email_regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
+    if (!email_regex.test(email)) {
+      return false;
+    } else {
+      return true;
+    }
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setEmail(e.target.value);
+    setEmailCheck(validateEmail(e.target.value));
     console.log(e.target.value);
+  };
+
+  const validatePassword = (password: string): boolean => {
+    const password_regex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/;
+    if (!password_regex.test(password)) {
+      return false;
+    } else {
+      return true;
+    }
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setPassword(e.target.value);
+    setPasswordCheck(validatePassword(e.target.value));
     console.log(e.target.value);
   };
 
-  const handlePasswordCheckChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setPasswordCheck(e.target.value);
+  const handlRePasswordChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setRePassword(e.target.value);
     console.log(e.target.value);
   };
 
@@ -89,8 +138,7 @@ const SignUp = () => {
     instance
       .post('/mails/confirm', confirmAuthCodeData)
       .then((res) => {
-        console.log(res);
-        if (res && res.data) {
+        if (res && res.data && res.data.data) {
           setIsAuth(res.data.data);
         }
       })
@@ -99,16 +147,12 @@ const SignUp = () => {
       });
   };
 
+  const handleCancle = (): void => {
+    // Todo... 취소 시 페이지 이동 처리
+  };
+
   const handleSignUp = (): void => {
-    if (
-      firstName === '' ||
-      lastName === '' ||
-      phoneNumber === '' ||
-      email === '' ||
-      password === '' ||
-      passwordCheck === '' ||
-      !isAuth
-    ) {
+    if (!signUpFlag) {
       alert('모든 항목을 입력해주세요.');
       return;
     }
@@ -116,20 +160,38 @@ const SignUp = () => {
     const signUpData: SignUpData = {
       firstName: firstName,
       lastName: lastName,
-      phoneNumber: phoneNumber,
+      telNumber: telNumber,
       email: email,
       password: password,
+      authCode: authCode,
     };
 
     instance
       .post('/users', signUpData)
       .then((res) => {
         console.log(res);
+        // Todo... 회원가입 성공 시 페이지 이동 처리
       })
       .catch((err) => {
         console.log(err);
       });
   };
+
+  useEffect(() => {
+    if (
+      firstNameCheck &&
+      lastNameCheck &&
+      telNumberCheck &&
+      emailCheck &&
+      passwordCheck &&
+      password === rePassword &&
+      isAuth
+    ) {
+      setSignUpFlag(true);
+    } else {
+      setSignUpFlag(false);
+    }
+  }, [firstNameCheck, lastNameCheck, telNumberCheck, emailCheck, passwordCheck, isAuth]);
 
   return (
     <S.SignUpLayout>
@@ -147,15 +209,20 @@ const SignUp = () => {
             value={lastName}
             onChange={handleLastNameChange}
           />
+          {firstName && lastName && (!firstNameCheck || !lastNameCheck) && (
+            <S.SignUpWarnText>유효하지 않은 형식입니다.</S.SignUpWarnText>
+          )}
         </S.SignUpInputBox>
         <S.SignUpInputBox>
           <S.SignUpInput
             type="text"
             placeholder="전화번호"
-            value={phoneNumber}
-            onChange={handlePhoneNumberChange}
+            value={telNumber}
+            onChange={handletelNumberChange}
           />
-          <S.SignUpText>유효하지 않은 형식입니다.</S.SignUpText>
+          {telNumber && !telNumberCheck && (
+            <S.SignUpWarnText>유효하지 않은 형식입니다.</S.SignUpWarnText>
+          )}
         </S.SignUpInputBox>
         <S.SignUpInputBox>
           <S.SignUpInput
@@ -164,7 +231,9 @@ const SignUp = () => {
             value={email}
             onChange={handleEmailChange}
           />
-          <S.SignUpText>유효하지 않은 형식입니다.</S.SignUpText>
+          {email && !emailCheck && (
+            <S.SignUpWarnText>유효하지 않은 형식입니다.</S.SignUpWarnText>
+          )}
         </S.SignUpInputBox>
         <S.SignUpInputBox>
           <S.SignUpInput
@@ -173,13 +242,26 @@ const SignUp = () => {
             value={password}
             onChange={handlePasswordChange}
           />
+          {passwordCheck ? (
+            <S.SignUpText>안전한 비밀번호 입니다.</S.SignUpText>
+          ) : (
+            <S.SignUpWarnText>
+              8~15자의 영문 대소문자, 숫자, 특수문자를 사용하세요.
+            </S.SignUpWarnText>
+          )}
           <S.SignUpInput
             type="password"
             placeholder="비밀번호 확인"
-            value={passwordCheck}
-            onChange={handlePasswordCheckChange}
+            value={rePassword}
+            onChange={handlRePasswordChange}
+            disabled={!passwordCheck}
           />
-          <S.SignUpText>비밀번호가 일치하지 않습니다.</S.SignUpText>
+          {rePassword &&
+            (password !== rePassword ? (
+              <S.SignUpWarnText>비밀번호가 일치하지 않습니다.</S.SignUpWarnText>
+            ) : (
+              <S.SignUpText>비밀번호가 일치합니다.</S.SignUpText>
+            ))}
         </S.SignUpInputBox>
         <S.SendMailButton onClick={handleRecvAuthCode}>
           이메일 인증 키 받기
@@ -188,7 +270,7 @@ const SignUp = () => {
           <S.SignUpInput
             type="text"
             placeholder="인증 키"
-            style={{ flexGrow: '1' }}
+            style={{ width: '100%' }}
             value={authCode}
             onChange={handleAuthCode}
             disabled={isAuth}
@@ -200,11 +282,11 @@ const SignUp = () => {
         {isAuth ? (
           <S.SignUpText>인증되었습니다.</S.SignUpText>
         ) : (
-          <S.SignUpText>존재하지 않는 키입니다.</S.SignUpText>
+          <S.SignUpWarnText>인증이 필요합니다.</S.SignUpWarnText>
         )}
         <S.ButtonWrapper>
-          <S.CancleButton>취소</S.CancleButton>
-          <S.OKButton $isAuth={isAuth} onClick={handleSignUp}>
+          <S.CancleButton onClick={handleCancle}>취소</S.CancleButton>
+          <S.OKButton $signUpFlag={signUpFlag} onClick={handleSignUp}>
             회원가입
           </S.OKButton>
         </S.ButtonWrapper>
