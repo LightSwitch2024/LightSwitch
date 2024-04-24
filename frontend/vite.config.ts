@@ -7,4 +7,40 @@ export default defineConfig({
   server: {
     port: 3333,
   },
+  resolve: {
+    alias: [
+      {
+        find: '@',
+        replacement: '/src',
+      },
+      {
+        find: '@api',
+        replacement: '/src/api',
+      },
+      {
+        find: '@assets',
+        replacement: '/src/assets',
+      },
+      {
+        find: '@components',
+        replacement: '/src/components',
+      },
+      {
+        find: '@global',
+        replacement: '/src/global',
+      },
+      {
+        find: '@hooks',
+        replacement: '/src/hooks',
+      },
+      {
+        find: '@pages',
+        replacement: '/src/pages',
+      },
+      {
+        find: '@styles',
+        replacement: '/src/styles',
+      },
+    ],
+  },
 });

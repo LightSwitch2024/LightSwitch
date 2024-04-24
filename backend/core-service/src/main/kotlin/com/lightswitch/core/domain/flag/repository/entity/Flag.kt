@@ -18,7 +18,8 @@ class Flag(
     // @JoinColumn(name = "user_id")
     val maintainerId: Long,
 
-    var type : FlagType,
+    @Enumerated(EnumType.STRING)
+    var type: FlagType,
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinTable(
@@ -27,4 +28,5 @@ class Flag(
         inverseJoinColumns = [JoinColumn(name = "tag_id")]
     )
     val tags: MutableList<Tag> = mutableListOf(),
+    val active: Boolean = false,
 )
