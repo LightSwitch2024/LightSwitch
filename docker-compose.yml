@@ -8,6 +8,19 @@ services:
       - "8000:8000"
     environment:
       - TZ=Asia/Seoul
-  # prometheus:
-  #   image:
-  #   container_name: prometheus
+    networks:
+        - backend-network
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+        - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+        - backend-network
+
+networks:
+    backend-network:
+        driver: bridge
