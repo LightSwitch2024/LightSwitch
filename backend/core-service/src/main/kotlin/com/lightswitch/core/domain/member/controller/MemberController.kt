@@ -28,6 +28,6 @@ class MemberController(
 
     @PostMapping
     fun signUp(@RequestBody signupReqDto: SignupReqDto): ResponseEntity<Member> {
-        return ResponseEntity.ok(memberService.signUp(signupReqDto.email, signupReqDto.password, signupReqDto.authCode))
+        return ResponseEntity.ok(memberService.signUp(signupReqDto))
     }
 }

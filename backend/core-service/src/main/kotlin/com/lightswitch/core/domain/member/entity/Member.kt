@@ -10,6 +10,9 @@ class Member(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var memberId: Long? = null,
+    var lastName: String,
+    var firstName: String,
+    var telNumber: String,
     var email: String,
     var password: String,
 )
