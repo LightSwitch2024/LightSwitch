@@ -50,13 +50,11 @@ const SignUp = () => {
   const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setFirstName(e.target.value);
     setFirstNameCheck(validateHangle(e.target.value));
-    console.log(e.target.value);
   };
 
   const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setLastName(e.target.value);
     setLastNameCheck(validateHangle(e.target.value));
-    console.log(e.target.value);
   };
 
   const validatetelNumber = (telNumber: string): boolean => {
@@ -71,7 +69,6 @@ const SignUp = () => {
   const handletelNumberChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     settelNumber(e.target.value);
     settelNumberCheck(validatetelNumber(e.target.value));
-    console.log(e.target.value);
   };
 
   const validateEmail = (email: string): boolean => {
@@ -86,7 +83,6 @@ const SignUp = () => {
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setEmail(e.target.value);
     setEmailCheck(validateEmail(e.target.value));
-    console.log(e.target.value);
   };
 
   const validatePassword = (password: string): boolean => {
@@ -101,32 +97,22 @@ const SignUp = () => {
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setPassword(e.target.value);
     setPasswordCheck(validatePassword(e.target.value));
-    console.log(e.target.value);
   };
 
   const handlRePasswordChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setRePassword(e.target.value);
-    console.log(e.target.value);
   };
 
   const handleAuthCode = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setAuthCode(e.target.value);
-    console.log(e.target.value);
   };
 
-  const handleRecvAuthCode = (): void => {
+  const handleSendAuthCode = (): void => {
     const sendAuthCodeData: SendAuthCodeData = {
       email: email,
     };
 
-    instance
-      .post('/mails/send', sendAuthCodeData)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    instance.post('/mails/send', sendAuthCodeData);
   };
 
   const handleConfirmAuthCode = (): void => {
@@ -135,16 +121,11 @@ const SignUp = () => {
       authCode: authCode,
     };
 
-    instance
-      .post('/mails/confirm', confirmAuthCodeData)
-      .then((res) => {
-        if (res && res.data && res.data.data) {
-          setIsAuth(res.data.data);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    instance.post('/mails/confirm', confirmAuthCodeData).then((res) => {
+      if (res && res.data && res.data.data) {
+        setIsAuth(res.data.data);
+      }
+    });
   };
 
   const handleCancle = (): void => {
@@ -166,15 +147,9 @@ const SignUp = () => {
       authCode: authCode,
     };
 
-    instance
-      .post('/users', signUpData)
-      .then((res) => {
-        console.log(res);
-        // Todo... 회원가입 성공 시 페이지 이동 처리
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    instance.post('/users', signUpData).then(() => {
+      // Todo... 회원가입 성공 시 페이지 이동 처리
+    });
   };
 
   useEffect(() => {
@@ -263,7 +238,7 @@ const SignUp = () => {
               <S.SignUpText>비밀번호가 일치합니다.</S.SignUpText>
             ))}
         </S.SignUpInputBox>
-        <S.SendMailButton onClick={handleRecvAuthCode}>
+        <S.SendMailButton onClick={handleSendAuthCode}>
           이메일 인증 키 받기
         </S.SendMailButton>
         <S.AuthConfirmWrapper>
