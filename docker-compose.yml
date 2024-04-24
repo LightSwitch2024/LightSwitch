@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  backend:
+    image: ls-backend:latest
+    container_name: backend
+    ports:
+      - "8000:8000"
+    environment:
+      - TZ=Asia/Seoul
+  # prometheus:
+  #   image:
+  #   container_name: prometheus

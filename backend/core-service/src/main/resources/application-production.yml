@@ -41,3 +41,6 @@ logging:
         springframework:
           boot: DEBUG
           security: DEBUG
+
+server:
+  forward-headers-strategy: framework
