@@ -277,8 +277,7 @@ pipeline {
             steps {
                 echo 'Service Start'
                 sh'''
-                    docker-compose pull
-                    docker-compose start
+                    docker-compose up -d --build
                 '''
             }
             post{
