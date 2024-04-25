@@ -1,6 +1,8 @@
+import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 
 import { createFlag } from '@/api/create/createAxios';
+import { getTagList, getTagListByKeyword } from '@/api/main/mainAxios';
 
 interface TagItem {
   content: string;
@@ -9,6 +11,7 @@ interface TagItem {
 
 const CreateFlag = () => {
   const [title, setTitle] = useState<string>('');
+  const [allTags, setAllTags] = useState<Array<TagItem>>([]);
   const [tags, setTags] = useState<Array<TagItem>>([]);
   const [description, setDescription] = useState<string>('');
   const [type, setType] = useState<string>('BOOLEAN');
@@ -19,12 +22,26 @@ const CreateFlag = () => {
   const [variationPortion, setVariationPortion] = useState<number>(0);
   const [variationDescription, setVariationDescription] = useState<string>('');
 
+  const [tagSearchKeyword, setTagSearchKeyword] = useState<string>('');
+  const [selectedTags, setSelectedTags] = useState<Array<TagItem>>([]);
+
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setTitle(e.target.value);
   };
 
+  const handelTagSearchKeywordChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setTagSearchKeyword(e.target.value);
+  };
+
   const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    // setTags(e.target.value);
+    // 선택인지 해제인지 확인
+    if (e.target.checked) {
+      // 선택된 태그 추가
+      setSelectedTags([...selectedTags, { content: e.target.value, colorHex: '' }]);
+    } else {
+      // 선택 해제된 태그 제거
+      setSelectedTags(selectedTags.filter((tag) => tag.content !== e.target.value));
+    }
   };
 
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -63,11 +80,14 @@ const CreateFlag = () => {
     setVariationDescription(e.target.value);
   };
 
-  const onClickAdd = () => {
+  /**
+   * 플래그 "추가하기" 버튼 클릭 이벤트 핸들러
+   */
+  const onClickAdd = (): void => {
     createFlag(
       {
         title: title,
-        tags: tags,
+        tags: selectedTags,
         description: description,
         type: type,
         defaultValue: defaultValue,
@@ -89,6 +109,77 @@ const CreateFlag = () => {
     );
   };
 
+  /**
+   * 전체 태그 목록을 가져오는 함수
+   */
+  const setupAllTags = (): void => {
+    getTagList(
+      (data: Array<TagItem>) => {
+        setAllTags(data);
+      },
+      (err) => {
+        console.log(err);
+      },
+    );
+  };
+
+  /**
+   * 컴포넌트 마운트 시 전체 태그 목록을 가져옴
+   */
+  useEffect(() => {
+    setupAllTags();
+  }, []);
+
+  /**
+   * 태그 검색어 입력 onBlur 이벤트 핸들러
+   * @returns void
+   */
+  const updateTagListByKeyword = (): void => {
+    // 태그 검색어가 없으면 axios 호출하지 않음
+    if (
+      tagSearchKeyword === '' ||
+      tagSearchKeyword === undefined ||
+      tagSearchKeyword === null
+    )
+      return;
+
+    getTagListByKeyword(
+      tagSearchKeyword,
+      (data: Array<TagItem>) => {
+        setTags(data);
+      },
+      (err: AxiosError) => {
+        console.log(err);
+      },
+    );
+  };
+
+  /**
+   * 태그 검색어 비울때 전체 태그로 변경
+   */
+  useEffect(() => {
+    if (
+      tagSearchKeyword === '' ||
+      tagSearchKeyword === undefined ||
+      tagSearchKeyword === null
+    ) {
+      setTags(allTags);
+    }
+  }, [tagSearchKeyword]);
+
+  /**
+   * 태그 목록이 비어있고 태그 검색어가 있으면 새로운 태그 생성
+   */
+  useEffect(() => {
+    // 태그 목록이 비어있고 태그 검색어가 있으면 새로운 태그 생성
+    if (tags.length === 0 && tagSearchKeyword) {
+      setSelectedTags([
+        ...selectedTags,
+        { content: tagSearchKeyword, colorHex: '#909090' },
+      ]);
+    }
+  }, [tags]);
+
   return (
     <div>
       <div>
@@ -101,10 +192,58 @@ const CreateFlag = () => {
         />
       </div>
       <div>
-        <label htmlFor="tags">태그</label>
-        {/*<select value={tags} onChange={handleTagsChange}>*/}
-        {/*  */}
-        {/*</select>*/}
+        <label htmlFor="tags">태그 검색</label>
+        <input
+          type="description"
+          placeholder="설명"
+          value={tagSearchKeyword}
+          onChange={handelTagSearchKeywordChange}
+          onBlur={updateTagListByKeyword}
+        />
+        <div>
+          <div>
+            <span>선택된 태그 목록</span>
+            {selectedTags.map((tag, idx) => (
+              <div key={idx}>
+                <span
+                  style={{
+                    backgroundColor: tag.colorHex,
+                    padding: '0.2rem 0.5rem',
+                    borderRadius: '0.5rem',
+                    color: '#000',
+                    marginRight: '0.5rem',
+                  }}
+                >
+                  <span>{tag.content}</span>
+                </span>
+              </div>
+            ))}
+          </div>
+          {/* selectedTag에 존재하면 선택된 상태 */}
+          {tags.map((tag, idx) => (
+            <div key={idx}>
+              <input
+                type="checkbox"
+                value={tag.content}
+                onChange={handleTagsChange}
+                checked={selectedTags.some(
+                  (selectedTag) => selectedTag.content === tag.content,
+                )}
+              />
+              <span
+                style={{
+                  backgroundColor: tag.colorHex,
+                  padding: '0.2rem 0.5rem',
+                  borderRadius: '0.5rem',
+                  color: '#fff',
+                  marginRight: '0.5rem',
+                }}
+              >
+                <label>{tag.content}</label>
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
       <div>
         <label htmlFor="description">설명</label>
