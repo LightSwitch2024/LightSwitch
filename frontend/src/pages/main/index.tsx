@@ -1,3 +1,4 @@
+import { getFlagList } from '@api/main/mainAxios';
 import {
   Paper,
   Table,
@@ -8,8 +9,6 @@ import {
   TableRow,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-
-import { getFlagList } from '@/api/main/flagTableAxios';
 
 interface FlagListItem {
   flagId: number;
