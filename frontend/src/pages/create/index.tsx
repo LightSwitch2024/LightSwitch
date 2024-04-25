@@ -201,24 +201,6 @@ const CreateFlag = () => {
           onBlur={updateTagListByKeyword}
         />
         <div>
-          <div>
-            <span>선택된 태그 목록</span>
-            {selectedTags.map((tag, idx) => (
-              <div key={idx}>
-                <span
-                  style={{
-                    backgroundColor: tag.colorHex,
-                    padding: '0.2rem 0.5rem',
-                    borderRadius: '0.5rem',
-                    color: '#000',
-                    marginRight: '0.5rem',
-                  }}
-                >
-                  <span>{tag.content}</span>
-                </span>
-              </div>
-            ))}
-          </div>
           {/* selectedTag에 존재하면 선택된 상태 */}
           {tags.map((tag, idx) => (
             <div key={idx}>
@@ -243,6 +225,25 @@ const CreateFlag = () => {
               </span>
             </div>
           ))}
+
+          <div>
+            <span>선택된 태그 목록</span>
+            {selectedTags.map((tag, idx) => (
+              <div key={idx}>
+                <span
+                  style={{
+                    backgroundColor: tag.colorHex,
+                    padding: '0.2rem 0.5rem',
+                    borderRadius: '0.5rem',
+                    color: '#000',
+                    marginRight: '0.5rem',
+                  }}
+                >
+                  <span>{tag.content}</span>
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       <div>
