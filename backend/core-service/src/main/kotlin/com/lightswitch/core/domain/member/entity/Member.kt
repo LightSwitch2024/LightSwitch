@@ -1,9 +1,6 @@
 package com.lightswitch.core.domain.member.entity
 
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
+import jakarta.persistence.*
 
 @Entity(name = "member")
 class Member(
@@ -15,4 +12,7 @@ class Member(
     var telNumber: String,
     var email: String,
     var password: String,
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    var sdkKeys: MutableList<SdkKey> = mutableListOf()
 )

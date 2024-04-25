@@ -4,20 +4,24 @@ import com.lightswitch.core.common.dto.BaseResponse
 import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.dto.success
 import com.lightswitch.core.common.exception.BaseException
+import com.lightswitch.core.domain.member.dto.req.SdkKeyReqDto
 import com.lightswitch.core.domain.member.dto.req.SignupReqDto
 import com.lightswitch.core.domain.member.dto.res.MemberResDto
+import com.lightswitch.core.domain.member.dto.res.SdkKeyResDto
 import com.lightswitch.core.domain.member.entity.Member
 import com.lightswitch.core.domain.member.exception.MemberException
 import com.lightswitch.core.domain.member.repository.MemberRepository
 import com.lightswitch.core.domain.member.service.MemberService
+import com.lightswitch.core.domain.member.service.SdkKeyService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/v1/member")
 class MemberController(
     private val memberService: MemberService,
-    private val memberRepository: MemberRepository
+    private val memberRepository: MemberRepository,
+    private val sdkKeyService: SdkKeyService
 ) {
 
     @GetMapping("/hello")
@@ -63,5 +67,10 @@ class MemberController(
         } else {
             return ResponseEntity.ok(memberService.modifyPassword(email, newPassword))
         }
+    }
+
+    @PostMapping("/sdkKey")
+    fun createSdkKey(@RequestBody sdkKeyReqDto: SdkKeyReqDto): BaseResponse<SdkKeyResDto> {
+        return success(sdkKeyService.createSdkKey(sdkKeyReqDto))
     }
 }
