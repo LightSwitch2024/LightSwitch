@@ -13,5 +13,5 @@
     "strict": true /* 타입스크립트의 엄격한 모드를 활성화한다. */,
     "esModuleInterop": true
   },
-  "include": ["src/index.ts"] /* 컴파일할 대상을 명시해 준다. */
+  "include": ["lib/index.ts"] /* 컴파일할 대상을 명시해 준다. */
 }

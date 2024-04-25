@@ -4,11 +4,12 @@
   "description": "light switch javascript sdk",
   "type": "module",
   "main": "dist/index.js",
+  "module": "dist/index.js",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./src/index.cjs"
+      "require": "./lib/index.cjs"
     }
   },
   "scripts": {
@@ -16,7 +17,7 @@
     "build": "yarn build:tsc",
     "build:tsc": "yarn tsc",
     "test": "jest --env=node --colors --coverage test",
-    "lint:fix": "eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix --ignore-path ./.gitignore",
+    "lint:fix": "eslint ./lib --ext .jsx,.js,.ts,.tsx --quiet --fix --ignore-path ./.gitignore",
     "lint:format": "prettier  --loglevel warn --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\" ",
     "lint": "yarn lint:format && yarn lint:fix "
   },
