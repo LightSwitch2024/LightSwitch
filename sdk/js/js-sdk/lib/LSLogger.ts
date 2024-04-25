@@ -1,16 +1,4 @@
-export enum LogLevel {
-  DEBUG,
-  INFO,
-  WARNING,
-  ERROR,
-}
-
-export interface Logger {
-  debug: (message: string) => void;
-  info: (message: string) => void;
-  warning: (message: string) => void;
-  error: (message: string) => void;
-}
+import { LogLevel, Logger } from './types';
 
 const LSLogger = (logLevel: LogLevel = LogLevel.INFO): Logger => ({
   debug: (message) => log(LogLevel.DEBUG, message, logLevel),
