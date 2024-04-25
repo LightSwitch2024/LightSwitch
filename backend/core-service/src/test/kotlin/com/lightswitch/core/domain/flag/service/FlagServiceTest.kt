@@ -3,7 +3,6 @@ package com.lightswitch.core.domain.flag.service
 import com.lightswitch.core.domain.flag.common.enum.FlagType
 import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
 import com.lightswitch.core.domain.flag.dto.req.TagRequestDto
-import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.flag.repository.TagRepository
 import com.lightswitch.core.domain.flag.repository.VariationRepository
 import org.assertj.core.api.Assertions.assertThat
