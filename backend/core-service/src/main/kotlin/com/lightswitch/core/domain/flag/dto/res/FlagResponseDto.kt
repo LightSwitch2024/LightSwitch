@@ -18,4 +18,5 @@ data class FlagResponseDto(
     val userId: Long,
     val createdAt: String,
     val updatedAt: String,
+    val active: Boolean,
 )

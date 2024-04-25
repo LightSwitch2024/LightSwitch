@@ -82,32 +82,14 @@ class FlagService(
             variationType = flagRequestDto.type,
             value = flagRequestDto.variation,
         )
-        val savedDefaultVariation = variationRepository.save(defaultVariation)
-        val savedVariation = variationRepository.save(variation)
+        variationRepository.save(defaultVariation)
+        variationRepository.save(variation)
 
-        // 반환객체 조립
-        val flagResponseDto = FlagResponseDto(
-            flagId = savedFlag.flagId!!,
-            title = savedFlag.title,
-            tags = savedFlag.tags.map { TagResponseDto(it.colorHex, it.content) },
-            description = savedFlag.description,
-            type = savedFlag.type,
-            defaultValue = savedDefaultVariation.value,
-            defaultValuePortion = savedDefaultVariation.portion,
-            defaultValueDescription = savedDefaultVariation.description,
-            variation = savedVariation.value,
-            variationPortion = savedVariation.portion,
-            variationDescription = savedVariation.description,
-            userId = savedFlag.maintainerId,
-            createdAt = LocalDateTime.now().toString(),
-            updatedAt = LocalDateTime.now().toString(),
-        )
-
-        return flagResponseDto
+        return this.getFlag(savedFlag.flagId!!)
     }
 
     fun getAllFlag(): List<FlagSummaryDto> {
-        val flagList = flagRepository.findAll()
+        val flagList = flagRepository.findByDeletedAtIsNull()
         return flagList.map { flag ->
             FlagSummaryDto(
                 flagId = flag.flagId!!,
@@ -148,6 +130,7 @@ class FlagService(
             //Todo : BaseEntity 상속받아서 createdAt, updatedAt 사용
             createdAt = LocalDateTime.now().toString(),
             updatedAt = LocalDateTime.now().toString(),
+            active = flag.active,
         )
     }
 
@@ -179,6 +162,7 @@ class FlagService(
                 //Todo : BaseEntity 상속받아서 createdAt, updatedAt 사용
                 createdAt = LocalDateTime.now().toString(),
                 updatedAt = LocalDateTime.now().toString(),
+                active = flag.active,
             )
         }
     }
@@ -189,5 +173,19 @@ class FlagService(
         for (flag in flags) {
             flag.tags.clear()
         }
+    }
+
+    @Transactional
+    fun deleteFlag(flagId: Long): Long {
+        val flag = flagRepository.findById(flagId).get()
+        flag.delete()
+
+        //flag에 연결된 variation 삭제
+        val variations = variationRepository.findByFlag(flag)
+        for (variation in variations) {
+            variation.delete()
+        }
+
+        return flag.flagId ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
     }
 }

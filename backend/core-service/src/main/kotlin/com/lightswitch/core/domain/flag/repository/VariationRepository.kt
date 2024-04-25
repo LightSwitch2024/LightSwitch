@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface VariationRepository : JpaRepository<Variation, Long> {
     fun findByFlagAndDefaultFlag(flag: Flag, defaultFlag: Boolean): Variation?
+    fun findByFlag(flag: Flag): List<Variation>
 }

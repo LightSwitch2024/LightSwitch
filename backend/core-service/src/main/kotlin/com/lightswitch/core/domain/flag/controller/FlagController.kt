@@ -8,6 +8,7 @@ import com.lightswitch.core.domain.flag.dto.res.FlagSummaryDto
 import com.lightswitch.core.domain.flag.repository.entity.Flag
 import com.lightswitch.core.domain.flag.service.FlagService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -41,5 +42,10 @@ class FlagController(
     @GetMapping("/filter")
     fun filteredFlags(@RequestParam("tags") tags: List<String>): BaseResponse<List<FlagResponseDto>> {
         return success(flagService.filteredFlags(tags))
+    }
+
+    @DeleteMapping("/{flagId}")
+    fun deleteFlag(@PathVariable flagId: Long): BaseResponse<Long> {
+        return success(flagService.deleteFlag(flagId))
     }
 }

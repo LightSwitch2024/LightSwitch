@@ -1,5 +1,6 @@
 package com.lightswitch.core.domain.flag.repository.entity
 
+import com.lightswitch.core.common.entity.BaseEntity
 import jakarta.persistence.*
 import lombok.Getter
 
@@ -11,4 +12,4 @@ class Tag(
 
     @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
     val flags: MutableList<Flag> = mutableListOf()
-)
+) : BaseEntity()
