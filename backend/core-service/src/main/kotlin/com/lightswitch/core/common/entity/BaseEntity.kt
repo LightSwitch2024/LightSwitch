@@ -1,3 +1,5 @@
+package com.lightswitch.core.common.entity
+
 import jakarta.persistence.Column
 import jakarta.persistence.MappedSuperclass
 import jakarta.persistence.PrePersist
@@ -14,7 +16,7 @@ open class BaseEntity {
     @Column(name = "updated_at", nullable = false)
     var updatedAt: LocalDateTime = LocalDateTime.now()
 
-    @Column(name = "deleted_at")
+    @Column(name = "deleted_at", nullable = true)
     var deletedAt: LocalDateTime? = null
 
     @PrePersist
@@ -26,12 +28,6 @@ open class BaseEntity {
     @PreUpdate
     fun preUpdate() {
         updatedAt = LocalDateTime.now()
-    }
-
-    @PreRemove
-    fun preRemove() {
-        deletedAt = LocalDateTime.now()
-        throw IllegalStateException("Hard delete is not supported, use delete() method instead")
     }
 
     fun delete() {
