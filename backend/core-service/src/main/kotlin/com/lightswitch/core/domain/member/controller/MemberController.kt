@@ -4,17 +4,20 @@ import com.lightswitch.core.common.dto.BaseResponse
 import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.dto.success
 import com.lightswitch.core.common.exception.BaseException
+import com.lightswitch.core.domain.member.dto.req.LogInReqDto
 import com.lightswitch.core.domain.member.dto.req.SignupReqDto
 import com.lightswitch.core.domain.member.dto.res.MemberResDto
 import com.lightswitch.core.domain.member.entity.Member
 import com.lightswitch.core.domain.member.exception.MemberException
 import com.lightswitch.core.domain.member.repository.MemberRepository
 import com.lightswitch.core.domain.member.service.MemberService
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
+@Tag(name = "Member", description = "회원 관련 API")
 @RestController
-@RequestMapping("/users")
+@RequestMapping("api/v1/user")
 class MemberController(
     private val memberService: MemberService,
     private val memberRepository: MemberRepository
@@ -37,8 +40,10 @@ class MemberController(
 
 
     @PostMapping("/login")
-    fun logIn(@RequestBody signupReqDto: SignupReqDto): ResponseEntity<Boolean> {
-        return ResponseEntity.ok(memberService.logIn(signupReqDto.email, signupReqDto.password))
+    fun logIn(
+        @RequestBody logInReqDto: LogInReqDto
+    ): ResponseEntity<Boolean> {
+        return ResponseEntity.ok(memberService.logIn(logInReqDto.email, logInReqDto.password))
     }
 
     // 이름, 전화번호 수정

@@ -87,9 +87,9 @@ class MemberService(
             savedPassword = savedMember.password
         }
 
-        val encodedPassword = passwordService.encode(password)
+        val isCorrectPW = passwordService.matches(password,savedPassword)
 
-        if(savedPassword == encodedPassword){
+        if(isCorrectPW){
             return true
         } else {
             throw MemberException("비밀번호가 틀렸습니다.")
