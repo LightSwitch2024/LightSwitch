@@ -130,6 +130,7 @@ class FlagService(
             //Todo : BaseEntity 상속받아서 createdAt, updatedAt 사용
             createdAt = LocalDateTime.now().toString(),
             updatedAt = LocalDateTime.now().toString(),
+
             active = flag.active,
         )
     }
@@ -162,6 +163,7 @@ class FlagService(
                 //Todo : BaseEntity 상속받아서 createdAt, updatedAt 사용
                 createdAt = LocalDateTime.now().toString(),
                 updatedAt = LocalDateTime.now().toString(),
+
                 active = flag.active,
             )
         }
@@ -187,5 +189,11 @@ class FlagService(
         }
 
         return flag.flagId ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
+    }
+
+    fun switchFlag(flagId: Long): Long {
+        val flag = flagRepository.findById(flagId).get()
+        flag.active = !flag.active
+        return flagRepository.save(flag).flagId ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
     }
 }

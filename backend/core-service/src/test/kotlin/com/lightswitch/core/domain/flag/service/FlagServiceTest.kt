@@ -350,4 +350,32 @@ class FlagServiceTest {
         assertThat(deletedFlagId).isEqualTo(createdFlag.flagId)
         assertThat(flagService.getFlag(deletedFlagId).createdAt).isNotNull()
     }
+
+    @Test
+    fun `Flag 활성 & 비활성 간단 조작_ switchFlag`() {
+        //given
+        val flagRequestDto = FlagRequestDto(
+            title = "test",
+            tags = listOf(),
+            description = "test",
+            type = FlagType.BOOLEAN,
+            defaultValue = "TRUE",
+            defaultValuePortion = 50,
+            defaultValueDescription = "true test",
+            variation = "FALSE",
+            variationPortion = 50,
+            variationDescription = "false test",
+            userId = 1L
+        )
+        val flagId = flagService.createFlag(flagRequestDto).flagId
+
+        //when
+        val flag = flagService.getFlag(flagId)
+        val switchFlag = flagService.switchFlag(flagId)
+        val switchedFlag = flagService.getFlag(switchFlag)
+
+        //then
+        assertThat(switchFlag).isEqualTo(flagId)
+        assertThat(flag.active).isNotEqualTo(switchedFlag.active)
+    }
 }
