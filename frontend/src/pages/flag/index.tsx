@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { getFlagDetail } from '@/api/flagDetail/flagDetailAxios';
+import { deleteFlag, getFlagDetail } from '@/api/flagDetail/flagDetailAxios';
 
 interface FlagDetailItem {
   flagId: number;
@@ -39,10 +39,18 @@ const FlagDetail = () => {
   }, [flagId]);
 
   const onPressDeleteButton = () => {
-    const deleteFlag: boolean = confirm('삭제하기');
+    const deleteConfirm: boolean = confirm('삭제하기');
 
-    if (deleteFlag) {
-      console.log('삭제하기');
+    if (deleteConfirm) {
+      deleteFlag<FlagDetailItem>(
+        Number(flagId),
+        (data: FlagDetailItem) => {
+          console.log(`${data}번 flag 삭제 완료`);
+        },
+        (err) => {
+          console.log(err);
+        },
+      );
     }
   };
 

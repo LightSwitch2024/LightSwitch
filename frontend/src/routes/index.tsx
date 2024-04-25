@@ -1,9 +1,9 @@
+import CreateFlag from '@pages/create/index';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import FlagDetail from '@/pages/flag/index';
 import FlagTable from '@/pages/main/index';
 import SignUp from '@/pages/signup/index';
-import CreateFlag from '@pages/create/index';
 
 const Router = () => (
   <BrowserRouter>
