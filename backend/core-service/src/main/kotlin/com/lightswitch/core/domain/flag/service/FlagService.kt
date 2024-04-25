@@ -89,7 +89,7 @@ class FlagService(
     }
 
     fun getAllFlag(): List<FlagSummaryDto> {
-        val flagList = flagRepository.findAll()
+        val flagList = flagRepository.findByDeletedAtIsNull()
         return flagList.map { flag ->
             FlagSummaryDto(
                 flagId = flag.flagId!!,
@@ -173,5 +173,19 @@ class FlagService(
         for (flag in flags) {
             flag.tags.clear()
         }
+    }
+
+    @Transactional
+    fun deleteFlag(flagId: Long): Long {
+        val flag = flagRepository.findById(flagId).get()
+        flag.delete()
+
+        //flag에 연결된 variation 삭제
+        val variations = variationRepository.findByFlag(flag)
+        for (variation in variations) {
+            variation.delete()
+        }
+
+        return flag.flagId ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
     }
 }

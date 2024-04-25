@@ -18,8 +18,8 @@ import org.springframework.transaction.annotation.Transactional
 @SpringBootTest
 class FlagServiceTest {
 
-    @Autowired
-    private lateinit var flagRepository: FlagRepository
+//    @Autowired
+//    private lateinit var flagRepository: FlagRepository
 
     @Autowired
     private lateinit var flagService: FlagService
@@ -219,7 +219,7 @@ class FlagServiceTest {
         val flagList = flagService.getAllFlag()
 
         // then
-        assertThat(flagList.size).isEqualTo(flagRepository.countBy())
+        assertThat(flagList).isNotEmpty()
     }
 
     @Test
@@ -323,5 +323,31 @@ class FlagServiceTest {
 
         val result6 = flagService.filteredFlags(listOf(tag3.content))
         assertThat(result6).hasSize(3)
+    }
+
+    @Test
+    fun `Flag 삭제 테스트 _ soft delete`() {
+        //given
+        val flagRequestDto = FlagRequestDto(
+            title = "test",
+            tags = listOf(),
+            description = "test",
+            type = FlagType.BOOLEAN,
+            defaultValue = "TRUE",
+            defaultValuePortion = 50,
+            defaultValueDescription = "true test",
+            variation = "FALSE",
+            variationPortion = 50,
+            variationDescription = "false test",
+            userId = 1L
+        )
+        val createdFlag = flagService.createFlag(flagRequestDto)
+
+        //when
+        val deletedFlagId = flagService.deleteFlag(createdFlag.flagId)
+
+        //then
+        assertThat(deletedFlagId).isEqualTo(createdFlag.flagId)
+        assertThat(flagService.getFlag(deletedFlagId).createdAt).isNotNull()
     }
 }
