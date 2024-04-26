@@ -14,8 +14,8 @@ data class FlagResponseDto(
     val variation: String,
     val variationPortion: Int,
     val variationDescription: String,
-
     val userId: Long,
+
     val createdAt: String,
     val updatedAt: String,
     val active: Boolean,

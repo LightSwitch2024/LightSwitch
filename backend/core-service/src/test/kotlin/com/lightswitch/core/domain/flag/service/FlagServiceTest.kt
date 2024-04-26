@@ -3,7 +3,6 @@ package com.lightswitch.core.domain.flag.service
 import com.lightswitch.core.domain.flag.common.enum.FlagType
 import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
 import com.lightswitch.core.domain.flag.dto.req.TagRequestDto
-import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.flag.repository.TagRepository
 import com.lightswitch.core.domain.flag.repository.VariationRepository
 import org.assertj.core.api.Assertions.assertThat
@@ -349,5 +348,33 @@ class FlagServiceTest {
         //then
         assertThat(deletedFlagId).isEqualTo(createdFlag.flagId)
         assertThat(flagService.getFlag(deletedFlagId).createdAt).isNotNull()
+    }
+
+    @Test
+    fun `Flag 활성 & 비활성 간단 조작_ switchFlag`() {
+        //given
+        val flagRequestDto = FlagRequestDto(
+            title = "test",
+            tags = listOf(),
+            description = "test",
+            type = FlagType.BOOLEAN,
+            defaultValue = "TRUE",
+            defaultValuePortion = 50,
+            defaultValueDescription = "true test",
+            variation = "FALSE",
+            variationPortion = 50,
+            variationDescription = "false test",
+            userId = 1L
+        )
+        val flagId = flagService.createFlag(flagRequestDto).flagId
+
+        //when
+        val flag = flagService.getFlag(flagId)
+        val switchFlag = flagService.switchFlag(flagId)
+        val switchedFlag = flagService.getFlag(switchFlag)
+
+        //then
+        assertThat(switchFlag).isEqualTo(flagId)
+        assertThat(flag.active).isNotEqualTo(switchedFlag.active)
     }
 }

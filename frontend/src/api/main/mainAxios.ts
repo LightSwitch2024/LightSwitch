@@ -39,3 +39,14 @@ export async function getTagListByKeyword<T>(
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
     .catch((err: AxiosError) => onFail(err));
 }
+
+export async function patchFlagActive<T>(
+  flagId: number,
+  onSuccess: (data: T) => void,
+  onFail: (err: AxiosError) => void,
+): Promise<void> {
+  axios
+    .patch<BaseResponse<T>>(`/api/v1/flag/${flagId}`)
+    .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
+    .catch((err: AxiosError) => onFail(err));
+}

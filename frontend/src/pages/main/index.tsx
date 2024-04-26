@@ -1,4 +1,4 @@
-import { getFlagList } from '@api/main/mainAxios';
+import { getFlagList, patchFlagActive } from '@api/main/mainAxios';
 import {
   Paper,
   Table,
@@ -7,6 +7,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  ToggleButton,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
@@ -31,6 +32,40 @@ const FlagTable = () => {
       },
     );
   }, []);
+
+  /**
+   * flag Id에 해당하는 플래그의 활성화 상태를 변경합니다.
+   * @param flagId 플래그 아이디
+   */
+  function switchFlag(flagId: number): void {
+    const newFlagList = flagList.map((flag) => {
+      if (flag.flagId === flagId) {
+        return {
+          ...flag,
+          active: !flag.active,
+        };
+      }
+      return flag;
+    });
+    setFlagList(newFlagList);
+  }
+
+  /**
+   * 플래그 스위치를 눌렀을 때 실행되는 함수를 반환합니다.
+   * @param flagId 플래그 아이디
+   * @returns
+   */
+  const onPressFlagSwitch = (flagId: number) => {
+    patchFlagActive(
+      flagId,
+      () => {
+        switchFlag(flagId);
+      },
+      (err) => {
+        console.log(err);
+      },
+    );
+  };
 
   return (
     <TableContainer component={Paper}>
@@ -78,7 +113,14 @@ const FlagTable = () => {
               </TableCell>
               <TableCell align="left">{row.description}</TableCell>
               <TableCell align="center">{row.maintainerName}</TableCell>
-              <TableCell align="left">{row.active ? '활성화' : '비활성화'}</TableCell>
+              <TableCell align="left">
+                <ToggleButton
+                  value={row.active}
+                  selected={row.active}
+                  onChange={() => onPressFlagSwitch(row.flagId)}
+                />
+                {row.active ? '활성화' : '비활성화'}
+              </TableCell>
               <TableCell align="center">...</TableCell>
             </TableRow>
           ))}
