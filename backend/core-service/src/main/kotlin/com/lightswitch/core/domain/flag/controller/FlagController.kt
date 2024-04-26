@@ -9,7 +9,7 @@ import com.lightswitch.core.domain.flag.dto.res.FlagResponseDto
 import com.lightswitch.core.domain.flag.dto.res.FlagSummaryDto
 import com.lightswitch.core.domain.flag.dto.res.MainPageOverviewDto
 import com.lightswitch.core.domain.flag.service.FlagService
-import com.lightswitch.core.domain.member.service.SdkKeyService
+import com.lightswitch.core.domain.sdk.service.SdkKeyService
 import jakarta.websocket.server.PathParam
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*

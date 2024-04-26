@@ -1,11 +1,12 @@
-package com.lightswitch.core.domain.member.service
+package com.lightswitch.core.domain.sdk.service
 
 import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.exception.BaseException
-import com.lightswitch.core.domain.member.dto.req.SdkKeyReqDto
+import com.lightswitch.core.domain.sdk.dto.req.SdkKeyReqDto
 import com.lightswitch.core.domain.member.entity.Member
 import com.lightswitch.core.domain.member.repository.MemberRepository
-import com.lightswitch.core.domain.member.repository.SdkKeyRepository
+import com.lightswitch.core.domain.member.service.MemberService
+import com.lightswitch.core.domain.sdk.repository.SdkKeyRepository
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

@@ -1,6 +1,6 @@
-package com.lightswitch.core.domain.member.repository
+package com.lightswitch.core.domain.sdk.repository
 
-import com.lightswitch.core.domain.member.entity.SdkKey
+import com.lightswitch.core.domain.sdk.repository.entity.SdkKey
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 

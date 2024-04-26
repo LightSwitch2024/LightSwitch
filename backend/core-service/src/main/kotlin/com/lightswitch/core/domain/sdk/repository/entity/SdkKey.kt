@@ -1,6 +1,7 @@
-package com.lightswitch.core.domain.member.entity
+package com.lightswitch.core.domain.sdk.repository.entity
 
 import com.lightswitch.core.common.entity.BaseEntity
+import com.lightswitch.core.domain.member.entity.Member
 import jakarta.persistence.*
 
 @Entity(name = "sdk_key")
