@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("api/v1/flag")
+@RequestMapping("/v1/flag")
 class FlagController(
     @Autowired
     private var flagService: FlagService,
