@@ -3,7 +3,6 @@ package com.lightswitch.core.domain.flag.repository.entity
 import com.lightswitch.core.common.entity.BaseEntity
 import com.lightswitch.core.domain.flag.common.enum.FlagType
 import jakarta.persistence.*
-import lombok.Getter
 
 @Entity(name = "variation")
 class Variation(
@@ -11,16 +10,15 @@ class Variation(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val variationId: Long? = null,
 
-    val portion: Int,
-    val description: String,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flag_id")
     val flag: Flag,
 
     @Enumerated(EnumType.STRING)
-    val variationType: FlagType,
-    val value: String,
+    var variationType: FlagType,
+    var value: String,
+    var portion: Int,
+    var description: String,
 
     val defaultFlag: Boolean = false,
 ) : BaseEntity()
