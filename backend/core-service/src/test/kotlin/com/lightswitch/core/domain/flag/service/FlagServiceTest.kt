@@ -3,6 +3,7 @@ package com.lightswitch.core.domain.flag.service
 import com.lightswitch.core.domain.flag.common.enum.FlagType
 import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
 import com.lightswitch.core.domain.flag.dto.req.TagRequestDto
+import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.flag.repository.TagRepository
 import com.lightswitch.core.domain.flag.repository.VariationRepository
 import org.assertj.core.api.Assertions.assertThat
@@ -17,8 +18,8 @@ import org.springframework.transaction.annotation.Transactional
 @SpringBootTest
 class FlagServiceTest {
 
-//    @Autowired
-//    private lateinit var flagRepository: FlagRepository
+    @Autowired
+    private lateinit var flagRepository: FlagRepository
 
     @Autowired
     private lateinit var flagService: FlagService
@@ -438,5 +439,50 @@ class FlagServiceTest {
         assertThat(updatedFlagResponseDto.variation).isEqualTo("TRUE")
         assertThat(updatedFlagResponseDto.variationPortion).isEqualTo(10)
         assertThat(updatedFlagResponseDto.variationDescription).isEqualTo("updated")
+    }
+
+    @Test
+    fun `메인 페이지 overview 정보 _ total flag 갯수와 active flag 갯수`() {
+        // given
+        val totalFlagList = flagRepository.findByDeletedAtIsNull()
+        val activeFlagList = totalFlagList.filter { it.active }
+
+        val flagRequestDto1 = FlagRequestDto(
+            title = "test",
+            tags = listOf(),
+            description = "test",
+            type = FlagType.BOOLEAN,
+            defaultValue = "TRUE",
+            defaultValuePortion = 50,
+            defaultValueDescription = "true test",
+            variation = "FALSE",
+            variationPortion = 50,
+            variationDescription = "false test",
+            userId = 1L
+        )
+        val flagId = flagService.createFlag(flagRequestDto1).flagId
+        flagService.switchFlag(flagId)
+
+        val flagRequestDto2 = FlagRequestDto(
+            title = "test2",
+            tags = listOf(),
+            description = "test2",
+            type = FlagType.BOOLEAN,
+            defaultValue = "TRUE",
+            defaultValuePortion = 50,
+            defaultValueDescription = "true test",
+            variation = "FALSE",
+            variationPortion = 50,
+            variationDescription = "false test",
+            userId = 1L
+        )
+        flagService.createFlag(flagRequestDto2)
+
+        // when
+        val overview = flagService.getFlagCountForOverview()
+
+        // then
+        assertThat(overview["totalFlags"]).isEqualTo(totalFlagList.size + 2)
+        assertThat(overview["activeFlags"]).isEqualTo(activeFlagList.size + 1)
     }
 }

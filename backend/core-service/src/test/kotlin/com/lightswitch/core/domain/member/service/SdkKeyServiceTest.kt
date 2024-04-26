@@ -29,7 +29,7 @@ class SdkKeyServiceTest(
         memberService.deleteAll()
     }
 
-    fun signup() {
+    fun signup(): Member {
         val member = Member(
             firstName = "동훈",
             lastName = "김",
@@ -37,10 +37,10 @@ class SdkKeyServiceTest(
             email = "huni19541@gmail.com",
             password = "1234"
         )
-        memberRepository.save(member)
+        return memberRepository.save(member)
     }
 
-    @Test
+    @Test   
     fun `SDK Key 형식_테스트`() {
         val key = sdkKeyService.generateSdkKey()
         if (key.contains("-")) {
@@ -97,5 +97,19 @@ class SdkKeyServiceTest(
         Assertions.assertThatExceptionOfType(BaseException::class.java).isThrownBy {
             sdkKeyService.createSdkKey(sdkKeyReqDto)
         }
+    }
+
+    @Test
+    fun `SDK 키 조회 by memberId`() {
+        // given
+        val signupMember = signup()
+        val sdkKeyReqDto = SdkKeyReqDto(signupMember.email)
+        val createSdkKey = sdkKeyService.createSdkKey(sdkKeyReqDto)
+
+        // when
+        val sdkKeyForOverview = sdkKeyService.getSdkKeyForOverview(signupMember.memberId!!)
+
+        // then
+        Assertions.assertThat(sdkKeyForOverview["sdkKey"]).isEqualTo(createSdkKey.key)
     }
 }

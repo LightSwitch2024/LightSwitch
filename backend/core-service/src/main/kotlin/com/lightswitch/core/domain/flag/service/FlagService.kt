@@ -251,4 +251,14 @@ class FlagService(
 
         return this.getFlag(flag.flagId!!)
     }
+
+    fun getFlagCountForOverview(): Map<String, Int> {
+        val flagList = flagRepository.findByDeletedAtIsNull()
+        val activeFlagList = flagList.filter { it.active }
+
+        return mapOf(
+            "totalFlags" to flagList.size,
+            "activeFlags" to activeFlagList.size,
+        )
+    }
 }

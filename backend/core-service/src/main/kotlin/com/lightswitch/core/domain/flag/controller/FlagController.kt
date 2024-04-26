@@ -1,29 +1,27 @@
 package com.lightswitch.core.domain.flag.controller
 
 import com.lightswitch.core.common.dto.BaseResponse
+import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.dto.success
+import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
 import com.lightswitch.core.domain.flag.dto.res.FlagResponseDto
 import com.lightswitch.core.domain.flag.dto.res.FlagSummaryDto
-import com.lightswitch.core.domain.flag.repository.entity.Flag
+import com.lightswitch.core.domain.flag.dto.res.MainPageOverviewDto
 import com.lightswitch.core.domain.flag.service.FlagService
+import com.lightswitch.core.domain.member.service.SdkKeyService
+import jakarta.websocket.server.PathParam
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("api/v1/flag")
 class FlagController(
     @Autowired
-    private var flagService: FlagService
+    private var flagService: FlagService,
+
+    @Autowired
+    private var sdkKeyService: SdkKeyService
 ) {
 
     @PostMapping("")
@@ -57,7 +55,26 @@ class FlagController(
     }
 
     @PutMapping("/{flagId}")
-    fun updateFlag(@PathVariable flagId: Long, @RequestBody flagRequestDto: FlagRequestDto): BaseResponse<FlagResponseDto> {
+    fun updateFlag(
+        @PathVariable flagId: Long,
+        @RequestBody flagRequestDto: FlagRequestDto
+    ): BaseResponse<FlagResponseDto> {
         return success(flagService.updateFlag(flagId, flagRequestDto))
+    }
+
+    @GetMapping("/overview")
+    fun getFlagOverview(@PathParam(value = "memberId") memberId: Long): MainPageOverviewDto {
+        val flagCountForOverview = flagService.getFlagCountForOverview()
+        val sdkKeyForOverview = sdkKeyService.getSdkKeyForOverview(memberId)
+
+        val totalFlags = flagCountForOverview["totalFlags"] ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
+        val activeFlags = flagCountForOverview["activeFlags"] ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
+        val sdkKey = sdkKeyForOverview["sdkKey"] ?: throw BaseException(ResponseCode.SDK_KEY_NOT_FOUND)
+
+        return MainPageOverviewDto(
+            totalFlags = totalFlags,
+            activeFlags = activeFlags,
+            sdkKey = sdkKey,
+        )
     }
 }

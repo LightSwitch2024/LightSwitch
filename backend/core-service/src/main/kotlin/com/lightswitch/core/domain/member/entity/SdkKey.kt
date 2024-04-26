@@ -1,5 +1,6 @@
 package com.lightswitch.core.domain.member.entity
 
+import com.lightswitch.core.common.entity.BaseEntity
 import jakarta.persistence.*
 
 @Entity(name = "sdk_key")
@@ -13,4 +14,4 @@ class SdkKey(
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
     val member: Member
-)
+) : BaseEntity()

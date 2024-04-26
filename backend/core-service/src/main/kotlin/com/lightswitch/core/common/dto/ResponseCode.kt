@@ -21,4 +21,5 @@ enum class ResponseCode(
 
     // 3000 SdkKey Exception
     SDK_KEY_ALREADY_EXISTS(3000, "이미 등록된 SDK Key가 존재합니다."),
+    SDK_KEY_NOT_FOUND(3001, "해당하는 SDK Key가 없습니다."),
 }
