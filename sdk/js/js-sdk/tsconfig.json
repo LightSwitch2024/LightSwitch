@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es6" /* 최신 브라우저는 es6을 대부분 지원한다. */,
     "module": "ES6" /* 모듈 시스템을 지정한다. */,
+    "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
     "lib": [
       "es5",
@@ -13,5 +14,6 @@
     "strict": true /* 타입스크립트의 엄격한 모드를 활성화한다. */,
     "esModuleInterop": true
   },
-  "include": ["lib/index.ts"] /* 컴파일할 대상을 명시해 준다. */
+  "include": ["lib"] /* 컴파일할 대상을 명시해 준다. */,
+  "exclude": ["node_modules", "dist", "coverage"] // 제외할 디렉토리
 }

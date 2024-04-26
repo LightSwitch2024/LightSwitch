@@ -26,3 +26,22 @@ export interface ILSClient {
   getAllFlags: () => void;
   destroy: () => void;
 }
+
+export interface Tag {
+  colorHex: string;
+  content: string;
+}
+
+export interface Flag {
+  title: string;
+  tags: Tag[];
+  description: string;
+  type: 'BOOLEAN' | 'NUMBER' | 'STRING'; // "BOOLEAN", "NUMBER", "STRING" 중 하나여야 함
+  defaultValue: string;
+  defaultValuePortion: number;
+  defaultValueDescription: string;
+  variation: string;
+  variationPortion: number;
+  variationDescription: string;
+  userId: number;
+}
