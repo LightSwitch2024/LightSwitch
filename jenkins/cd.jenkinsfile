@@ -256,6 +256,7 @@ pipeline {
             steps {
                 echo 'Service Start'
                 sh'''
+                    scp -i /ssh/private/.pem /var/jenkins_home/workspace/lightswitch-web-cd/prometheus.yml ubuntu@ip-172-26-5-31:/home/ubuntu/prometheus/prometheus.yml
                     docker-compose up -d --build
                 '''
             }
