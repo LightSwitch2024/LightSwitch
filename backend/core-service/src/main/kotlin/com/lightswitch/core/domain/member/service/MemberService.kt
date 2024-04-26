@@ -89,7 +89,7 @@ class MemberService(
 
         val encodedPassword = passwordService.encode(password)
 
-        if(savedPassword == encodedPassword){
+        if (savedPassword == encodedPassword) {
             return true
         } else {
             throw MemberException("비밀번호가 틀렸습니다.")
@@ -97,9 +97,9 @@ class MemberService(
     }
 
     // 이름, 전화번호 변경
-    fun modifyUserdata(email: String, newData: MemberResDto):Member? {
+    fun modifyUserdata(email: String, newData: MemberResDto): Member? {
         val oldData: Member? = memberRepository.findByEmail(email)
-        oldData?.let{
+        oldData?.let {
             oldData.firstName = newData.firstName
             oldData.lastName = newData.lastName
             oldData.telNumber = newData.telNumber
@@ -110,10 +110,18 @@ class MemberService(
     // 비밀번호 변경
     fun modifyPassword(email: String, newPassword: String): Member? {
         val user: Member? = memberRepository.findByEmail(email)
-        user?.let{
+        user?.let {
             user.password = newPassword
         }
         return user?.let { memberRepository.save(it) }
+    }
+
+    /*
+    * 테스트 코드 setUp()에서 사용하기 위해 추가
+    * SdkKey는 Member와 CascadeType.ALL로 연결되어 있기 때문에 Member 삭제 시 함께 삭제
+    * */
+    fun deleteAll() {
+        memberRepository.deleteAll()
     }
 
 }

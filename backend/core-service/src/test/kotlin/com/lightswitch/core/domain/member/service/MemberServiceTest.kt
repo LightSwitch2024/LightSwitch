@@ -28,11 +28,11 @@ class MemberServiceTest(
     @Autowired
     private val redisService: RedisService,
     @Value("\${spring.data.redis.code.signup}")
-    private val signupCode: String
+    private val signupCode: String,
 ) {
     @BeforeEach
     fun setUp() {
-        memberRepository.deleteAll()
+        memberService.deleteAll()
     }
 
     @Test
