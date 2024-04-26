@@ -24,8 +24,10 @@
       "@global/*": ["src/global/*"],
       "@hooks/*": ["src/hooks/*"],
       "@pages/*": ["src/pages/*"],
-      "@styles/*": ["src/styles/*"]
-    }
+      "@styles/*": ["src/styles/*"],
+      "@routes/*": ["src/routes/*"]
+    },
+    "types": ["vite-plugin-svgr/client"]
   },
   "include": ["src", "**/*.ts", "**/*.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }]
