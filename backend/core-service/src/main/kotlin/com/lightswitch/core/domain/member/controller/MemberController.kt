@@ -5,11 +5,11 @@ import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.dto.success
 import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.domain.member.dto.req.LogInReqDto
+import com.lightswitch.core.domain.member.dto.req.MemberUpdateReqDto
+import com.lightswitch.core.domain.member.dto.req.PasswordUpdateReqDto
 import com.lightswitch.core.domain.member.dto.req.SignupReqDto
 import com.lightswitch.core.domain.member.dto.res.MemberResDto
 import com.lightswitch.core.domain.member.entity.Member
-import com.lightswitch.core.domain.member.exception.MemberException
-import com.lightswitch.core.domain.member.repository.MemberRepository
 import com.lightswitch.core.domain.member.service.MemberService
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
@@ -17,10 +17,9 @@ import org.springframework.web.bind.annotation.*
 
 @Tag(name = "Member", description = "회원 관련 API")
 @RestController
-@RequestMapping("api/v1/user")
+@RequestMapping("v1/user")
 class MemberController(
     private val memberService: MemberService,
-    private val memberRepository: MemberRepository
 ) {
 
     @GetMapping("/hello")
@@ -42,31 +41,23 @@ class MemberController(
     @PostMapping("/login")
     fun logIn(
         @RequestBody logInReqDto: LogInReqDto
-    ): ResponseEntity<Boolean> {
-        return ResponseEntity.ok(memberService.logIn(logInReqDto.email, logInReqDto.password))
+    ): ResponseEntity<MemberResDto> {
+        return ResponseEntity.ok(memberService.logIn(logInReqDto))
     }
 
     // 이름, 전화번호 수정
-    @PostMapping("/modifyUser")
+    @PutMapping("/modifyUser")
     fun modifyUserdata(
-        @RequestParam(value = "email") email: String,
-        @RequestBody newUserData: MemberResDto
-    ): ResponseEntity<Member> {
-        return ResponseEntity.ok(memberService.modifyUserdata(email, newUserData))
+        @RequestBody newUserData: MemberUpdateReqDto
+    ): ResponseEntity<MemberResDto> {
+        return ResponseEntity.ok(memberService.modifyUserdata(newUserData))
     }
 
     // 비밀번호 수정
-    @PostMapping("/modifyPassword")
+    @PutMapping("/modifyPassword")
     fun modifyPassword(
-        @RequestParam(value = "email") email: String,
-        @RequestParam(value = "oldPassword") oldPassword: String,
-        @RequestParam(value = "newPassword") newPassword: String
-    ): ResponseEntity<Member> {
-        val savedMember: Member? = memberRepository.findByEmail(email)
-        if (savedMember?.password != oldPassword) {
-            throw MemberException("입력해주신 기존 비밀번호가 옳지 않습니다")
-        } else {
-            return ResponseEntity.ok(memberService.modifyPassword(email, newPassword))
-        }
+        @RequestBody pwUpdateData: PasswordUpdateReqDto
+    ): ResponseEntity<MemberResDto> {
+        return ResponseEntity.ok(memberService.modifyPassword(pwUpdateData))
     }
 }
