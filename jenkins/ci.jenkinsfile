@@ -2,27 +2,6 @@ pipeline {
     agent any
 
     stages {
-        stage ('[Git Clone]') {
-            parallel {
-                stage ('Clone') {
-                    steps {
-                        echo 'Clone start'
-                        dir ('backend') {
-                            sh 'pwd'
-                            git branch: 'feature-infra/jenkins-integration', credentialsId: 'gitlab-token-bot', url: 'https://lab.ssafy.com/s10-final/S10P31S202'
-                        }
-                    }
-                    post {
-                        success {
-                            echo 'Success Cloned Repository'
-                        }
-                        failure {
-                            error "Fail Cloned Repository"
-                        }
-                    }
-                }
-            }
-        }
         stage ('[Test]') {
             parallel {
                 stage ('BE Test') {

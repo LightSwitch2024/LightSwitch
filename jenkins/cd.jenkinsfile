@@ -2,27 +2,6 @@ pipeline {
     agent any
 
     stages {
-        stage ('[Git Clone]') {
-            parallel {
-                stage ('Clone') {
-                    steps {
-                        echo 'Clone start'
-                        dir ('backend') {
-                            sh 'pwd'
-                            git branch: 'feature-infra/jenkins-integration', credentialsId: 'gitlab-token-bot', url: 'https://lab.ssafy.com/s10-final/S10P31S202'
-                        }
-                    }
-                    post {
-                        success {
-                            echo 'Success Cloned Repository'
-                        }
-                        failure {
-                            error "Fail Cloned Repository"
-                        }
-                    }
-                }
-            }
-        }
         stage ('[Test]') {
             parallel {
                 stage ('BE Test') {
@@ -201,9 +180,9 @@ pipeline {
         }
         stage ('[Deploy]') {
             parallel {
-                stage ('BE deploy') {
+                stage ('BE Container Build') {
                     steps {
-                        echo 'BE - Sonar start'
+                        echo 'BE - Container Build'
                         dir ('backend/core-service'){
                             sh'''
                                 docker build -t ls-backend .
@@ -212,16 +191,16 @@ pipeline {
                     }
                     post{
                         success {
-                            echo 'BE - Success SonarQube Reporting'
+                            echo 'BE - Success Container Build'
                         }
                         failure {
-                            error 'BE - Fail SonarQube Reporting'
+                            error 'BE - Fail Container Build'
                         }
                     }
                 }
                 stage ('FE deploy') {
                     steps {
-                        echo 'FE - SonarScanner start'
+                        echo 'FE - Deploy to Nginx'
                         dir ('frontend'){
                             sh'''
                                 yarn build
@@ -231,16 +210,16 @@ pipeline {
                     }
                     post{
                         success {
-                            echo 'BE - Success SonarQube Reporting'
+                            echo 'BE - Success Deploy to Nginx'
                         }
                         failure {
-                            error 'BE - Fail SonarQube Reporting'
+                            error 'BE - Fail Deploy to Nginx'
                         }
                     }
                 }
                 stage ('SDK deploy') {
                     steps {
-                        echo 'JS SDK - Sonar start'
+                        echo 'JS SDK - Deploy'
                         dir ('sdk/js/js-sdk'){
                             sh'''
                             '''
@@ -248,10 +227,10 @@ pipeline {
                     }
                     post{
                         success {
-                            echo 'JS SDK - Success Test'
+                            echo 'JS SDK - Success Deploy'
                         }
                         failure {
-                            error 'JS SDK - Fail Test'
+                            error 'JS SDK - Fail Deploy'
                         }
                     }
                 }
