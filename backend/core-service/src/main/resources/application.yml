@@ -1,6 +1,7 @@
 server:
   port: 8000
-
+  servlet:
+    context-path: /api
 spring:
   application:
     name: core-service
