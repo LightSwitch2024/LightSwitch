@@ -11,8 +11,8 @@ class Flag(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val flagId: Long? = null,
 
-    val title: String,
-    val description: String,
+    var title: String,
+    var description: String,
 
     // Todo : Change to User
     // @ManyToOne(fetch = FetchType.LAZY)

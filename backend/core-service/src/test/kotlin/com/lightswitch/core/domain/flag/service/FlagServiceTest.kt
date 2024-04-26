@@ -377,4 +377,66 @@ class FlagServiceTest {
         assertThat(switchFlag).isEqualTo(flagId)
         assertThat(flag.active).isNotEqualTo(switchedFlag.active)
     }
+
+    @Test
+    fun `Flag 수정 테스트`() {
+        // given
+        val tag1 = TagRequestDto(
+            colorHex = "#FFFFFF",
+            content = "test"
+        )
+
+        val tag2 = TagRequestDto(
+            colorHex = "#000000",
+            content = "test2"
+        )
+
+        val flagRequestDto = FlagRequestDto(
+            title = "test",
+            tags = listOf(tag1, tag2),
+            description = "test",
+            type = FlagType.INTEGER,
+            defaultValue = "1",
+            defaultValuePortion = 100,
+            defaultValueDescription = "test",
+            variation = "2",
+            variationPortion = 0,
+            variationDescription = "test",
+            userId = 1L
+        )
+        val flagResponseDto = flagService.createFlag(flagRequestDto)
+
+        // when
+        val updatedFlagResponseDto = flagService.updateFlag(
+            flagResponseDto.flagId,
+            flagRequestDto.copy(
+                title = "updated",
+                description = "updated",
+                tags = listOf(
+                    tag1.copy(content = "updated"),
+                ),
+                type = FlagType.BOOLEAN,
+                defaultValue = "FALSE",
+                defaultValuePortion = 90,
+                defaultValueDescription = "updated",
+                variation = "TRUE",
+                variationPortion = 10,
+                variationDescription = "updated"
+            )
+        )
+
+        // then
+        assertThat(updatedFlagResponseDto.flagId).isEqualTo(flagResponseDto.flagId)
+        assertThat(updatedFlagResponseDto.title).isEqualTo("updated")
+        assertThat(updatedFlagResponseDto.description).isEqualTo("updated")
+        assertThat(updatedFlagResponseDto.tags.size).isEqualTo(1)
+        assertThat(updatedFlagResponseDto.tags[0].content).isEqualTo("updated")
+        assertThat(updatedFlagResponseDto.type).isEqualTo(FlagType.BOOLEAN)
+        assertThat(updatedFlagResponseDto.defaultValue).isEqualTo("FALSE")
+        assertThat(updatedFlagResponseDto.defaultValuePortion).isEqualTo(90)
+        assertThat(updatedFlagResponseDto.defaultValueDescription).isEqualTo("updated")
+        assertThat(updatedFlagResponseDto.variation).isEqualTo("TRUE")
+        assertThat(updatedFlagResponseDto.variationPortion).isEqualTo(10)
+        assertThat(updatedFlagResponseDto.variationDescription).isEqualTo("updated")
+    }
 }

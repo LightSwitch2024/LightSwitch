@@ -29,7 +29,7 @@ const CreateFlag = () => {
     setTitle(e.target.value);
   };
 
-  const handelTagSearchKeywordChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleTagSearchKeywordChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setTagSearchKeyword(e.target.value);
   };
 
@@ -70,7 +70,9 @@ const CreateFlag = () => {
     setVariation(e.target.value);
   };
 
-  const handleVariantPortionChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleVariantionPortionChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ): void => {
     setVariationPortion(Number(e.target.value));
   };
 
@@ -195,9 +197,9 @@ const CreateFlag = () => {
         <label htmlFor="tags">태그 검색</label>
         <input
           type="description"
-          placeholder="설명"
+          placeholder="태그 명"
           value={tagSearchKeyword}
-          onChange={handelTagSearchKeywordChange}
+          onChange={handleTagSearchKeywordChange}
           onBlur={updateTagListByKeyword}
         />
         <div>
@@ -306,7 +308,7 @@ const CreateFlag = () => {
           type="variationPortion"
           placeholder="비율"
           value={variationPortion}
-          onChange={handleVariantPortionChange}
+          onChange={handleVariantionPortionChange}
         />
       </div>
       <div>

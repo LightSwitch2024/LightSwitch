@@ -196,4 +196,59 @@ class FlagService(
         flag.active = !flag.active
         return flagRepository.save(flag).flagId ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
     }
+
+    @Transactional
+    fun updateFlag(flagId: Long, flagRequestDto: FlagRequestDto): FlagResponseDto {
+        val flag = flagRepository.findById(flagId).get()
+        // flag 수정
+        flag.title = flagRequestDto.title
+        flag.description = flagRequestDto.description
+        flag.type = flagRequestDto.type
+
+        // tag 수정
+        val savedTagList = mutableListOf<Tag>()
+        val tagList = flagRequestDto.tags
+
+        for (tag in tagList) {
+            val searchedTag = tagRepository.findByContent(tag.content)
+            // 수정 중에 새로운 tag가 추가되는 경우
+            if (searchedTag == null) {
+                val savedTag = tagRepository.save(
+                    Tag(
+                        colorHex = tag.colorHex,
+                        content = tag.content,
+                    )
+                )
+                savedTagList.add(savedTag)
+            } else {
+                savedTagList.add(searchedTag)
+            }
+        }
+        flag.tags.clear()
+        flag.tags.addAll(savedTagList)
+        flagRepository.save(flag)
+
+        // variation 수정
+        val defaultVariation = variationRepository.findByFlagAndDefaultFlag(flag, true)
+        val variation = variationRepository.findByFlagAndDefaultFlag(flag, false)
+
+        if (defaultVariation == null || variation == null) {
+            throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
+        }
+
+        defaultVariation.value = flagRequestDto.defaultValue
+        defaultVariation.portion = flagRequestDto.defaultValuePortion
+        defaultVariation.description = flagRequestDto.defaultValueDescription
+        defaultVariation.variationType = flagRequestDto.type
+
+        variation.value = flagRequestDto.variation
+        variation.portion = flagRequestDto.variationPortion
+        variation.description = flagRequestDto.variationDescription
+        variation.variationType = flagRequestDto.type
+
+        variationRepository.save(defaultVariation)
+        variationRepository.save(variation)
+
+        return this.getFlag(flag.flagId!!)
+    }
 }
