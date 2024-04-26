@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface FlagRepository : JpaRepository<Flag, Long> {
-    fun countBy(): Long
+    fun findByDeletedAtIsNull(): List<Flag>
 }

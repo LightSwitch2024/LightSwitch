@@ -1,5 +1,6 @@
 package com.lightswitch.core.domain.flag.repository.entity
 
+import com.lightswitch.core.common.entity.BaseEntity
 import com.lightswitch.core.domain.flag.common.enum.FlagType
 import jakarta.persistence.*
 import lombok.Getter
@@ -29,4 +30,4 @@ class Flag(
     )
     val tags: MutableList<Tag> = mutableListOf(),
     val active: Boolean = false,
-)
+) : BaseEntity()
