@@ -46,4 +46,11 @@ class SdkKeyService(
         key = key.replace("-", "")
         return key
     }
+
+    fun getSdkKeyForOverview(memberId: Long): Map<String, String> {
+        val sdkKey = sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(memberId) ?: throw BaseException(
+            ResponseCode.SDK_KEY_NOT_FOUND
+        )
+        return mapOf("sdkKey" to sdkKey.key)
+    }
 }

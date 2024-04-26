@@ -9,4 +9,6 @@ interface SdkKeyRepository : JpaRepository<SdkKey, Long> {
     fun findByMemberMemberId(memberId: Long): List<SdkKey>
 
     fun findByKey(key: String): SdkKey?
+
+    fun findByMemberMemberIdAndDeletedAtIsNull(memberId: Long): SdkKey?
 }
