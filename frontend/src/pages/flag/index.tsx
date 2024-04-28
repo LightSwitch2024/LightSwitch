@@ -74,6 +74,8 @@ const FlagDetail = () => {
    * flagId를 통해 마운트 시 해당 flag의 상세 정보를 가져옴
    */
   useEffect(() => {
+    if (flagId === undefined || flagId === null) return;
+
     getFlagDetail<FlagDetailItem>(
       Number(flagId),
       (data: FlagDetailItem) => {
