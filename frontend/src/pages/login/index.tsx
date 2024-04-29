@@ -6,22 +6,21 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import axios from '@/api/axios';
 import { logIn } from '@/api/userDetail/userAxios';
 import * as L from '@/pages/login/indexStyle';
-import { AuthAtom, isLoginSelector } from '@/recoil/AuthAtom';
+import { AuthAtom, isLogInSelector } from '@/recoil/AuthAtom';
 
 const LogIn = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const isLogIn = useRecoilValue(isLoginSelector);
+  const isLogIn = useRecoilValue(isLogInSelector);
   const setLogInFlag = useSetRecoilState(AuthAtom);
 
-  function handleEmail() {
-    setEmail(email);
-  }
+  const handleEmail = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setEmail(e.target.value);
+  };
 
-  function handlePassword() {
-    setPassword(password);
-  }
-
+  const handlePassword = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setPassword(e.target.value);
+  };
   const navigate = useNavigate();
 
   /**
@@ -36,23 +35,21 @@ const LogIn = () => {
       },
       (data) => {
         console.log(data);
-        setLogInFlag(true);
         navigate('/');
       },
       (err) => {
         console.log(err);
-        setLogInFlag(false);
       },
     );
   };
 
-  useEffect(() => 
-  if (isLogIn) {
-    return
-  } else {
-    navigate('/login');
-  },[])
- 
+  useEffect(() => {
+    if (isLogIn) {
+      return;
+    } else {
+      navigate('/login');
+    }
+  }, []);
 
   return (
     <L.LogInLayout>

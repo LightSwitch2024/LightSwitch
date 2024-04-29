@@ -25,7 +25,7 @@ export async function logIn<T>(
   onFail: (err: AxiosError) => void,
 ): Promise<void> {
   axios
-    .post<BaseResponse<T>>('/api/v1/user', data)
+    .post<BaseResponse<T>>('/api/v1/user/login', data)
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
     .catch((err: AxiosError) => onFail(err));
 }
