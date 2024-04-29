@@ -5,9 +5,10 @@ import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.domain.flag.dto.VariationDto
 import com.lightswitch.core.domain.flag.dto.req.FlagInitRequestDto
 import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
-import com.lightswitch.core.domain.flag.dto.res.FlagInitResponseDto
 import com.lightswitch.core.domain.flag.dto.res.FlagResponseDto
 import com.lightswitch.core.domain.flag.dto.res.FlagSummaryDto
+import com.lightswitch.core.domain.flag.dto.res.FlagInitResponseDto
+import com.lightswitch.core.domain.flag.dto.res.FlagIdResponseDto
 import com.lightswitch.core.domain.flag.dto.res.TagResponseDto
 import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.flag.repository.TagRepository
@@ -18,6 +19,9 @@ import com.lightswitch.core.domain.flag.repository.entity.Variation
 import com.lightswitch.core.domain.flag.repository.queydsl.FlagCustomRepository
 import com.lightswitch.core.domain.member.entity.SdkKey
 import com.lightswitch.core.domain.member.repository.SdkKeyRepository
+import com.lightswitch.core.domain.sse.dto.SseDto
+import com.lightswitch.core.domain.sse.service.SseService
+import com.lightswitch.core.util.toJson
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -39,7 +43,10 @@ class FlagService(
     private var flagCustomRepository: FlagCustomRepository,
 
     @Autowired
-    private var sdkKeyRepository: SdkKeyRepository
+    private var sdkKeyRepository: SdkKeyRepository,
+
+    @Autowired
+    private var sseService: SseService,
 ) {
 
     fun createFlag(flagRequestDto: FlagRequestDto): FlagResponseDto {
@@ -93,6 +100,26 @@ class FlagService(
             )
             variationRepository.save(savedVariation)
         }
+
+        val flagInitResponseDto = FlagInitResponseDto(
+            flagId = savedFlag.flagId!!,
+            title = savedFlag.title,
+            description = savedFlag.description,
+            type = savedFlag.type,
+            defaultValue = defaultVariation.value,
+            defaultValuePortion = defaultVariation.portion,
+            defaultValueDescription = defaultVariation.description,
+            variations = variations,
+            maintainerId = savedFlag.maintainerId,
+
+            createdAt = savedFlag.createdAt.toString(),
+            updatedAt = savedFlag.updatedAt.toString(),
+            deleteAt = savedFlag.deletedAt.toString(),
+            active = savedFlag.active,
+        )
+
+        // Todo craete한 User의 SDK키를 이용하여 SSE 데이터 전송
+        sseService.sendData(SseDto("1234", SseDto.SseType.CREATE, toJson(flagInitResponseDto)))
 
         return this.getFlag(savedFlag.flagId!!)
     }
@@ -208,12 +235,19 @@ class FlagService(
             it.delete()
         }
 
+        // Todo craete한 User의 SDK키를 이용하여 SSE 데이터 전송
+        sseService.sendData(SseDto("1234", SseDto.SseType.DELETE, toJson(FlagIdResponseDto(flagId))))
+
         return flag.flagId ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
     }
 
     fun switchFlag(flagId: Long): Long {
         val flag = flagRepository.findById(flagId).get()
         flag.active = !flag.active
+
+        // Todo craete한 User의 SDK키를 이용하여 SSE 데이터 전송
+        sseService.sendData(SseDto("1234", SseDto.SseType.SWITCH, toJson(FlagIdResponseDto(flagId))))
+
         return flagRepository.save(flag).flagId ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
     }
 
@@ -277,6 +311,24 @@ class FlagService(
             )
             variationRepository.save(updatedVariation)
         }
+
+        // Todo craete한 User의 SDK키를 이용하여 SSE 데이터 전송
+        val flagInitResponseDto = FlagInitResponseDto(
+            flagId = flag.flagId!!,
+            title = flag.title,
+            description = flag.description,
+            type = flag.type,
+            defaultValue = defaultVariation.value,
+            defaultValuePortion = defaultVariation.portion,
+            defaultValueDescription = defaultVariation.description,
+            variations = flagRequestDto.variations,
+            maintainerId = flag.maintainerId,
+            createdAt = flag.createdAt.toString(),
+            updatedAt = flag.updatedAt.toString(),
+            deleteAt = flag.deletedAt.toString(),
+            active = flag.active,
+        )
+        sseService.sendData(SseDto("1234", SseDto.SseType.UPDATE, toJson(flagInitResponseDto)))
 
         return this.getFlag(flag.flagId!!)
     }
