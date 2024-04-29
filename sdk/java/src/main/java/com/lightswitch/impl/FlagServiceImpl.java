@@ -1,7 +1,7 @@
 package com.lightswitch.impl;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.net.HttpURLConnection.*;
+import static java.nio.charset.StandardCharsets.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,6 +13,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.lightswitch.domain.Context;
 import com.lightswitch.domain.Flag;
 import com.lightswitch.domain.Flags;
 import com.lightswitch.exception.FlagRuntimeException;
@@ -59,7 +60,8 @@ public class FlagServiceImpl implements FlagService {
 			}
 
 			Gson gson = new Gson();
-			Type listType = new TypeToken<List<Flag>>() {}.getType();
+			Type listType = new TypeToken<List<Flag>>() {
+			}.getType();
 			List<Flag> flags = gson.fromJson(response.toString(), listType);
 
 			Flags.addAllFlags(flags);
@@ -131,11 +133,15 @@ public class FlagServiceImpl implements FlagService {
 		if (connection != null) {
 			connection.disconnect();
 		}
+		//todo. Caching된 Flags 초기화
 	}
 
 	@Override
-	public void getFlag() {
-
+	public Object getFlag(String key, Context context) {
+		//todo. 세 번째 인자 default 값 추가하기
+		Flag flag = Flags.getFlag(key).orElseThrow(FlagRuntimeException::new);
+		Object value = flag.getValue(context);
+		return value;
 	}
 
 	public static void main(String[] args) {

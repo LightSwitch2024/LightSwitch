@@ -4,6 +4,7 @@ package com.lightswitch.domain;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class Flags {
 
@@ -19,8 +20,8 @@ public class Flags {
 		}
 	}
 
-	public static Flag getFlag(String flagKey) {
-		return flags.get(flagKey);
+	public static Optional<Flag> getFlag(String flagKey) {
+		return Optional.ofNullable(flags.get(flagKey));
 	}
 
 	/**

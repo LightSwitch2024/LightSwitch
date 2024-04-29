@@ -2,6 +2,8 @@ package com.lightswitch.domain;
 
 import java.util.List;
 
+import com.lightswitch.util.HashUtil;
+
 public class Flag {
 
 	private Long flagId;
@@ -18,6 +20,21 @@ public class Flag {
 	public List<Variation> getVariations() {
 		return variations;
 	}
+
+	public Object getValue(Context context) {
+		double percentage = HashUtil.getHashedPercentage(String.valueOf(context.getUserId()), 1);
+
+		for (Variation variation : variations) {
+			int portion = variation.getPortion();
+
+			percentage -= portion;
+			if(percentage < 0){
+				return variation.getValue();
+			}
+		}
+		return null;
+	}
+
 
 	@Override
 	public String toString() {

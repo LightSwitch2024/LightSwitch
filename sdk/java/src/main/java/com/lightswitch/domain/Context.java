@@ -12,6 +12,10 @@ public class Context {
 		this.property = builder.property;
 	}
 
+	public int getUserId() {
+		return userId;
+	}
+
 	public static class Builder {
 		private final int userId;
 		private final Map<String, String> property;

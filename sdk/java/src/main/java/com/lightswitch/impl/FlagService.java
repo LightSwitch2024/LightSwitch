@@ -1,5 +1,7 @@
 package com.lightswitch.impl;
 
+import com.lightswitch.domain.Context;
+
 public interface FlagService {
 
 	void init(String sdkKey);
@@ -8,6 +10,6 @@ public interface FlagService {
 
 	void destroy();
 
-	void getFlag();
+	Object getFlag(String key, Context context);
 
 }
