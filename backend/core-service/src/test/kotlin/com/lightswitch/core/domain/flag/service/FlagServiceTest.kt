@@ -217,6 +217,29 @@ class FlagServiceTest {
     @Test
     fun `Flag 전체 조회`() {
         // given
+        val tag1 = TagRequestDto(
+            colorHex = "#FFFFFF",
+            content = "test"
+        )
+
+        val flagRequestDto = FlagRequestDto(
+            title = "test",
+            tags = listOf(tag1),
+            description = "test",
+            type = FlagType.BOOLEAN,
+            defaultValue = "TRUE",
+            defaultValuePortion = 100,
+            defaultValueDescription = "test",
+            variations = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test",
+                )
+            ),
+            userId = 1L
+        )
+        flagService.createFlag(flagRequestDto)
 
         // when
         val flagList = flagService.getAllFlag()
