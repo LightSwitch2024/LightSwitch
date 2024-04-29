@@ -1,18 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 
-// import { useSetRecoilState } from 'recoil';
-import axios from '@/api/axios';
 import { logIn } from '@/api/userDetail/userAxios';
-import * as L from '@/pages/login/indexStyle';
-import { AuthAtom, isLogInSelector } from '@/recoil/AuthAtom';
+import * as L from '@/pages/user/loginStyle';
+import { AuthAtom } from '@/recoil/AuthAtom';
 
 const LogIn = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const isLogIn = useRecoilValue(isLogInSelector);
-  const setLogInFlag = useSetRecoilState(AuthAtom);
+
+  const setAuthState = useSetRecoilState(AuthAtom);
+  const navigate = useNavigate();
 
   const handleEmail = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setEmail(e.target.value);
@@ -21,11 +20,6 @@ const LogIn = () => {
   const handlePassword = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setPassword(e.target.value);
   };
-  const navigate = useNavigate();
-
-  /**
-     "로그인" 버튼 클릭 이벤트 핸들러
-   */
 
   const onClickLogIn = (): void => {
     logIn(
@@ -35,6 +29,7 @@ const LogIn = () => {
       },
       (data) => {
         console.log(data);
+        setAuthState({ isAuthenticated: true, user: { user: `${data}` } });
         navigate('/');
       },
       (err) => {
@@ -42,14 +37,6 @@ const LogIn = () => {
       },
     );
   };
-
-  useEffect(() => {
-    if (isLogIn) {
-      return;
-    } else {
-      navigate('/login');
-    }
-  }, []);
 
   return (
     <L.LogInLayout>
@@ -61,7 +48,6 @@ const LogIn = () => {
             value={email}
             onChange={handleEmail}
           />
-          {email && <L.LogInWarnText>이메일을 입력해주세요</L.LogInWarnText>}
         </L.LogInInputBox>
         <L.LogInInputBox>
           <L.LogInInput

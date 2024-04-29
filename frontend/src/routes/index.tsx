@@ -4,10 +4,10 @@ import * as S from '@routes/indexStyle';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import FlagDetail from '@/pages/flag/index';
-import LogIn from '@/pages/login/index';
 import Main from '@/pages/main/index';
 import UserDetail from '@/pages/mypage/index';
 import SignUp from '@/pages/signup/index';
+import LogIn from '@/pages/user/login';
 
 const Router = () => (
   <div>
@@ -19,7 +19,7 @@ const Router = () => (
           <Route path="/" element={<Main />} />
           <Route path="/create" element={<CreateFlag />} />
           <Route path="/flag/:flagId" element={<FlagDetail />} />
-          <Route path="/logIn" element={<LogIn />} />
+          <Route path="/login" element={<LogIn />} />
           <Route path="/mypage" element={<UserDetail />} />
         </Routes>
       </BrowserRouter>
