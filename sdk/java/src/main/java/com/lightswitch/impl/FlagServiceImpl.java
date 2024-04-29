@@ -118,6 +118,25 @@ public class FlagServiceImpl implements FlagService {
 		System.out.println("Received data: " + flag.toString() + ", number: " + flag.getTitle());
 	}
 
+	@Override
+	public void destroy() {
+		if (thread != null) {
+			thread.interrupt();
+			try {
+				thread.join();
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+		}
+		if (connection != null) {
+			connection.disconnect();
+		}
+	}
+
+	@Override
+	public void getFlag() {
+
+	}
 
 	public static void main(String[] args) {
 		FlagService flagService = FlagServiceImpl.getInstance();
@@ -129,5 +148,7 @@ public class FlagServiceImpl implements FlagService {
 		} catch (InterruptedException ie) {
 			Thread.currentThread().interrupt();
 		}
+
+		flagService.destroy();
 	}
 }
