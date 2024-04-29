@@ -13,6 +13,9 @@ export interface Logger {
 }
 
 export type ErrorCallback = (error: any) => void;
+export interface userKey {
+  userKey: string;
+}
 
 export interface SdkConfig {
   sdkKey: string;

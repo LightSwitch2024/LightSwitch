@@ -15,7 +15,7 @@ export async function getRequest(url: string): Promise<any> {
 }
 
 // POST 요청
-export async function postRequest(url: string, data: any): Promise<any> {
+export async function postRequest(url: string, data?: any): Promise<any> {
   try {
     const response = await fetch(url, {
       method: 'POST',

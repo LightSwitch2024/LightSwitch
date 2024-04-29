@@ -1,17 +1,7 @@
-import {
-  SdkConfig,
-  LogLevel,
-  ApiResponse,
-  Flag,
-  ErrorCallback,
-  FlagErrorCallback,
-  FlagChangedCallback,
-} from './types';
+import { SdkConfig, LogLevel, ApiResponse, Flag, ErrorCallback, userKey } from './types';
 import { LSLogger } from './LSLogger';
 import { getRequest, postRequest } from './utils';
-import _EventSource from 'reconnecting-eventsource';
 import ReconnectingEventSource from 'reconnecting-eventsource';
-import { error } from 'console';
 
 const IS_DEV = true;
 
@@ -27,8 +17,7 @@ const SDK_KEY_NOT_FOUND = 3001;
 
 const INIT_REQUEST_PATH = SERVER_URL + '/api/v1/sdk/init';
 const FEATURE_REQUEST_PATH = SERVER_URL + '/api/v1/feature';
-const SSE_CONNECT_PATH = '/api/sse/subscribe/';
-const SSE_RECEIVE_PATH = '/api/sse/publish/';
+const SSE_CONNECT_PATH = SERVER_URL + '/api/v1/sse/subscribe';
 
 class LSClient {
   private isInitialized = false;
@@ -38,6 +27,7 @@ class LSClient {
   private flags: Record<string, any> = {};
   private onError: null | ErrorCallback = null;
   private eventSource: null | ReconnectingEventSource = null;
+  private userKey = '';
   public async init(config: SdkConfig): Promise<void> {
     const { sdkKey, logLevel, onError } = config;
     this.sdkKey = sdkKey;
@@ -49,12 +39,24 @@ class LSClient {
     if (onError) {
       this.onError = onError;
     }
+
     await this.getInitData();
 
-    this.eventSource = new ReconnectingEventSource(
-      SERVER_URL + SSE_CONNECT_PATH + this.sdkKey,
-    );
+    await this.getUserKey();
 
+    this.eventSource = new ReconnectingEventSource(
+      SSE_CONNECT_PATH + '/' + this.userKey,
+      {
+        // indicating if CORS should be set to include credentials, default `false`
+        withCredentials: true,
+        // the maximum time to wait before attempting to reconnect in ms, default `3000`
+        // note: wait time is randomised to prevent all clients from attempting to reconnect simultaneously
+        max_retry_time: 3000,
+        // underlying EventSource class, default `EventSource`
+        eventSourceClass: EventSource,
+      },
+    );
+    this.onFlagChanged(() => {});
     this.isInitialized = true;
     logger.info('success to initialize client sdk');
   }
@@ -70,6 +72,21 @@ class LSClient {
 
       logger.info(response.data);
       logger.info(`receive init data : ${JSON.stringify(response)}`);
+    } catch (error) {
+      this.onError?.(error);
+    }
+  }
+  private async getUserKey(): Promise<void> {
+    try {
+      logger.info(this.sdkKey);
+      const response: ApiResponse<userKey> = await postRequest(
+        `${SSE_CONNECT_PATH}?sdkKey=${this.sdkKey}`,
+      );
+      if (response.code == SDK_KEY_NOT_FOUND) {
+        throw new Error(response.message);
+      }
+      this.userKey = response.data.userKey;
+      logger.info(`receive userKey data : ${JSON.stringify(response)}`);
     } catch (error) {
       this.onError?.(error);
     }
@@ -92,9 +109,8 @@ class LSClient {
 
   // 실제 동작을 구현해야 함
   public onFlagChanged(callback: () => void): void {
-    this.eventSource?.addEventListener('sse', (event) => {
-      const data = JSON.parse(event.data);
-      console.log(`receive flag changed ${data.message}`);
+    this.eventSource?.addEventListener('sse', (event: MessageEvent) => {
+      console.log(`receive flag changed ${event.data}`);
 
       // Implement the functionality
       callback();
@@ -103,7 +119,7 @@ class LSClient {
 
   public onFlagError(cb: (error: any) => void): void {
     if (this.eventSource) {
-      this.eventSource.onerror = (err) => {
+      this.eventSource.onerror = (err: any) => {
         this.eventSource?.close();
         cb(err);
       };

@@ -4,7 +4,7 @@ import LSClient from "lightswitch-js-sdk";
 function App() {
   const b = new LSClient();
   b.init({
-    sdkKey: "0801d3c5e29b4fc3bbfe9023716891b8",
+    sdkKey: "9b6f067feca74f4391b8f9c7b74b1260",
     onError: (err) => {
       console.log(err);
     },
@@ -17,12 +17,7 @@ function App() {
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
           Learn React
         </a>
       </header>
