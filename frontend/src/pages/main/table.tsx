@@ -5,7 +5,6 @@ import FirstPageIcon from '@mui/icons-material/FirstPage';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import {
   Box,
-  FormControlLabel,
   IconButton,
   Paper,
   styled,
@@ -19,11 +18,10 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  ToggleButton,
   useTheme,
 } from '@mui/material';
 import * as S from '@pages/main/indexStyle';
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface FlagListItem {
