@@ -1,5 +1,6 @@
 package com.lightswitch.core.domain.member.entity
 
+import com.lightswitch.core.common.entity.BaseEntity
 import jakarta.persistence.*
 
 @Entity(name = "member")
@@ -15,4 +16,4 @@ class Member(
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     var sdkKeys: MutableList<SdkKey> = mutableListOf()
-)
+) : BaseEntity()

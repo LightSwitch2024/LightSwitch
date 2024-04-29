@@ -14,7 +14,7 @@ module.exports = {
     },
     'import/resolver': {
       node: {
-        paths: ['src'],
+        paths: ['lib'],
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
     },
