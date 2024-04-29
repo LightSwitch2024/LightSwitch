@@ -5,7 +5,7 @@ import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
 import com.lightswitch.core.domain.flag.dto.req.FlagInitRequestDto
 import com.lightswitch.core.domain.flag.dto.res.FlagInitResponseDto
-import com.lightswitch.core.domain.flag.dto.res.FlagInitResponseDto.*
+import com.lightswitch.core.domain.flag.dto.res.FlagInitResponseDto.VariationResponseDto
 import com.lightswitch.core.domain.flag.dto.res.FlagResponseDto
 import com.lightswitch.core.domain.flag.dto.res.FlagSummaryDto
 import com.lightswitch.core.domain.flag.dto.res.TagResponseDto

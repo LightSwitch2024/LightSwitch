@@ -8,10 +8,8 @@ import com.lightswitch.core.domain.member.dto.req.SdkKeyReqDto
 import com.lightswitch.core.domain.member.entity.Member
 import com.lightswitch.core.domain.member.repository.MemberRepository
 import com.lightswitch.core.domain.member.repository.SdkKeyRepository
-import com.lightswitch.core.domain.member.service.MemberService
 import com.lightswitch.core.domain.member.service.SdkKeyService
 import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -19,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Transactional
 @SpringBootTest
-class `Flag-SdkInitTest`(
+class FlagSdkInitTest(
     @Autowired
     private val flagService: FlagService,
 
