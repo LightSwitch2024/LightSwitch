@@ -4,15 +4,16 @@ import com.lightswitch.core.domain.flag.repository.TagRepository
 import com.lightswitch.core.domain.flag.repository.entity.Tag
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.transaction.annotation.Transactional
 
+@Transactional
 @SpringBootTest
 class TagServiceTest {
     @Autowired
     private lateinit var tagService: TagService
+
     @Autowired
     private lateinit var tagRepository: TagRepository
 

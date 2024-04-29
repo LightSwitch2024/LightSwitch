@@ -1,8 +1,9 @@
 package com.lightswitch.core.domain.flag.service
 
 import com.lightswitch.core.domain.flag.common.enum.FlagType
-import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
+import com.lightswitch.core.domain.flag.dto.VariationDto
 import com.lightswitch.core.domain.flag.dto.req.FlagInitRequestDto
+import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
 import com.lightswitch.core.domain.flag.dto.req.TagRequestDto
 import com.lightswitch.core.domain.member.dto.req.SdkKeyReqDto
 import com.lightswitch.core.domain.member.entity.Member
@@ -36,7 +37,7 @@ class FlagSdkInitTest(
             firstName = "동훈",
             lastName = "김",
             telNumber = "01012345678",
-            email = "test@gmail.com",
+            email = "huni19541@gmail.com",
             password = "1234"
         )
         memberRepository.save(member)
@@ -69,9 +70,14 @@ class FlagSdkInitTest(
             defaultValue = "TRUE",
             defaultValuePortion = 100,
             defaultValueDescription = "test",
-            variation = "FALSE",
-            variationPortion = 0,
-            variationDescription = "test",
+            variations = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test"
+
+                )
+            ),
             userId = memberId!!
         )
         flagService.createFlag(flagRequestDto)
@@ -84,9 +90,18 @@ class FlagSdkInitTest(
             defaultValue = "1",
             defaultValuePortion = 80,
             defaultValueDescription = "1 test",
-            variation = "2",
-            variationPortion = 20,
-            variationDescription = "2 test",
+            variations = listOf(
+                VariationDto(
+                    value = "2",
+                    portion = 10,
+                    description = "2 test"
+                ),
+                VariationDto(
+                    value = "3",
+                    portion = 10,
+                    description = "3 test"
+                )
+            ),
             userId = memberId
         )
         flagService.createFlag(flagRequestDto2)
@@ -99,9 +114,23 @@ class FlagSdkInitTest(
             defaultValue = "A",
             defaultValuePortion = 10,
             defaultValueDescription = "A test",
-            variation = "B",
-            variationPortion = 90,
-            variationDescription = "B test",
+            variations = listOf(
+                VariationDto(
+                    value = "B",
+                    portion = 40,
+                    description = "B test"
+                ),
+                VariationDto(
+                    value = "C",
+                    portion = 40,
+                    description = "C test"
+                ),
+                VariationDto(
+                    value = "D",
+                    portion = 10,
+                    description = "D test"
+                )
+            ),
             userId = memberId
         )
         flagService.createFlag(flagRequestDto3)
