@@ -2,30 +2,38 @@ package com.lightswitch.core.domain.jpatest.service
 
 import com.lightswitch.core.domain.jpatest.entity.JpaTest
 import com.lightswitch.core.domain.jpatest.entity.JpaTestFetch
+import com.lightswitch.core.domain.jpatest.repository.JpaTestFetchRepository
 import com.lightswitch.core.domain.jpatest.repository.JpaTestRepository
 import jakarta.transaction.Transactional
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-class JpaTestServiceTest (
+class JpaTestServiceTest(
     @Autowired private var jpaTestService: JpaTestService,
     @Autowired private var jpaTestFetchService: JpaTestFetchService,
-    @Autowired private var jpaTestRepository: JpaTestRepository
+    @Autowired private var jpaTestRepository: JpaTestRepository,
+    @Autowired private var jpaTestFetchRepository: JpaTestFetchRepository
+
 ) {
-//    @BeforeEach
+    @BeforeEach
     fun setUp() {
-        jpaTestService.deleteAll()
-        jpaTestFetchService.deleteAll()
+        jpaTestRepository.deleteAll()
+        jpaTestFetchRepository.deleteAll()
+
+        println("============ Before Fetch ==================")
     }
 
     @Test
     @DisplayName("JpaTest 추가 테스트")
     fun addJpaTest() {
-        val jpaTestFetch = jpaTestFetchService.findByName("testFetch").stream().findFirst().get()
+        val jpaTestFetch = JpaTestFetch(name = "testFetch")
+        jpaTestFetchRepository.save(jpaTestFetch)
+        jpaTestFetchService.findByName("testFetch").stream().findFirst().get()
         val jpaTest = JpaTest(name = "test", jpaTestFetch = jpaTestFetch)
         val result = jpaTestService.addJpaTest(jpaTest)
         assertThat(result.name).isEqualTo(jpaTest.name)
@@ -50,9 +58,15 @@ class JpaTestServiceTest (
     @Test
     @DisplayName("fetch lazy 테스트")
     fun addFetchLazy() {
-        val jpaTest = jpaTestRepository.findById(1L).get()
+        val jpaTestFetch = JpaTestFetch(name = "testFetch2222")
+        val savedJpaTestFetch = jpaTestFetchRepository.save(jpaTestFetch)
+
+        val jpaTest: JpaTest = JpaTest(name = "test", jpaTestFetch = savedJpaTestFetch)
+        jpaTestRepository.save(jpaTest)
+
+        val findJpaTest: JpaTest = jpaTestRepository.findByName("test").first()
         println("============ Before Fetch ==================")
-        val testName = jpaTest.jpaTestFetch.name
+        val testName: String = findJpaTest.jpaTestFetch.name
         println("============ After Fetch ==================")
         print(testName)
     }

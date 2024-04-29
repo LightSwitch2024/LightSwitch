@@ -1,34 +1,41 @@
+server:
+  port: 8000
+  servlet:
+    context-path: /api
 spring:
   application:
     name: core-service
-  datasource:
-    url: jdbc:postgresql://15.165.127.196:5432/testdb
-    username: testuser
-    password: 1234
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: update
+  profiles:
+    active: dev
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: lightswitch2024@gmail.com
+    password: vqzwtrcffaseolyt
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  data:
+    redis:
+      port: 6379
+      password: switchlight2024!
+      code:
+        signup: signup-authentication-code
 
-    show-sql: true
-#logging
-logging:
-  file:
-    name: "./core-service.log"
-  level:
-    org.hibernate.SQL: INFO
-    org.hibernate.orm.jdbc.bind: trace
-    root: INFO
-    com:
-      lightswitch:
-        core: DEBUG
-    org:
-      springframework:
-        web: INFO
-        apache:
-          tiles: DEBUG
-        springframework:
-          boot: DEBUG
-          security: DEBUG
+#actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - info
+          - health
+          - loggers
+          - mappings
+          - metrics
+          - shutdown
+          - prometheus

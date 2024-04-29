@@ -6,6 +6,6 @@ import org.springframework.boot.runApplication
 @SpringBootApplication
 class CoreServiceApplication
 
-fun main(args: Array<String>) {
-	runApplication<CoreServiceApplication>(*args)
+fun main(vararg args: String) {
+    runApplication<CoreServiceApplication>(*args)
 }

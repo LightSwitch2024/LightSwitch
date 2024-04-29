@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이메일 주소 인증</title>
+    <style>
+        body {
+            background-color: #000000;
+            margin: 0 auto;
+            max-width: 600px;
+            word-break: break-all;
+            padding-top: 50px;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+        }
+        .logo {
+            width: 150px;
+            margin: 0 auto;
+            display: block;
+        }
+        h1 {
+            padding-top: 50px;
+            font-size: 30px;
+        }
+        p {
+            padding-top: 20px;
+            font-size: 18px;
+            opacity: 0.6;
+            line-height: 30px;
+            font-weight: 400;
+        }
+        .code-box {
+            margin-top: 50px;
+            padding-top: 20px;
+            color: #ffffff;
+            padding-bottom: 20px;
+            font-size: 25px;
+            text-align: center;
+            background-color: #009688;
+            border-radius: 10px;
+            user-select: all; /* 텍스트 선택 가능하도록 설정 */
+            -webkit-user-select: all; /* Safari 및 기타 브라우저 지원 */
+            -moz-user-select: all; /* Firefox 지원 */
+            -ms-user-select: all; /* IE 지원 */
+        }
+    </style>
+</head>
+<body>
+<img class="logo" src="cid:image" alt="LightSwitch 로고">
+<h1>이메일 주소 인증</h1>
+<p>
+    안녕하세요? LightSwitch 관리자 입니다.<br>
+    LightSwitch 서비스 사용을 위해 회원가입시 고객님께서 입력하신 이메일 주소의 인증이 필요합니다.<br>
+    하단의 인증 번호로 이메일 인증을 완료하시면, 정상적으로 LightSwitch 서비스를 이용하실 수 있습니다.<br>
+    항상 최선의 노력을 다하는 LightSwitch가 되겠습니다.<br>
+    감사합니다.
+</p>
+<div class="code-box">
+    %s <!-- 인증 번호가 여기에 들어갈 예정입니다 -->
+</div>
+</body>
+</html>

@@ -1,0 +1,40 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://lightswitch_db:5432/lightswitch
+    username: lightswitch2024
+    password: switchlight2024!
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+
+    show-sql: true
+  data:
+    redis:
+      host: redis
+
+
+#logging
+logging:
+  file:
+    name: "./core-service.log"
+  level:
+    org.hibernate.SQL: INFO
+    org.hibernate.orm.jdbc.bind: trace
+    root: INFO
+    com:
+      lightswitch:
+        core: DEBUG
+    org:
+      springframework:
+        web: INFO
+        apache:
+          tiles: DEBUG
+        springframework:
+          boot: DEBUG
+          security: DEBUG
+
+server:
+  forward-headers-strategy: framework

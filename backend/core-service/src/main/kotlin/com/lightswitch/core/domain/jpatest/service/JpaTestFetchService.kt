@@ -5,7 +5,7 @@ import com.lightswitch.core.domain.jpatest.repository.JpaTestFetchRepository
 import org.springframework.stereotype.Service
 
 @Service
-class JpaTestFetchService (
+class JpaTestFetchService(
     private val jpaTestFetchRepository: JpaTestFetchRepository
 ) {
 

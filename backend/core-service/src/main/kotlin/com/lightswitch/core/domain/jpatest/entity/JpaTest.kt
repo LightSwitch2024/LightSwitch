@@ -3,7 +3,7 @@ package com.lightswitch.core.domain.jpatest.entity
 import jakarta.persistence.*
 
 @Entity(name = "jpa_test")
-class JpaTest (
+class JpaTest(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val jpaTestId: Long? = null,

@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface JpaTestFetchRepository: JpaRepository<JpaTestFetch, Long> {
+interface JpaTestFetchRepository : JpaRepository<JpaTestFetch, Long> {
     fun findByName(name: String): List<JpaTestFetch>
 }

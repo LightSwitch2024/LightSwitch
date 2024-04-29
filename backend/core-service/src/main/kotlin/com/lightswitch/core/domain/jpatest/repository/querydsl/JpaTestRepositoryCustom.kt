@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository
 interface JpaTestRepositoryCustom {
     fun findByName(name: String): List<JpaTest>
 
-    fun findByIdAndName(id: Long, name: String): List<JpaTest>
 }
