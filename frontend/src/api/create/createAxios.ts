@@ -12,6 +12,12 @@ interface TagItem {
   colorHex: string;
 }
 
+interface Variation {
+  value: string;
+  portion: number | '';
+  description: string;
+}
+
 interface FlagItem {
   title: string;
   tags: Array<TagItem>;
@@ -20,9 +26,7 @@ interface FlagItem {
   defaultValue: string;
   defaultValuePortion: number;
   defaultValueDescription: string;
-  variation: string;
-  variationPortion: number;
-  variationDescription: string;
+  variations: Array<Variation>;
 
   userId: number;
 }

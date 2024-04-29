@@ -62,7 +62,14 @@ const index = () => {
   return (
     <>
       {isModalOpened &&
-        createPortal(<CreateModal closeCreateModal={closeCreateModal} />, document.body)}
+        createPortal(
+          <CreateModal
+            closeCreateModal={closeCreateModal}
+            mode={'create'}
+            flagDetail={undefined}
+          />,
+          document.body,
+        )}
       <S.MainTitleComponent>
         <S.imageContainer>
           <S.imageLunitLogo path={LunitLogo} />

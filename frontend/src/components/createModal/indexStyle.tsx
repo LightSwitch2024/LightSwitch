@@ -26,6 +26,16 @@ export const Modal = styled.div`
   left: 0;
 `;
 
+export const DetailLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+  // align-items: center;
+  // justify-content: center;
+  // gap: 0.625rem;
+  // width: 100%;
+  // height: 100%;
+`;
+
 export const ModalInputForm = styled.div`
   color: #fff;
   width: 60%;

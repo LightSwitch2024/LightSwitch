@@ -16,7 +16,7 @@ class SseServiceTest(
     fun `SDK Key로 User Key 생성`() {
         val sdkKey = "0801d3c5e29b4fc3bbfe9023716891b8"
 
-        val userKey = sseService.createUserKey(sdkKey)
+        val userKey = sseService.createUserKey(sdkKey).userKey
 
         println(userKey)
         assertThat(userKey).isNotBlank()
