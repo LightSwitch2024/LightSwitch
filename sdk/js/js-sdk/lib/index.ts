@@ -1,3 +1,3 @@
-import LSClient from './LSClient.js';
+import LSClient from './LSClient';
 
 export default LSClient;
