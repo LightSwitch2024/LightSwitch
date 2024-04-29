@@ -1,6 +1,7 @@
 import LunitLogo from '@assets/LunitLogo.png';
 import { Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 import { getMainPageOverview } from '@/api/main/mainAxios';
 import CopyButton from '@/assets/content-copy.svg?react';
@@ -9,6 +10,7 @@ import FilledFlag from '@/assets/flag.svg?react';
 import OutlinedFlag from '@/assets/outlined-flag.svg?react';
 import SdkKey from '@/assets/sdk-key.svg?react';
 import SearchIcon from '@/assets/search.svg?react';
+import CreateModal from '@/components/createModal';
 import * as S from '@/pages/main/indexStyle';
 import FlagTable from '@/pages/main/table';
 
@@ -22,6 +24,7 @@ const index = () => {
   const [sdkKey, setSdkKey] = useState<string>('');
   const [totalFlags, setTotalFlags] = useState<number>(0);
   const [activeFlags, setActiveFlags] = useState<number>(0);
+  const [isModalOpened, setIsModalOpened] = useState(false);
 
   /**
    * 화면 마운트 시 필요한 정보 가져오기
@@ -42,8 +45,24 @@ const index = () => {
     );
   }, []);
 
+  const html = document.querySelector('html');
+  const openCreateModal = () => {
+    setIsModalOpened(true);
+    html?.classList.add('scroll-locked');
+  };
+
+  const closeCreateModal = () => {
+    const closeConfirm = window.confirm('진짜 닫을거야?');
+    if (closeConfirm) {
+      setIsModalOpened(false);
+      html?.classList.remove('scroll-locked');
+    }
+  };
+
   return (
     <>
+      {isModalOpened &&
+        createPortal(<CreateModal closeCreateModal={closeCreateModal} />, document.body)}
       <S.MainTitleComponent>
         <S.imageContainer>
           <S.imageLunitLogo path={LunitLogo} />
@@ -165,7 +184,7 @@ const index = () => {
           </S.FlagNavTitleContainer>
           <S.FlagNavCreateButtonContainer>
             <S.FlagNavCreateButton>
-              <S.ButtonText>플래그 만들기</S.ButtonText>
+              <S.ButtonText onClick={() => openCreateModal()}>플래그 만들기</S.ButtonText>
             </S.FlagNavCreateButton>
           </S.FlagNavCreateButtonContainer>
         </S.TableNavContainer>

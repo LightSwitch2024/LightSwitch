@@ -1,0 +1,418 @@
+import styled from 'styled-components';
+
+export const ModalBackground = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+`;
+
+export const Modal = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 0;
+  left: 0;
+`;
+
+export const ModalInputForm = styled.div`
+  color: #fff;
+  width: 60%;
+  height: 90%;
+  background-color: #fff;
+
+  border-radius: 0.625rem;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+
+  font-size: 2rem;
+  font-weight: 800;
+
+  display: flex;
+  padding: 1.25rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.9375rem;
+  flex-shrink: 0;
+`;
+
+export const FlagTitleAndTagsLayer = styled.div`
+  display: flex;
+  width: 100%;
+  height: 10.3125rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3125rem;
+  flex-shrink: 0;
+`;
+
+export const FlagTitleInputContainer = styled.div`
+  display: flex;
+  height: 6.0625rem;
+  background-color: #bdbdbd;
+
+  padding: 0rem 0.625rem;
+  align-items: center;
+  gap: 0.625rem;
+  flex-shrink: 0;
+  align-self: stretch;
+
+  border-radius: 0.625rem;
+  border: 1px solid #000;
+  background: #fff;
+`;
+
+export const FlagTitleIconContainer = styled.div`
+  display: flex;
+  padding: 0.3125rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.625rem;
+
+  border-radius: 0.3125rem;
+  background: #f5f6f7;
+`;
+
+export const FlagTitleInput = styled.input`
+  border: none;
+  font-family: Pretendard;
+  font-size: 50px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+export const FlagTagsInputContainer = styled.div`
+  display: flex;
+  padding: 0.5rem 0.625rem;
+  align-items: center;
+  gap: 0.625rem;
+  flex: 1 0 0;
+  align-self: stretch;
+`;
+
+export const FlagTagsInputLabel = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.3125rem;
+`;
+
+export const LabelTextContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+`;
+
+export const LabelText = styled.div`
+  color: #000;
+  font-family: Pretendard;
+  font-size: 3.125rem;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
+`;
+
+export const FlagDescriptionLabel = styled.div`
+  display: flex;
+  padding: 0.5rem 0.625rem;
+  align-items: center;
+  gap: 0.625rem;
+  flex: 1 0 0;
+  align-self: stretch;
+`;
+
+export const FlagDescriptionContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.3125rem;
+`;
+
+export const FlagDescriptionIconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+`;
+
+export const FlagDescriptionTextContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+`;
+
+export const FlagDescriptionTextArea = styled.textarea`
+  display: flex;
+  height: 10.3125rem;
+  padding: 0.625rem;
+  align-items: flex-start;
+  gap: 0.625rem;
+  flex-shrink: 0;
+  align-self: stretch;
+
+  border-radius: 0.625rem;
+  border: 1px solid #000;
+  background: #fff;
+
+  color: #000;
+  font-family: Pretendard;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+
+export const FlagTypeLayer = styled.div`
+  display: flex;
+  padding: 0.5rem 0.625rem;
+  align-items: center;
+  gap: 1.25rem;
+  flex: 1 0 0;
+  align-self: stretch;
+`;
+
+export const FlagTypeLabel = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.3125rem;
+`;
+
+export const FlagTypeIconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+`;
+
+export const FlagTypeLabelTextContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+`;
+
+export const FlagTypeContainer = styled.div`
+  display: flex;
+  width: 10.625rem;
+  height: 3.125rem;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+
+  border-radius: 0.625rem;
+  background: #30c2e7;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+export const FlagTypeContentContainer = styled.div`
+  display: flex;
+  padding: 0.6875rem 0rem;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: stretch;
+`;
+
+export const FlagTypeTextContainer = styled.div`
+  display: flex;
+  padding: 0.25rem 0rem;
+  align-items: center;
+  gap: 0.625rem;
+`;
+
+export const FlagTypeEditIconContainer = styled.div`
+  display: flex;
+  padding: 0.25rem 0rem;
+  align-items: center;
+  gap: 0.625rem;
+`;
+
+export const FlagTypeText = styled.div`
+  color: #1e3232;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 0.9375rem; /* 75% */
+  letter-spacing: 0.07813rem;
+  text-transform: uppercase;
+`;
+
+export const FlagVariationLabel = styled.div`
+  display: flex;
+  padding: 0.625rem;
+  align-items: center;
+  gap: 0.625rem;
+  flex: 1 0 0;
+  align-self: stretch;
+`;
+
+export const FlagVariationContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.3125rem;
+`;
+
+export const FlagVariationIconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+`;
+
+export const FlagVariationLabelTextContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+`;
+
+export const FlagVariationContentLayer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9375rem;
+  align-self: stretch;
+`;
+
+export const FlagVariationRowContainer = styled.div`
+  display: flex;
+  width: 100%;
+  padding: 0rem 0.625rem;
+  justify-content: center;
+  align-items: center;
+  gap: 3.125rem;
+`;
+
+export const FlagVariationInput = styled.input`
+  display: flex;
+  width: 100%;
+  height: 3.75rem;
+  padding: 0.9375rem 0.75rem;
+  align-items: center;
+  gap: 0.625rem;
+  flex: 1 0 0;
+
+  border-radius: 0.625rem;
+  border: 1px solid #000;
+
+  font-family: Pretendard;
+  font-size: 1.5rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+
+export const FlagVariationDescriptionContainer = styled.div`
+  display: flex;
+  width: 100%;
+  height: 4.75rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.625rem;
+  align-self: stretch;
+`;
+
+export const FlagVariationDivisionLine = styled.div`
+  width: 98%;
+  height: 0.125rem;
+
+  background: #000;
+`;
+
+export const ButtonLayer = styled.div`
+  display: flex;
+  padding: 0.75rem 0rem;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.8125rem;
+  flex: 1 0 0;
+  align-self: stretch;
+`;
+
+export const CancelButton = styled.button`
+  display: flex;
+  padding: 1.0625rem 1.5625rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.375rem;
+
+  border-radius: 0.625rem;
+  background: #f5f6f7;
+
+  color: rgba(0, 0, 0, 0.87);
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.25rem; /* 100% */
+
+  &:hover {
+    background: #e0e0e0;
+  }
+
+  &:active {
+    background: #f5f6f7;
+  }
+`;
+
+export const ConfirmButton = styled.button`
+  display: flex;
+  padding: 1.0625rem 1.5625rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.375rem;
+
+  border-radius: 0.625rem;
+  background: #031c5b;
+
+  color: #fff;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.25rem; /* 100% */
+
+  &:hover {
+    background: #002f87;
+  }
+
+  &:active {
+    background: #031c5b;
+  }
+`;
+
+export const FlagTypeContentContainerChecked = styled.div`
+  display: flex;
+  padding: 0.6875rem 0.5rem;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: stretch;
+  background: #f5f6f7;
+
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 0.625rem;
+`;
+
+export const FlagTypeContentContainerUnchecked = styled.div`
+  display: flex;
+  padding: 0.6875rem 0.5rem;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: stretch;
+
+  border-radius: 0.625rem;
+`;

@@ -11,7 +11,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.transaction.annotation.Transactional
 
+@Transactional
 @SpringBootTest
 class SdkKeyServiceTest(
     @Autowired
@@ -40,7 +42,7 @@ class SdkKeyServiceTest(
         return memberRepository.save(member)
     }
 
-    @Test   
+    @Test
     fun `SDK Key 형식_테스트`() {
         val key = sdkKeyService.generateSdkKey()
         if (key.contains("-")) {

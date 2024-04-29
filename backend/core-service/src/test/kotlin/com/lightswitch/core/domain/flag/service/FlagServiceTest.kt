@@ -1,6 +1,7 @@
 package com.lightswitch.core.domain.flag.service
 
 import com.lightswitch.core.domain.flag.common.enum.FlagType
+import com.lightswitch.core.domain.flag.dto.VariationDto
 import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
 import com.lightswitch.core.domain.flag.dto.req.TagRequestDto
 import com.lightswitch.core.domain.flag.repository.FlagRepository
@@ -9,12 +10,12 @@ import com.lightswitch.core.domain.flag.repository.VariationRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
 
+@Transactional
 @SpringBootTest
 class FlagServiceTest {
 
@@ -29,20 +30,6 @@ class FlagServiceTest {
 
     @Autowired
     private lateinit var variationRepository: VariationRepository
-
-    @Transactional
-    @BeforeEach
-    fun setUp() {
-        variationRepository.deleteAll()
-        /*
-        * CasecadeType.ALL 설정으로 인해 Flag 삭제 시 Flag_Tag도 함께 삭제
-        * FetchLazy의 경우 영속성 컨텍스트 생존 범위 밖에서 객체 initialize가 불가능
-        * 따라서, @Transactional이 붙은 비즈니스 로직(Service)에서 사용해야 함
-        * 참고: https://zzang9ha.tistory.com/406
-        * */
-        flagService.deleteAllFlag()
-        tagRepository.deleteAll()
-    }
 
     @Test
     fun `flag 생성 test 1 _ 일반값 Boolean`() {
@@ -65,9 +52,13 @@ class FlagServiceTest {
             defaultValue = "TRUE",
             defaultValuePortion = 100,
             defaultValueDescription = "test",
-            variation = "FALSE",
-            variationPortion = 0,
-            variationDescription = "test",
+            variations = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test",
+                )
+            ),
             userId = 1L
         )
 
@@ -107,9 +98,13 @@ class FlagServiceTest {
             defaultValue = "A",
             defaultValuePortion = 100,
             defaultValueDescription = "test",
-            variation = "B",
-            variationPortion = 0,
-            variationDescription = "test",
+            variations = listOf(
+                VariationDto(
+                    value = "B",
+                    portion = 0,
+                    description = "test",
+                )
+            ),
             userId = 1L
         )
 
@@ -149,9 +144,13 @@ class FlagServiceTest {
             defaultValue = "1",
             defaultValuePortion = 100,
             defaultValueDescription = "test",
-            variation = "2",
-            variationPortion = 0,
-            variationDescription = "test",
+            variations = listOf(
+                VariationDto(
+                    value = "2",
+                    portion = 0,
+                    description = "test",
+                )
+            ),
             userId = 1L
         )
 
@@ -191,9 +190,13 @@ class FlagServiceTest {
             defaultValue = "1",
             defaultValuePortion = 100,
             defaultValueDescription = "test",
-            variation = "2",
-            variationPortion = 0,
-            variationDescription = "test",
+            variations = listOf(
+                VariationDto(
+                    value = "2",
+                    portion = 0,
+                    description = "test",
+                )
+            ),
             userId = 1L
         )
         val flagResponseDto = flagService.createFlag(flagRequestDto)
@@ -207,13 +210,36 @@ class FlagServiceTest {
         assertThat(testFlagResponseDto).isNotNull
         assertThat(testFlagResponseDto.flagId).isEqualTo(flagResponseDto.flagId)
         assertThat(testFlagResponseDto.defaultValue).isNotNull
-        assertThat(testFlagResponseDto.variation).isNotNull
+        assertThat(testFlagResponseDto.variations).isNotEmpty
         assertThat(testFlagResponseDto.tags.size).isEqualTo(2)
     }
 
     @Test
     fun `Flag 전체 조회`() {
         // given
+        val tag1 = TagRequestDto(
+            colorHex = "#FFFFFF",
+            content = "test"
+        )
+
+        val flagRequestDto = FlagRequestDto(
+            title = "test",
+            tags = listOf(tag1),
+            description = "test",
+            type = FlagType.BOOLEAN,
+            defaultValue = "TRUE",
+            defaultValuePortion = 100,
+            defaultValueDescription = "test",
+            variations = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test",
+                )
+            ),
+            userId = 1L
+        )
+        flagService.createFlag(flagRequestDto)
 
         // when
         val flagList = flagService.getAllFlag()
@@ -253,9 +279,13 @@ class FlagServiceTest {
             defaultValue = "TRUE",
             defaultValuePortion = 50,
             defaultValueDescription = "true test",
-            variation = "FALSE",
-            variationPortion = 50,
-            variationDescription = "false test",
+            variations = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 50,
+                    description = "false test",
+                )
+            ),
             userId = 1L
         )
         flagService.createFlag(flagRequestDto)
@@ -268,9 +298,18 @@ class FlagServiceTest {
             defaultValue = "1",
             defaultValuePortion = 80,
             defaultValueDescription = "1 test",
-            variation = "2",
-            variationPortion = 20,
-            variationDescription = "2 test",
+            variations = listOf(
+                VariationDto(
+                    value = "2",
+                    portion = 10,
+                    description = "2 test",
+                ),
+                VariationDto(
+                    value = "3",
+                    portion = 10,
+                    description = "3 test",
+                )
+            ),
             userId = 2L
         )
         flagService.createFlag(flagRequestDto2)
@@ -283,9 +322,18 @@ class FlagServiceTest {
             defaultValue = "A",
             defaultValuePortion = 10,
             defaultValueDescription = "A test",
-            variation = "B",
-            variationPortion = 90,
-            variationDescription = "B test",
+            variations = listOf(
+                VariationDto(
+                    value = "B",
+                    portion = 40,
+                    description = "B test",
+                ),
+                VariationDto(
+                    value = "C",
+                    portion = 50,
+                    description = "C test",
+                )
+            ),
             userId = 3L
         )
         flagService.createFlag(flagRequestDto3)
@@ -332,13 +380,27 @@ class FlagServiceTest {
             title = "test",
             tags = listOf(),
             description = "test",
-            type = FlagType.BOOLEAN,
-            defaultValue = "TRUE",
+            type = FlagType.INTEGER,
+            defaultValue = "1",
             defaultValuePortion = 50,
             defaultValueDescription = "true test",
-            variation = "FALSE",
-            variationPortion = 50,
-            variationDescription = "false test",
+            variations = listOf(
+                VariationDto(
+                    value = "2",
+                    portion = 30,
+                    description = "false test",
+                ),
+                VariationDto(
+                    value = "3",
+                    portion = 10,
+                    description = "false test",
+                ),
+                VariationDto(
+                    value = "4",
+                    portion = 10,
+                    description = "false test",
+                ),
+            ),
             userId = 1L
         )
         val createdFlag = flagService.createFlag(flagRequestDto)
@@ -348,7 +410,10 @@ class FlagServiceTest {
 
         //then
         assertThat(deletedFlagId).isEqualTo(createdFlag.flagId)
-        assertThat(flagService.getFlag(deletedFlagId).createdAt).isNotNull()
+        assertThat(flagRepository.findById(deletedFlagId).get().deletedAt).isNotNull()
+        variationRepository.findByFlagFlagId(deletedFlagId).map {
+            assertThat(it.deletedAt).isNotNull()
+        }
     }
 
     @Test
@@ -362,9 +427,13 @@ class FlagServiceTest {
             defaultValue = "TRUE",
             defaultValuePortion = 50,
             defaultValueDescription = "true test",
-            variation = "FALSE",
-            variationPortion = 50,
-            variationDescription = "false test",
+            variations = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 50,
+                    description = "false test",
+                )
+            ),
             userId = 1L
         )
         val flagId = flagService.createFlag(flagRequestDto).flagId
@@ -400,9 +469,13 @@ class FlagServiceTest {
             defaultValue = "1",
             defaultValuePortion = 100,
             defaultValueDescription = "test",
-            variation = "2",
-            variationPortion = 0,
-            variationDescription = "test",
+            variations = listOf(
+                VariationDto(
+                    value = "2",
+                    portion = 0,
+                    description = "test",
+                )
+            ),
             userId = 1L
         )
         val flagResponseDto = flagService.createFlag(flagRequestDto)
@@ -416,13 +489,22 @@ class FlagServiceTest {
                 tags = listOf(
                     tag1.copy(content = "updated"),
                 ),
-                type = FlagType.BOOLEAN,
-                defaultValue = "FALSE",
-                defaultValuePortion = 90,
-                defaultValueDescription = "updated",
-                variation = "TRUE",
-                variationPortion = 10,
-                variationDescription = "updated"
+                type = FlagType.STRING,
+                defaultValue = "A",
+                defaultValuePortion = 80,
+                defaultValueDescription = "updatedA",
+                variations = listOf(
+                    VariationDto(
+                        value = "B",
+                        portion = 10,
+                        description = "updatedB",
+                    ),
+                    VariationDto(
+                        value = "C",
+                        portion = 10,
+                        description = "updatedC",
+                    )
+                ),
             )
         )
 
@@ -432,13 +514,17 @@ class FlagServiceTest {
         assertThat(updatedFlagResponseDto.description).isEqualTo("updated")
         assertThat(updatedFlagResponseDto.tags.size).isEqualTo(1)
         assertThat(updatedFlagResponseDto.tags[0].content).isEqualTo("updated")
-        assertThat(updatedFlagResponseDto.type).isEqualTo(FlagType.BOOLEAN)
-        assertThat(updatedFlagResponseDto.defaultValue).isEqualTo("FALSE")
-        assertThat(updatedFlagResponseDto.defaultValuePortion).isEqualTo(90)
-        assertThat(updatedFlagResponseDto.defaultValueDescription).isEqualTo("updated")
-        assertThat(updatedFlagResponseDto.variation).isEqualTo("TRUE")
-        assertThat(updatedFlagResponseDto.variationPortion).isEqualTo(10)
-        assertThat(updatedFlagResponseDto.variationDescription).isEqualTo("updated")
+        assertThat(updatedFlagResponseDto.type).isEqualTo(FlagType.STRING)
+        assertThat(updatedFlagResponseDto.defaultValue).isEqualTo("A")
+        assertThat(updatedFlagResponseDto.defaultValuePortion).isEqualTo(80)
+        assertThat(updatedFlagResponseDto.defaultValueDescription).isEqualTo("updatedA")
+        assertThat(updatedFlagResponseDto.variations).hasSize(2)
+        assertThat(updatedFlagResponseDto.variations.first().value).isEqualTo("B")
+        assertThat(updatedFlagResponseDto.variations.first().portion).isEqualTo(10)
+        assertThat(updatedFlagResponseDto.variations.first().description).isEqualTo("updatedB")
+        assertThat(updatedFlagResponseDto.variations.last().value).isEqualTo("C")
+        assertThat(updatedFlagResponseDto.variations.last().portion).isEqualTo(10)
+        assertThat(updatedFlagResponseDto.variations.last().description).isEqualTo("updatedC")
     }
 
     @Test
@@ -455,9 +541,13 @@ class FlagServiceTest {
             defaultValue = "TRUE",
             defaultValuePortion = 50,
             defaultValueDescription = "true test",
-            variation = "FALSE",
-            variationPortion = 50,
-            variationDescription = "false test",
+            variations = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 50,
+                    description = "false test",
+                )
+            ),
             userId = 1L
         )
         val flagId = flagService.createFlag(flagRequestDto1).flagId
@@ -471,9 +561,13 @@ class FlagServiceTest {
             defaultValue = "TRUE",
             defaultValuePortion = 50,
             defaultValueDescription = "true test",
-            variation = "FALSE",
-            variationPortion = 50,
-            variationDescription = "false test",
+            variations = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 50,
+                    description = "false test",
+                )
+            ),
             userId = 1L
         )
         flagService.createFlag(flagRequestDto2)
