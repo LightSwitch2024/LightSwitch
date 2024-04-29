@@ -17,7 +17,6 @@ const log = (level: LogLevel, message: any, logLevel: LogLevel): void => {
       minute: '2-digit',
       second: '2-digit',
     })}.${milliseconds}`;
-    console.log(`level : ${level} loglevel : ${logLevel} msg : ${message}`);
     const prefix = `[${timestamp} LightSwitch ${LogLevel[level]}] :`;
 
     switch (level) {
