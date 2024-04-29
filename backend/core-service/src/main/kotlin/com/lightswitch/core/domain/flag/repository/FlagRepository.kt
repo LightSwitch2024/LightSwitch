@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository
 @Repository
 interface FlagRepository : JpaRepository<Flag, Long> {
     fun findByDeletedAtIsNull(): List<Flag>
+
+    fun findByMaintainerIdAndDeletedAtIsNull(maintainerId: Long): List<Flag>
 }

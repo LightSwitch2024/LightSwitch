@@ -3,6 +3,9 @@ package com.lightswitch.core.domain.flag.service
 import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
+import com.lightswitch.core.domain.flag.dto.req.FlagInitRequestDto
+import com.lightswitch.core.domain.flag.dto.res.FlagInitResponseDto
+import com.lightswitch.core.domain.flag.dto.res.FlagInitResponseDto.*
 import com.lightswitch.core.domain.flag.dto.res.FlagResponseDto
 import com.lightswitch.core.domain.flag.dto.res.FlagSummaryDto
 import com.lightswitch.core.domain.flag.dto.res.TagResponseDto
@@ -13,6 +16,8 @@ import com.lightswitch.core.domain.flag.repository.entity.Flag
 import com.lightswitch.core.domain.flag.repository.entity.Tag
 import com.lightswitch.core.domain.flag.repository.entity.Variation
 import com.lightswitch.core.domain.flag.repository.queydsl.FlagCustomRepository
+import com.lightswitch.core.domain.member.entity.SdkKey
+import com.lightswitch.core.domain.member.repository.SdkKeyRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -31,7 +36,10 @@ class FlagService(
     private var variationRepository: VariationRepository,
 
     @Autowired
-    private var flagCustomRepository: FlagCustomRepository
+    private var flagCustomRepository: FlagCustomRepository,
+
+    @Autowired
+    private var sdkKeyRepository: SdkKeyRepository
 ) {
 
     fun createFlag(flagRequestDto: FlagRequestDto): FlagResponseDto {
@@ -260,5 +268,47 @@ class FlagService(
             "totalFlags" to flagList.size,
             "activeFlags" to activeFlagList.size,
         )
+    }
+
+    fun getAllFlagForInit(flagInitRequestDto: FlagInitRequestDto): List<FlagInitResponseDto> {
+
+        val sdkKey: SdkKey = sdkKeyRepository.findByKey(flagInitRequestDto.sdkKey) ?: throw BaseException(
+            ResponseCode.SDK_KEY_NOT_FOUND)
+        val maintainerId: Long = sdkKey.member.memberId!!
+
+        val flagList = flagRepository.findByMaintainerIdAndDeletedAtIsNull(maintainerId)
+        return flagList.map { flag ->
+            val defaultVariation = variationRepository.findByFlagAndDefaultFlag(flag, true)
+            val variation = variationRepository.findByFlagAndDefaultFlag(flag, false) ?: throw BaseException(
+                ResponseCode.VARIATION_NOT_FOUND
+            )
+
+            if (defaultVariation == null) {
+                throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
+            }
+
+            FlagInitResponseDto(
+                flagId = flag.flagId!!,
+                title = flag.title,
+                description = flag.description,
+                type = flag.type,
+                defaultValue = defaultVariation.value,
+                defaultValuePortion = defaultVariation.portion,
+                defaultValueDescription = defaultVariation.description,
+                variations = List(1) {
+                    VariationResponseDto(
+                        value = variation.value,
+                        portion = variation.portion,
+                        description = variation.description
+                    )
+                },
+                maintainerId = flag.maintainerId,
+
+                createdAt = flag.createdAt.toString(),
+                updatedAt = flag.updatedAt.toString(),
+                deleteAt = flag.deletedAt.toString(),
+                active = flag.active,
+            )
+        }
     }
 }

@@ -485,4 +485,5 @@ class FlagServiceTest {
         assertThat(overview["totalFlags"]).isEqualTo(totalFlagList.size + 2)
         assertThat(overview["activeFlags"]).isEqualTo(activeFlagList.size + 1)
     }
+
 }
