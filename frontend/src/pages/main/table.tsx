@@ -140,6 +140,7 @@ const FlagTable = () => {
       fontSize: 20,
       fontWeight: 'bold',
       color: theme.palette.common.white,
+      zIndex: 0,
     },
     [`&.${tableCellClasses.body}`]: {
       fontFamily: 'Pretendard-Regular',
@@ -284,22 +285,12 @@ const FlagTable = () => {
         <Table sx={{ minWidth: 650 }} stickyHeader aria-label="simple table">
           <TableHead>
             <TableRow>
-              <StyledTableCell align="left" id="TableHeaderTitle">
-                기능
-              </StyledTableCell>
-              <StyledTableCell align="left" id="TableHeaderTags">
-                태그
-              </StyledTableCell>
-              <StyledTableCell align="left" id="TableHeaderDescription">
-                기능설명
-              </StyledTableCell>
-              <StyledTableCell align="left" id="TableHeaderMaintainer">
-                생성자
-              </StyledTableCell>
-              <StyledTableCell align="center" id="TableHeaderActive">
-                플래그
-              </StyledTableCell>
-              <StyledTableCell align="left" id="TableHeaderOptions"></StyledTableCell>
+              <StyledTableCell align="left">기능</StyledTableCell>
+              <StyledTableCell align="left">태그</StyledTableCell>
+              <StyledTableCell align="left">기능설명</StyledTableCell>
+              <StyledTableCell align="left">생성자</StyledTableCell>
+              <StyledTableCell align="center">플래그</StyledTableCell>
+              <StyledTableCell align="left"></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
