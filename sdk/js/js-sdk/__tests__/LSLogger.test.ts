@@ -1,5 +1,6 @@
-import { LSLogger } from '../LSLogger';
-import { LogLevel } from '../types';
+import { describe, expect } from '@jest/globals';
+import { LSLogger } from '../lib/LSLogger';
+import { LogLevel } from '../lib/types';
 
 describe('LSLogger', () => {
   it('로그레벨 DEBUG 일때 로그 확인', () => {

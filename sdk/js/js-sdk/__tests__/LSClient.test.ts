@@ -1,9 +1,10 @@
-import LSClient from '../LSClient';
-import { LogLevel, SdkConfig } from '../types';
-import { getRequest } from '../utils';
+import { describe, expect } from '@jest/globals';
+import LSClient from '../lib/LSClient';
+import { LogLevel, SdkConfig } from '../lib/types';
+import { getRequest } from '../lib/utils';
 
 // getRequest 모듈을 mock으로 대체하여 외부 의존성을 제어한다
-jest.mock('../utils', () => ({
+jest.mock('../lib/utils', () => ({
   getRequest: jest.fn(),
 }));
 

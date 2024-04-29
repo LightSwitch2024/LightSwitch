@@ -1,9 +1,9 @@
 {
   "name": "lightswitch-js-sdk",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "light switch javascript sdk",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "dist/index.cjs",
   "module": "dist/index.js",
   "exports": {
     ".": {
@@ -13,9 +13,7 @@
     }
   },
   "scripts": {
-    "prepack": "yarn build",
-    "build": "yarn build:tsc",
-    "build:tsc": "yarn tsc",
+    "build": "vite build",
     "test": "jest --env=node --colors --coverage test",
     "lint:fix": "eslint ./lib --ext .jsx,.js,.ts,.tsx --quiet --fix --ignore-path ./.gitignore",
     "lint:format": "prettier  --loglevel warn --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\" ",
@@ -25,6 +23,7 @@
   "author": "hyeonwoopark <gogoadl@naver.com>",
   "license": "ISC",
   "devDependencies": {
+    "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.12.7",
     "@typescript-eslint/eslint-plugin": "^5.10.2",
@@ -39,10 +38,12 @@
     "prettier": "^2.5.1",
     "ts-jest": "^29.1.2",
     "typescript": "^4.5.5",
-    "vite": "^2.9.12"
+    "vite-plugin-dts": "^3.9.0",
+    "vite-tsconfig-paths": "^4.3.2"
   },
   "pre-commit": "lint",
   "dependencies": {
+    "vite": "^5.2.10",
     "yarn": "^1.22.22"
   }
 }
