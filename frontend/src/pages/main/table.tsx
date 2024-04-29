@@ -1,6 +1,12 @@
 import { getFlagList, patchFlagActive } from '@api/main/mainAxios';
+import MoreIcon from '@assets/more-icon.svg?react';
+import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material';
+import FirstPageIcon from '@mui/icons-material/FirstPage';
+import LastPageIcon from '@mui/icons-material/LastPage';
 import {
+  Box,
   FormControlLabel,
+  IconButton,
   Paper,
   styled,
   Switch,
@@ -9,10 +15,14 @@ import {
   TableCell,
   tableCellClasses,
   TableContainer,
+  TableFooter,
   TableHead,
+  TablePagination,
   TableRow,
   ToggleButton,
+  useTheme,
 } from '@mui/material';
+import * as S from '@pages/main/indexStyle';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -25,11 +35,106 @@ interface FlagListItem {
   active: boolean;
 }
 
+interface TablePaginationActionsProps {
+  count: number;
+  page: number;
+  rowsPerPage: number;
+  onPageChange: (event: React.MouseEvent<HTMLButtonElement>, newPage: number) => void;
+}
+
+/**
+ * 페이지 네이션 옵션 선언부
+ * @param props
+ * @returns
+ */
+function TablePaginationActions(props: TablePaginationActionsProps) {
+  const theme = useTheme();
+  const { count, page, rowsPerPage, onPageChange } = props;
+
+  const handleFirstPageButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    onPageChange(event, 0);
+  };
+
+  const handleBackButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    onPageChange(event, page - 1);
+  };
+
+  const handleNextButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    onPageChange(event, page + 1);
+  };
+
+  const handleLastPageButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+  };
+
+  return (
+    <Box sx={{ flexShrink: 0, ml: 2.5 }}>
+      <IconButton
+        onClick={handleFirstPageButtonClick}
+        disabled={page === 0}
+        aria-label="first page"
+      >
+        {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
+      </IconButton>
+      <IconButton
+        onClick={handleBackButtonClick}
+        disabled={page === 0}
+        aria-label="previous page"
+      >
+        {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+      </IconButton>
+      <IconButton
+        onClick={handleNextButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="next page"
+      >
+        {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+      </IconButton>
+      <IconButton
+        onClick={handleLastPageButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="last page"
+      >
+        {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
+      </IconButton>
+    </Box>
+  );
+}
+
 const FlagTable = () => {
   const navigator = useNavigate();
 
   const [flagList, setFlagList] = useState<Array<FlagListItem>>([]);
 
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  /**
+   * 페이지 네이션 변경 이벤트 핸들러
+   * @param event
+   * @param newPage
+   */
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number,
+  ) => {
+    setPage(newPage);
+  };
+
+  /**
+   * 페이지 당 행 수 변경 이벤트 핸들러
+   * @param event
+   */
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  /**
+   * 테이블 스타일 선언
+   */
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       fontFamily: 'Pretendard-Regular',
@@ -76,9 +181,12 @@ const FlagTable = () => {
     },
   }));
 
+  /**
+   * 스위치 컴포넌트 스타일 선언
+   */
   const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     width: 62,
-    height: 34,
+    height: 28,
     padding: 7,
     '& .MuiSwitch-switchBase': {
       margin: 1,
@@ -86,7 +194,7 @@ const FlagTable = () => {
       transform: 'translateX(6px)',
       '&.Mui-checked': {
         color: '#fff',
-        transform: 'translateX(22px)',
+        transform: 'translateX(30px)',
         '& .MuiSwitch-thumb:before': {
           backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
             '#fff',
@@ -100,8 +208,8 @@ const FlagTable = () => {
     },
     '& .MuiSwitch-thumb': {
       backgroundColor: theme.palette.mode === 'dark' ? '#003892' : '#001e3c',
-      width: 32,
-      height: 32,
+      width: 25,
+      height: 25,
       '&::before': {
         content: "''",
         position: 'absolute',
@@ -172,12 +280,10 @@ const FlagTable = () => {
     );
   };
 
-  const label = { inputProps: { 'aria-label': 'Switch demo' } };
-
   return (
     <>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table sx={{ minWidth: 650 }} stickyHeader aria-label="simple table">
           <TableHead>
             <TableRow>
               <StyledTableCell align="left" id="TableHeaderTitle">
@@ -187,19 +293,22 @@ const FlagTable = () => {
                 태그
               </StyledTableCell>
               <StyledTableCell align="left" id="TableHeaderDescription">
-                기능 설명
+                기능설명
               </StyledTableCell>
               <StyledTableCell align="left" id="TableHeaderMaintainer">
                 생성자
               </StyledTableCell>
-              <StyledTableCell align="left" id="TableHeaderActive">
+              <StyledTableCell align="center" id="TableHeaderActive">
                 플래그
               </StyledTableCell>
               <StyledTableCell align="left" id="TableHeaderOptions"></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {flagList.map((row) => (
+            {(rowsPerPage > 0
+              ? flagList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : flagList
+            ).map((row) => (
               <StyledTableRow
                 key={row.flagId}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -242,7 +351,7 @@ const FlagTable = () => {
                     navigator(`flag/${row.flagId}`);
                   }}
                 >
-                  {row.description}
+                  <S.TableRowDescriptionDiv>{row.description}</S.TableRowDescriptionDiv>
                 </StyledTableCell>
                 <StyledTableCell align="left">{row.maintainerName}</StyledTableCell>
                 <StyledTableCell align="left">
@@ -252,10 +361,34 @@ const FlagTable = () => {
                     onChange={() => handleToggleButtonClick(row.flagId)}
                   />
                 </StyledTableCell>
-                <StyledTableCell align="left">...</StyledTableCell>
+                <StyledTableCell align="left">
+                  <MoreIcon />
+                </StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                colSpan={3}
+                count={flagList.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                slotProps={{
+                  select: {
+                    inputProps: {
+                      'aria-label': 'rows per page',
+                    },
+                    native: true,
+                  },
+                }}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                ActionsComponent={TablePaginationActions}
+              />
+            </TableRow>
+          </TableFooter>
         </Table>
       </TableContainer>
     </>

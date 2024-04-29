@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const MainTitleComponent = styled.div`
   display: flex;
-  height: 12.6rem;
+  height: 10rem;
   padding-bottom: 0.9375rem;
   align-items: center;
   gap: 1.25rem;
@@ -11,7 +11,7 @@ export const MainTitleComponent = styled.div`
 
 export const OverviewComponent = styled.div`
   display: flex;
-  height: 12.6rem;
+  height: 11rem;
   padding-bottom: 0.4375rem;
   align-items: center;
   gap: 1.25rem;
@@ -31,7 +31,7 @@ export const FlagTableComponent = styled.div`
 
 export const imageContainer = styled.div`
   display: flex;
-  width: 18.3125rem;
+  width: 12rem;
   align-items: center;
   gap: 0.625rem;
   align-self: stretch;
@@ -74,7 +74,7 @@ export const LunitTitleContainer = styled.div`
 export const LunitTitle = styled.div`
   color: #000;
   font-family: Pretendard;
-  font-size: 6.25rem;
+  font-size: 4.25rem;
   font-style: normal;
   font-weight: 800;
   line-height: normal;
@@ -126,7 +126,7 @@ export const InfoTextContiner = styled.div`
 export const InfoText = styled.div`
   color: #000;
   font-family: Pretendard;
-  font-size: 1.875rem;
+  font-size: 1.7rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -158,7 +158,7 @@ export const SdkKeyTitleContainer = styled.div`
 export const Title = styled.div`
   color: #000;
   font-family: Pretendard;
-  font-size: 2.8125rem;
+  font-size: 2.5rem;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
@@ -191,7 +191,7 @@ export const SdkKeyTextContainer = styled.div`
 export const SdkKeyText = styled.div`
   color: #000;
   font-family: Pretendard;
-  font-size: 1.5625rem;
+  font-size: 1.2rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -261,7 +261,7 @@ export const FlagCountTextSmallContainer = styled.div`
 export const FlagCountTextSmall = styled.div`
   color: #000;
   font-family: Pretendard;
-  font-size: 1.5625rem;
+  font-size: 1.2rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -278,7 +278,7 @@ export const FlagCountTextBigContainer = styled.div`
 export const FlagCountTextBig = styled.div`
   color: #000;
   font-family: Pretenard;
-  font-size: 2.1875rem;
+  font-size: 1.8rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -437,4 +437,15 @@ export const FlagTableContainer = styled.div`
   flex-direction: column;
   align-items: flex-start;
   align-self: stretch;
+`;
+
+// Table 내부 컴포넌트 ========================
+export const TableRowDescriptionDiv = styled.div`
+  color: var(--Fonts-Primary-Variant, #6e6893);
+  font-family: Pretendard;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: 0.04375rem;
 `;
