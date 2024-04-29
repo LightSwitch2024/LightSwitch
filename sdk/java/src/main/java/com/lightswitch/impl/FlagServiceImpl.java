@@ -46,7 +46,7 @@ public class FlagServiceImpl implements FlagService {
 
 	private boolean setupConnection(String endpoint, String sdkKey) {
 		SseServlet servlet = new SseServlet();
-		connection = servlet.getConnect(endpoint, "POST", 1000);
+		connection = servlet.getConnect(endpoint, "POST", 0);
 		return writeSdkKey(sdkKey) == HTTP_OK;
 	}
 
@@ -140,21 +140,17 @@ public class FlagServiceImpl implements FlagService {
 	public Object getFlag(String key, Context context) {
 		//todo. 세 번째 인자 default 값 추가하기
 		Flag flag = Flags.getFlag(key).orElseThrow(FlagRuntimeException::new);
-		Object value = flag.getValue(context);
-		return value;
+		return flag.getValue(context);
 	}
 
 	public static void main(String[] args) {
 		FlagService flagService = FlagServiceImpl.getInstance();
 		flagService.init("SDK_key");
-		flagService.sseConnection("SDK_key");
+		// flagService.sseConnection("SDK_key");
 
-		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException ie) {
-			Thread.currentThread().interrupt();
-		}
+		Context build = new Context.Builder(123)
+			.build();
 
-		flagService.destroy();
+		Object testTitle = flagService.getFlag("Title1", build);
 	}
 }

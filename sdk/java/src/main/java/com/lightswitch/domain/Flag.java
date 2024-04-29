@@ -21,6 +21,10 @@ public class Flag {
 		return variations;
 	}
 
+	public FlagType getType() {
+		return type;
+	}
+
 	public Object getValue(Context context) {
 		double percentage = HashUtil.getHashedPercentage(String.valueOf(context.getUserId()), 1);
 
@@ -29,7 +33,13 @@ public class Flag {
 
 			percentage -= portion;
 			if(percentage < 0){
-				return variation.getValue();
+				if (type.equals(FlagType.BOOLEAN)) {
+					return Boolean.valueOf(variation.getValue());
+				} else if (type.equals(FlagType.STRING)) {
+					return variation.getValue();
+				} else if (type.equals(FlagType.NUMBER)) {
+					return Integer.valueOf(variation.getValue());
+				}
 			}
 		}
 		return null;
