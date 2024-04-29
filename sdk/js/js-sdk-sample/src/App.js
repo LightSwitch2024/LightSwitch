@@ -3,7 +3,12 @@ import "./App.css";
 import LSClient from "lightswitch-js-sdk";
 function App() {
   const b = new LSClient();
-  b.init({ sdkKey: "qwer1234" });
+  b.init({
+    sdkKey: "0801d3c5e29b4fc3bbfe9023716891b8",
+    onError: (err) => {
+      console.log(err);
+    },
+  });
 
   return (
     <div className="App">

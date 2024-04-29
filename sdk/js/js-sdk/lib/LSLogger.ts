@@ -6,11 +6,7 @@ const LSLogger = (logLevel: LogLevel = LogLevel.INFO): Logger => ({
   error: (message) => log(LogLevel.ERROR, message, logLevel),
 });
 
-const log = (level: LogLevel, message: string, logLevel: LogLevel): void => {
-  console.log(level);
-  console.log(logLevel);
-  console.log(message);
-
+const log = (level: LogLevel, message: any, logLevel: LogLevel): void => {
   // 사용자가 설정한 로그 수준(logLevel)보다 실제 로그 레벨(level)이 높거나 같은 경우에만 로그를 출력합니다.
   if (level >= logLevel) {
     const now = new Date();

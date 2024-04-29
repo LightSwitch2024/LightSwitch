@@ -6,16 +6,19 @@ export enum LogLevel {
 }
 
 export interface Logger {
-  debug: (message: string) => void;
-  info: (message: string) => void;
-  warning: (message: string) => void;
-  error: (message: string) => void;
+  debug: (message: any) => void;
+  info: (message: any) => void;
+  warning: (message: any) => void;
+  error: (message: any) => void;
 }
+
+export type ErrorCallback = (error: any) => void;
 
 export interface SdkConfig {
   sdkKey: string;
-  endpoint: string;
-  logLevel: LogLevel;
+  endpoint?: string;
+  logLevel?: LogLevel;
+  onError?: ErrorCallback;
 }
 
 export interface ILSClient {
@@ -27,21 +30,30 @@ export interface ILSClient {
   destroy: () => void;
 }
 
-export interface Tag {
-  colorHex: string;
-  content: string;
+export interface Variation {
+  value: string;
+  portion: number;
+  description: string;
 }
 
 export interface Flag {
+  flagId: number;
   title: string;
-  tags: Tag[];
   description: string;
-  type: 'BOOLEAN' | 'NUMBER' | 'STRING'; // "BOOLEAN", "NUMBER", "STRING" 중 하나여야 함
+  type: string;
   defaultValue: string;
   defaultValuePortion: number;
   defaultValueDescription: string;
-  variation: string;
-  variationPortion: number;
-  variationDescription: string;
-  userId: number;
+  variations: Variation[];
+  maintainerId: number;
+  createdAt: string;
+  updatedAt: string;
+  deleteAt: string | null;
+  active: boolean;
+}
+
+export interface ApiResponse<T> {
+  code: number;
+  message: string;
+  data: T;
 }
