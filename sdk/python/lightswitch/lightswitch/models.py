@@ -28,13 +28,13 @@ class Flag(BaseFlag):
     @classmethod
     def flag_from_api(
         cls,
-        flag_data: typing.Mapping[str, typing.Any]
+        flag_data: typing.Mapping[str, typing.Any] # 딕셔너리 형식의 인자를 받음
     ) -> Flag:
         return Flag(
-            enabled=flag_data["enabled"],
-            value =flag_data["feature_value"],
-            feature_name=flag_data["feature_name"],
-            feature_id=flag_data["feature_id"]
+            enabled=flag_data["data"]["active"],
+            value=flag_data["data"]["defaultValue"],
+            feature_name=flag_data["data"]["title"],
+            feature_id=flag_data["data"]["flagId"]
         )
     
 
@@ -48,7 +48,7 @@ class Flags(BaseFlag):
         flags_data: typing.Sequence[typing.Mapping[str, typing.Any]]
     ) -> Flags:
         flags = {
-            flag_data["feature_name"]: Flag.flag_from_api(flag_data)
+            flag_data["data"]["title"]: Flag.flag_from_api(flag_data)
             for flag_data in flags_data
         }
         # Flags 인스턴스를 반환
@@ -67,8 +67,7 @@ class Flags(BaseFlag):
 
     def get_flag_by_name(self, feature_name: str) -> typing.Union[DefaultFlag, Flag]:
         try:
-            flag = self.flags[feature_name]
+            flag = self.flags[feature_name] # 플래그 이름을 키 값으로 하여 플래그 객체를 저장하므로 키 값으로 찾아옴
         except KeyError:
             raise FeatureNotFoundError(feature_name)
-        
         return flag

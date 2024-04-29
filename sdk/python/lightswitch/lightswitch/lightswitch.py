@@ -65,7 +65,7 @@ class Lightswitch:
 
         # 필요 시 api_url 이외의 url 속성 할당
         self.environment_url = f"{self.api_url}environment"
-        self.environment_flags_url = f"{self.api_url}flag" # 현재는 이 주소만 정의됨
+        self.environment_flags_url = f"{self.api_url}sdk/init" # 현재는 이 주소만 정의됨
         self.identity_flags_url = f"{self.api_url}identity"
 
     # 새로운 SSE event를 받았을 때 EventStreamManager 스레드에 의해 호출되는 메서드
@@ -123,8 +123,11 @@ class Lightswitch:
     # 해당 환경의 플래그 데이터 모두 가져오기
     def _get_all_environment_flags_from_api(self) -> Flags:
         try:
+            data = {
+                "sdkKey": ""
+            }
             json_response: typing.List[typing.Mapping[str, JsonType]] = (
-                self._get_json_response(url=self.environment_flags_url, method="GET")
+                self._get_json_response(url=self.environment_flags_url, method="POST", body=data)
             )
             return Flags.flags_from_api(
                 flags_data=json_response
