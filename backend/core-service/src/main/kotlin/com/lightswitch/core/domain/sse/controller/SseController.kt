@@ -3,6 +3,7 @@ package com.lightswitch.core.domain.sse.controller
 import com.lightswitch.core.common.dto.BaseResponse
 import com.lightswitch.core.common.dto.success
 import com.lightswitch.core.domain.sse.dto.SseDto
+import com.lightswitch.core.domain.sse.dto.res.SseUserKeyResponseDto
 import com.lightswitch.core.domain.sse.service.SseService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -36,7 +37,7 @@ class SseController(
     }
 
     @PostMapping("/subscribe")
-    fun createUserKey(sdkKey: String): BaseResponse<String> {
+    fun createUserKey(sdkKey: String): BaseResponse<SseUserKeyResponseDto> {
         return success(sseService.createUserKey(sdkKey))
     }
 }
