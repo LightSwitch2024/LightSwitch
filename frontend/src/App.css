@@ -27,7 +27,7 @@ p {
   font-size: 0.9rem;
 }
 
-button {
+/* button {
   outline: none;
   border: none;
   border-radius: 8px;
@@ -35,7 +35,7 @@ button {
 
   background: #845ec2;
   color: white;
-}
+} */
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
