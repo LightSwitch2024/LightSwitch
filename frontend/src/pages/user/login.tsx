@@ -1,32 +1,29 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 
-// import { useSetRecoilState } from 'recoil';
-import axios from '@/api/axios';
 import { logIn } from '@/api/userDetail/userAxios';
-import * as L from '@/pages/login/indexStyle';
-import { AuthAtom, isLoginSelector } from '@/recoil/AuthAtom';
+import { AuthAtom } from '@/AuthAtom';
+import * as L from '@/pages/user/loginStyle';
 
 const LogIn = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const isLogIn = useRecoilValue(isLoginSelector);
-  const setLogInFlag = useSetRecoilState(AuthAtom);
 
-  function handleEmail() {
-    setEmail(email);
-  }
-
-  function handlePassword() {
-    setPassword(password);
-  }
-
+  const setAuthState = useSetRecoilState(AuthAtom);
   const navigate = useNavigate();
 
-  /**
-     "로그인" 버튼 클릭 이벤트 핸들러
-   */
+  const handleEmail = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setEmail(e.target.value);
+  };
+
+  const handlePassword = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setPassword(e.target.value);
+  };
+
+  const onClickSignUp = (): void => {
+    navigate('/signup');
+  };
 
   const onClickLogIn = (): void => {
     logIn(
@@ -36,23 +33,19 @@ const LogIn = () => {
       },
       (data) => {
         console.log(data);
-        setLogInFlag(true);
-        navigate('/');
+        //여기 잘 모르겠음..
+        setAuthState({
+          isAuthenticated: true,
+          email: email,
+          password: password,
+        });
+        navigate('/mypage');
       },
       (err) => {
         console.log(err);
-        setLogInFlag(false);
       },
     );
   };
-
-  useEffect(() => 
-  if (isLogIn) {
-    return
-  } else {
-    navigate('/login');
-  },[])
- 
 
   return (
     <L.LogInLayout>
@@ -64,7 +57,6 @@ const LogIn = () => {
             value={email}
             onChange={handleEmail}
           />
-          {email && <L.LogInWarnText>이메일을 입력해주세요</L.LogInWarnText>}
         </L.LogInInputBox>
         <L.LogInInputBox>
           <L.LogInInput
@@ -75,6 +67,7 @@ const LogIn = () => {
           />
         </L.LogInInputBox>
         <L.ButtonWrapper>
+          <L.SignUpButton onClick={onClickSignUp}>회원가입</L.SignUpButton>
           <L.OKButton onClick={onClickLogIn}>로그인</L.OKButton>
         </L.ButtonWrapper>
       </L.LogInContainer>
