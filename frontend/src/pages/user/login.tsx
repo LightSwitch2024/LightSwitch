@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 
 import { logIn } from '@/api/userDetail/userAxios';
+import { AuthAtom } from '@/AuthAtom';
 import * as L from '@/pages/user/loginStyle';
-import { AuthAtom } from '@/recoil/AuthAtom';
 
 const LogIn = () => {
   const [email, setEmail] = useState<string>('');
@@ -21,6 +21,10 @@ const LogIn = () => {
     setPassword(e.target.value);
   };
 
+  const onClickSignUp = (): void => {
+    navigate('/signup');
+  };
+
   const onClickLogIn = (): void => {
     logIn(
       {
@@ -30,7 +34,10 @@ const LogIn = () => {
       (data) => {
         console.log(data);
         //여기 잘 모르겠음..
-        setAuthState({ isAuthenticated: true });
+        setAuthState({
+          isAuthenticated: true,
+          user: { email: email, password: password },
+        });
         navigate('/');
       },
       (err) => {
@@ -59,6 +66,7 @@ const LogIn = () => {
           />
         </L.LogInInputBox>
         <L.ButtonWrapper>
+          <L.SignUpButton onClick={onClickSignUp}>회원가입</L.SignUpButton>
           <L.OKButton onClick={onClickLogIn}>로그인</L.OKButton>
         </L.ButtonWrapper>
       </L.LogInContainer>

@@ -1,7 +1,7 @@
 import { Navigate, Outlet, useLocation } from 'react-router';
 import { useRecoilValue } from 'recoil';
 
-import { isLogInSelector } from '@/recoil/AuthAtom'; // AuthAtom 파일 경로에 맞게 수정
+import { isLogInSelector } from '@/AuthAtom'; // AuthAtom 파일 경로에 맞게 수정
 
 const ProtectedRoute = () => {
   const isAuthenticated = useRecoilValue(isLogInSelector);
