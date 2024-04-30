@@ -8,16 +8,6 @@ interface UserData {
   firstName: string;
   lastName: string;
   telNumber: string;
-
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface UserUpdateRuquest {
-  email: string;
-  firstName: string;
-  lastName: string;
-  telNumber: string;
 }
 
 const UserDetail = () => {

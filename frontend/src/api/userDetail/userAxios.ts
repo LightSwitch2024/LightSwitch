@@ -25,7 +25,7 @@ export async function logIn<T>(
   onFail: (err: AxiosError) => void,
 ): Promise<void> {
   axios
-    .post<BaseResponse<T>>('/api/v1/user', data)
+    .post<BaseResponse<T>>('/api/v1/user/login', data)
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
     .catch((err: AxiosError) => onFail(err));
 }
@@ -59,7 +59,19 @@ export async function updateUser<T, G>(
   onFail: (err: AxiosError) => void,
 ): Promise<void> {
   axios
-    .put<BaseResponse<T>>(`/api/v1/flag/${email}`, userData)
+    .put<BaseResponse<T>>(`/api/v1/user/${email}`, userData)
+    .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
+    .catch((err: AxiosError) => onFail(err));
+}
+
+export async function updatePassword<T, G>(
+  email: string,
+  newPassword: string,
+  onSuccess: (data: T) => void,
+  onFail: (err: AxiosError) => void,
+): Promise<void> {
+  axios
+    .put<BaseResponse<T>>(`/api/v1/user/${email}/password`, newPassword)
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
     .catch((err: AxiosError) => onFail(err));
 }

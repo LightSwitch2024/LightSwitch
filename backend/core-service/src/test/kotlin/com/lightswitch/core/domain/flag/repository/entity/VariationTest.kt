@@ -8,7 +8,9 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.transaction.annotation.Transactional
 
+@Transactional
 @SpringBootTest
 class VariationTest {
     @Autowired
@@ -32,7 +34,6 @@ class VariationTest {
             flag = savedFlag,
             portion = 100,
             description = "test",
-            variationType = FlagType.BOOLEAN,
             value = "TRUE",
         )
 
@@ -40,7 +41,6 @@ class VariationTest {
             flag = savedFlag,
             portion = 0,
             description = "test",
-            variationType = FlagType.BOOLEAN,
             value = "FALSE",
         )
 
