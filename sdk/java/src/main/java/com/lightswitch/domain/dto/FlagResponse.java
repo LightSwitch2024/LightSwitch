@@ -23,6 +23,10 @@ public class FlagResponse {
 	private String deletedAt;
 	private boolean active;
 
+	public String getTitle() {
+		return title;
+	}
+
 	public Flag toFlag() {
 		List<Variation> variList = new ArrayList<>();
 		variations.forEach(variationResponse -> variList.add(variationResponse.toVariation()));
@@ -36,5 +40,24 @@ public class FlagResponse {
 			.variations(variList)
 			.defaultValue(defaultValue)
 			.build();
+	}
+
+	@Override
+	public String toString() {
+		return "FlagResponse{" +
+			"flagId=" + flagId +
+			", title='" + title + '\'' +
+			", description='" + description + '\'' +
+			", type=" + type +
+			", defaultValue='" + defaultValue + '\'' +
+			", defaultValuePortion=" + defaultValuePortion +
+			", defaultValueDescription='" + defaultValueDescription + '\'' +
+			", variations=" + variations +
+			", maintainerId=" + maintainerId +
+			", createdAt='" + createdAt + '\'' +
+			", updatedAt='" + updatedAt + '\'' +
+			", deletedAt='" + deletedAt + '\'' +
+			", active=" + active +
+			'}';
 	}
 }

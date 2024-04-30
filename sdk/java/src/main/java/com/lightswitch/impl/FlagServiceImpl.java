@@ -7,15 +7,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
-import java.util.List;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.lightswitch.domain.Context;
 import com.lightswitch.domain.Flag;
 import com.lightswitch.domain.Flags;
+import com.lightswitch.domain.dto.InitResponse;
+import com.lightswitch.domain.dto.SseResponse;
 import com.lightswitch.exception.FlagRuntimeException;
 import com.lightswitch.exception.FlagServerConnectException;
 import com.lightswitch.util.SseServlet;
@@ -65,11 +64,9 @@ public class FlagServiceImpl implements FlagService {
 			}
 
 			Gson gson = new Gson();
-			Type listType = new TypeToken<List<Flag>>() {
-			}.getType();
-			List<Flag> flags = gson.fromJson(response.toString(), listType);
+			InitResponse initResponse = gson.fromJson(response.toString(), InitResponse.class);
 
-			Flags.addAllFlags(flags);
+			Flags.addAllFlags(initResponse);
 		} catch (IOException e) {
 			throw new FlagRuntimeException("Failed to read response: " + e.getMessage(), e);
 		}
@@ -115,9 +112,9 @@ public class FlagServiceImpl implements FlagService {
 
 	private void processEventData(String jsonData) {
 		Gson gson = new Gson();
-		Flag flag = gson.fromJson(jsonData, Flag.class);
+		SseResponse sseResponse = gson.fromJson(jsonData, SseResponse.class);
 		// todo. update,delete,, .. flag 관리
-		System.out.println("Received data: " + flag.toString() + ", number: " + flag.getTitle());
+		System.out.println("Received data: " + sseResponse.toString());
 	}
 
 	@Override
@@ -147,11 +144,10 @@ public class FlagServiceImpl implements FlagService {
 	public static void main(String[] args) {
 		FlagService flagService = FlagServiceImpl.getInstance();
 		flagService.init("SDK_key");
-		// flagService.sseConnection("SDK_key");
 
 		Context build = new Context.Builder(123)
 			.build();
 
-		Object testTitle = flagService.getFlag("Title1", build);
+		Object testTitle = flagService.getFlag("title1", build);
 	}
 }

@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.lightswitch.domain.dto.FlagResponse;
+import com.lightswitch.domain.dto.InitResponse;
+
 public class Flags {
 
 	private static final Map<String, Flag> flags = new HashMap<>();
@@ -13,10 +16,12 @@ public class Flags {
 	private Flags() {
 	}
 
-	public static void addAllFlags(List<Flag> initFlags) {
+	public static void addAllFlags(InitResponse initFlags) {
 		flags.clear();
-		for (Flag initFlag : initFlags) {
-			flags.put(initFlag.getTitle() , initFlag);
+
+		List<FlagResponse> data = initFlags.getData();
+		for (FlagResponse flagResponse : data) {
+			flags.put(flagResponse.getTitle() , flagResponse.toFlag());
 		}
 	}
 
