@@ -42,6 +42,11 @@ public class FlagServiceImpl implements FlagService {
 			throw new FlagServerConnectException("INIT() POST request not worked");
 		}
 		handleResponse();
+
+		if (!setupConnection("connect", sdkKey)) {
+			throw new FlagServerConnectException("SSE() POST request not worked");
+		}
+		startSseThread();
 	}
 
 	private boolean setupConnection(String endpoint, String sdkKey) {
@@ -80,13 +85,7 @@ public class FlagServiceImpl implements FlagService {
 		}
 	}
 
-	@Override
-	public void sseConnection(String sdkKey) {
-		if (!setupConnection("connect", sdkKey)) {
-			throw new FlagServerConnectException("sse() POST request not worked");
-		}
-		startSseThread();
-	}
+
 
 	private void startSseThread() {
 		thread = new Thread(this::connectToSse);
