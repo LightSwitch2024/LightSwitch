@@ -29,7 +29,8 @@ const LogIn = () => {
       },
       (data) => {
         console.log(data);
-        setAuthState({ isAuthenticated: true, user: { user: `${data}` } });
+        //여기 잘 모르겠음..
+        setAuthState({ isAuthenticated: true });
         navigate('/');
       },
       (err) => {

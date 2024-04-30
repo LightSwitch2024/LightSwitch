@@ -9,14 +9,20 @@ import UserDetail from '@/pages/mypage/index';
 import SignUp from '@/pages/signup/index';
 import LogIn from '@/pages/user/login';
 
+// import ProtectedRoute from './protectedRoute';
+
 const Router = () => (
   <div>
     <Tab />
     <S.Content>
       <BrowserRouter>
         <Routes>
-          <Route path="/signUp" element={<SignUp />} />
+          {/* 메인화면 가기 전에 로그인 거치게끔하는 코드
+          <Route path="/" element={<ProtectedRoute />}>
+            <Route path="/" element={<Main />} />
+          </Route> */}
           <Route path="/" element={<Main />} />
+          <Route path="/signUp" element={<SignUp />} />
           <Route path="/create" element={<CreateFlag />} />
           <Route path="/flag/:flagId" element={<FlagDetail />} />
           <Route path="/login" element={<LogIn />} />

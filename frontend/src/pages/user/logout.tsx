@@ -9,7 +9,7 @@ const LogOut = () => {
   const navigate = useNavigate();
 
   const handleLogOut = () => {
-    setAuthState({ isAuthenticated: false, user: null });
+    setAuthState({ isAuthenticated: false });
     navigate('/');
   };
 
