@@ -423,7 +423,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
             value={variation.value}
             // 변경된 값이 있을 때 처리하는 함수 바인딩
             onChange={(e) => handleVariationChange(e, idx)}
-            readOnly={isDetailMode()}
+            $flag={isDetailMode()}
           />
           <S.FlagVariationInput
             type="number"
@@ -431,7 +431,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
             value={variation.portion}
             // 변경된 값이 있을 때 처리하는 함수 바인딩
             onChange={(e) => handleVariationPortionChange(e, idx)}
-            readOnly={isDetailMode()}
+            $flag={isDetailMode()}
           />
         </S.FlagVariationRowContainer>
         <S.FlagVariationRowContainer>
@@ -441,7 +441,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
             value={variation.description}
             // 변경된 값이 있을 때 처리하는 함수 바인딩
             onChange={(e) => handleVariationDescriptionChange(e, idx)}
-            readOnly={isDetailMode()}
+            $flag={isDetailMode()}
           />
         </S.FlagVariationRowContainer>
       </S.FlagVariationContentLayer>
@@ -460,7 +460,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
               placeholder="플래그 이름"
               value={title}
               onChange={handleTitleChange}
-              readOnly={isDetailMode()}
+              $flag={isDetailMode()}
             />
           </S.FlagTitleInputContainer>
           <S.FlagTagsInputContainer>
@@ -543,7 +543,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
           onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
             handleDescriptionChange(event)
           }
-          readOnly={isDetailMode()}
+          $flag={isDetailMode()}
         />
         <S.FlagTypeLayer>
           <S.FlagTypeLabel>
@@ -554,7 +554,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
               <S.LabelText>변수 타입</S.LabelText>
             </S.FlagTypeLabelTextContainer>
           </S.FlagTypeLabel>
-          <S.FlagTypeContainer onClick={onClickTypeEdit}>
+          <S.FlagTypeContainer onClick={onClickTypeEdit} $flag={isDetailMode()}>
             <S.FlagTypeContentContainer>
               <S.FlagTypeTextContainer>
                 <S.FlagTypeText>{type}</S.FlagTypeText>
@@ -605,14 +605,14 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
                 placeholder="값을 입력하세요"
                 value={defaultValue}
                 onChange={handleDefaultValueChange}
-                readOnly={isDetailMode()}
+                $flag={isDetailMode()}
               />
               <S.FlagVariationInput
                 type="number"
                 placeholder="변수 비율"
                 value={defaultPortion}
                 onChange={handleDefaultPortionChange}
-                readOnly={isDetailMode()}
+                $flag={isDetailMode()}
               />
             </S.FlagVariationRowContainer>
             <S.FlagVariationRowContainer>
@@ -621,18 +621,14 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
                 placeholder="설명"
                 value={defaultDescription}
                 onChange={handleDefaultDescriptionChange}
-                readOnly={isDetailMode()}
+                $flag={isDetailMode()}
               />
             </S.FlagVariationRowContainer>
           </S.FlagVariationContentLayer>
           <S.FlagVariationDivisionLine />
           {renderVariationForms()}
           <S.ButtonLayer>
-            <S.ConfirmButton
-              onClick={onClickAddVariation}
-              disabled={isDetailMode()}
-              style={{ cursor: isDetailMode() ? 'not-allowed' : 'pointer' }}
-            >
+            <S.ConfirmButton onClick={onClickAddVariation} $flag={isDetailMode()}>
               추가
             </S.ConfirmButton>
           </S.ButtonLayer>
@@ -644,11 +640,17 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
             <S.CancelButton onClick={onClickModifyCancle}>취소하기</S.CancelButton>
           ) : null}
           {flagMode === 'create' ? (
-            <S.ConfirmButton onClick={onClickAdd}>추가하기</S.ConfirmButton>
+            <S.ConfirmButton onClick={onClickAdd} $flag={false}>
+              추가하기
+            </S.ConfirmButton>
           ) : flagMode === 'edit' ? (
-            <S.ConfirmButton onClick={onClickSave}>저장하기</S.ConfirmButton>
+            <S.ConfirmButton onClick={onClickSave} $flag={false}>
+              저장하기
+            </S.ConfirmButton>
           ) : flagMode === 'detail' ? (
-            <S.ConfirmButton onClick={onClickModify}>수정하기</S.ConfirmButton>
+            <S.ConfirmButton onClick={onClickModify} $flag={false}>
+              수정하기
+            </S.ConfirmButton>
           ) : null}
         </S.ButtonLayer>
       </>
