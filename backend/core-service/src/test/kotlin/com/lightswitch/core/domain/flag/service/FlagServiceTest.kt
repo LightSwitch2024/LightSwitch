@@ -712,8 +712,6 @@ class FlagServiceTest {
                 )
             )
         )
-        println(flagResponseDto.toString())
-        println(updatedFlagResponseDto.toString())
 
         // then
         assertThat(updatedFlagResponseDto.flagId).isEqualTo(flagResponseDto.flagId)

@@ -372,6 +372,9 @@ class FlagService(
         flag.description = flagRequestDto.description
         flag.type = flagRequestDto.type
 
+        /*
+        * Todo... tag 수정 확인
+        * */
         // tag 수정
         val savedTagList = mutableListOf<Tag>()
         val tagList = flagRequestDto.tags
