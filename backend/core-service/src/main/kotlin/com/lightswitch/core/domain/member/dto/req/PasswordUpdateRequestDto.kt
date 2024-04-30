@@ -2,13 +2,11 @@ package com.lightswitch.core.domain.member.dto.req
 
 import jakarta.validation.constraints.NotBlank
 
-class MemberUpdateReqDto(
+data class PasswordUpdateRequestDto(
     @field:NotBlank
     val email: String,
     @field:NotBlank
-    val firstName: String,
+    val oldPassword: String,
     @field:NotBlank
-    val lastName: String,
-    @field:NotBlank
-    val telNumber: String,
+    val newPassword: String,
 )

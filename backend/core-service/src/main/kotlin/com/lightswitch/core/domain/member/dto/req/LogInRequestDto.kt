@@ -2,7 +2,7 @@ package com.lightswitch.core.domain.member.dto.req
 
 import jakarta.validation.constraints.NotBlank
 
-class LogInReqDto (
+data class LogInRequestDto (
     @field:NotBlank
     val email: String,
     @field:NotBlank
