@@ -5,11 +5,7 @@ import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.domain.flag.dto.VariationDto
 import com.lightswitch.core.domain.flag.dto.req.FlagInitRequestDto
 import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
-import com.lightswitch.core.domain.flag.dto.res.FlagResponseDto
-import com.lightswitch.core.domain.flag.dto.res.FlagSummaryDto
-import com.lightswitch.core.domain.flag.dto.res.FlagInitResponseDto
-import com.lightswitch.core.domain.flag.dto.res.FlagIdResponseDto
-import com.lightswitch.core.domain.flag.dto.res.TagResponseDto
+import com.lightswitch.core.domain.flag.dto.res.*
 import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.flag.repository.TagRepository
 import com.lightswitch.core.domain.flag.repository.VariationRepository
@@ -381,6 +377,21 @@ class FlagService(
                 updatedAt = flag.updatedAt.toString(),
                 deleteAt = flag.deletedAt.toString(),
                 active = flag.active,
+            )
+        }
+    }
+
+    fun getFlagsSummaryByKeyword(keyword: String): List<FlagSummaryDto> {
+        val flagList = flagRepository.findByTitleContainingAndDeletedAtIsNull(keyword)
+        return flagList.map { flag ->
+            FlagSummaryDto(
+                flagId = flag.flagId!!,
+                title = flag.title,
+                description = flag.description,
+                tags = flag.tags.map { TagResponseDto(it.colorHex, it.content) },
+                active = flag.active,
+                //Todo : User 기능 구현 후 maintainerName 변경
+                maintainerName = "test",
             )
         }
     }
