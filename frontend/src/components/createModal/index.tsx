@@ -113,7 +113,13 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   };
 
   const handleDefaultValueChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setDefaultValue(e.target.value);
+    if (type === 'BOOLEAN') {
+      setDefaultValue(e.target.value.toUpperCase());
+    } else if (type === 'INTEGER' && isNaN(Number(e.target.value.at(-1)))) {
+      setDefaultValue(e.target.value.slice(0, -1));
+    } else {
+      setDefaultValue(e.target.value);
+    }
   };
 
   const handleDefaultPortionChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -134,11 +140,25 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
     e: React.ChangeEvent<HTMLInputElement>,
     idx: number,
   ): void => {
-    setVariations((prev) => {
-      const newVariations = [...prev];
-      newVariations[idx].value = e.target.value;
-      return newVariations;
-    });
+    if (type === 'BOOLEAN') {
+      setVariations((prev) => {
+        const newVariations = [...prev];
+        newVariations[idx].value = e.target.value.toUpperCase();
+        return newVariations;
+      });
+    } else if (type === 'INTEGER' && isNaN(Number(e.target.value.at(-1)))) {
+      setVariations((prev) => {
+        const newVariations = [...prev];
+        newVariations[idx].value = e.target.value.slice(0, -1);
+        return newVariations;
+      });
+    } else {
+      setVariations((prev) => {
+        const newVariations = [...prev];
+        newVariations[idx].value = e.target.value;
+        return newVariations;
+      });
+    }
   };
 
   const calculateTotalPortion = (): number => {
@@ -201,31 +221,39 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
     console.log('타입 수정 버튼 클릭');
   };
 
-  /**
-   * 플래그 "추가하기" 버튼 클릭 이벤트 핸들러
-   */
-  const onClickAdd = (): void => {
+  const addValidation = (): boolean => {
     if (
       title === '' ||
       description === '' ||
-      defaultValue === '' ||
       defaultPortion === '' ||
-      defaultDescription === ''
+      defaultDescription === '' ||
+      (type === 'BOOLEAN' && !(defaultValue === 'TRUE' || defaultValue === 'FALSE'))
     ) {
-      alert('필수 입력값을 입력해주세요');
-      return;
+      return false;
     }
 
     variations.map((variation) => {
       if (
-        variation.value === '' ||
         variation.portion === '' ||
-        variation.description === ''
+        variation.description === '' ||
+        (type === 'BOOLEAN' &&
+          !(variation.value === 'TRUE' || variation.value === 'FALSE'))
       ) {
-        alert('필수 입력값을 입력해주세요');
-        return;
+        return false;
       }
     });
+
+    return true;
+  };
+
+  /**
+   * 플래그 "추가하기" 버튼 클릭 이벤트 핸들러
+   */
+  const onClickAdd = (): void => {
+    if (!addValidation) {
+      alert('필수 입력값을 입력해주세요');
+      return;
+    }
 
     createFlag(
       {
@@ -356,29 +384,10 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   };
 
   const onClickSave = (): void => {
-    if (
-      title === '' ||
-      description === '' ||
-      defaultValue === '' ||
-      defaultPortion === '' ||
-      defaultDescription === ''
-    ) {
-      alert('필수 입력값을 입력해주세요');
+    if (!props.flagDetail || addValidation()) {
+      aleart('필수 입력값을 입력해주세요');
       return;
     }
-
-    variations.map((variation) => {
-      if (
-        variation.value === '' ||
-        variation.portion === '' ||
-        variation.description === ''
-      ) {
-        alert('필수 입력값을 입력해주세요');
-        return;
-      }
-    });
-
-    if (!props.flagDetail) return;
 
     updateFlag(
       Number(props.flagDetail?.flagId),
