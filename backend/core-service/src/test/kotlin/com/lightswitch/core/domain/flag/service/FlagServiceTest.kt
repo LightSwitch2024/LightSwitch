@@ -580,4 +580,43 @@ class FlagServiceTest {
         assertThat(overview["activeFlags"]).isEqualTo(activeFlagList.size + 1)
     }
 
+    @Test
+    fun getFlagsSummaryByKeyword() {
+        // given
+        val tag1 = TagRequestDto(
+            colorHex = "#FFFFFF",
+            content = "test"
+        )
+
+        val tag2 = TagRequestDto(
+            colorHex = "#000000",
+            content = "test2"
+        )
+
+        val flagRequestDto = FlagRequestDto(
+            title = "test",
+            tags = listOf(tag1, tag2),
+            description = "test",
+            type = FlagType.BOOLEAN,
+            defaultValue = "TRUE",
+            defaultValuePortion = 100,
+            defaultValueDescription = "test",
+            variations = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test",
+                )
+            ),
+            userId = 1L
+        )
+        flagService.createFlag(flagRequestDto)
+
+        // when
+        val flagsSummaryByKeyword = flagService.getFlagsSummaryByKeyword("test")
+
+        // then
+        assertThat(flagsSummaryByKeyword).isNotEmpty
+    }
+
 }
