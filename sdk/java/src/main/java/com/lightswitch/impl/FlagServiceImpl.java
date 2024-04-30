@@ -114,9 +114,10 @@ public class FlagServiceImpl implements FlagService {
 		}
 	}
 
-	private static void processEventData(String jsonData) {
+	private void processEventData(String jsonData) {
 		Gson gson = new Gson();
 		Flag flag = gson.fromJson(jsonData, Flag.class);
+		// todo. update,delete,, .. flag 관리
 		System.out.println("Received data: " + flag.toString() + ", number: " + flag.getTitle());
 	}
 
@@ -133,7 +134,8 @@ public class FlagServiceImpl implements FlagService {
 		if (connection != null) {
 			connection.disconnect();
 		}
-		//todo. Caching된 Flags 초기화
+
+		Flags.clear();
 	}
 
 	@Override
