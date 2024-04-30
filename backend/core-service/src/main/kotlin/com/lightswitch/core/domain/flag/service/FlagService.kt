@@ -26,23 +26,17 @@ import java.time.LocalDateTime
 @Service
 @Transactional
 class FlagService(
-    @Autowired
-    private var flagRepository: FlagRepository,
+    @Autowired private var flagRepository: FlagRepository,
 
-    @Autowired
-    private var tagRepository: TagRepository,
+    @Autowired private var tagRepository: TagRepository,
 
-    @Autowired
-    private var variationRepository: VariationRepository,
+    @Autowired private var variationRepository: VariationRepository,
 
-    @Autowired
-    private var flagCustomRepository: FlagCustomRepository,
+    @Autowired private var flagCustomRepository: FlagCustomRepository,
 
-    @Autowired
-    private var sdkKeyRepository: SdkKeyRepository,
+    @Autowired private var sdkKeyRepository: SdkKeyRepository,
 
-    @Autowired
-    private var sseService: SseService,
+    @Autowired private var sseService: SseService,
 ) {
 
     fun createFlag(flagRequestDto: FlagRequestDto): FlagResponseDto {
@@ -156,9 +150,7 @@ class FlagService(
             defaultValueDescription = defaultVariation.description,
             variations = variations.map {
                 VariationDto(
-                    value = it.value,
-                    portion = it.portion,
-                    description = it.description
+                    value = it.value, portion = it.portion, description = it.description
                 )
             },
             userId = flag.maintainerId,
@@ -193,9 +185,7 @@ class FlagService(
                 defaultValueDescription = defaultVariation.description,
                 variations = variations.map {
                     VariationDto(
-                        value = it.value,
-                        portion = it.portion,
-                        description = it.description
+                        value = it.value, portion = it.portion, description = it.description
                     )
                 },
                 userId = flag.maintainerId,
@@ -286,8 +276,10 @@ class FlagService(
         flagRepository.save(flag)
 
         // variation 수정
-        val defaultVariation = variationRepository.findByFlagAndDefaultFlagIsTrueAndDeletedAtIsNull(flag)
-            ?: throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
+        val defaultVariation =
+            variationRepository.findByFlagAndDefaultFlagIsTrueAndDeletedAtIsNull(flag) ?: throw BaseException(
+                ResponseCode.VARIATION_NOT_FOUND
+            )
 
         defaultVariation.value = flagRequestDto.defaultValue
         defaultVariation.portion = flagRequestDto.defaultValuePortion
@@ -349,8 +341,7 @@ class FlagService(
         val flagList = flagRepository.findByMaintainerIdAndDeletedAtIsNull(maintainerId)
         return flagList.map { flag ->
             val defaultVariation = variationRepository.findByFlagAndDefaultFlagIsTrueAndDeletedAtIsNull(flag)
-            val variations =
-                variationRepository.findByFlagAndDefaultFlagIsFalseAndDeletedAtIsNull(flag)
+            val variations = variationRepository.findByFlagAndDefaultFlagIsFalseAndDeletedAtIsNull(flag)
 
             if (defaultVariation == null) {
                 throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
@@ -366,9 +357,7 @@ class FlagService(
                 defaultValueDescription = defaultVariation.description,
                 variations = variations.map {
                     VariationDto(
-                        value = it.value,
-                        portion = it.portion,
-                        description = it.description
+                        value = it.value, portion = it.portion, description = it.description
                     )
                 },
                 maintainerId = flag.maintainerId,
