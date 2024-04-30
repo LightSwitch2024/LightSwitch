@@ -1,3 +1,9 @@
+export type LSMessageType = 'CREATE' | 'UPDATE' | 'DELETE' | 'SWITCH';
+export type LSMessageData = Flag | { flagId: number };
+export type LSFlagType = 'BOOLEAN' | 'STRING' | 'NUMBER';
+export type LSDefaultValueType = boolean | string | number;
+export type ErrorCallback = (error: any) => void;
+
 export enum LogLevel {
   DEBUG,
   INFO,
@@ -12,7 +18,6 @@ export interface Logger {
   error: (message: any) => void;
 }
 
-export type ErrorCallback = (error: any) => void;
 export interface userKey {
   userKey: string;
 }
@@ -21,33 +26,45 @@ export interface SdkConfig {
   sdkKey: string;
   endpoint?: string;
   logLevel?: LogLevel;
+  reconnectTime?: number;
   onError?: ErrorCallback;
+}
+export interface ILSUser {
+  userId: null | string;
+  property: null | Map<string, string>;
+  getUserId: () => string;
 }
 
 export interface ILSClient {
   isInitialized: boolean;
 
   init: (config: SdkConfig) => void;
-  getFlags: () => void;
+  getFlag: (name: string, LSUser: ILSUser) => void;
   getAllFlags: () => void;
   destroy: () => void;
 }
 
-export interface Variation {
-  value: string;
-  portion: number;
-  description: string;
+export interface ApiResponse<T> {
+  code: number;
+  message: string;
+  data: T;
+}
+
+export interface LSMessage {
+  userKey: string;
+  type: LSMessageType;
+  data: LSMessageData;
 }
 
 export interface Flag {
   flagId: number;
   title: string;
   description: string;
-  type: string;
-  defaultValue: string;
-  defaultValuePortion: number;
-  defaultValueDescription: string;
-  variations: Variation[];
+  type: LSFlagType;
+  defaultValue: LSDefaultValueType;
+  defaultValuePortion?: number;
+  defaultValueDescription?: string;
+  variations?: Variation[];
   maintainerId: number;
   createdAt: string;
   updatedAt: string;
@@ -55,8 +72,8 @@ export interface Flag {
   active: boolean;
 }
 
-export interface ApiResponse<T> {
-  code: number;
-  message: string;
-  data: T;
+export interface Variation {
+  value: LSDefaultValueType;
+  portion: number;
+  description: string;
 }

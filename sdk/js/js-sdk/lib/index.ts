@@ -1,3 +1,3 @@
 import LSClient from './LSClient';
-
-export default LSClient;
+import LSUser from './LSUser';
+export { LSClient, LSUser };
