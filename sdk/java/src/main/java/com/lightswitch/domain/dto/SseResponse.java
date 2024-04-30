@@ -8,6 +8,14 @@ public class SseResponse {
 	private SseType type;
 	private FlagResponse data;
 
+	public SseType getType() {
+		return type;
+	}
+
+	public FlagResponse getData() {
+		return data;
+	}
+
 	@Override
 	public String toString() {
 		return "SseResponse{" +

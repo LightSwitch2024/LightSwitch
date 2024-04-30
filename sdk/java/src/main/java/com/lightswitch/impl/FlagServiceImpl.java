@@ -113,8 +113,8 @@ public class FlagServiceImpl implements FlagService {
 	private void processEventData(String jsonData) {
 		Gson gson = new Gson();
 		SseResponse sseResponse = gson.fromJson(jsonData, SseResponse.class);
-		// todo. update,delete,, .. flag 관리
-		System.out.println("Received data: " + sseResponse.toString());
+		Flags.event(sseResponse);
+		System.out.println("SSE data: " + sseResponse.toString());
 	}
 
 	@Override
