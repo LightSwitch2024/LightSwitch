@@ -44,6 +44,16 @@ export const LogInInputBox = styled.div`
   gap: 0.5rem;
 `;
 
+export const SignUpButton = styled.button`
+  width: 100%;
+  padding: 0.3rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 1.4rem;
+  background-color: #1e3232;
+  color: #fff;
+  cursor: pointer;
+`;
+
 export const OKButton = styled.button`
   width: 100%;
   padding: 0.3rem 1rem;
