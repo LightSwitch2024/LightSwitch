@@ -9,4 +9,11 @@ public class Variation {
 	private String value;
 	private FlagType variationType;
 
+	public int getPortion() {
+		return portion;
+	}
+
+	public String getValue() {
+		return value;
+	}
 }
