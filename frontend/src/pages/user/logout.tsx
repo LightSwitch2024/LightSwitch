@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 
-import * as L from '@/pages/user/logoutStyle';
 import { AuthAtom } from '@/AuthAtom';
+import * as L from '@/pages/user/logoutStyle';
 
 const LogOut = () => {
   const setAuthState = useSetRecoilState(AuthAtom);

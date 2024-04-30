@@ -36,9 +36,10 @@ const LogIn = () => {
         //여기 잘 모르겠음..
         setAuthState({
           isAuthenticated: true,
-          user: { email: email, password: password },
+          email: email,
+          password: password,
         });
-        navigate('/');
+        navigate('/mypage');
       },
       (err) => {
         console.log(err);
