@@ -26,6 +26,16 @@ export const Modal = styled.div`
   left: 0;
 `;
 
+export const DetailLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+  // align-items: center;
+  // justify-content: center;
+  // gap: 0.625rem;
+  // width: 100%;
+  // height: 100%;
+`;
+
 export const ModalInputForm = styled.div`
   color: #fff;
   width: 60%;
@@ -83,7 +93,7 @@ export const FlagTitleIconContainer = styled.div`
   background: #f5f6f7;
 `;
 
-export const FlagTitleInput = styled.input`
+export const FlagTitleInput = styled.input<{ $flag: boolean }>`
   border: none;
   font-family: Pretendard;
   font-size: 50px;
@@ -94,6 +104,13 @@ export const FlagTitleInput = styled.input`
   &:focus {
     outline: none;
   }
+
+  ${(props) =>
+    props.$flag &&
+    `
+    background-color: #f2f2f2;
+    pointer-events: none;
+  `}
 `;
 
 export const FlagTagsInputContainer = styled.div`
@@ -153,7 +170,7 @@ export const FlagDescriptionTextContainer = styled.div`
   gap: 0.625rem;
 `;
 
-export const FlagDescriptionTextArea = styled.textarea`
+export const FlagDescriptionTextArea = styled.textarea<{ $flag: boolean }>`
   display: flex;
   height: 10.3125rem;
   padding: 0.625rem;
@@ -172,6 +189,13 @@ export const FlagDescriptionTextArea = styled.textarea`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+
+  ${(props) =>
+    props.$flag &&
+    `
+    background-color: #f2f2f2;
+    pointer-events: none;
+  `}
 `;
 
 export const FlagTypeLayer = styled.div`
@@ -201,7 +225,7 @@ export const FlagTypeLabelTextContainer = styled.div`
   gap: 0.625rem;
 `;
 
-export const FlagTypeContainer = styled.div`
+export const FlagTypeContainer = styled.div<{ $flag: boolean }>`
   display: flex;
   width: 10.625rem;
   height: 3.125rem;
@@ -212,9 +236,13 @@ export const FlagTypeContainer = styled.div`
   border-radius: 0.625rem;
   background: #30c2e7;
 
+  ${(props) =>
+    !props.$flag &&
+    `
   &:hover {
     cursor: pointer;
   }
+  `}
 `;
 
 export const FlagTypeContentContainer = styled.div`
@@ -295,7 +323,7 @@ export const FlagVariationRowContainer = styled.div`
   gap: 3.125rem;
 `;
 
-export const FlagVariationInput = styled.input`
+export const FlagVariationInput = styled.input<{ $flag: boolean }>`
   display: flex;
   width: 100%;
   height: 3.75rem;
@@ -312,6 +340,13 @@ export const FlagVariationInput = styled.input`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+
+  ${(props) =>
+    props.$flag &&
+    `
+    background-color: #f2f2f2;
+    pointer-events: none;
+  `}
 `;
 
 export const FlagVariationDescriptionContainer = styled.div`
@@ -368,7 +403,7 @@ export const CancelButton = styled.button`
   }
 `;
 
-export const ConfirmButton = styled.button`
+export const ConfirmButton = styled.button<{ $flag: boolean }>`
   display: flex;
   padding: 1.0625rem 1.5625rem;
   justify-content: center;
@@ -393,6 +428,13 @@ export const ConfirmButton = styled.button`
   &:active {
     background: #031c5b;
   }
+
+  ${(props) =>
+    props.$flag &&
+    `
+    cursor: not-allowed;
+    pointer-events: none;
+  `}
 `;
 
 export const FlagTypeContentContainerChecked = styled.div`

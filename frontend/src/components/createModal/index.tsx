@@ -10,15 +10,24 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { createFlag } from '@/api/create/createAxios';
+import { updateFlag } from '@/api/flagDetail/flagDetailAxios';
 import { getTagList, getTagListByKeyword } from '@/api/main/mainAxios';
 
 interface CreateModalProps {
   closeCreateModal: () => void;
+  mode: string;
+  flagDetail: FlagDetailItem | undefined;
 }
 
 interface TagItem {
   content: string;
   colorHex: string;
+}
+
+interface Variation {
+  value: string;
+  portion: number | '';
+  description: string;
 }
 
 interface FlagDetailItem {
@@ -30,9 +39,7 @@ interface FlagDetailItem {
   defaultValue: string;
   defaultValuePortion: number;
   defaultValueDescription: string;
-  variation: string;
-  variationPortion: number;
-  variationDescription: string;
+  variations: Array<Variation>;
 
   userId: number;
   createdAt: string;
@@ -48,24 +55,35 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
     e.stopPropagation();
   };
 
-  const [title, setTitle] = useState<string>('');
+  const [title, setTitle] = useState<string>(props.flagDetail?.title || '');
   const [allTags, setAllTags] = useState<Array<TagItem>>([]);
-  const [tags, setTags] = useState<Array<TagItem>>([]);
-  const [description, setDescription] = useState<string>('');
-  const [type, setType] = useState<string>('BOOLEAN');
-  const [defaultValue, setDefaultValue] = useState<string>('');
-  const [defaultPortion, setDefaultPortion] = useState<number>(100);
-  const [defaultDescription, setDefaultDescription] = useState<string>('');
+  const [tags, setTags] = useState<Array<TagItem>>(props.flagDetail?.tags || []);
+  const [description, setDescription] = useState<string>(
+    props.flagDetail?.description || '',
+  );
+  const [type, setType] = useState<string>(props.flagDetail?.type || 'BOOLEAN');
+  const [defaultValue, setDefaultValue] = useState<string>(
+    props.flagDetail?.defaultValue || '',
+  );
+  const [defaultPortion, setDefaultPortion] = useState<number | ''>(
+    props.flagDetail?.defaultValuePortion || 100,
+  );
+  const [defaultDescription, setDefaultDescription] = useState<string>(
+    props.flagDetail?.defaultValueDescription || '',
+  );
   const [variation, setVariation] = useState<string>('');
-  const [variationPortion, setVariationPortion] = useState<number>(0);
-  const [variationDescription, setVariationDescription] = useState<string>('');
+  const [variations, setVariations] = useState<Array<Variation>>(
+    props.flagDetail?.variations || [],
+  );
 
   const [tagSearchKeyword, setTagSearchKeyword] = useState<string>('');
   const [selectedTags, setSelectedTags] = useState<Array<TagItem>>([]);
 
   const [isTypeEdited, setIsTypeEdited] = useState<boolean>(false);
 
-  const typeConfig = ['BOOLEAN', 'NUMBER', 'STRING', 'JSON'];
+  const typeConfig = ['BOOLEAN', 'INTEGER', 'STRING', 'JSON'];
+
+  const [flagMode, setFlagMode] = useState<string>(props.mode);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setTitle(e.target.value);
@@ -95,11 +113,21 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   };
 
   const handleDefaultValueChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setDefaultValue(e.target.value);
+    if (type === 'BOOLEAN') {
+      setDefaultValue(e.target.value.toUpperCase());
+    } else if (type === 'INTEGER' && isNaN(Number(e.target.value.at(-1)))) {
+      setDefaultValue(e.target.value.slice(0, -1));
+    } else {
+      setDefaultValue(e.target.value);
+    }
   };
 
   const handleDefaultPortionChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setDefaultPortion(Number(e.target.value));
+    e.target.value = e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+    const inputValue = e.target.value;
+    if (inputValue === '' || !isNaN(Number(inputValue))) {
+      setDefaultPortion(inputValue === '' ? '' : Number(inputValue));
+    }
   };
 
   const handleDefaultDescriptionChange = (
@@ -108,34 +136,125 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
     setDefaultDescription(e.target.value);
   };
 
-  const handleVariationChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setVariation(e.target.value);
+  const handleVariationChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    idx: number,
+  ): void => {
+    if (type === 'BOOLEAN') {
+      setVariations((prev) => {
+        const newVariations = [...prev];
+        newVariations[idx].value = e.target.value.toUpperCase();
+        return newVariations;
+      });
+    } else if (type === 'INTEGER' && isNaN(Number(e.target.value.at(-1)))) {
+      setVariations((prev) => {
+        const newVariations = [...prev];
+        newVariations[idx].value = e.target.value.slice(0, -1);
+        return newVariations;
+      });
+    } else {
+      setVariations((prev) => {
+        const newVariations = [...prev];
+        newVariations[idx].value = e.target.value;
+        return newVariations;
+      });
+    }
   };
 
-  const handleVariantionPortionChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ): void => {
-    setVariationPortion(Number(e.target.value));
+  const calculateTotalPortion = (): number => {
+    let totalPortion = Number(0);
+    variations.map((variation) => {
+      totalPortion += Number(variation.portion);
+    });
+    return totalPortion;
   };
+
+  const handleVariationPortionChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    idx: number,
+  ): void => {
+    e.target.value = e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+    const inputValue = e.target.value;
+    console.log(inputValue);
+
+    if (inputValue === '' || !isNaN(Number(inputValue))) {
+      setVariations((prev) => {
+        const newVariations = [...prev];
+        newVariations[idx].portion = inputValue === '' ? '' : Number(inputValue);
+        return newVariations;
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (calculateTotalPortion() > Number(100)) {
+      alert('변수 비율의 합이 100을 넘을 수 없습니다.');
+      for (let i = 0; i < variations.length; i++) {
+        setVariations((prev) => {
+          const newVariations = [...prev];
+          newVariations[i].portion = Number(0);
+          return newVariations;
+        });
+      }
+    } else {
+      setDefaultPortion(Number(100) - calculateTotalPortion());
+    }
+  }, [variations]);
 
   const handleVariationDescriptionChange = (
     e: React.ChangeEvent<HTMLInputElement>,
+    idx: number,
   ): void => {
-    setVariationDescription(e.target.value);
+    setVariations((prev) => {
+      const newVariations = [...prev];
+      newVariations[idx].description = e.target.value;
+      return newVariations;
+    });
   };
 
   /**
    * 타입 수정 버튼 클릭 이벤트 핸들러
    */
   const onClickTypeEdit = (): void => {
+    if (isDetailMode()) return;
     setIsTypeEdited(true);
     console.log('타입 수정 버튼 클릭');
+  };
+
+  const addValidation = (): boolean => {
+    if (
+      title === '' ||
+      description === '' ||
+      defaultPortion === '' ||
+      defaultDescription === '' ||
+      (type === 'BOOLEAN' && !(defaultValue === 'TRUE' || defaultValue === 'FALSE'))
+    ) {
+      return false;
+    }
+
+    variations.map((variation) => {
+      if (
+        variation.portion === '' ||
+        variation.description === '' ||
+        (type === 'BOOLEAN' &&
+          !(variation.value === 'TRUE' || variation.value === 'FALSE'))
+      ) {
+        return false;
+      }
+    });
+
+    return true;
   };
 
   /**
    * 플래그 "추가하기" 버튼 클릭 이벤트 핸들러
    */
   const onClickAdd = (): void => {
+    if (!addValidation) {
+      alert('필수 입력값을 입력해주세요');
+      return;
+    }
+
     createFlag(
       {
         title: title,
@@ -145,9 +264,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
         defaultValue: defaultValue,
         defaultValuePortion: defaultPortion ? defaultPortion : 0,
         defaultValueDescription: defaultDescription,
-        variation: variation,
-        variationPortion: variationPortion ? variationPortion : 0,
-        variationDescription: variationDescription,
+        variations: variations,
 
         //TODO : userId 전역설정 기능 추가 후 수정
         userId: 1,
@@ -168,6 +285,9 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
    * @returns
    */
   const handleEditeType = (typeItem: string) => () => {
+    if (isDetailMode()) {
+      return;
+    }
     setType(typeItem);
     if (typeItem === 'BOOLEAN') {
       setDefaultValue('TRUE');
@@ -248,33 +368,118 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
     }
   }, [tags]);
 
-  return (
-    <S.ModalBackground onClick={() => props.closeCreateModal()}>
-      <S.Modal>
-        <S.ModalInputForm
-          id="modal-scrollable"
-          className="modal-scrollable"
-          onClick={(event) => stopPropagation(event)}
-        >
-          <S.FlagTitleAndTagsLayer>
-            <S.FlagTitleInputContainer>
-              <S.FlagTitleIconContainer>
-                <OutlinedFlagBig />
-              </S.FlagTitleIconContainer>
-              <S.FlagTitleInput
-                placeholder="플래그 이름"
-                value={title}
-                onChange={handleTitleChange}
-              />
-            </S.FlagTitleInputContainer>
-            <S.FlagTagsInputContainer>
-              <S.FlagTagsInputLabel>
-                <Bookmark />
-                <S.LabelTextContainer>
-                  <S.LabelText>태그</S.LabelText>
-                </S.LabelTextContainer>
+  const onClickAddVariation = (): void => {
+    setVariations([
+      ...variations,
+      {
+        value: '',
+        portion: '',
+        description: '',
+      },
+    ]);
+  };
 
-                {/* 
+  const onClickModifyCancle = (): void => {
+    setFlagMode('detail');
+  };
+
+  const onClickSave = (): void => {
+    if (!props.flagDetail || addValidation()) {
+      aleart('필수 입력값을 입력해주세요');
+      return;
+    }
+
+    updateFlag(
+      Number(props.flagDetail?.flagId),
+      {
+        title: title,
+        tags: selectedTags,
+        description: description,
+        type: type,
+        defaultValue: defaultValue,
+        defaultValuePortion: defaultPortion ? defaultPortion : 0,
+        defaultValueDescription: defaultDescription,
+        variations: variations,
+
+        //TODO : userId 전역설정 기능 추가 후 수정
+        userId: 1,
+      },
+      (data: FlagDetailItem) => {
+        console.log(data);
+        setFlagMode('detail');
+      },
+      (err) => {
+        console.log(err);
+      },
+    );
+  };
+
+  const onClickModify = (): void => {
+    setFlagMode('edit');
+  };
+
+  const isDetailMode = (): boolean => {
+    return flagMode === 'detail';
+  };
+
+  const renderVariationForms = () => {
+    return variations.map((variation, idx) => (
+      <S.FlagVariationContentLayer key={idx}>
+        <S.FlagVariationRowContainer>
+          <S.FlagVariationInput
+            type="text"
+            placeholder="값을 입력하세요"
+            value={variation.value}
+            // 변경된 값이 있을 때 처리하는 함수 바인딩
+            onChange={(e) => handleVariationChange(e, idx)}
+            $flag={isDetailMode()}
+          />
+          <S.FlagVariationInput
+            type="number"
+            placeholder="변수 비율"
+            value={variation.portion}
+            // 변경된 값이 있을 때 처리하는 함수 바인딩
+            onChange={(e) => handleVariationPortionChange(e, idx)}
+            $flag={isDetailMode()}
+          />
+        </S.FlagVariationRowContainer>
+        <S.FlagVariationRowContainer>
+          <S.FlagVariationInput
+            type="text"
+            placeholder="설명"
+            value={variation.description}
+            // 변경된 값이 있을 때 처리하는 함수 바인딩
+            onChange={(e) => handleVariationDescriptionChange(e, idx)}
+            $flag={isDetailMode()}
+          />
+        </S.FlagVariationRowContainer>
+      </S.FlagVariationContentLayer>
+    ));
+  };
+
+  const renderTotalForm = () => {
+    return (
+      <>
+        <S.FlagTitleAndTagsLayer>
+          <S.FlagTitleInputContainer>
+            <S.FlagTitleIconContainer>
+              <OutlinedFlagBig />
+            </S.FlagTitleIconContainer>
+            <S.FlagTitleInput
+              placeholder="플래그 이름"
+              value={title}
+              onChange={handleTitleChange}
+              $flag={isDetailMode()}
+            />
+          </S.FlagTitleInputContainer>
+          <S.FlagTagsInputContainer>
+            <S.FlagTagsInputLabel>
+              <Bookmark />
+              <S.LabelTextContainer>
+                <S.LabelText>태그</S.LabelText>
+              </S.LabelTextContainer>
+
+              {/* 
                 <div>
                   <input
                     type="description"
@@ -328,136 +533,153 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
                   </div>
                 </div> 
                 */}
-              </S.FlagTagsInputLabel>
-            </S.FlagTagsInputContainer>
-          </S.FlagTitleAndTagsLayer>
-          <S.FlagDescriptionLabel>
-            <S.FlagDescriptionContainer>
-              <S.FlagDescriptionIconContainer>
-                <Description />
-              </S.FlagDescriptionIconContainer>
-              <S.FlagDescriptionTextContainer>
-                <S.LabelText>설명</S.LabelText>
-              </S.FlagDescriptionTextContainer>
-            </S.FlagDescriptionContainer>
-          </S.FlagDescriptionLabel>
-          <S.FlagDescriptionTextArea
-            placeholder="설명"
-            value={description}
-            onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
-              handleDescriptionChange(event)
-            }
-          />
-          <S.FlagTypeLayer>
-            <S.FlagTypeLabel>
-              <S.FlagTypeIconContainer>
-                <CallSplit />
-              </S.FlagTypeIconContainer>
-              <S.FlagTypeLabelTextContainer>
-                <S.LabelText>변수 타입</S.LabelText>
-              </S.FlagTypeLabelTextContainer>
-            </S.FlagTypeLabel>
-            <S.FlagTypeContainer onClick={onClickTypeEdit}>
-              <S.FlagTypeContentContainer>
-                <S.FlagTypeTextContainer>
-                  <S.FlagTypeText>{type}</S.FlagTypeText>
-                </S.FlagTypeTextContainer>
-                <S.FlagTypeEditIconContainer>
-                  <Edit />
-                </S.FlagTypeEditIconContainer>
-              </S.FlagTypeContentContainer>
-            </S.FlagTypeContainer>
-            {isTypeEdited &&
-              typeConfig.map((typeItem, idx) =>
-                typeItem === type ? (
-                  <S.FlagTypeContentContainerChecked
-                    key={idx}
-                    onClick={handleEditeType(typeItem)}
-                  >
-                    <S.FlagTypeTextContainer>
-                      <S.FlagTypeText>{typeItem}</S.FlagTypeText>
-                    </S.FlagTypeTextContainer>
-                  </S.FlagTypeContentContainerChecked>
-                ) : (
-                  <S.FlagTypeContentContainerUnchecked
-                    key={idx}
-                    onClick={handleEditeType(typeItem)}
-                  >
-                    <S.FlagTypeTextContainer>
-                      <S.FlagTypeText>{typeItem}</S.FlagTypeText>
-                    </S.FlagTypeTextContainer>
-                  </S.FlagTypeContentContainerUnchecked>
-                ),
-              )}
-          </S.FlagTypeLayer>
-          <S.FlagVariationLabel>
-            <S.FlagVariationContainer>
-              <S.FlagVariationIconContainer>
-                <Loop />
-              </S.FlagVariationIconContainer>
-              <S.FlagVariationLabelTextContainer>
-                <S.LabelText>변수</S.LabelText>
-              </S.FlagVariationLabelTextContainer>
-            </S.FlagVariationContainer>
-          </S.FlagVariationLabel>
+            </S.FlagTagsInputLabel>
+          </S.FlagTagsInputContainer>
+        </S.FlagTitleAndTagsLayer>
+        <S.FlagDescriptionLabel>
+          <S.FlagDescriptionContainer>
+            <S.FlagDescriptionIconContainer>
+              <Description />
+            </S.FlagDescriptionIconContainer>
+            <S.FlagDescriptionTextContainer>
+              <S.LabelText>설명</S.LabelText>
+            </S.FlagDescriptionTextContainer>
+          </S.FlagDescriptionContainer>
+        </S.FlagDescriptionLabel>
+        <S.FlagDescriptionTextArea
+          placeholder="설명"
+          value={description}
+          onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
+            handleDescriptionChange(event)
+          }
+          $flag={isDetailMode()}
+        />
+        <S.FlagTypeLayer>
+          <S.FlagTypeLabel>
+            <S.FlagTypeIconContainer>
+              <CallSplit />
+            </S.FlagTypeIconContainer>
+            <S.FlagTypeLabelTextContainer>
+              <S.LabelText>변수 타입</S.LabelText>
+            </S.FlagTypeLabelTextContainer>
+          </S.FlagTypeLabel>
+          <S.FlagTypeContainer onClick={onClickTypeEdit} $flag={isDetailMode()}>
+            <S.FlagTypeContentContainer>
+              <S.FlagTypeTextContainer>
+                <S.FlagTypeText>{type}</S.FlagTypeText>
+              </S.FlagTypeTextContainer>
+              <S.FlagTypeEditIconContainer>
+                <Edit />
+              </S.FlagTypeEditIconContainer>
+            </S.FlagTypeContentContainer>
+          </S.FlagTypeContainer>
+          {isTypeEdited &&
+            typeConfig.map((typeItem, idx) =>
+              typeItem === type ? (
+                <S.FlagTypeContentContainerChecked
+                  key={idx}
+                  onClick={handleEditeType(typeItem)}
+                >
+                  <S.FlagTypeTextContainer>
+                    <S.FlagTypeText>{typeItem}</S.FlagTypeText>
+                  </S.FlagTypeTextContainer>
+                </S.FlagTypeContentContainerChecked>
+              ) : (
+                <S.FlagTypeContentContainerUnchecked
+                  key={idx}
+                  onClick={handleEditeType(typeItem)}
+                >
+                  <S.FlagTypeTextContainer>
+                    <S.FlagTypeText>{typeItem}</S.FlagTypeText>
+                  </S.FlagTypeTextContainer>
+                </S.FlagTypeContentContainerUnchecked>
+              ),
+            )}
+        </S.FlagTypeLayer>
+        <S.FlagVariationLabel>
+          <S.FlagVariationContainer>
+            <S.FlagVariationIconContainer>
+              <Loop />
+            </S.FlagVariationIconContainer>
+            <S.FlagVariationLabelTextContainer>
+              <S.LabelText>변수</S.LabelText>
+            </S.FlagVariationLabelTextContainer>
+          </S.FlagVariationContainer>
+        </S.FlagVariationLabel>
+        <S.FlagVariationContentLayer>
           <S.FlagVariationContentLayer>
-            <S.FlagVariationContentLayer>
-              <S.FlagVariationRowContainer>
-                <S.FlagVariationInput
-                  type="text"
-                  placeholder="값을 입력하세요"
-                  value={defaultValue}
-                  onChange={handleDefaultValueChange}
-                />
-                <S.FlagVariationInput
-                  type="number"
-                  placeholder="변수 비율"
-                  value={defaultPortion}
-                  onChange={handleDefaultPortionChange}
-                />
-              </S.FlagVariationRowContainer>
-              <S.FlagVariationRowContainer>
-                <S.FlagVariationInput
-                  type="text"
-                  placeholder="설명"
-                  value={defaultDescription}
-                  onChange={handleDefaultDescriptionChange}
-                />
-              </S.FlagVariationRowContainer>
-            </S.FlagVariationContentLayer>
-            <S.FlagVariationDivisionLine />
-            <S.FlagVariationContentLayer>
-              <S.FlagVariationRowContainer>
-                <S.FlagVariationInput
-                  type="text"
-                  placeholder="값을 입력하세요"
-                  value={variation}
-                  onChange={handleVariationChange}
-                />
-                <S.FlagVariationInput
-                  type="number"
-                  placeholder="변수 비율"
-                  value={variationPortion}
-                  onChange={handleVariantionPortionChange}
-                />
-              </S.FlagVariationRowContainer>
-              <S.FlagVariationRowContainer>
-                <S.FlagVariationInput
-                  type="text"
-                  placeholder="설명"
-                  value={variationDescription}
-                  onChange={handleVariationDescriptionChange}
-                />
-              </S.FlagVariationRowContainer>
-            </S.FlagVariationContentLayer>
+            <S.FlagVariationRowContainer>
+              <S.FlagVariationInput
+                type="text"
+                placeholder="값을 입력하세요"
+                value={defaultValue}
+                onChange={handleDefaultValueChange}
+                $flag={isDetailMode()}
+              />
+              <S.FlagVariationInput
+                type="number"
+                placeholder="변수 비율"
+                value={defaultPortion}
+                onChange={handleDefaultPortionChange}
+                $flag={isDetailMode()}
+              />
+            </S.FlagVariationRowContainer>
+            <S.FlagVariationRowContainer>
+              <S.FlagVariationInput
+                type="text"
+                placeholder="설명"
+                value={defaultDescription}
+                onChange={handleDefaultDescriptionChange}
+                $flag={isDetailMode()}
+              />
+            </S.FlagVariationRowContainer>
           </S.FlagVariationContentLayer>
+          <S.FlagVariationDivisionLine />
+          {renderVariationForms()}
           <S.ButtonLayer>
-            <S.CancelButton onClick={props.closeCreateModal}>취소하기</S.CancelButton>
-            <S.ConfirmButton onClick={onClickAdd}>추가하기</S.ConfirmButton>
+            <S.ConfirmButton onClick={onClickAddVariation} $flag={isDetailMode()}>
+              추가
+            </S.ConfirmButton>
           </S.ButtonLayer>
+        </S.FlagVariationContentLayer>
+        <S.ButtonLayer>
+          {flagMode === 'create' ? (
+            <S.CancelButton onClick={props.closeCreateModal}>취소하기</S.CancelButton>
+          ) : flagMode === 'edit' ? (
+            <S.CancelButton onClick={onClickModifyCancle}>취소하기</S.CancelButton>
+          ) : null}
+          {flagMode === 'create' ? (
+            <S.ConfirmButton onClick={onClickAdd} $flag={false}>
+              추가하기
+            </S.ConfirmButton>
+          ) : flagMode === 'edit' ? (
+            <S.ConfirmButton onClick={onClickSave} $flag={false}>
+              저장하기
+            </S.ConfirmButton>
+          ) : flagMode === 'detail' ? (
+            <S.ConfirmButton onClick={onClickModify} $flag={false}>
+              수정하기
+            </S.ConfirmButton>
+          ) : null}
+        </S.ButtonLayer>
+      </>
+    );
+  };
+
+  return flagMode === 'create' ? (
+    <S.ModalBackground onClick={() => props.closeCreateModal()}>
+      <S.Modal>
+        <S.ModalInputForm
+          id="modal-scrollable"
+          className="modal-scrollable"
+          onClick={(event) => stopPropagation(event)}
+        >
+          {renderTotalForm()}
         </S.ModalInputForm>
       </S.Modal>
     </S.ModalBackground>
+  ) : (
+    <S.DetailLayout>{renderTotalForm()}</S.DetailLayout>
   );
 };
 
