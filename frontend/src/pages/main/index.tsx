@@ -25,6 +25,7 @@ const index = () => {
   const [totalFlags, setTotalFlags] = useState<number>(0);
   const [activeFlags, setActiveFlags] = useState<number>(0);
   const [isModalOpened, setIsModalOpened] = useState(false);
+  const [flagKeyword, setFlagKeyword] = useState<string>('');
 
   /**
    * 화면 마운트 시 필요한 정보 가져오기
@@ -57,6 +58,10 @@ const index = () => {
       setIsModalOpened(false);
       html?.classList.remove('scroll-locked');
     }
+  };
+
+  const handleFlagSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFlagKeyword(e.target.value);
   };
 
   return (
@@ -173,7 +178,7 @@ const index = () => {
             </S.FlagNavTitleContainer>
             <S.FlagNavSearchComponent>
               <S.FlagNavSearchBoxContainer>
-                <S.FlagNavSearchInput placeholder="검색" />
+                <S.FlagNavSearchInput placeholder="검색" onChange={handleFlagSearch} />
                 <S.SearchIconContainer>
                   <SearchIcon />
                 </S.SearchIconContainer>
@@ -197,7 +202,7 @@ const index = () => {
         </S.TableNavContainer>
 
         <S.FlagTableContainer>
-          <FlagTable />
+          <FlagTable flagKeyword={flagKeyword} />
         </S.FlagTableContainer>
       </S.FlagTableComponent>
     </>
