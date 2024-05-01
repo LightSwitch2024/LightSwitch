@@ -1,6 +1,5 @@
-// httprequest 모듈
+import CryptoJS from 'crypto-js';
 
-// GET 요청
 export async function getRequest(url: string): Promise<any> {
   try {
     const response = await fetch(url);
@@ -15,7 +14,7 @@ export async function getRequest(url: string): Promise<any> {
 }
 
 // POST 요청
-export async function postRequest(url: string, data: any): Promise<any> {
+export async function postRequest(url: string, data?: any): Promise<any> {
   try {
     const response = await fetch(url, {
       method: 'POST',
@@ -32,4 +31,23 @@ export async function postRequest(url: string, data: any): Promise<any> {
     console.error('There was a problem with the fetch operation:', error);
     throw error;
   }
+}
+
+export function getHashedPercentageForObjectIds(
+  objectIds: string[],
+  iterations: number,
+): number {
+  let toHash = objectIds.join(',');
+  toHash = toHash.repeat(Math.max(0, iterations));
+
+  const hashedBytes = CryptoJS.MD5(toHash).toString();
+  const no = BigInt('0x' + hashedBytes);
+
+  let value = (Number(no % BigInt(9999)) / 9998) * 100;
+
+  if (value === 100) {
+    return getHashedPercentageForObjectIds(objectIds, iterations + 1);
+  }
+
+  return value;
 }
