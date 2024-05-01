@@ -1,8 +1,8 @@
 package com.lightswitch.domain;
 
+import java.io.Serializable;
 import java.util.List;
 
-import com.lightswitch.domain.dto.VariationResponse;
 import com.lightswitch.util.HashUtil;
 
 public class Flag {
@@ -39,6 +39,17 @@ public class Flag {
 	}
 
 	public Object getValue(Context context) {
+		List<String> properties = context.getProperty();
+		boolean containsKeyword = keywords.stream().
+			anyMatch(flagKeywords -> properties.contains(flagKeywords.getKeyword()));
+
+		if(containsKeyword){
+			return getValue(context, variationsForKeyword, defaultValueForKeyword);
+		}
+		return getValue(context, variations, defaultValue);
+	}
+
+	private Serializable getValue(Context context, List<Variation> variations, String defaultValue) {
 		double percentage = HashUtil.getHashedPercentage(String.valueOf(context.getUserId()), 1);
 		String value = defaultValue;
 		for (Variation variation : variations) {
