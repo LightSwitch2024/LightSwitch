@@ -120,8 +120,12 @@ public class FlagServiceImpl implements FlagService {
 					dataBuffer.append(inputLine.substring(5));
 				} else if (inputLine.isEmpty()) {
 					String jsonData = dataBuffer.toString().trim();
-					System.out.println("Received: " + jsonData);
-					if (!jsonData.isEmpty() && !jsonData.startsWith("SSE connected")) {
+					System.out.println("Receive : " + jsonData);
+
+					int jsonStartIndex = jsonData.indexOf('{');
+					if (jsonStartIndex != -1) {
+
+						jsonData = jsonData.substring(jsonStartIndex); // JSON 시작 지점부터 문자열 자르기
 						Gson gson = new Gson();
 						SseResponse sseResponse = gson.fromJson(jsonData, SseResponse.class);
 						Flags.event(sseResponse);
