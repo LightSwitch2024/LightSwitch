@@ -176,7 +176,7 @@ class FlagService(
         )
 
         // Todo craete한 User의 SDK키를 이용하여 SSE 데이터 전송
-        sseService.sendData(SseDto("1234", SseDto.SseType.CREATE, toJson(flagInitResponseDto)))
+        sseService.sendData(SseDto("8030ca7d78fb464fb9b661a715bbab13", SseDto.SseType.CREATE, flagInitResponseDto))
 
         return this.getFlag(savedFlag.flagId!!)
     }
@@ -343,7 +343,7 @@ class FlagService(
         flagKeywordMapping.delete()
 
         // Todo craete한 User의 SDK키를 이용하여 SSE 데이터 전송
-        sseService.sendData(SseDto("1234", SseDto.SseType.DELETE, toJson(FlagTitleResponseDto(flag.title))))
+        sseService.sendData(SseDto("8030ca7d78fb464fb9b661a715bbab13", SseDto.SseType.DELETE, FlagTitleResponseDto(flag.title)))
 
         return flag.flagId ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
     }
@@ -353,7 +353,7 @@ class FlagService(
         flag.active = !flag.active
 
         // Todo craete한 User의 SDK키를 이용하여 SSE 데이터 전송
-        sseService.sendData(SseDto("1234", SseDto.SseType.SWITCH, toJson(FlagIdResponseDto(flagId))))
+        sseService.sendData(SseDto("8030ca7d78fb464fb9b661a715bbab13", SseDto.SseType.UPDATE, FlagIdResponseDto(flagId)))
 
         return flagRepository.save(flag).flagId ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
     }
@@ -500,7 +500,7 @@ class FlagService(
             defaultValueDescriptionForKeyword = defaultVariation.description,
             variationsForKeyword = flagRequestDto.variationsForKeyword,
         )
-        sseService.sendData(SseDto("1234", SseDto.SseType.UPDATE, toJson(flagInitResponseDto)))
+        sseService.sendData(SseDto("8030ca7d78fb464fb9b661a715bbab13", SseDto.SseType.UPDATE, flagInitResponseDto))
 
         return this.getFlag(flag.flagId!!)
     }
