@@ -102,11 +102,11 @@ class MemberService(
 
     fun logIn(logInReqDto: LogInReqDto): MemberResDto {
 
-        val savedMember: Member? = memberRepository.findByEmail(logInReqDto.email)
+        val savedMember: Member = memberRepository.findByEmail(logInReqDto.email) ?: throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
 
-        val isCorrectPW = (logInReqDto.password == savedMember?.password)
+        val isCorrectPW = (logInReqDto.password == savedMember.password)
 
-        return if (isCorrectPW && savedMember != null) {
+        return if (isCorrectPW) {
             MemberResDto(
                 email = savedMember.email,
                 firstName = savedMember.firstName,
@@ -114,37 +114,23 @@ class MemberService(
                 telNumber = savedMember.telNumber
             )
         } else {
-            throw MemberException("비밀번호가 틀렸습니다.")
+            throw BaseException(ResponseCode.INVALID_PASSWORD)
         }
     }
 
     //     유저 정보 읽기
     fun getUser(email: String): MemberResDto {
-        val savedMember = memberRepository.findByEmail(email)
+        val savedMember = memberRepository.findByEmail(email) ?:throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
         println("service 진행됌")
-        println(savedMember?.email)
+        println(savedMember.email)
 
-        return if (savedMember != null) {
-            MemberResDto(
+        return MemberResDto(
                 email = savedMember.email,
                 firstName = savedMember.firstName,
                 lastName = savedMember.lastName,
                 telNumber = savedMember.telNumber,
             )
-        } else {
-            throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
-        }
     }
-
-//     유저 정보 삭제
-//    @Transactional
-//    fun deleteUser(email: String): Long {
-//        val savedUser = memberRepository.findByEmail(email)
-//        //savedUser 삭제
-//        savedUser?.delete()
-//
-//        return savedUser.memberId ?: throw MemberException("유저가 없습니다.")
-//    }
 
     // 이름, 전화번호 변경
     fun updateUser(email: String, newData: MemberUpdateReqDto): MemberResDto? {
