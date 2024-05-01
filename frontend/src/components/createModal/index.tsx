@@ -8,10 +8,12 @@ import * as S from '@components/createModal/indexStyle';
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
 
 import { createFlag } from '@/api/create/createAxios';
 import { updateFlag } from '@/api/flagDetail/flagDetailAxios';
 import { getTagList, getTagListByKeyword } from '@/api/main/mainAxios';
+import { AuthAtom } from '@/global/AuthAtom';
 
 interface CreateModalProps {
   closeCreateModal: () => void;
@@ -49,6 +51,8 @@ interface FlagDetailItem {
 
 const CreateModal: React.FC<CreateModalProps> = (props) => {
   const navigator = useNavigate();
+
+  const auth = useRecoilValue(AuthAtom);
 
   // 모달 밖 클릭에 대한 이벤트 전파 막기
   const stopPropagation = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -287,7 +291,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
         variations: variations,
 
         //TODO : userId 전역설정 기능 추가 후 수정
-        userId: 1,
+        memberId: auth.memberId,
       },
       (data: FlagDetailItem) => {
         console.log(data);
@@ -404,7 +408,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   };
 
   const onClickSave = (): void => {
-    if (!props.flagDetail || !addValidation()) {
+    if (!props.flagDetail || addValidation()) {
       alert('필수 입력값을 입력해주세요');
       return;
     }
@@ -427,7 +431,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
         variations: variations,
 
         //TODO : userId 전역설정 기능 추가 후 수정
-        userId: 1,
+        memberId: auth.memberId,
       },
       (data: FlagDetailItem) => {
         console.log(data);

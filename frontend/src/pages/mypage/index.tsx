@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
 import { deleteUser, getUserDetail, updateUser } from '@/api/userDetail/userAxios';
-import { AuthAtom } from '@/AuthAtom';
+import { AuthAtom } from '@/global/AuthAtom';
 
 interface UserData {
   email: string;
@@ -36,6 +36,7 @@ const UserDetail = () => {
    * userEmail를 통해 마운트 시 해당 user의 상세 정보를 가져옴
    */
   useEffect(() => {
+    console.log(auth);
     getUserDetail<UserData>(
       String(auth.email),
       (data: UserData) => {
@@ -46,7 +47,7 @@ const UserDetail = () => {
         console.log(err);
       },
     );
-  }, [auth.email]);
+  }, []);
 
   /**
    * 수정에 사용할 User 정보를 셋업하는 함수
