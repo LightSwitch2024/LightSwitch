@@ -5,6 +5,9 @@ import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.dto.success
 import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.domain.member.dto.req.SdkKeyReqDto
+import com.lightswitch.core.domain.member.dto.req.MemberUpdateReqDto
+import com.lightswitch.core.domain.member.dto.req.LogInReqDto
+import com.lightswitch.core.domain.member.dto.req.PasswordUpdateReqDto
 import com.lightswitch.core.domain.member.dto.req.SignupReqDto
 import com.lightswitch.core.domain.member.dto.res.MemberResDto
 import com.lightswitch.core.domain.member.dto.res.SdkKeyResDto
@@ -20,7 +23,6 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/v1/member")
 class MemberController(
     private val memberService: MemberService,
-    private val memberRepository: MemberRepository,
     private val sdkKeyService: SdkKeyService
 ) {
 
@@ -42,8 +44,8 @@ class MemberController(
 
     @PostMapping("/login")
     fun logIn(
-        @RequestBody logInReqDto: LogInRequestDto
-    ): BaseResponse<MemberResponseDto> {
+        @RequestBody logInReqDto: LogInReqDto
+    ): BaseResponse<MemberResDto> {
         return success(memberService.logIn(logInReqDto))
     }
 
@@ -51,24 +53,26 @@ class MemberController(
     @GetMapping("/{email}")
     fun getUser(
         @PathVariable email: String
-    ): BaseResponse<MemberResponseDto> {
+    ): BaseResponse<MemberResDto> {
         return success(memberService.getUser(email))
     }
 
     // 유저 이름,전화번호 수정
     @PutMapping("/{email}")
-    fun updateUser(@PathVariable email: String,
-        @RequestBody newUserData: MemberUpdateRequestDto
-    ): BaseResponse<MemberResponseDto?> {
-        return success(memberService.updateUser(newUserData))
+    fun updateUser(
+        @PathVariable email: String,
+        @RequestBody newUserData: MemberUpdateReqDto
+    ): BaseResponse<MemberResDto?> {
+        return success(memberService.updateUser(email, newUserData))
     }
 
     // 비밀번호 수정
     @PutMapping("/{email}/password")
-    fun updatePassword(@PathVariable email: String,
-        @RequestBody pwUpdateData: PasswordUpdateRequestDto
-    ): BaseResponse<MemberResponseDto?> {
-        return success(memberService.updatePassword(pwUpdateData))
+    fun updatePassword(
+        @PathVariable email: String,
+        @RequestBody pwUpdateData: PasswordUpdateReqDto
+    ): BaseResponse<MemberResDto?> {
+        return success(memberService.updatePassword(email, pwUpdateData))
     }
 
     // 유저 삭제

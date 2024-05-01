@@ -3,18 +3,17 @@ package com.lightswitch.core.domain.member.service
 import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.common.service.PasswordService
-import com.lightswitch.core.domain.member.dto.req.LogInRequestDto
-import com.lightswitch.core.domain.member.dto.req.MemberUpdateRequestDto
-import com.lightswitch.core.domain.member.dto.req.PasswordUpdateRequestDto
+import com.lightswitch.core.domain.member.dto.req.LogInReqDto
+import com.lightswitch.core.domain.member.dto.req.MemberUpdateReqDto
+import com.lightswitch.core.domain.member.dto.req.PasswordUpdateReqDto
 import com.lightswitch.core.domain.member.dto.req.SignupReqDto
-import com.lightswitch.core.domain.member.dto.res.MemberResponseDto
+import com.lightswitch.core.domain.member.dto.res.MemberResDto
 import com.lightswitch.core.domain.member.entity.Member
 import com.lightswitch.core.domain.member.exception.MemberException
 import com.lightswitch.core.domain.member.repository.MemberRepository
 import com.lightswitch.core.domain.redis.service.RedisService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -84,14 +83,14 @@ class MemberService(
         return matcher.matches()
     }
 
-    fun logIn(logInReqDto: LogInRequestDto): MemberResponseDto {
+    fun logIn(logInReqDto: LogInReqDto): MemberResDto {
 
         val savedMember: Member? = memberRepository.findByEmail(logInReqDto.email)
 
-        val isCorrectPW = ( logInReqDto.password == savedMember?.password )
+        val isCorrectPW = (logInReqDto.password == savedMember?.password)
 
         return if (isCorrectPW && savedMember != null) {
-            MemberResponseDto(
+            MemberResDto(
                 email = savedMember.email,
                 firstName = savedMember.firstName,
                 lastName = savedMember.lastName,
@@ -102,21 +101,21 @@ class MemberService(
         }
     }
 
-//     유저 정보 읽기
-    fun getUser(email: String): MemberResponseDto {
+    //     유저 정보 읽기
+    fun getUser(email: String): MemberResDto {
         val savedMember = memberRepository.findByEmail(email)
         println("service 진행됌")
         println(savedMember?.email)
 
         return if (savedMember != null) {
-            MemberResponseDto(
+            MemberResDto(
                 email = savedMember.email,
                 firstName = savedMember.firstName,
                 lastName = savedMember.lastName,
                 telNumber = savedMember.telNumber,
             )
         } else {
-           throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
+            throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
         }
     }
 
@@ -131,9 +130,9 @@ class MemberService(
 //    }
 
     // 이름, 전화번호 변경
-    fun updateUser(newData: MemberUpdateRequestDto): MemberResponseDto? {
-        val oldData: Member? = memberRepository.findByEmail(newData.email)
-        oldData?.let{
+    fun updateUser(email: String, newData: MemberUpdateReqDto): MemberResDto? {
+        val oldData: Member? = memberRepository.findByEmail(email)
+        oldData?.let {
             oldData.firstName = newData.firstName
             oldData.lastName = newData.lastName
             oldData.telNumber = newData.telNumber
@@ -141,8 +140,8 @@ class MemberService(
             memberRepository.save(it)
         }
 
-        val updatedData: MemberResponseDto? = oldData?.let {
-            MemberResponseDto(
+        val updatedData: MemberResDto? = oldData?.let {
+            MemberResDto(
                 firstName = it.firstName,
                 lastName = it.lastName,
                 telNumber = it.telNumber,
@@ -153,18 +152,18 @@ class MemberService(
     }
 
     // 비밀번호 변경
-    fun updatePassword(newData: PasswordUpdateRequestDto): MemberResponseDto? {
-        val savedMember: Member? = memberRepository.findByEmail(newData.email)
+    fun updatePassword(email: String, newData: PasswordUpdateReqDto): MemberResDto? {
+        val savedMember: Member? = memberRepository.findByEmail(email)
 
-        if (savedMember != null && passwordService.matches(newData.oldPassword,savedMember.password)) {
+        if (savedMember != null && passwordService.matches(newData.oldPassword, savedMember.password)) {
             savedMember.password = newData.newPassword
             memberRepository.save(savedMember)
         } else {
             throw MemberException("입력하신 비밀번호가 틀렸습니다.")
         }
 
-        val updatedData: MemberResponseDto = savedMember.let {
-            MemberResponseDto(
+        val updatedData: MemberResDto = savedMember.let {
+            MemberResDto(
                 email = it.email,
                 firstName = it.firstName,
                 lastName = it.lastName,
