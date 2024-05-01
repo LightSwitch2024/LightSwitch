@@ -78,4 +78,8 @@ class FlagController(
         )
     }
 
+    @GetMapping("/keyword/{keyword}")
+    fun getFlagsSummaryByKeyword(@PathVariable keyword: String): BaseResponse<List<FlagSummaryDto>> {
+        return success(flagService.getFlagsSummaryByKeyword(keyword))
+    }
 }

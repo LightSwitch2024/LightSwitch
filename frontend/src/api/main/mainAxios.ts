@@ -61,3 +61,14 @@ export async function patchFlagActive<T>(
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
     .catch((err: AxiosError) => onFail(err));
 }
+
+export async function getFlagListByKeyword<T>(
+  keyword: string,
+  onSuccess: (data: T) => void,
+  onFail: (err: AxiosError) => void,
+): Promise<void> {
+  axios
+    .get<BaseResponse<T>>(`/api/v1/flag/keyword/${keyword}`)
+    .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
+    .catch((err: AxiosError) => onFail(err));
+}
