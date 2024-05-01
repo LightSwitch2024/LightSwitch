@@ -38,8 +38,6 @@ const UserDetail = () => {
    * userEmail를 통해 마운트 시 해당 user의 상세 정보를 가져옴
    */
   useEffect(() => {
-    if (!auth.email) return navigate('/login');
-
     getUserDetail<UserData>(
       auth.email,
       (data: UserData) => {
