@@ -11,6 +11,7 @@ import com.lightswitch.core.domain.flag.dto.res.FlagSummaryDto
 import com.lightswitch.core.domain.flag.dto.res.FlagInitResponseDto
 import com.lightswitch.core.domain.flag.dto.res.FlagIdResponseDto
 import com.lightswitch.core.domain.flag.dto.res.TagResponseDto
+import com.lightswitch.core.domain.flag.dto.res.FlagTitleResponseDto
 import com.lightswitch.core.domain.flag.repository.*
 import com.lightswitch.core.domain.flag.repository.entity.*
 import com.lightswitch.core.domain.flag.repository.queydsl.FlagCustomRepository
@@ -238,7 +239,7 @@ class FlagService(
 
             active = flag.active,
 
-            keywords = flagKeywordMapping?.keywords?.map {
+            keywords = flagKeywordMapping.keywords.map {
                 KeywordDto(
                     keyword = it.keyword,
                     description = it.description
@@ -301,7 +302,7 @@ class FlagService(
 
                 active = flag.active,
 
-                keywords = flagKeywordMapping?.keywords?.map {
+                keywords = flagKeywordMapping.keywords.map {
                     KeywordDto(
                         keyword = it.keyword,
                         description = it.description

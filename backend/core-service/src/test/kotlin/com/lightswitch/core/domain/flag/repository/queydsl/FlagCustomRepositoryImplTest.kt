@@ -24,10 +24,6 @@ class FlagCustomRepositoryImplTest(
     private val flagRepository: FlagRepository,
     @Autowired
     private val tagRepository: TagRepository,
-    @Autowired
-    private val variationRepository: VariationRepository,
-    @Autowired
-    private val flagService: FlagService
 ) {
 
     private var flag: Flag? = null
@@ -41,9 +37,6 @@ class FlagCustomRepositoryImplTest(
 
     @BeforeEach
     fun setUp() {
-        variationRepository.deleteAll()
-        flagService.deleteAllFlag()
-        tagRepository.deleteAll()
 
         flag = Flag(
             title = "test",
