@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.lightswitch.domain.Flag;
 import com.lightswitch.domain.FlagType;
+import com.lightswitch.domain.Keywords;
 import com.lightswitch.domain.Variation;
 
 public class FlagResponse {
@@ -13,9 +14,14 @@ public class FlagResponse {
 	private String title;
 	private String description;
 	private FlagType type;
+	private List<Keywords> keywords;
+	private String defaultValueForKeyword;
+	private int defaultPortionForKeyword;
+	private String defaultDescriptionForKeyword;
+	private List<VariationResponse> variationsForKeyword;
 	private String defaultValue;
-	private int defaultValuePortion;
-	private String defaultValueDescription;
+	private int defaultPortion;
+	private String defaultDescription;
 	private List<VariationResponse> variations;
 	private int maintainerId;
 	private String createdAt;
@@ -28,36 +34,14 @@ public class FlagResponse {
 	}
 
 	public Flag toFlag() {
-		List<Variation> variList = new ArrayList<>();
-		variations.forEach(variationResponse -> variList.add(variationResponse.toVariation()));
+		List<Variation> variationsForKeyword = new ArrayList<>();
+		this.variationsForKeyword.forEach(variationResponse -> variationsForKeyword.add(variationResponse.toVariation()));
+		List<Variation> variations = new ArrayList<>();
+		this.variations.forEach(variationResponse -> variations.add(variationResponse.toVariation()));
 
-		return new Flag.Builder()
-			.flagId(flagId)
-			.type(type)
-			.active(active)
-			.title(title)
-			.description(description)
-			.variations(variList)
-			.defaultValue(defaultValue)
-			.build();
-	}
-
-	@Override
-	public String toString() {
-		return "FlagResponse{" +
-			"flagId=" + flagId +
-			", title='" + title + '\'' +
-			", description='" + description + '\'' +
-			", type=" + type +
-			", defaultValue='" + defaultValue + '\'' +
-			", defaultValuePortion=" + defaultValuePortion +
-			", defaultValueDescription='" + defaultValueDescription + '\'' +
-			", variations=" + variations +
-			", maintainerId=" + maintainerId +
-			", createdAt='" + createdAt + '\'' +
-			", updatedAt='" + updatedAt + '\'' +
-			", deletedAt='" + deletedAt + '\'' +
-			", active=" + active +
-			'}';
+		return new Flag(flagId, title, description, type, keywords,
+			defaultValueForKeyword, defaultPortionForKeyword, defaultDescriptionForKeyword,
+			variations, defaultValue, defaultPortion, defaultDescription,
+			variationsForKeyword, maintainerId, createdAt, updatedAt, deletedAt, active);
 	}
 }
