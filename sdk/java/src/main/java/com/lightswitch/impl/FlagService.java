@@ -6,8 +6,6 @@ public interface FlagService {
 
 	void init(String sdkKey);
 
-	void sseConnection(String sdkKey);
-
 	void destroy();
 
 	Object getFlag(String key, Context context);

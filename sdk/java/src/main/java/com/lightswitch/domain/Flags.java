@@ -31,4 +31,8 @@ public class Flags {
 
 		flags.put(flag.getTitle(), flag);
 	}
+
+	public static void clear() {
+		flags.clear();
+	}
 }

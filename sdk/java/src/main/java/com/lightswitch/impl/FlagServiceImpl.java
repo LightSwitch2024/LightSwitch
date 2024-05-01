@@ -42,11 +42,16 @@ public class FlagServiceImpl implements FlagService {
 			throw new FlagServerConnectException("INIT() POST request not worked");
 		}
 		handleResponse();
+
+		if (!setupConnection("connect", sdkKey)) {
+			throw new FlagServerConnectException("SSE() POST request not worked");
+		}
+		startSseThread();
 	}
 
 	private boolean setupConnection(String endpoint, String sdkKey) {
 		SseServlet servlet = new SseServlet();
-		connection = servlet.getConnect(endpoint, "POST", 1000);
+		connection = servlet.getConnect(endpoint, "POST", 0);
 		return writeSdkKey(sdkKey) == HTTP_OK;
 	}
 
@@ -80,13 +85,7 @@ public class FlagServiceImpl implements FlagService {
 		}
 	}
 
-	@Override
-	public void sseConnection(String sdkKey) {
-		if (!setupConnection("connect", sdkKey)) {
-			throw new FlagServerConnectException("sse() POST request not worked");
-		}
-		startSseThread();
-	}
+
 
 	private void startSseThread() {
 		thread = new Thread(this::connectToSse);
@@ -114,9 +113,10 @@ public class FlagServiceImpl implements FlagService {
 		}
 	}
 
-	private static void processEventData(String jsonData) {
+	private void processEventData(String jsonData) {
 		Gson gson = new Gson();
 		Flag flag = gson.fromJson(jsonData, Flag.class);
+		// todo. update,delete,, .. flag 관리
 		System.out.println("Received data: " + flag.toString() + ", number: " + flag.getTitle());
 	}
 
@@ -133,28 +133,25 @@ public class FlagServiceImpl implements FlagService {
 		if (connection != null) {
 			connection.disconnect();
 		}
-		//todo. Caching된 Flags 초기화
+
+		Flags.clear();
 	}
 
 	@Override
 	public Object getFlag(String key, Context context) {
 		//todo. 세 번째 인자 default 값 추가하기
 		Flag flag = Flags.getFlag(key).orElseThrow(FlagRuntimeException::new);
-		Object value = flag.getValue(context);
-		return value;
+		return flag.getValue(context);
 	}
 
 	public static void main(String[] args) {
 		FlagService flagService = FlagServiceImpl.getInstance();
 		flagService.init("SDK_key");
-		flagService.sseConnection("SDK_key");
+		// flagService.sseConnection("SDK_key");
 
-		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException ie) {
-			Thread.currentThread().interrupt();
-		}
+		Context build = new Context.Builder(123)
+			.build();
 
-		flagService.destroy();
+		Object testTitle = flagService.getFlag("Title1", build);
 	}
 }
