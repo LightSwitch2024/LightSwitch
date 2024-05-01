@@ -1,5 +1,5 @@
 import { describe, expect } from '@jest/globals';
-import { getRequest, postRequest } from '../lib/utils';
+import { getRequest, postRequest, getHashedPercentageForObjectIds } from '../lib/utils';
 
 describe('getRequest', () => {
   it('should make a successful GET request', async () => {
@@ -44,5 +44,24 @@ describe('postRequest', () => {
   it('should throw an error if POST request returns non-ok status', async () => {
     const url = 'https://jsonplaceholder.typicode.com/posts/99999'; // Assuming this returns 404
     await expect(postRequest(url, {})).rejects.toThrow();
+  });
+});
+
+describe('getHashedPercentageForObjectIds', () => {
+  it('should return a percentage value between 0 and 100', () => {
+    const objectIds = ['123', '456', '789'];
+    const iterations = 1;
+    const result = getHashedPercentageForObjectIds(objectIds, iterations);
+    expect(result).toBeGreaterThanOrEqual(0);
+    expect(result).toBeLessThanOrEqual(100);
+  });
+
+  it('should return different values for different iterations', () => {
+    const objectIds = ['123', '456', '789'];
+    const iterations1 = 1;
+    const iterations2 = 2;
+    const result1 = getHashedPercentageForObjectIds(objectIds, iterations1);
+    const result2 = getHashedPercentageForObjectIds(objectIds, iterations2);
+    expect(result1).not.toEqual(result2);
   });
 });
