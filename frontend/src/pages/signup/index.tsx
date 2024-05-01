@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
 
-import axios from '@/api/axios';
+import { confirmAuthCode, sendAuthCode, signUp } from '@/api/userDetail/userAxios';
 import * as S from '@/pages/signup/indexStyle';
 
 type SendAuthCodeData = {
@@ -112,7 +112,11 @@ const SignUp = () => {
       email: email,
     };
 
-    axios.post('/mails/send', sendAuthCodeData);
+    sendAuthCode(
+      sendAuthCodeData,
+      (data: string) => console.log(data),
+      (err) => console.log(err),
+    );
   };
 
   const handleConfirmAuthCode = (): void => {
@@ -121,11 +125,11 @@ const SignUp = () => {
       authCode: authCode,
     };
 
-    axios.post('/mails/confirm', confirmAuthCodeData).then((res) => {
-      if (res && res.data && res.data.data) {
-        setIsAuth(res.data.data);
-      }
-    });
+    confirmAuthCode(
+      confirmAuthCodeData,
+      (data: boolean) => setIsAuth(data),
+      (err) => console.log(err),
+    );
   };
 
   const handleCancle = (): void => {
@@ -147,9 +151,15 @@ const SignUp = () => {
       authCode: authCode,
     };
 
-    axios.post('/users', signUpData).then(() => {
-      // Todo... 회원가입 성공 시 페이지 이동 처리
-    });
+    signUp(
+      signUpData,
+      (data) => {
+        console.log(data);
+      },
+      (err) => {
+        console.log(err);
+      },
+    );
   };
 
   useEffect(() => {

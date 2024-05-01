@@ -37,8 +37,8 @@ interface FlagDetailItem {
   description: string;
   type: string;
   defaultValue: string;
-  defaultValuePortion: number;
-  defaultValueDescription: string;
+  defaultPortion: number;
+  defaultDescription: string;
   variations: Array<Variation>;
 
   userId: number;
@@ -62,14 +62,23 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
     props.flagDetail?.description || '',
   );
   const [type, setType] = useState<string>(props.flagDetail?.type || 'BOOLEAN');
+  const [keywords, setKeywords] = useState<Array<string>>([]);
+  const [defaultValueForKeyword, setDefaultValueForKeyword] = useState<string>('');
+  const [defaultPortionForKeyword, setDefaultPortionForKeyword] = useState<number | ''>(
+    100,
+  );
+  const [defaultDescriptionForKeyword, setDefaultDescriptionForKeyword] =
+    useState<string>('');
+  const [variationsForKeyword, setVariationsForKeyword] = useState<Array<Variation>>([]);
+
   const [defaultValue, setDefaultValue] = useState<string>(
     props.flagDetail?.defaultValue || '',
   );
   const [defaultPortion, setDefaultPortion] = useState<number | ''>(
-    props.flagDetail?.defaultValuePortion || 100,
+    props.flagDetail?.defaultPortion || 100,
   );
   const [defaultDescription, setDefaultDescription] = useState<string>(
-    props.flagDetail?.defaultValueDescription || '',
+    props.flagDetail?.defaultDescription || '',
   );
   const [variation, setVariation] = useState<string>('');
   const [variations, setVariations] = useState<Array<Variation>>(
@@ -175,7 +184,6 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   ): void => {
     e.target.value = e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
     const inputValue = e.target.value;
-    console.log(inputValue);
 
     if (inputValue === '' || !isNaN(Number(inputValue))) {
       setVariations((prev) => {
@@ -229,6 +237,10 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
       defaultDescription === '' ||
       (type === 'BOOLEAN' && !(defaultValue === 'TRUE' || defaultValue === 'FALSE'))
     ) {
+      console.log(title);
+      console.log(description);
+      console.log(defaultPortion);
+      console.log(defaultDescription);
       return false;
     }
 
@@ -239,6 +251,9 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
         (type === 'BOOLEAN' &&
           !(variation.value === 'TRUE' || variation.value === 'FALSE'))
       ) {
+        console.log(variation.portion);
+        console.log(variation.description);
+        console.log(variation.value);
         return false;
       }
     });
@@ -261,9 +276,14 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
         tags: selectedTags,
         description: description,
         type: type,
+        keywords: keywords,
+        defaultValueForKeyword: defaultValueForKeyword,
+        defaultPortionForKeyword: defaultPortionForKeyword,
+        defaultDescriptionForKeyword: defaultDescriptionForKeyword,
+        variationsForKeyword: variationsForKeyword,
         defaultValue: defaultValue,
-        defaultValuePortion: defaultPortion ? defaultPortion : 0,
-        defaultValueDescription: defaultDescription,
+        defaultPortion: defaultPortion ? defaultPortion : 0,
+        defaultDescription: defaultDescription,
         variations: variations,
 
         //TODO : userId 전역설정 기능 추가 후 수정
@@ -384,8 +404,8 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   };
 
   const onClickSave = (): void => {
-    if (!props.flagDetail || addValidation()) {
-      aleart('필수 입력값을 입력해주세요');
+    if (!props.flagDetail || !addValidation()) {
+      alert('필수 입력값을 입력해주세요');
       return;
     }
 
@@ -396,9 +416,14 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
         tags: selectedTags,
         description: description,
         type: type,
+        keywords: keywords,
+        defaultValueForKeyword: defaultValueForKeyword,
+        defaultPortionForKeyword: defaultPortionForKeyword,
+        defaultDescriptionForKeyword: defaultDescriptionForKeyword,
+        variationsForKeyword: variationsForKeyword,
         defaultValue: defaultValue,
-        defaultValuePortion: defaultPortion ? defaultPortion : 0,
-        defaultValueDescription: defaultDescription,
+        defaultPortion: defaultPortion ? defaultPortion : 0,
+        defaultDescription: defaultDescription,
         variations: variations,
 
         //TODO : userId 전역설정 기능 추가 후 수정

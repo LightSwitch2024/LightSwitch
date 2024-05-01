@@ -23,9 +23,14 @@ interface FlagItem {
   tags: Array<TagItem>;
   description: string;
   type: string;
+  keywords: string;
+  defaultValueForKeyword: string;
+  defaultPortionForKeyword: string;
+  defaultDescriptionForKeyword: string;
+  variationsForKeyword: Array<Variation>;
   defaultValue: string;
-  defaultValuePortion: number;
-  defaultValueDescription: string;
+  defaultPortion: number;
+  defaultDescription: string;
   variations: Array<Variation>;
 
   userId: number;

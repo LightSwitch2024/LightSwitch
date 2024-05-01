@@ -8,9 +8,12 @@ import com.lightswitch.core.domain.member.dto.req.MemberUpdateReqDto
 import com.lightswitch.core.domain.member.dto.req.PasswordUpdateReqDto
 import com.lightswitch.core.domain.member.dto.req.SignupReqDto
 import com.lightswitch.core.domain.member.dto.res.MemberResDto
+import com.lightswitch.core.domain.member.dto.res.MemberResponseDto
+import com.lightswitch.core.domain.member.dto.res.SdkKeyResDto
 import com.lightswitch.core.domain.member.entity.Member
 import com.lightswitch.core.domain.member.exception.MemberException
 import com.lightswitch.core.domain.member.repository.MemberRepository
+import com.lightswitch.core.domain.member.repository.SdkKeyRepository
 import com.lightswitch.core.domain.redis.service.RedisService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -22,11 +25,12 @@ class MemberService(
     private val memberRepository: MemberRepository,
     private val passwordService: PasswordService,
     private val redisService: RedisService,
+    private val sdkKeyRepository: SdkKeyRepository,
     @Value("\${spring.data.redis.code.signup}")
     val signupCode: String
 ) {
 
-    fun signUp(signupReqDto: SignupReqDto): Member {
+    fun signUp(signupReqDto: SignupReqDto): MemberResponseDto {
 
         var firstName = signupReqDto.firstName
         var lastName = signupReqDto.lastName
@@ -56,7 +60,20 @@ class MemberService(
             password = encodedPassword
         )
 
-        return memberRepository.save(member)
+        val savedMember = memberRepository.save(member)
+        val sdkKey = sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(savedMember.memberId!!)
+
+        return MemberResponseDto(
+            memberId = savedMember.memberId!!,
+            firstName = savedMember.firstName,
+            lastName = savedMember.lastName,
+            telNumber = savedMember.telNumber,
+            email = savedMember.email,
+            password = savedMember.password,
+            sdkKey = sdkKey?.key ?: "",
+            createdAt = savedMember.createdAt.toString(),
+            updatedAt = savedMember.updatedAt.toString()
+        )
     }
 
     fun validateHangle(name: String): Boolean {

@@ -87,8 +87,8 @@ class FlagService(
         // variation 저장
         val defaultVariation = Variation(
             flag = savedFlag,
-            description = flagRequestDto.defaultValueDescription,
-            portion = flagRequestDto.defaultValuePortion,
+            description = flagRequestDto.defaultDescription,
+            portion = flagRequestDto.defaultPortion,
             value = flagRequestDto.defaultValue,
             defaultFlag = true,
             flagKeywordMapping = null,
@@ -132,8 +132,8 @@ class FlagService(
 
         val defaultVariationForKeyword = Variation(
             flag = savedFlag,
-            description = flagRequestDto.defaultValueDescriptionForKeyword,
-            portion = flagRequestDto.defaultValuePortionForKeyword,
+            description = flagRequestDto.defaultDescriptionForKeyword,
+            portion = flagRequestDto.defaultPortionForKeyword,
             value = flagRequestDto.defaultValueForKeyword,
             defaultFlag = true,
             flagKeywordMapping = savedFlagKeywordMapping
@@ -158,8 +158,8 @@ class FlagService(
             description = savedFlag.description,
             type = savedFlag.type,
             defaultValue = defaultVariation.value,
-            defaultValuePortion = defaultVariation.portion,
-            defaultValueDescription = defaultVariation.description,
+            defaultPortion = defaultVariation.portion,
+            defaultDescription = defaultVariation.description,
             variations = variations,
             maintainerId = savedFlag.maintainerId,
 
@@ -170,8 +170,8 @@ class FlagService(
 
             keywords = keywordList,
             defaultValueForKeyword = defaultVariationForKeyword.value,
-            defaultValuePortionForKeyword = defaultVariationForKeyword.portion,
-            defaultValueDescriptionForKeyword = defaultVariationForKeyword.description,
+            defaultPortionForKeyword = defaultVariationForKeyword.portion,
+            defaultDescriptionForKeyword = defaultVariationForKeyword.description,
             variationsForKeyword = variationsForKeyword,
         )
 
@@ -222,8 +222,8 @@ class FlagService(
             description = flag.description,
             type = flag.type,
             defaultValue = defaultVariation.value,
-            defaultValuePortion = defaultVariation.portion,
-            defaultValueDescription = defaultVariation.description,
+            defaultPortion = defaultVariation.portion,
+            defaultDescription = defaultVariation.description,
             variations = variations.map {
                 VariationDto(
                     value = it.value,
@@ -246,8 +246,8 @@ class FlagService(
                 )
             } ?: listOf(),
             defaultValueForKeyword = defaultVariationForKeyword?.value ?: "",
-            defaultValuePortionForKeyword = defaultVariationForKeyword?.portion ?: 0,
-            defaultValueDescriptionForKeyword = defaultVariationForKeyword?.description ?: "",
+            defaultPortionForKeyword = defaultVariationForKeyword?.portion ?: 0,
+            defaultDescriptionForKeyword = defaultVariationForKeyword?.description ?: "",
             variationsForKeyword = variationsForKeyword.map {
                 VariationDto(
                     value = it.value,
@@ -285,8 +285,8 @@ class FlagService(
                 description = flag.description,
                 type = flag.type,
                 defaultValue = defaultVariation.value,
-                defaultValuePortion = defaultVariation.portion,
-                defaultValueDescription = defaultVariation.description,
+                defaultPortion = defaultVariation.portion,
+                defaultDescription = defaultVariation.description,
                 variations = variations.map {
                     VariationDto(
                         value = it.value,
@@ -309,8 +309,8 @@ class FlagService(
                     )
                 } ?: listOf(),
                 defaultValueForKeyword = defaultVariationForKeyword?.value ?: "",
-                defaultValuePortionForKeyword = defaultVariationForKeyword?.portion ?: 0,
-                defaultValueDescriptionForKeyword = defaultVariationForKeyword?.description ?: "",
+                defaultPortionForKeyword = defaultVariationForKeyword?.portion ?: 0,
+                defaultDescriptionForKeyword = defaultVariationForKeyword?.description ?: "",
                 variationsForKeyword = variationsForKeyword.map {
                     VariationDto(
                         value = it.value,
@@ -405,8 +405,8 @@ class FlagService(
                 ?: throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
 
         defaultVariation.value = flagRequestDto.defaultValue
-        defaultVariation.portion = flagRequestDto.defaultValuePortion
-        defaultVariation.description = flagRequestDto.defaultValueDescription
+        defaultVariation.portion = flagRequestDto.defaultPortion
+        defaultVariation.description = flagRequestDto.defaultDescription
         variationRepository.save(defaultVariation)
 
         variationRepository.findByFlagAndDefaultFlagIsFalseAndFlagKeywordMappingIsNullAndDeletedAtIsNull(flag).map {
@@ -453,8 +453,8 @@ class FlagService(
                 ?: throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
 
         defaultVariationForKeyword.value = flagRequestDto.defaultValueForKeyword
-        defaultVariationForKeyword.portion = flagRequestDto.defaultValuePortionForKeyword
-        defaultVariationForKeyword.description = flagRequestDto.defaultValueDescriptionForKeyword
+        defaultVariationForKeyword.portion = flagRequestDto.defaultPortionForKeyword
+        defaultVariationForKeyword.description = flagRequestDto.defaultDescriptionForKeyword
         variationRepository.save(defaultVariationForKeyword)
 
         variationRepository.findByFlagAndDefaultFlagIsFalseAndFlagKeywordMappingIsNotNullAndDeletedAtIsNull(flag)
@@ -480,8 +480,8 @@ class FlagService(
             description = flag.description,
             type = flag.type,
             defaultValue = defaultVariation.value,
-            defaultValuePortion = defaultVariation.portion,
-            defaultValueDescription = defaultVariation.description,
+            defaultPortion = defaultVariation.portion,
+            defaultDescription = defaultVariation.description,
             variations = flagRequestDto.variations,
             maintainerId = flag.maintainerId,
             createdAt = flag.createdAt.toString(),
@@ -496,8 +496,8 @@ class FlagService(
                 )
             },
             defaultValueForKeyword = defaultVariation.value,
-            defaultValuePortionForKeyword = defaultVariation.portion,
-            defaultValueDescriptionForKeyword = defaultVariation.description,
+            defaultPortionForKeyword = defaultVariation.portion,
+            defaultDescriptionForKeyword = defaultVariation.description,
             variationsForKeyword = flagRequestDto.variationsForKeyword,
         )
         sseService.sendData(SseDto("1234", SseDto.SseType.UPDATE, toJson(flagInitResponseDto)))
@@ -576,8 +576,8 @@ class FlagService(
                 description = flag.description,
                 type = flag.type,
                 defaultValue = defaultValue,
-                defaultValuePortion = defaultPortion,
-                defaultValueDescription = defaultDescription,
+                defaultPortion = defaultPortion,
+                defaultDescription = defaultDescription,
                 variations = variations,
                 maintainerId = flag.maintainerId,
                 createdAt = flag.createdAt.toString(),
@@ -586,8 +586,8 @@ class FlagService(
                 active = flag.active,
                 keywords = keywords,
                 defaultValueForKeyword = defaultValueForKeyword,
-                defaultValuePortionForKeyword = defaultPortionForKeyword,
-                defaultValueDescriptionForKeyword = defaultDescriptionForKeyword,
+                defaultPortionForKeyword = defaultPortionForKeyword,
+                defaultDescriptionForKeyword = defaultDescriptionForKeyword,
                 variationsForKeyword = variationsForKeyword
             )
 
