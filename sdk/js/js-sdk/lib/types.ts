@@ -1,9 +1,8 @@
-export type LSMessageType = 'CREATE' | 'UPDATE' | 'DELETE' | 'SWITCH';
-export type LSMessageData = Flag | { flagId: number };
+export type LSMessageData = Flag | Title | FlagId | string;
 export type LSFlagType = 'BOOLEAN' | 'STRING' | 'NUMBER';
 export type LSDefaultValueType = boolean | string | number;
 export type ErrorCallback = (error: any) => void;
-
+export type flagChangedCallback = (flags: Flag[]) => void;
 export enum LogLevel {
   DEBUG,
   INFO,
@@ -24,6 +23,7 @@ export interface userKey {
 
 export interface SdkConfig {
   sdkKey: string;
+  onFlagChanged: flagChangedCallback;
   endpoint?: string;
   logLevel?: LogLevel;
   reconnectTime?: number;
@@ -52,8 +52,16 @@ export interface ApiResponse<T> {
 
 export interface LSMessage {
   userKey: string;
-  type: LSMessageType;
+  type: string;
   data: LSMessageData;
+}
+
+export interface Title {
+  title: string;
+}
+
+export interface FlagId {
+  flagId: number;
 }
 
 export interface Flag {
