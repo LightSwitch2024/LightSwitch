@@ -1,18 +1,30 @@
 package com.lightswitch.domain;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.lightswitch.util.HashUtil;
 
 public class Flag {
 
-	private Long flagId;
-	private boolean active; // On Off
+	private long flagId;
 	private String title;
 	private String description;
-	private List<Variation> variations;
 	private FlagType type;
+	private List<Keywords> keywords;
+	private String defaultValueForKeyword;
+	private int defaultPortionForKeyword;
+	private String defaultDescriptionForKeyword;
+	private List<Variation> variationsForKeyword;
 	private String defaultValue;
+	private int defaultPortion;
+	private String defaultDescription;
+	private List<Variation> variations;
+	private int maintainerId;
+	private String createdAt;
+	private String updatedAt;
+	private String deletedAt;
+	private boolean active;
 
 	public String getTitle() {
 		return title;
@@ -27,6 +39,17 @@ public class Flag {
 	}
 
 	public Object getValue(Context context) {
+		List<String> properties = context.getProperty();
+		boolean containsKeyword = keywords.stream().
+			anyMatch(flagKeywords -> properties.contains(flagKeywords.getKeyword()));
+
+		if(containsKeyword){
+			return getValue(context, variationsForKeyword, defaultValueForKeyword);
+		}
+		return getValue(context, variations, defaultValue);
+	}
+
+	private Serializable getValue(Context context, List<Variation> variations, String defaultValue) {
 		double percentage = HashUtil.getHashedPercentage(String.valueOf(context.getUserId()), 1);
 		String value = defaultValue;
 		for (Variation variation : variations) {
@@ -47,68 +70,29 @@ public class Flag {
 		return value;
 	}
 
-	protected Flag(Builder builder) {
-		this.flagId = builder.flagId;
-		this.active = builder.active;
-		this.title = builder.title;
-		this.description = builder.description;
-		this.variations = builder.variations;
-		this.type = builder.type;
-		this.defaultValue = builder.defaultValue;
-	}
-
-	public static class Builder {
-		private Long flagId;
-		private boolean active; // On Off
-		private String title;
-		private FlagType type;
-		private String description;
-		private List<Variation> variations;
-		private String defaultValue;
-
-		public Builder() {
-		}
-
-		public Builder flagId(Long flagId){
-			this.flagId = flagId;
-			return this;
-		}
-
-		public Builder active(boolean active){
-			this.active = active;
-			return this;
-		}
-
-
-		public Builder title(String title){
-			this.title = title;
-			return this;
-		}
-
-		public Builder description(String description){
-			this.description = description;
-			return this;
-		}
-
-		public Builder variations(List<Variation> variations){
-			this.variations = variations;
-			return this;
-		}
-
-		public Builder type(FlagType type){
-			this.type = type;
-			return this;
-		}
-
-		public Builder defaultValue(String defaultValue){
-			this.defaultValue = defaultValue;
-			return this;
-		}
-
-
-		public Flag build() {
-			return new Flag(this);
-		}
+	public Flag(long flagId, String title, String description, FlagType type, List<Keywords> keywords,
+		String defaultValueForKeyword, int defaultPortionForKeyword, String defaultDescriptionForKeyword,
+		List<Variation> variationsForKeyword, String defaultValue, int defaultPortion, String defaultDescription,
+		List<Variation> variations, int maintainerId, String createdAt, String updatedAt, String deletedAt,
+		boolean active) {
+		this.flagId = flagId;
+		this.title = title;
+		this.description = description;
+		this.type = type;
+		this.keywords = keywords;
+		this.defaultValueForKeyword = defaultValueForKeyword;
+		this.defaultPortionForKeyword = defaultPortionForKeyword;
+		this.defaultDescriptionForKeyword = defaultDescriptionForKeyword;
+		this.variationsForKeyword = variationsForKeyword;
+		this.defaultValue = defaultValue;
+		this.defaultPortion = defaultPortion;
+		this.defaultDescription = defaultDescription;
+		this.variations = variations;
+		this.maintainerId = maintainerId;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.deletedAt = deletedAt;
+		this.active = active;
 	}
 
 	@Override

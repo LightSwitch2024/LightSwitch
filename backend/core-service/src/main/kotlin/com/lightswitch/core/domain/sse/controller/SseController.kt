@@ -37,7 +37,7 @@ class SseController(
     }
 
     @PostMapping("/subscribe")
-    fun createUserKey(sdkKey: String): BaseResponse<SseUserKeyResponseDto> {
+    fun createUserKey(@RequestBody sdkKey: String): BaseResponse<SseUserKeyResponseDto> {
         return success(sseService.createUserKey(sdkKey))
     }
 }

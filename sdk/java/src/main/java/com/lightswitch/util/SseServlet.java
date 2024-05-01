@@ -8,21 +8,12 @@ import com.lightswitch.exception.FlagServerConnectException;
 public class SseServlet  {
 	private static final String HOST_URL = "http://localhost:8000/api/v1/";
 
-	public HttpURLConnection getConnect(String endPoint, String httpMethod, int connectTime) {
+	public HttpURLConnection getConnect(String endPoint, String httpMethod, int connectTime, boolean isSSE) {
 		try {
 			URL url = new URL(HOST_URL + endPoint);
-			return openConnection(url, httpMethod, connectTime, false);
+			return openConnection(url, httpMethod, connectTime, isSSE);
 		} catch (Exception e) {
-			throw new FlagServerConnectException("Flag 서버 POST 요청 실패");
-		}
-	}
-
-	public HttpURLConnection getSseConnect(String endPoint, String httpMethod, int connectTime) {
-		try {
-			URL url = new URL(HOST_URL + endPoint);
-			return openConnection(url, httpMethod, connectTime, true);
-		} catch (Exception e) {
-			throw new FlagServerConnectException("Flag 서버 SSE 연결 실패");
+			throw new FlagServerConnectException("Flag 서버 연결 실패");
 		}
 	}
 

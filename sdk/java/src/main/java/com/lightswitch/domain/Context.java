@@ -1,6 +1,8 @@
 package com.lightswitch.domain;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Context {
@@ -14,6 +16,10 @@ public class Context {
 
 	public int getUserId() {
 		return userId;
+	}
+
+	public List<String> getProperty() {
+		return new ArrayList<>(property.values());
 	}
 
 	public static class Builder {

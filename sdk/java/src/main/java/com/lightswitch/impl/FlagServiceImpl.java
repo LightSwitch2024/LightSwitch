@@ -9,17 +9,17 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
-import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Objects;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.lightswitch.domain.BaseResponse;
+import com.lightswitch.domain.dto.BaseResponse;
 import com.lightswitch.domain.Config;
 import com.lightswitch.domain.Context;
 import com.lightswitch.domain.Flag;
 import com.lightswitch.domain.Flags;
-import com.lightswitch.domain.dto.InitResponse;
+import com.lightswitch.domain.dto.FlagResponse;
 import com.lightswitch.domain.dto.SseResponse;
 import com.lightswitch.domain.dto.UserKeyResponse;
 import com.lightswitch.exception.FlagRuntimeException;
@@ -44,24 +44,42 @@ public class FlagServiceImpl implements FlagService {
 
 	@Override
 	public void init(String sdkKey) {
-		if (!setupPostConnection("sdk/init", sdkKey)) {
-			throw new FlagServerConnectException("Init() POST request not worked");
-		}
-		handleResponse();
+		HttpURLConnection initConnection = setupPostConnection("sdk/init", sdkKey);
+		Type responseType = new TypeToken<BaseResponse<List<FlagResponse>>>() {}.getType();
+		BaseResponse<List<FlagResponse>> response = handleResponse(initConnection, responseType);
+		Flags.addAllFlags(response.getData());
 
-		if (!setupPostConnection("sse/subscribe", sdkKey)) {
-			throw new FlagServerConnectException("Subscribe() POST request not worked");
-		}
-		String userKey = getUserKey();
+		HttpURLConnection subscribeConnection = setupPostConnection("sse/subscribe", sdkKey);
+		Type responseType2 = new TypeToken<BaseResponse<UserKeyResponse>>() {}.getType();
+		BaseResponse<UserKeyResponse> response2 = handleResponse(subscribeConnection, responseType2);
+		String userKey = response2.getData().getUserKey();
 
-		if (!setupGetConnection("sse/subscribe/" + userKey)) {
-			throw new FlagServerConnectException("SSE() GET request not worked");
-		}
-		startSseThread();
+		connection = setupGetConnection("sse/subscribe/" + userKey);
+		thread = new Thread(this::connectToSse);
+		thread.start();
 	}
 
+	private HttpURLConnection setupPostConnection(String endpoint, String sdkKey) {
+		SseServlet servlet = new SseServlet();
+		HttpURLConnection connection = servlet.getConnect(endpoint, "POST", 0, false);
 
-	private String getUserKey() {
+		if(writeSdkKey(connection, sdkKey) == HTTP_OK){
+			return connection;
+		}
+		throw new FlagServerConnectException("Feature Flagging Server Connection Error");
+	}
+
+	private <T> T handleResponse(HttpURLConnection connection, Type responseType) {
+		try {
+			Gson gson = new Gson();
+			String response = readResponse(connection);
+			return gson.fromJson(response, responseType);
+		} catch (IOException e) {
+			throw new FlagRuntimeException("Failed to read response: " + e.getMessage(), e);
+		}
+	}
+
+	private String readResponse(HttpURLConnection connection) throws IOException {
 		try (BufferedReader reader = new BufferedReader(
 			new InputStreamReader(connection.getInputStream(), UTF_8))) {
 			StringBuilder response = new StringBuilder();
@@ -69,66 +87,27 @@ public class FlagServiceImpl implements FlagService {
 			while (Objects.nonNull(line = reader.readLine())) {
 				response.append(line.trim());
 			}
-
-			Gson gson = new Gson();
-			Type responseType = new TypeToken<BaseResponse<UserKeyResponse>>() {
-			}.getType();
-			BaseResponse<UserKeyResponse> userKey = gson.fromJson(response.toString(), responseType);
-
-			return userKey.getData().getUserKey();
-		} catch (IOException e) {
-			throw new FlagRuntimeException("Failed to read response: " + e.getMessage(), e);
+			return response.toString();
 		}
 	}
 
-	private boolean setupPostConnection(String endpoint, String sdkKey) {
+	private HttpURLConnection setupGetConnection(String endpoint) {
 		SseServlet servlet = new SseServlet();
-		connection = servlet.getConnect(endpoint, "POST", 0);
-		return writeSdkKey(sdkKey) == HTTP_OK;
+		return servlet.getConnect(endpoint, "GET", 0, true);
 	}
 
-	private boolean setupGetConnection(String endpoint) {
-		SseServlet servlet = new SseServlet();
-		connection = servlet.getSseConnect(endpoint, "GET", 0);
 
-		return true;
-	}
-
-	private void handleResponse() {
-		try (BufferedReader reader = new BufferedReader(
-			new InputStreamReader(connection.getInputStream(), UTF_8))) {
-			StringBuilder response = new StringBuilder();
-			String line;
-			while (Objects.nonNull(line = reader.readLine())) {
-				response.append(line.trim());
-			}
-
-			Gson gson = new Gson();
-			InitResponse initResponse = gson.fromJson(response.toString(), InitResponse.class);
-
-			Flags.addAllFlags(initResponse);
-		} catch (IOException e) {
-			throw new FlagRuntimeException("Failed to read response: " + e.getMessage(), e);
-		}
-	}
-
-	private int writeSdkKey(String sdkKey) {
+	private int writeSdkKey(HttpURLConnection connection, String sdkKey) {
 		try (OutputStream os = connection.getOutputStream()) {
-			Config config = new Config(sdkKey);
 			Gson gson = new Gson();
-			String json = gson.toJson(config);
+			String json = gson.toJson(new Config(sdkKey));
 
-			byte[] input = json.getBytes(StandardCharsets.UTF_8);
+			byte[] input = json.getBytes(UTF_8);
 			os.write(input, 0, input.length);
 			return connection.getResponseCode();
 		} catch (IOException e) {
 			throw new FlagServerConnectException("Failed to send SDK key: " + e.getMessage(), e);
 		}
-	}
-
-	private void startSseThread() {
-		thread = new Thread(this::connectToSse);
-		thread.start();
 	}
 
 	private void connectToSse() {
@@ -141,9 +120,15 @@ public class FlagServiceImpl implements FlagService {
 					dataBuffer.append(inputLine.substring(5));
 				} else if (inputLine.isEmpty()) {
 					String jsonData = dataBuffer.toString().trim();
-					System.out.println("Received: " + jsonData);
-					if (!jsonData.isEmpty() && !jsonData.startsWith("SSE connected")) {
-						processEventData(jsonData);
+					System.out.println("Receive : " + jsonData);
+
+					int jsonStartIndex = jsonData.indexOf('{');
+					if (jsonStartIndex != -1) {
+
+						jsonData = jsonData.substring(jsonStartIndex); // JSON 시작 지점부터 문자열 자르기
+						Gson gson = new Gson();
+						SseResponse sseResponse = gson.fromJson(jsonData, SseResponse.class);
+						Flags.event(sseResponse);
 						dataBuffer = new StringBuffer();
 					}
 				}
@@ -151,12 +136,6 @@ public class FlagServiceImpl implements FlagService {
 		} catch (IOException io) {
 			throw new FlagRuntimeException("Error during SSE connection: " + io.getMessage(), io);
 		}
-	}
-
-	private void processEventData(String jsonData) {
-		Gson gson = new Gson();
-		SseResponse sseResponse = gson.fromJson(jsonData, SseResponse.class);
-		Flags.event(sseResponse);
 	}
 
 	@Override
