@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://15.165.127.196:5432/testdb
+    url: jdbc:postgresql://43.203.234.163:5432/testdb
     username: testuser
     password: 1234
     driver-class-name: org.postgresql.Driver
@@ -12,4 +12,4 @@ spring:
     show-sql: true
   data:
     redis:
-      host: 15.165.127.196
+      host: 43.203.234.163

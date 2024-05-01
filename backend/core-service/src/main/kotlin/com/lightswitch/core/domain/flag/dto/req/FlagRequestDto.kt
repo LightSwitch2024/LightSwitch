@@ -10,15 +10,15 @@ data class FlagRequestDto(
     val description: String,
     val type: FlagType,
     val defaultValue: String,
-    val defaultValuePortion: Int,
-    val defaultValueDescription: String,
+    val defaultPortion: Int,
+    val defaultDescription: String,
     val variations: List<VariationDto>,
 
     val userId: Long,
 
     val keywords: List<KeywordDto>,
     val defaultValueForKeyword: String,
-    val defaultValuePortionForKeyword: Int,
-    val defaultValueDescriptionForKeyword: String,
+    val defaultPortionForKeyword: Int,
+    val defaultDescriptionForKeyword: String,
     val variationsForKeyword: List<VariationDto>,
 )

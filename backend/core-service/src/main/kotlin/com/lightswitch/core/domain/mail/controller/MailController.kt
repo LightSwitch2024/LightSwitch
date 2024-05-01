@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/mails")
+@RequestMapping("/v1/mail")
 @Slf4j
 class MailController(
     private val mailService: MailService

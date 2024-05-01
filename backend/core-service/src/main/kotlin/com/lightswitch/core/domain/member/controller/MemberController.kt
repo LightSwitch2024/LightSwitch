@@ -10,6 +10,7 @@ import com.lightswitch.core.domain.member.dto.req.LogInReqDto
 import com.lightswitch.core.domain.member.dto.req.PasswordUpdateReqDto
 import com.lightswitch.core.domain.member.dto.req.SignupReqDto
 import com.lightswitch.core.domain.member.dto.res.MemberResDto
+import com.lightswitch.core.domain.member.dto.res.MemberResponseDto
 import com.lightswitch.core.domain.member.dto.res.SdkKeyResDto
 import com.lightswitch.core.domain.member.entity.Member
 import com.lightswitch.core.domain.member.service.MemberService
@@ -37,8 +38,8 @@ class MemberController(
     }
 
     @PostMapping
-    fun signUp(@RequestBody signupReqDto: SignupReqDto): ResponseEntity<Member> {
-        return ResponseEntity.ok(memberService.signUp(signupReqDto))
+    fun signUp(@RequestBody signupReqDto: SignupReqDto): BaseResponse<MemberResponseDto> {
+        return success(memberService.signUp(signupReqDto))
     }
 
 
