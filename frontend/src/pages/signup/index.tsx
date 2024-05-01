@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { confirmAuthCode, sendAuthCode, signUp } from '@/api/userDetail/userAxios';
 import * as S from '@/pages/signup/indexStyle';
@@ -23,6 +24,8 @@ type SignUpData = {
 };
 
 const SignUp = () => {
+  const navigator = useNavigate();
+
   const [firstName, setFirstName] = useState<string>('');
   const [firstNameCheck, setFirstNameCheck] = useState<boolean>(false);
   const [lastName, setLastName] = useState<string>('');
@@ -112,10 +115,14 @@ const SignUp = () => {
       email: email,
     };
 
-    sendAuthCode(
+    sendAuthCode<SendAuthCodeData>(
       sendAuthCodeData,
-      (data: string) => console.log(data),
-      (err) => console.log(err),
+      (data) => {
+        console.log(data);
+      },
+      (err) => {
+        console.log(err);
+      },
     );
   };
 
@@ -125,15 +132,20 @@ const SignUp = () => {
       authCode: authCode,
     };
 
-    confirmAuthCode(
+    confirmAuthCode<ConfirmAuthCodeData>(
       confirmAuthCodeData,
-      (data: boolean) => setIsAuth(data),
-      (err) => console.log(err),
+      () => {
+        setIsAuth(true);
+      },
+      (err) => {
+        console.log(err);
+      },
     );
   };
 
   const handleCancle = (): void => {
     // Todo... 취소 시 페이지 이동 처리
+    navigator('/login');
   };
 
   const handleSignUp = (): void => {
@@ -151,10 +163,11 @@ const SignUp = () => {
       authCode: authCode,
     };
 
-    signUp(
+    signUp<SignUpData>(
       signUpData,
-      (data) => {
-        console.log(data);
+      () => {
+        alert('회원가입이 완료되었습니다.');
+        navigator('/login');
       },
       (err) => {
         console.log(err);
