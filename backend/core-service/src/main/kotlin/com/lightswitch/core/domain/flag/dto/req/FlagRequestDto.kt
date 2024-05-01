@@ -14,7 +14,7 @@ data class FlagRequestDto(
     val defaultDescription: String,
     val variations: List<VariationDto>,
 
-    val userId: Long,
+    val memberId: Long,
 
     val keywords: List<KeywordDto>,
     val defaultValueForKeyword: String,
