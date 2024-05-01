@@ -181,11 +181,15 @@ class FlagService(
         )
 
         // SSE 데이터 전송
-        if (savedFlag.maintainer.sdkKeys.isEmpty()) {
-            throw BaseException(ResponseCode.SDK_KEY_NOT_FOUND)
-        }
+        val sdkKey = sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(member.memberId!!) ?: throw BaseException(
+            ResponseCode.SDK_KEY_NOT_FOUND
+        )
 
-        val sdkKey = savedFlag.maintainer.sdkKeys[0]
+//        if (savedFlag.maintainer.sdkKeys.isEmpty()) {
+//            throw BaseException(ResponseCode.SDK_KEY_NOT_FOUND)
+//        }
+
+//        val sdkKey = savedFlag.maintainer.sdkKeys[0]
         val userKey = sseService.hash(sdkKey.key)
         sseService.sendData(SseDto(userKey, SseDto.SseType.CREATE, flagInitResponseDto))
 
