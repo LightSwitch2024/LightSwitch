@@ -18,8 +18,8 @@ interface FlagDetailItem {
   description: string;
   type: string;
   defaultValue: string;
-  defaultValuePortion: number;
-  defaultValueDescription: string;
+  defaultPortion: number;
+  defaultDescription: string;
   variations: Array<Variation>;
 
   userId: number;

@@ -8,10 +8,12 @@ import * as S from '@components/createModal/indexStyle';
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
 
 import { createFlag } from '@/api/create/createAxios';
 import { updateFlag } from '@/api/flagDetail/flagDetailAxios';
 import { getTagList, getTagListByKeyword } from '@/api/main/mainAxios';
+import { AuthAtom } from '@/global/AuthAtom';
 
 interface CreateModalProps {
   closeCreateModal: () => void;
@@ -50,6 +52,8 @@ interface FlagDetailItem {
 const CreateModal: React.FC<CreateModalProps> = (props) => {
   const navigator = useNavigate();
 
+  const auth = useRecoilValue(AuthAtom);
+
   // 모달 밖 클릭에 대한 이벤트 전파 막기
   const stopPropagation = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
@@ -64,7 +68,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   const [type, setType] = useState<string>(props.flagDetail?.type || 'BOOLEAN');
   const [keywords, setKeywords] = useState<Array<string>>([]);
   const [defaultValueForKeyword, setDefaultValueForKeyword] = useState<string>('');
-  const [defaultPortionForKeyword, setDefaultPortionForKeyword] = useState<number | ''>(
+  const [defaultPortionForKeyword, setDefaultPortionForKeyword] = useState<number | 0>(
     100,
   );
   const [defaultDescriptionForKeyword, setDefaultDescriptionForKeyword] =
@@ -287,7 +291,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
         variations: variations,
 
         //TODO : userId 전역설정 기능 추가 후 수정
-        userId: 1,
+        memberId: auth.memberId,
       },
       (data: FlagDetailItem) => {
         console.log(data);
@@ -427,7 +431,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
         variations: variations,
 
         //TODO : userId 전역설정 기능 추가 후 수정
-        userId: 1,
+        memberId: auth.memberId,
       },
       (data: FlagDetailItem) => {
         console.log(data);
@@ -456,7 +460,9 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
             placeholder="값을 입력하세요"
             value={variation.value}
             // 변경된 값이 있을 때 처리하는 함수 바인딩
-            onChange={(e) => handleVariationChange(e, idx)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              handleVariationChange(e, idx)
+            }
             $flag={isDetailMode()}
           />
           <S.FlagVariationInput
@@ -464,7 +470,9 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
             placeholder="변수 비율"
             value={variation.portion}
             // 변경된 값이 있을 때 처리하는 함수 바인딩
-            onChange={(e) => handleVariationPortionChange(e, idx)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              handleVariationPortionChange(e, idx)
+            }
             $flag={isDetailMode()}
           />
         </S.FlagVariationRowContainer>
@@ -474,7 +482,9 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
             placeholder="설명"
             value={variation.description}
             // 변경된 값이 있을 때 처리하는 함수 바인딩
-            onChange={(e) => handleVariationDescriptionChange(e, idx)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              handleVariationDescriptionChange(e, idx)
+            }
             $flag={isDetailMode()}
           />
         </S.FlagVariationRowContainer>
@@ -697,7 +707,9 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
         <S.ModalInputForm
           id="modal-scrollable"
           className="modal-scrollable"
-          onClick={(event) => stopPropagation(event)}
+          onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
+            stopPropagation(e)
+          }
         >
           {renderTotalForm()}
         </S.ModalInputForm>

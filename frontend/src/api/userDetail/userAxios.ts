@@ -76,7 +76,7 @@ export async function logIn<T>(
   onFail: (err: AxiosError) => void,
 ): Promise<void> {
   axios
-    .post<BaseResponse<T>>('/v1/member/login', data)
+    .post<BaseResponse<T>>('/api/v1/member/login', data)
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
     .catch((err: AxiosError) => onFail(err));
 }
@@ -87,7 +87,7 @@ export async function getUserDetail<T>(
   onFail: (err: AxiosError) => void,
 ): Promise<void> {
   axios
-    .get<BaseResponse<T>>(`/v1/member/${email}`)
+    .get<BaseResponse<T>>(`/api/v1/member/${email}`)
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
     .catch((err: AxiosError) => onFail(err));
 }
@@ -98,7 +98,7 @@ export async function deleteUser<T>(
   onFail: (err: AxiosError) => void,
 ): Promise<void> {
   axios
-    .delete<BaseResponse<T>>(`/v1/member/${email}`)
+    .delete<BaseResponse<T>>(`/api/v1/member/${email}`)
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
     .catch((err: AxiosError) => onFail(err));
 }
@@ -110,7 +110,7 @@ export async function updateUser<T, G>(
   onFail: (err: AxiosError) => void,
 ): Promise<void> {
   axios
-    .put<BaseResponse<T>>(`/v1/member/${email}`, userData)
+    .put<BaseResponse<T>>(`/api/v1/member/${email}`, userData)
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
     .catch((err: AxiosError) => onFail(err));
 }
@@ -122,7 +122,7 @@ export async function updatePassword<T, G>(
   onFail: (err: AxiosError) => void,
 ): Promise<void> {
   axios
-    .put<BaseResponse<T>>(`/v1/member/${email}/password`, newPassword)
+    .put<BaseResponse<T>>(`/api/v1/member/${email}/password`, newPassword)
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
     .catch((err: AxiosError) => onFail(err));
 }
