@@ -10,16 +10,17 @@ import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Objects;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.lightswitch.domain.BaseResponse;
+import com.lightswitch.domain.dto.BaseResponse;
 import com.lightswitch.domain.Config;
 import com.lightswitch.domain.Context;
 import com.lightswitch.domain.Flag;
 import com.lightswitch.domain.Flags;
-import com.lightswitch.domain.dto.InitResponse;
+import com.lightswitch.domain.dto.FlagResponse;
 import com.lightswitch.domain.dto.SseResponse;
 import com.lightswitch.domain.dto.UserKeyResponse;
 import com.lightswitch.exception.FlagRuntimeException;
@@ -104,9 +105,11 @@ public class FlagServiceImpl implements FlagService {
 			}
 
 			Gson gson = new Gson();
-			InitResponse initResponse = gson.fromJson(response.toString(), InitResponse.class);
+			Type responseType = new TypeToken<BaseResponse<List<FlagResponse>>>() {
+			}.getType();
+			BaseResponse<List<FlagResponse>> initResponse = gson.fromJson(response.toString(), responseType);
 
-			Flags.addAllFlags(initResponse);
+			Flags.addAllFlags(initResponse.getData());
 		} catch (IOException e) {
 			throw new FlagRuntimeException("Failed to read response: " + e.getMessage(), e);
 		}

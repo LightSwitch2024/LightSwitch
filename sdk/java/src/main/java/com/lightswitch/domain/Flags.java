@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.lightswitch.domain.dto.FlagResponse;
-import com.lightswitch.domain.dto.InitResponse;
 import com.lightswitch.domain.dto.SseResponse;
 import com.lightswitch.domain.dto.SseType;
 
@@ -17,10 +16,9 @@ public class Flags {
 	private Flags() {
 	}
 
-	public static void addAllFlags(InitResponse initFlags) {
+	public static void addAllFlags(List<FlagResponse> data) {
 		flags.clear();
 
-		List<FlagResponse> data = initFlags.getData();
 		for (FlagResponse flagResponse : data) {
 			flags.put(flagResponse.getTitle(), flagResponse.toFlag());
 		}

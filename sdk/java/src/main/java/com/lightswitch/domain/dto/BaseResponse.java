@@ -1,4 +1,4 @@
-package com.lightswitch.domain;
+package com.lightswitch.domain.dto;
 
 public class BaseResponse<T> {
 
