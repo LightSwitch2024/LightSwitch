@@ -31,9 +31,7 @@ const LogIn = () => {
         email: email,
         password: password,
       },
-      (data) => {
-        console.log(data);
-        //여기 잘 모르겠음..
+      () => {
         setAuthState({
           isAuthenticated: true,
           email: email,
@@ -67,9 +65,12 @@ const LogIn = () => {
           />
         </L.LogInInputBox>
         <L.ButtonWrapper>
-          <L.SignUpButton onClick={onClickSignUp}>회원가입</L.SignUpButton>
           <L.OKButton onClick={onClickLogIn}>로그인</L.OKButton>
         </L.ButtonWrapper>
+        <L.LogInLinkBox>
+          <L.SignUpText to="/signup">회원가입</L.SignUpText>
+          <L.PasswordText to="/passwordfind">비밀번호 찾기</L.PasswordText>
+        </L.LogInLinkBox>
       </L.LogInContainer>
     </L.LogInLayout>
   );

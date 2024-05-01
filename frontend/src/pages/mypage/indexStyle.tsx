@@ -1,12 +1,11 @@
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-export const LogInLayout = styled.div`
+export const MyPageLayout = styled.div`
   width: 100%;
   height: calc(var(--vh, 1vh) * 100 - 60px);
 `;
 
-export const LogInContainer = styled.div`
+export const MyPageContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -14,7 +13,7 @@ export const LogInContainer = styled.div`
   gap: 1rem;
 `;
 
-export const LogInInput = styled.input`
+export const MyPageInput = styled.input`
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
   border: 1px solid #ddd;
@@ -24,39 +23,35 @@ export const LogInInput = styled.input`
   }
 `;
 
-export const LogInWarnText = styled.div`
+export const MyPageText = styled.div`
+  align-self: flex-end;
+  font-size: 0.6rem;
+  color: #00c9ea;
+  font-weight: 500;
+`;
+
+export const TitleText = styled.div`
+  align-self: flex-end;
+  font-size: 2rem;
+  color: #000000;
+  font-weight: 500;
+`;
+
+export const MyPageWarnText = styled.div`
   align-self: flex-end;
   font-size: 0.6rem;
   color: red;
   font-weight: 500;
 `;
 
-export const LogInInputBox = styled.div`
+export const MyPageInputBox = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 0.5rem;
 `;
 
-export const LogInLinkBox = styled.div`
-  display: flex;
-  justify-content: space-between;
-  gap: 0.5rem;
-`;
-
-export const SignUpText = styled(Link)`
-  color: #000000;
-  text-decoration: underline;
-  cursor: pointer;
-`;
-
-export const PasswordText = styled(Link)`
-  color: #000000;
-  text-decoration: underline;
-  cursor: pointer;
-`;
-
-export const SignUpButton = styled.a`
+export const PasswordButton = styled.button`
   width: 100%;
   padding: 0.3rem 1rem;
   border-radius: 0.5rem;
@@ -66,7 +61,7 @@ export const SignUpButton = styled.a`
   cursor: pointer;
 `;
 
-export const OKButton = styled.button`
+export const UpdateButton = styled.button`
   width: 100%;
   padding: 0.3rem 1rem;
   border-radius: 0.5rem;

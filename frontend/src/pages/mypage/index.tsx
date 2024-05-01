@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
 import { deleteUser, getUserDetail, updateUser } from '@/api/userDetail/userAxios';
 import { AuthAtom } from '@/AuthAtom';
+import * as M from '@/pages/mypage/indexStyle';
 
 interface UserData {
   email: string;
@@ -31,16 +32,19 @@ const UserDetail = () => {
   const { email } = useParams<{ email: string }>();
 
   const auth = useRecoilValue(AuthAtom);
+  const navigate = useNavigate();
 
   /**
    * userEmail를 통해 마운트 시 해당 user의 상세 정보를 가져옴
    */
   useEffect(() => {
+    if (!auth.email) return navigate('/login');
+
     getUserDetail<UserData>(
-      String(auth.email),
+      auth.email,
       (data: UserData) => {
         setUserDetail(data);
-        setupEditedUser(data);
+        setEditedUserEmail(data.email);
       },
       (err) => {
         console.log(err);
@@ -67,7 +71,7 @@ const UserDetail = () => {
 
     if (deleteConfirm) {
       deleteUser<UserData>(
-        String(email),
+        auth.email,
         (data: UserData) => {
           console.log(`${data} user 삭제 완료`);
         },
@@ -130,64 +134,76 @@ const UserDetail = () => {
   };
 
   return (
-    <div>
-      {userDetail && !isEditMode && (
-        <div>
-          <div>
-            <span>{userDetail.email}</span>
-          </div>
-          <div>
-            <span>{userDetail.firstName}</span>
-          </div>
-          <div>
-            <span>{userDetail.lastName}</span>
-          </div>
-          <div>
-            <span>{userDetail.telNumber}</span>
-          </div>
+    <M.MyPageLayout>
+      <M.MyPageContainer>
+        <M.TitleText>사용자 계정 관리</M.TitleText>
+        <M.ButtonWrapper>
+          <M.PasswordButton onClick={onPressCancelButton}>비밀번호 수정</M.PasswordButton>
+          <M.UpdateButton onClick={onPressCancelButton}>회원정보 수정</M.UpdateButton>
+        </M.ButtonWrapper>
+      </M.MyPageContainer>
+    </M.MyPageLayout>
+    // <div>
+    //   {editedUserEmail && isEditMode && (
+    //     <div>
+    //       <div>
+    //         <label htmlFor="email">이메일 : </label>
+    //         <p>{email}</p>
+    //       </div>
+    //       <div>
+    //         <label htmlFor="firstName">이름</label>
+    //         <input
+    //           placeholder={editedFirstName}
+    //           value={editedFirstName}
+    //           onChange={handleEditedFirstName}
+    //         />
+    //       </div>
+    //       <div>
+    //         <label htmlFor="lastName">성</label>
+    //         <input
+    //           placeholder={editedLastName}
+    //           value={editedLastName}
+    //           onChange={handleEditedLastName}
+    //         />
+    //       </div>
 
-          <button onClick={onPressDeleteButton}>삭제하기</button>
-          <button onClick={onPressEditButton}>수정하기</button>
-        </div>
-      )}
+    //       <div>
+    //         <label htmlFor="telNumber">전화번호</label>
+    //         <input
+    //           placeholder={editedTelNumber}
+    //           value={editedTelNumber}
+    //           onChange={handleEditedTelNumber}
+    //         />
+    //       </div>
 
-      {editedUserEmail && isEditMode && (
-        <div>
-          <div>
-            <label htmlFor="email">이메일 : </label>
-            <p>{email}</p>
-          </div>
-          <div>
-            <label htmlFor="firstName">이름</label>
-            <input
-              placeholder={editedFirstName}
-              value={editedFirstName}
-              onChange={handleEditedFirstName}
-            />
-          </div>
-          <div>
-            <label htmlFor="lastName">성</label>
-            <input
-              placeholder={editedLastName}
-              value={editedLastName}
-              onChange={handleEditedLastName}
-            />
-          </div>
+    //       <button onClick={onPressCancelButton}>취소하기</button>
+    //       <button onClick={onPressSaveButton}>저장하기</button>
+    //     </div>
+    //   )}
+    //   {auth.email && !isEditMode && (
+    //     <div>
+    //       <div>
+    //         <span>{auth.email}</span>
+    //       </div>
+    //       <div>
+    //         <p>받아온 정보</p>
+    //         <p>{userDetail?.email}</p>
+    //       </div>
+    //       <div>
+    //         <span>{userDetail?.firstName}</span>
+    //       </div>
+    //       <div>
+    //         <span>{userDetail?.lastName}</span>
+    //       </div>
+    //       <div>
+    //         <span>{userDetail?.telNumber}</span>
+    //       </div>
 
-          <div>
-            <label htmlFor="telNumber">전화번호</label>
-            <input
-              placeholder={editedTelNumber}
-              value={editedTelNumber}
-              onChange={handleEditedTelNumber}
-            />
-          </div>
-
-          <button onClick={onPressCancelButton}>취소하기</button>
-          <button onClick={onPressSaveButton}>저장하기</button>
-        </div>
-      )}
-    </div>
+    //       <button onClick={onPressDeleteButton}>삭제하기</button>
+    //       <button onClick={onPressEditButton}>수정하기</button>
+    //     </div>
+    //   )}
+    // </div>
   );
 };
 
