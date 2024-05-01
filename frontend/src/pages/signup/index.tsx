@@ -115,7 +115,15 @@ const SignUp = () => {
       email: email,
     };
 
-    axios.post('/mails/send', sendAuthCodeData);
+    sendAuthCode<SendAuthCodeData>(
+      sendAuthCodeData,
+      (data) => {
+        console.log(data);
+      },
+      (err) => {
+        console.log(err);
+      },
+    );
   };
 
   const handleConfirmAuthCode = (): void => {
@@ -124,11 +132,15 @@ const SignUp = () => {
       authCode: authCode,
     };
 
-    axios.post('/mails/confirm', confirmAuthCodeData).then((res) => {
-      if (res && res.data && res.data.data) {
-        setIsAuth(res.data.data);
-      }
-    });
+    confirmAuthCode<ConfirmAuthCodeData>(
+      confirmAuthCodeData,
+      () => {
+        setIsAuth(true);
+      },
+      (err) => {
+        console.log(err);
+      },
+    );
   };
 
   const handleCancle = (): void => {
@@ -151,9 +163,16 @@ const SignUp = () => {
       authCode: authCode,
     };
 
-    axios.post('/users', signUpData).then(() => {
-      // Todo... 회원가입 성공 시 페이지 이동 처리
-    });
+    signUp<SignUpData>(
+      signUpData,
+      () => {
+        alert('회원가입이 완료되었습니다.');
+        navigator('/login');
+      },
+      (err) => {
+        console.log(err);
+      },
+    );
   };
 
   useEffect(() => {

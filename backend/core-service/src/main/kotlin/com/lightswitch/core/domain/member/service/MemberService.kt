@@ -102,11 +102,12 @@ class MemberService(
 
     fun logIn(logInReqDto: LogInReqDto): MemberResDto {
 
-        val savedMember: Member? = memberRepository.findByEmail(logInReqDto.email)
+        val savedMember: Member =
+            memberRepository.findByEmail(logInReqDto.email) ?: throw MemberException("가입되지 않은 이메일입니다.")
 
-        val isCorrectPW = (logInReqDto.password == savedMember?.password)
+        val isCorrectPW = passwordService.matches(logInReqDto.password, savedMember.password)
 
-        return if (isCorrectPW && savedMember != null) {
+        return if (isCorrectPW) {
             MemberResDto(
                 memberId = savedMember.memberId!!,
                 email = savedMember.email,

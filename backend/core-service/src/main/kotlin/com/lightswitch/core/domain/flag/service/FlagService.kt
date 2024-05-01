@@ -60,7 +60,7 @@ class FlagService(
                 title = flagRequestDto.title,
                 description = flagRequestDto.description,
                 type = flagRequestDto.type,
-                maintainerId = flagRequestDto.userId,
+                maintainerId = flagRequestDto.memberId,
             )
         )
 
