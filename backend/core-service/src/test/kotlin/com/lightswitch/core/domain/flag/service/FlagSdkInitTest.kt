@@ -80,8 +80,8 @@ class FlagSdkInitTest(
             description = "test",
             type = FlagType.BOOLEAN,
             defaultValue = "TRUE",
-            defaultValuePortion = 100,
-            defaultValueDescription = "test",
+            defaultPortion = 100,
+            defaultDescription = "test",
             variations = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -94,8 +94,8 @@ class FlagSdkInitTest(
 
             keywords = listOf(),
             defaultValueForKeyword = "",
-            defaultValuePortionForKeyword = 0,
-            defaultValueDescriptionForKeyword = "",
+            defaultPortionForKeyword = 0,
+            defaultDescriptionForKeyword = "",
             variationsForKeyword = listOf()
         )
         flagService.createFlag(flagRequestDto)
@@ -106,8 +106,8 @@ class FlagSdkInitTest(
             description = "test2",
             type = FlagType.INTEGER,
             defaultValue = "1",
-            defaultValuePortion = 80,
-            defaultValueDescription = "1 test",
+            defaultPortion = 80,
+            defaultDescription = "1 test",
             variations = listOf(
                 VariationDto(
                     value = "2",
@@ -129,8 +129,8 @@ class FlagSdkInitTest(
                 )
             ),
             defaultValueForKeyword = "1",
-            defaultValuePortionForKeyword = 100,
-            defaultValueDescriptionForKeyword = "test",
+            defaultPortionForKeyword = 100,
+            defaultDescriptionForKeyword = "test",
             variationsForKeyword = listOf(
                 VariationDto(
                     value = "2",
@@ -147,8 +147,8 @@ class FlagSdkInitTest(
             description = "test3",
             type = FlagType.STRING,
             defaultValue = "A",
-            defaultValuePortion = 10,
-            defaultValueDescription = "A test",
+            defaultPortion = 10,
+            defaultDescription = "A test",
             variations = listOf(
                 VariationDto(
                     value = "B",
@@ -175,8 +175,8 @@ class FlagSdkInitTest(
                 )
             ),
             defaultValueForKeyword = "A",
-            defaultValuePortionForKeyword = 100,
-            defaultValueDescriptionForKeyword = "test",
+            defaultPortionForKeyword = 100,
+            defaultDescriptionForKeyword = "test",
             variationsForKeyword = listOf(
                 VariationDto(
                     value = "B",

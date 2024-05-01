@@ -109,7 +109,7 @@ class MemberServiceTest(
 
         val redisValue: String? = redisService.find("$signupCode:$email")
         assertThat(redisValue).isNotNull
-        val member: Member = memberService.signUp(
+        val memberResDto = memberService.signUp(
             SignupReqDto(
                 firstName = "동훈",
                 lastName = "김",
@@ -123,9 +123,9 @@ class MemberServiceTest(
         val findMember: Member? = memberRepository.findByEmail(email)
         assertThat(findMember).isNotNull
 
-        assertThat(member.memberId).isEqualTo(findMember!!.memberId)
-        assertThat(member.email).isEqualTo(findMember.email)
-        assertThat(passwordService.matches("1234", member.password)).isTrue()
+        assertThat(memberResDto.memberId).isEqualTo(findMember!!.memberId)
+        assertThat(memberResDto.email).isEqualTo(findMember.email)
+        assertThat(passwordService.matches("1234", memberResDto.password)).isTrue()
     }
 
     @Test

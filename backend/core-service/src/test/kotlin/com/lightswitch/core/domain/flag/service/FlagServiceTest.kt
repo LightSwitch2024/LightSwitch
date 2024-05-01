@@ -51,8 +51,8 @@ class FlagServiceTest {
             description = "test",
             type = FlagType.BOOLEAN,
             defaultValue = "TRUE",
-            defaultValuePortion = 100,
-            defaultValueDescription = "test",
+            defaultPortion = 100,
+            defaultDescription = "test",
             variations = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -68,8 +68,8 @@ class FlagServiceTest {
                 )
             ),
             defaultValueForKeyword = "TRUE",
-            defaultValuePortionForKeyword = 100,
-            defaultValueDescriptionForKeyword = "test",
+            defaultPortionForKeyword = 100,
+            defaultDescriptionForKeyword = "test",
             variationsForKeyword = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -115,8 +115,8 @@ class FlagServiceTest {
             description = "test",
             type = FlagType.STRING,
             defaultValue = "A",
-            defaultValuePortion = 100,
-            defaultValueDescription = "test",
+            defaultPortion = 100,
+            defaultDescription = "test",
             variations = listOf(
                 VariationDto(
                     value = "B",
@@ -133,8 +133,8 @@ class FlagServiceTest {
                 )
             ),
             defaultValueForKeyword = "TRUE",
-            defaultValuePortionForKeyword = 100,
-            defaultValueDescriptionForKeyword = "test",
+            defaultPortionForKeyword = 100,
+            defaultDescriptionForKeyword = "test",
             variationsForKeyword = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -178,8 +178,8 @@ class FlagServiceTest {
             description = "test",
             type = FlagType.INTEGER,
             defaultValue = "1",
-            defaultValuePortion = 100,
-            defaultValueDescription = "test",
+            defaultPortion = 100,
+            defaultDescription = "test",
             variations = listOf(
                 VariationDto(
                     value = "2",
@@ -196,8 +196,8 @@ class FlagServiceTest {
                 )
             ),
             defaultValueForKeyword = "TRUE",
-            defaultValuePortionForKeyword = 100,
-            defaultValueDescriptionForKeyword = "test",
+            defaultPortionForKeyword = 100,
+            defaultDescriptionForKeyword = "test",
             variationsForKeyword = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -241,8 +241,8 @@ class FlagServiceTest {
             description = "test",
             type = FlagType.INTEGER,
             defaultValue = "1",
-            defaultValuePortion = 100,
-            defaultValueDescription = "test",
+            defaultPortion = 100,
+            defaultDescription = "test",
             variations = listOf(
                 VariationDto(
                     value = "2",
@@ -259,8 +259,8 @@ class FlagServiceTest {
                 )
             ),
             defaultValueForKeyword = "TRUE",
-            defaultValuePortionForKeyword = 100,
-            defaultValueDescriptionForKeyword = "test",
+            defaultPortionForKeyword = 100,
+            defaultDescriptionForKeyword = "test",
             variationsForKeyword = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -298,8 +298,8 @@ class FlagServiceTest {
             description = "test",
             type = FlagType.BOOLEAN,
             defaultValue = "TRUE",
-            defaultValuePortion = 100,
-            defaultValueDescription = "test",
+            defaultPortion = 100,
+            defaultDescription = "test",
             variations = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -316,8 +316,8 @@ class FlagServiceTest {
                 )
             ),
             defaultValueForKeyword = "TRUE",
-            defaultValuePortionForKeyword = 100,
-            defaultValueDescriptionForKeyword = "test",
+            defaultPortionForKeyword = 100,
+            defaultDescriptionForKeyword = "test",
             variationsForKeyword = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -364,8 +364,8 @@ class FlagServiceTest {
             description = "test",
             type = FlagType.BOOLEAN,
             defaultValue = "TRUE",
-            defaultValuePortion = 50,
-            defaultValueDescription = "true test",
+            defaultPortion = 50,
+            defaultDescription = "true test",
             variations = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -382,8 +382,8 @@ class FlagServiceTest {
                 )
             ),
             defaultValueForKeyword = "TRUE",
-            defaultValuePortionForKeyword = 100,
-            defaultValueDescriptionForKeyword = "test",
+            defaultPortionForKeyword = 100,
+            defaultDescriptionForKeyword = "test",
             variationsForKeyword = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -400,8 +400,8 @@ class FlagServiceTest {
             description = "test2",
             type = FlagType.INTEGER,
             defaultValue = "1",
-            defaultValuePortion = 80,
-            defaultValueDescription = "1 test",
+            defaultPortion = 80,
+            defaultDescription = "1 test",
             variations = listOf(
                 VariationDto(
                     value = "2",
@@ -423,8 +423,8 @@ class FlagServiceTest {
                 )
             ),
             defaultValueForKeyword = "TRUE",
-            defaultValuePortionForKeyword = 100,
-            defaultValueDescriptionForKeyword = "test",
+            defaultPortionForKeyword = 100,
+            defaultDescriptionForKeyword = "test",
             variationsForKeyword = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -441,8 +441,8 @@ class FlagServiceTest {
             description = "test3",
             type = FlagType.INTEGER,
             defaultValue = "A",
-            defaultValuePortion = 10,
-            defaultValueDescription = "A test",
+            defaultPortion = 10,
+            defaultDescription = "A test",
             variations = listOf(
                 VariationDto(
                     value = "B",
@@ -464,8 +464,8 @@ class FlagServiceTest {
                 )
             ),
             defaultValueForKeyword = "TRUE",
-            defaultValuePortionForKeyword = 100,
-            defaultValueDescriptionForKeyword = "test",
+            defaultPortionForKeyword = 100,
+            defaultDescriptionForKeyword = "test",
             variationsForKeyword = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -520,8 +520,8 @@ class FlagServiceTest {
             description = "test",
             type = FlagType.INTEGER,
             defaultValue = "1",
-            defaultValuePortion = 50,
-            defaultValueDescription = "true test",
+            defaultPortion = 50,
+            defaultDescription = "true test",
             variations = listOf(
                 VariationDto(
                     value = "2",
@@ -548,8 +548,8 @@ class FlagServiceTest {
                 )
             ),
             defaultValueForKeyword = "TRUE",
-            defaultValuePortionForKeyword = 100,
-            defaultValueDescriptionForKeyword = "test",
+            defaultPortionForKeyword = 100,
+            defaultDescriptionForKeyword = "test",
             variationsForKeyword = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -580,8 +580,8 @@ class FlagServiceTest {
             description = "test",
             type = FlagType.BOOLEAN,
             defaultValue = "TRUE",
-            defaultValuePortion = 50,
-            defaultValueDescription = "true test",
+            defaultPortion = 50,
+            defaultDescription = "true test",
             variations = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -598,8 +598,8 @@ class FlagServiceTest {
                 )
             ),
             defaultValueForKeyword = "TRUE",
-            defaultValuePortionForKeyword = 100,
-            defaultValueDescriptionForKeyword = "test",
+            defaultPortionForKeyword = 100,
+            defaultDescriptionForKeyword = "test",
             variationsForKeyword = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -639,8 +639,8 @@ class FlagServiceTest {
             description = "test",
             type = FlagType.INTEGER,
             defaultValue = "1",
-            defaultValuePortion = 100,
-            defaultValueDescription = "test",
+            defaultPortion = 100,
+            defaultDescription = "test",
             variations = listOf(
                 VariationDto(
                     value = "2",
@@ -657,8 +657,8 @@ class FlagServiceTest {
                 )
             ),
             defaultValueForKeyword = "1",
-            defaultValuePortionForKeyword = 100,
-            defaultValueDescriptionForKeyword = "test",
+            defaultPortionForKeyword = 100,
+            defaultDescriptionForKeyword = "test",
             variationsForKeyword = listOf(
                 VariationDto(
                     value = "2",
@@ -680,8 +680,8 @@ class FlagServiceTest {
                 ),
                 type = FlagType.STRING,
                 defaultValue = "A",
-                defaultValuePortion = 80,
-                defaultValueDescription = "updatedA",
+                defaultPortion = 80,
+                defaultDescription = "updatedA",
                 variations = listOf(
                     VariationDto(
                         value = "B",
@@ -701,8 +701,8 @@ class FlagServiceTest {
                     )
                 ),
                 defaultValueForKeyword = "A",
-                defaultValuePortionForKeyword = 70,
-                defaultValueDescriptionForKeyword = "updated",
+                defaultPortionForKeyword = 70,
+                defaultDescriptionForKeyword = "updated",
                 variationsForKeyword = listOf(
                     VariationDto(
                         value = "B",
@@ -721,8 +721,8 @@ class FlagServiceTest {
         assertThat(updatedFlagResponseDto.tags[0].content).isEqualTo("updated")
         assertThat(updatedFlagResponseDto.type).isEqualTo(FlagType.STRING)
         assertThat(updatedFlagResponseDto.defaultValue).isEqualTo("A")
-        assertThat(updatedFlagResponseDto.defaultValuePortion).isEqualTo(80)
-        assertThat(updatedFlagResponseDto.defaultValueDescription).isEqualTo("updatedA")
+        assertThat(updatedFlagResponseDto.defaultPortion).isEqualTo(80)
+        assertThat(updatedFlagResponseDto.defaultDescription).isEqualTo("updatedA")
         assertThat(updatedFlagResponseDto.variations).hasSize(2)
         assertThat(updatedFlagResponseDto.variations.first().value).isEqualTo("B")
         assertThat(updatedFlagResponseDto.variations.first().portion).isEqualTo(10)
@@ -734,8 +734,8 @@ class FlagServiceTest {
         assertThat(updatedFlagResponseDto.keywords.first().keyword).isEqualTo("updated")
         assertThat(updatedFlagResponseDto.keywords.first().description).isEqualTo("updated")
         assertThat(updatedFlagResponseDto.defaultValueForKeyword).isEqualTo("A")
-        assertThat(updatedFlagResponseDto.defaultValuePortionForKeyword).isEqualTo(70)
-        assertThat(updatedFlagResponseDto.defaultValueDescriptionForKeyword).isEqualTo("updated")
+        assertThat(updatedFlagResponseDto.defaultPortionForKeyword).isEqualTo(70)
+        assertThat(updatedFlagResponseDto.defaultDescriptionForKeyword).isEqualTo("updated")
         assertThat(updatedFlagResponseDto.variationsForKeyword).hasSize(1)
         assertThat(updatedFlagResponseDto.variationsForKeyword.first().value).isEqualTo("B")
         assertThat(updatedFlagResponseDto.variationsForKeyword.first().portion).isEqualTo(30)
@@ -753,8 +753,8 @@ class FlagServiceTest {
             description = "test",
             type = FlagType.BOOLEAN,
             defaultValue = "TRUE",
-            defaultValuePortion = 50,
-            defaultValueDescription = "true test",
+            defaultPortion = 50,
+            defaultDescription = "true test",
             variations = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -771,8 +771,8 @@ class FlagServiceTest {
                 )
             ),
             defaultValueForKeyword = "TRUE",
-            defaultValuePortionForKeyword = 100,
-            defaultValueDescriptionForKeyword = "test",
+            defaultPortionForKeyword = 100,
+            defaultDescriptionForKeyword = "test",
             variationsForKeyword = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -790,8 +790,8 @@ class FlagServiceTest {
             description = "test2",
             type = FlagType.BOOLEAN,
             defaultValue = "TRUE",
-            defaultValuePortion = 50,
-            defaultValueDescription = "true test",
+            defaultPortion = 50,
+            defaultDescription = "true test",
             variations = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -808,8 +808,8 @@ class FlagServiceTest {
                 )
             ),
             defaultValueForKeyword = "TRUE",
-            defaultValuePortionForKeyword = 100,
-            defaultValueDescriptionForKeyword = "test",
+            defaultPortionForKeyword = 100,
+            defaultDescriptionForKeyword = "test",
             variationsForKeyword = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -847,8 +847,8 @@ class FlagServiceTest {
             description = "test",
             type = FlagType.BOOLEAN,
             defaultValue = "TRUE",
-            defaultValuePortion = 100,
-            defaultValueDescription = "test",
+            defaultPortion = 100,
+            defaultDescription = "test",
             variations = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -864,8 +864,8 @@ class FlagServiceTest {
                 )
             ),
             defaultValueForKeyword = "TRUE",
-            defaultValuePortionForKeyword = 100,
-            defaultValueDescriptionForKeyword = "test",
+            defaultPortionForKeyword = 100,
+            defaultDescriptionForKeyword = "test",
             variationsForKeyword = listOf(
                 VariationDto(
                     value = "FALSE",
