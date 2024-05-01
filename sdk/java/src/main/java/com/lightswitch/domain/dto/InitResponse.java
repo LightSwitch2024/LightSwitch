@@ -8,4 +8,7 @@ public class InitResponse {
 	private String message;
 	private List<FlagResponse> data;
 
+	public List<FlagResponse> getData() {
+		return data;
+	}
 }
