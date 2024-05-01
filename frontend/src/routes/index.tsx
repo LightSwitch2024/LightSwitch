@@ -27,6 +27,7 @@ const Router = () => (
           <Route path="/flag/:flagId" element={<FlagDetail />} />
           <Route path="/login" element={<LogIn />} />
           <Route path="/mypage" element={<UserDetail />} />
+          <Route path="/passwordfind" element={<UserDetail />} />
         </Routes>
       </BrowserRouter>
     </S.Content>

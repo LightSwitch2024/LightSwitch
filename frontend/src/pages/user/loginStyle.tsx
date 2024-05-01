@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const LogInLayout = styled.div`
@@ -23,13 +24,6 @@ export const LogInInput = styled.input`
   }
 `;
 
-export const LogInText = styled.div`
-  align-self: flex-end;
-  font-size: 0.6rem;
-  color: #00c9ea;
-  font-weight: 500;
-`;
-
 export const LogInWarnText = styled.div`
   align-self: flex-end;
   font-size: 0.6rem;
@@ -44,7 +38,25 @@ export const LogInInputBox = styled.div`
   gap: 0.5rem;
 `;
 
-export const SignUpButton = styled.button`
+export const LogInLinkBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+`;
+
+export const SignUpText = styled(Link)`
+  color: #000000;
+  text-decoration: underline;
+  cursor: pointer;
+`;
+
+export const PasswordText = styled(Link)`
+  color: #000000;
+  text-decoration: underline;
+  cursor: pointer;
+`;
+
+export const SignUpButton = styled.a`
   width: 100%;
   padding: 0.3rem 1rem;
   border-radius: 0.5rem;
@@ -69,5 +81,17 @@ export const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
+  margin: 5rem 0 5rem 0;
   gap: 1rem;
+`;
+
+export const LogoWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
+
+export const Logo = styled.img`
+  display: flex;
+  height: auto;
 `;
