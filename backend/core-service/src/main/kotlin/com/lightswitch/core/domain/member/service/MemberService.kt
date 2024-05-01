@@ -108,6 +108,7 @@ class MemberService(
 
         return if (isCorrectPW && savedMember != null) {
             MemberResDto(
+                memberId = savedMember.memberId!!,
                 email = savedMember.email,
                 firstName = savedMember.firstName,
                 lastName = savedMember.lastName,
@@ -126,6 +127,7 @@ class MemberService(
 
         return if (savedMember != null) {
             MemberResDto(
+                memberId = savedMember.memberId!!,
                 email = savedMember.email,
                 firstName = savedMember.firstName,
                 lastName = savedMember.lastName,
@@ -159,6 +161,7 @@ class MemberService(
 
         val updatedData: MemberResDto? = oldData?.let {
             MemberResDto(
+                memberId = it.memberId!!,
                 firstName = it.firstName,
                 lastName = it.lastName,
                 telNumber = it.telNumber,
@@ -181,6 +184,7 @@ class MemberService(
 
         val updatedData: MemberResDto = savedMember.let {
             MemberResDto(
+                memberId = it.memberId!!,
                 email = it.email,
                 firstName = it.firstName,
                 lastName = it.lastName,
