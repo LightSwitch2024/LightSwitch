@@ -1,6 +1,7 @@
 package com.lightswitch.core.domain.flag.service
 
 import com.lightswitch.core.domain.flag.common.enum.FlagType
+import com.lightswitch.core.domain.flag.dto.KeywordDto
 import com.lightswitch.core.domain.flag.dto.VariationDto
 import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
 import com.lightswitch.core.domain.flag.dto.req.TagRequestDto
@@ -59,7 +60,23 @@ class FlagServiceTest {
                     description = "test",
                 )
             ),
-            userId = 1L
+            userId = 1L,
+            keywords = listOf(
+                KeywordDto(
+                    keyword = "test",
+                    description = "test",
+                )
+            ),
+            defaultValueForKeyword = "TRUE",
+            defaultValuePortionForKeyword = 100,
+            defaultValueDescriptionForKeyword = "test",
+            variationsForKeyword = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test",
+                )
+            )
         )
 
         // when
@@ -75,6 +92,8 @@ class FlagServiceTest {
                 assertEquals(tagFoundByContent.colorHex, tag.colorHex)
             }
         }
+
+        assertThat(flagResponseDto.keywords).hasSize(1)
     }
 
     @Test
@@ -105,7 +124,24 @@ class FlagServiceTest {
                     description = "test",
                 )
             ),
-            userId = 1L
+            userId = 1L,
+
+            keywords = listOf(
+                KeywordDto(
+                    keyword = "test",
+                    description = "test",
+                )
+            ),
+            defaultValueForKeyword = "TRUE",
+            defaultValuePortionForKeyword = 100,
+            defaultValueDescriptionForKeyword = "test",
+            variationsForKeyword = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test",
+                )
+            )
         )
 
         // when
@@ -151,7 +187,24 @@ class FlagServiceTest {
                     description = "test",
                 )
             ),
-            userId = 1L
+            userId = 1L,
+
+            keywords = listOf(
+                KeywordDto(
+                    keyword = "test",
+                    description = "test",
+                )
+            ),
+            defaultValueForKeyword = "TRUE",
+            defaultValuePortionForKeyword = 100,
+            defaultValueDescriptionForKeyword = "test",
+            variationsForKeyword = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test",
+                )
+            )
         )
 
         // when
@@ -197,7 +250,24 @@ class FlagServiceTest {
                     description = "test",
                 )
             ),
-            userId = 1L
+            userId = 1L,
+
+            keywords = listOf(
+                KeywordDto(
+                    keyword = "test",
+                    description = "test",
+                )
+            ),
+            defaultValueForKeyword = "TRUE",
+            defaultValuePortionForKeyword = 100,
+            defaultValueDescriptionForKeyword = "test",
+            variationsForKeyword = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test",
+                )
+            )
         )
         val flagResponseDto = flagService.createFlag(flagRequestDto)
 
@@ -237,7 +307,24 @@ class FlagServiceTest {
                     description = "test",
                 )
             ),
-            userId = 1L
+            userId = 1L,
+
+            keywords = listOf(
+                KeywordDto(
+                    keyword = "test",
+                    description = "test",
+                )
+            ),
+            defaultValueForKeyword = "TRUE",
+            defaultValuePortionForKeyword = 100,
+            defaultValueDescriptionForKeyword = "test",
+            variationsForKeyword = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test",
+                )
+            )
         )
         flagService.createFlag(flagRequestDto)
 
@@ -286,7 +373,24 @@ class FlagServiceTest {
                     description = "false test",
                 )
             ),
-            userId = 1L
+            userId = 1L,
+
+            keywords = listOf(
+                KeywordDto(
+                    keyword = "test",
+                    description = "test",
+                )
+            ),
+            defaultValueForKeyword = "TRUE",
+            defaultValuePortionForKeyword = 100,
+            defaultValueDescriptionForKeyword = "test",
+            variationsForKeyword = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test",
+                )
+            )
         )
         flagService.createFlag(flagRequestDto)
 
@@ -310,7 +414,24 @@ class FlagServiceTest {
                     description = "3 test",
                 )
             ),
-            userId = 2L
+            userId = 2L,
+
+            keywords = listOf(
+                KeywordDto(
+                    keyword = "test",
+                    description = "test",
+                )
+            ),
+            defaultValueForKeyword = "TRUE",
+            defaultValuePortionForKeyword = 100,
+            defaultValueDescriptionForKeyword = "test",
+            variationsForKeyword = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test",
+                )
+            )
         )
         flagService.createFlag(flagRequestDto2)
 
@@ -334,7 +455,24 @@ class FlagServiceTest {
                     description = "C test",
                 )
             ),
-            userId = 3L
+            userId = 3L,
+
+            keywords = listOf(
+                KeywordDto(
+                    keyword = "test",
+                    description = "test",
+                )
+            ),
+            defaultValueForKeyword = "TRUE",
+            defaultValuePortionForKeyword = 100,
+            defaultValueDescriptionForKeyword = "test",
+            variationsForKeyword = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test",
+                )
+            )
         )
         flagService.createFlag(flagRequestDto3)
 
@@ -401,7 +539,24 @@ class FlagServiceTest {
                     description = "false test",
                 ),
             ),
-            userId = 1L
+            userId = 1L,
+
+            keywords = listOf(
+                KeywordDto(
+                    keyword = "test",
+                    description = "test",
+                )
+            ),
+            defaultValueForKeyword = "TRUE",
+            defaultValuePortionForKeyword = 100,
+            defaultValueDescriptionForKeyword = "test",
+            variationsForKeyword = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test",
+                )
+            )
         )
         val createdFlag = flagService.createFlag(flagRequestDto)
 
@@ -434,7 +589,24 @@ class FlagServiceTest {
                     description = "false test",
                 )
             ),
-            userId = 1L
+            userId = 1L,
+
+            keywords = listOf(
+                KeywordDto(
+                    keyword = "test",
+                    description = "test",
+                )
+            ),
+            defaultValueForKeyword = "TRUE",
+            defaultValuePortionForKeyword = 100,
+            defaultValueDescriptionForKeyword = "test",
+            variationsForKeyword = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test",
+                )
+            )
         )
         val flagId = flagService.createFlag(flagRequestDto).flagId
 
@@ -476,7 +648,24 @@ class FlagServiceTest {
                     description = "test",
                 )
             ),
-            userId = 1L
+            userId = 1L,
+
+            keywords = listOf(
+                KeywordDto(
+                    keyword = "test",
+                    description = "test",
+                )
+            ),
+            defaultValueForKeyword = "TRUE",
+            defaultValuePortionForKeyword = 100,
+            defaultValueDescriptionForKeyword = "test",
+            variationsForKeyword = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test",
+                )
+            )
         )
         val flagResponseDto = flagService.createFlag(flagRequestDto)
 
@@ -548,7 +737,24 @@ class FlagServiceTest {
                     description = "false test",
                 )
             ),
-            userId = 1L
+            userId = 1L,
+
+            keywords = listOf(
+                KeywordDto(
+                    keyword = "test",
+                    description = "test",
+                )
+            ),
+            defaultValueForKeyword = "TRUE",
+            defaultValuePortionForKeyword = 100,
+            defaultValueDescriptionForKeyword = "test",
+            variationsForKeyword = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test",
+                )
+            )
         )
         val flagId = flagService.createFlag(flagRequestDto1).flagId
         flagService.switchFlag(flagId)
@@ -568,7 +774,24 @@ class FlagServiceTest {
                     description = "false test",
                 )
             ),
-            userId = 1L
+            userId = 1L,
+
+            keywords = listOf(
+                KeywordDto(
+                    keyword = "test",
+                    description = "test",
+                )
+            ),
+            defaultValueForKeyword = "TRUE",
+            defaultValuePortionForKeyword = 100,
+            defaultValueDescriptionForKeyword = "test",
+            variationsForKeyword = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test",
+                )
+            )
         )
         flagService.createFlag(flagRequestDto2)
 

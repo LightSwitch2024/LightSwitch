@@ -1,6 +1,7 @@
 package com.lightswitch.core.domain.flag.dto.req
 
 import com.lightswitch.core.domain.flag.common.enum.FlagType
+import com.lightswitch.core.domain.flag.dto.KeywordDto
 import com.lightswitch.core.domain.flag.dto.VariationDto
 
 data class FlagRequestDto(
@@ -14,4 +15,10 @@ data class FlagRequestDto(
     val variations: List<VariationDto>,
 
     val userId: Long,
+
+    val keywords: List<KeywordDto>,
+    val defaultValueForKeyword: String,
+    val defaultValuePortionForKeyword: Int,
+    val defaultValueDescriptionForKeyword: String,
+    val variationsForKeyword: List<VariationDto>,
 )

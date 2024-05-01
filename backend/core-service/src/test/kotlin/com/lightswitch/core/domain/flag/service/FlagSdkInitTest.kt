@@ -1,6 +1,7 @@
 package com.lightswitch.core.domain.flag.service
 
 import com.lightswitch.core.domain.flag.common.enum.FlagType
+import com.lightswitch.core.domain.flag.dto.KeywordDto
 import com.lightswitch.core.domain.flag.dto.VariationDto
 import com.lightswitch.core.domain.flag.dto.req.FlagInitRequestDto
 import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
@@ -37,7 +38,7 @@ class FlagSdkInitTest(
             firstName = "동훈",
             lastName = "김",
             telNumber = "01012345678",
-            email = "huni19541@gmail.com",
+            email = "huni195411@gmail.com",
             password = "1234"
         )
         memberRepository.save(member)
@@ -78,7 +79,13 @@ class FlagSdkInitTest(
 
                 )
             ),
-            userId = memberId!!
+            userId = memberId!!,
+
+            keywords = listOf(),
+            defaultValueForKeyword = "",
+            defaultValuePortionForKeyword = 0,
+            defaultValueDescriptionForKeyword = "",
+            variationsForKeyword = listOf()
         )
         flagService.createFlag(flagRequestDto)
 
@@ -102,7 +109,24 @@ class FlagSdkInitTest(
                     description = "3 test"
                 )
             ),
-            userId = memberId
+            userId = memberId,
+
+            keywords = listOf(
+                KeywordDto(
+                    keyword = "test",
+                    description = "test",
+                )
+            ),
+            defaultValueForKeyword = "TRUE",
+            defaultValuePortionForKeyword = 100,
+            defaultValueDescriptionForKeyword = "test",
+            variationsForKeyword = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test",
+                )
+            )
         )
         flagService.createFlag(flagRequestDto2)
 
@@ -131,7 +155,24 @@ class FlagSdkInitTest(
                     description = "D test"
                 )
             ),
-            userId = memberId
+            userId = memberId,
+
+            keywords = listOf(
+                KeywordDto(
+                    keyword = "test",
+                    description = "test",
+                )
+            ),
+            defaultValueForKeyword = "TRUE",
+            defaultValuePortionForKeyword = 100,
+            defaultValueDescriptionForKeyword = "test",
+            variationsForKeyword = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test",
+                )
+            )
         )
         flagService.createFlag(flagRequestDto3)
 
