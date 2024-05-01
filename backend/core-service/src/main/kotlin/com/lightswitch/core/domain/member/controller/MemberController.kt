@@ -38,33 +38,32 @@ class MemberController(
     @PostMapping("/login")
     fun logIn(
         @RequestBody logInReqDto: LogInRequestDto
-    ): ResponseEntity<MemberResponseDto> {
-        return ResponseEntity.ok(memberService.logIn(logInReqDto))
+    ): BaseResponse<MemberResponseDto> {
+        return success(memberService.logIn(logInReqDto))
     }
 
     // 유저 정보 불러오기
     @GetMapping("/{email}")
     fun getUser(
         @PathVariable email: String
-    ): ResponseEntity<MemberResponseDto> {
-        println("요청 진행 됨")
-        return ResponseEntity.ok(memberService.getUser(email))
+    ): BaseResponse<MemberResponseDto> {
+        return success(memberService.getUser(email))
     }
 
     // 유저 이름,전화번호 수정
     @PutMapping("/{email}")
     fun updateUser(@PathVariable email: String,
         @RequestBody newUserData: MemberUpdateRequestDto
-    ): ResponseEntity<MemberResponseDto> {
-        return ResponseEntity.ok(memberService.updateUser(newUserData))
+    ): BaseResponse<MemberResponseDto?> {
+        return success(memberService.updateUser(newUserData))
     }
 
     // 비밀번호 수정
     @PutMapping("/{email}/password")
     fun updatePassword(@PathVariable email: String,
         @RequestBody pwUpdateData: PasswordUpdateRequestDto
-    ): ResponseEntity<MemberResponseDto> {
-        return ResponseEntity.ok(memberService.updatePassword(pwUpdateData))
+    ): BaseResponse<MemberResponseDto?> {
+        return success(memberService.updatePassword(pwUpdateData))
     }
 
     // 유저 삭제

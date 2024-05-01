@@ -105,6 +105,8 @@ class MemberService(
 //     유저 정보 읽기
     fun getUser(email: String): MemberResponseDto {
         val savedMember = memberRepository.findByEmail(email)
+        println("service 진행됌")
+        println(savedMember?.email)
 
         return if (savedMember != null) {
             MemberResponseDto(
