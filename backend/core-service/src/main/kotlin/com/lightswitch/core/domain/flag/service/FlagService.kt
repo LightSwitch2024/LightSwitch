@@ -5,11 +5,7 @@ import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.domain.flag.dto.VariationDto
 import com.lightswitch.core.domain.flag.dto.req.FlagInitRequestDto
 import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
-import com.lightswitch.core.domain.flag.dto.res.FlagResponseDto
-import com.lightswitch.core.domain.flag.dto.res.FlagSummaryDto
-import com.lightswitch.core.domain.flag.dto.res.FlagInitResponseDto
-import com.lightswitch.core.domain.flag.dto.res.FlagIdResponseDto
-import com.lightswitch.core.domain.flag.dto.res.TagResponseDto
+import com.lightswitch.core.domain.flag.dto.res.*
 import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.flag.repository.TagRepository
 import com.lightswitch.core.domain.flag.repository.VariationRepository
@@ -236,7 +232,7 @@ class FlagService(
         }
 
         // Todo craete한 User의 SDK키를 이용하여 SSE 데이터 전송
-        sseService.sendData(SseDto("1234", SseDto.SseType.DELETE, toJson(FlagIdResponseDto(flagId))))
+        sseService.sendData(SseDto("1234", SseDto.SseType.DELETE, toJson(FlagTitleResponseDto(flag.title))))
 
         return flag.flagId ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
     }
@@ -312,7 +308,7 @@ class FlagService(
             variationRepository.save(updatedVariation)
         }
 
-        // Todo craete한 User의 SDK키를 이용하여 SSE 데이터 전송
+        // Todo create한 User의 SDK키를 이용하여 SSE 데이터 전송
         val flagInitResponseDto = FlagInitResponseDto(
             flagId = flag.flagId!!,
             title = flag.title,
