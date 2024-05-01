@@ -6,9 +6,9 @@ from datetime import datetime, timezone
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
-from lightswitch.lightswitch.models import Flags
-from lightswitch.lightswitch.streaming import StreamEvent
-from lightswitch.lightswitch.exceptions import StreamDataError, InvalidJsonResponseError
+from models import Flags
+from streaming import StreamEvent
+from exceptions import StreamDataError, InvalidJsonResponseError
 
 DEFAULT_API_URL = 'http://localhost:8000/api/v1/'
 DEFAULT_REALTIME_API_URL = 'http://localhost:8000/api/sse/subscribe/a'

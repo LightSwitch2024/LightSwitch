@@ -31,5 +31,5 @@ def get_hashed_percentage_for_object_ids(
     return value
 
 
-# print(get_hashed_percentage_for_object_ids(["123"]))
-# print(get_hashed_percentage_for_object_ids(["121"]))
+print(get_hashed_percentage_for_object_ids(["123"]))
+print(get_hashed_percentage_for_object_ids(["121"]))
