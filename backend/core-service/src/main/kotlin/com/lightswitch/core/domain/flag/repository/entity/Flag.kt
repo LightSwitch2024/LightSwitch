@@ -2,6 +2,7 @@ package com.lightswitch.core.domain.flag.repository.entity
 
 import com.lightswitch.core.common.entity.BaseEntity
 import com.lightswitch.core.domain.flag.common.enum.FlagType
+import com.lightswitch.core.domain.member.entity.Member
 import jakarta.persistence.*
 import lombok.Getter
 
@@ -15,9 +16,9 @@ class Flag(
     var description: String,
 
     // Todo : Change to User
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "user_id")
-    val maintainerId: Long,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    val maintainer: Member,
 
     @Enumerated(EnumType.STRING)
     var type: FlagType,

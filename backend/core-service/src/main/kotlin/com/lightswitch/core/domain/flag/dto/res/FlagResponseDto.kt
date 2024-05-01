@@ -19,7 +19,7 @@ data class FlagResponseDto(
     val defaultPortion: Int,
     val defaultDescription: String,
     val variations: List<VariationDto>,
-    val userId: Long,
+    val memberId: Long,
 
     val createdAt: String,
     val updatedAt: String,

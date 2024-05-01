@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-import { AuthAtom } from '@/AuthAtom';
+import { AuthAtom } from '@/global/AuthAtom';
 import * as L from '@/pages/user/logoutStyle';
 
 const LogOut = () => {
@@ -10,7 +10,13 @@ const LogOut = () => {
   const auth = useRecoilValue(AuthAtom);
 
   const handleLogOut = () => {
-    setAuthState({ isAuthenticated: false, email: auth.email, password: auth.password });
+    setAuthState({
+      isAuthenticated: false,
+      email: auth.email,
+      memberId: auth.memberId,
+      firstName: auth.firstName,
+      lastName: auth.lastName,
+    });
     navigate('/');
   };
 

@@ -16,10 +16,10 @@ import com.lightswitch.core.domain.flag.repository.*
 import com.lightswitch.core.domain.flag.repository.entity.*
 import com.lightswitch.core.domain.flag.repository.queydsl.FlagCustomRepository
 import com.lightswitch.core.domain.member.entity.SdkKey
+import com.lightswitch.core.domain.member.repository.MemberRepository
 import com.lightswitch.core.domain.member.repository.SdkKeyRepository
 import com.lightswitch.core.domain.sse.dto.SseDto
 import com.lightswitch.core.domain.sse.service.SseService
-import com.lightswitch.core.util.toJson
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -51,16 +51,21 @@ class FlagService(
 
     @Autowired
     private var flagKeywordMappingRepository: FlagKeywordMappingRepository,
+    private val memberRepository: MemberRepository,
 ) {
 
+    @Transactional
     fun createFlag(flagRequestDto: FlagRequestDto): FlagResponseDto {
         // flag 저장
+        val member = memberRepository.findById(flagRequestDto.memberId)
+            .orElseThrow { BaseException(ResponseCode.MEMBER_NOT_FOUND) }
+
         val savedFlag = flagRepository.save(
             Flag(
                 title = flagRequestDto.title,
                 description = flagRequestDto.description,
                 type = flagRequestDto.type,
-                maintainerId = flagRequestDto.userId,
+                maintainer = member,
             )
         )
 
@@ -161,7 +166,7 @@ class FlagService(
             defaultPortion = defaultVariation.portion,
             defaultDescription = defaultVariation.description,
             variations = variations,
-            maintainerId = savedFlag.maintainerId,
+            maintainerId = savedFlag.maintainer.memberId!!,
 
             createdAt = savedFlag.createdAt.toString(),
             updatedAt = savedFlag.updatedAt.toString(),
@@ -175,8 +180,14 @@ class FlagService(
             variationsForKeyword = variationsForKeyword,
         )
 
-        // Todo craete한 User의 SDK키를 이용하여 SSE 데이터 전송
-        sseService.sendData(SseDto("8030ca7d78fb464fb9b661a715bbab13", SseDto.SseType.CREATE, flagInitResponseDto))
+        // SSE 데이터 전송
+        if (savedFlag.maintainer.sdkKeys.isEmpty()) {
+            throw BaseException(ResponseCode.SDK_KEY_NOT_FOUND)
+        }
+
+        val sdkKey = savedFlag.maintainer.sdkKeys[0]
+        val userKey = sseService.hash(sdkKey.key)
+        sseService.sendData(SseDto(userKey, SseDto.SseType.CREATE, flagInitResponseDto))
 
         return this.getFlag(savedFlag.flagId!!)
     }
@@ -190,8 +201,7 @@ class FlagService(
                 description = flag.description,
                 tags = flag.tags.map { TagResponseDto(it.colorHex, it.content) },
                 active = flag.active,
-                //Todo : User 기능 구현 후 maintainerName 변경
-                maintainerName = "test",
+                maintainerName = "${flag.maintainer.firstName} ${flag.maintainer.lastName}",
             )
         }
     }
@@ -231,9 +241,8 @@ class FlagService(
                     description = it.description
                 )
             },
-            userId = flag.maintainerId,
+            memberId = flag.maintainer.memberId!!,
 
-            //Todo : BaseEntity 상속받아서 createdAt, updatedAt 사용
             createdAt = flag.createdAt.toString(),
             updatedAt = flag.updatedAt.toString(),
 
@@ -294,9 +303,8 @@ class FlagService(
                         description = it.description
                     )
                 },
-                userId = flag.maintainerId,
+                memberId = flag.maintainer.memberId!!,
 
-                //Todo : BaseEntity 상속받아서 createdAt, updatedAt 사용
                 createdAt = LocalDateTime.now().toString(),
                 updatedAt = LocalDateTime.now().toString(),
 
@@ -342,8 +350,14 @@ class FlagService(
         }
         flagKeywordMapping.delete()
 
-        // Todo craete한 User의 SDK키를 이용하여 SSE 데이터 전송
-        sseService.sendData(SseDto("8030ca7d78fb464fb9b661a715bbab13", SseDto.SseType.DELETE, FlagTitleResponseDto(flag.title)))
+
+        sseService.sendData(
+            SseDto(
+                "8030ca7d78fb464fb9b661a715bbab13",
+                SseDto.SseType.DELETE,
+                FlagTitleResponseDto(flag.title)
+            )
+        )
 
         return flag.flagId ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
     }
@@ -352,8 +366,20 @@ class FlagService(
         val flag = flagRepository.findById(flagId).get()
         flag.active = !flag.active
 
-        // Todo craete한 User의 SDK키를 이용하여 SSE 데이터 전송
-        sseService.sendData(SseDto("8030ca7d78fb464fb9b661a715bbab13", SseDto.SseType.UPDATE, FlagIdResponseDto(flagId)))
+        // SSE 데이터 전송
+        if (flag.maintainer.sdkKeys.isEmpty()) {
+            throw BaseException(ResponseCode.SDK_KEY_NOT_FOUND)
+        }
+
+        val sdkKey = flag.maintainer.sdkKeys[0]
+        val userKey = sseService.hash(sdkKey.key)
+        sseService.sendData(
+            SseDto(
+                userKey,
+                SseDto.SseType.SWITCH,
+                FlagIdResponseDto(flagId, flag.active)
+            )
+        )
 
         return flagRepository.save(flag).flagId ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
     }
@@ -483,7 +509,7 @@ class FlagService(
             defaultPortion = defaultVariation.portion,
             defaultDescription = defaultVariation.description,
             variations = flagRequestDto.variations,
-            maintainerId = flag.maintainerId,
+            maintainerId = flag.maintainer.memberId!!,
             createdAt = flag.createdAt.toString(),
             updatedAt = flag.updatedAt.toString(),
             deleteAt = flag.deletedAt.toString(),
@@ -500,7 +526,15 @@ class FlagService(
             defaultDescriptionForKeyword = defaultVariation.description,
             variationsForKeyword = flagRequestDto.variationsForKeyword,
         )
-        sseService.sendData(SseDto("8030ca7d78fb464fb9b661a715bbab13", SseDto.SseType.UPDATE, flagInitResponseDto))
+
+        // SSE 데이터 전송
+        if (flag.maintainer.sdkKeys.isEmpty()) {
+            throw BaseException(ResponseCode.SDK_KEY_NOT_FOUND)
+        }
+
+        val sdkKey = flag.maintainer.sdkKeys[0]
+        val userKey = sseService.hash(sdkKey.key)
+        sseService.sendData(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
 
         return this.getFlag(flag.flagId!!)
     }
@@ -522,7 +556,7 @@ class FlagService(
         )
         val maintainerId: Long = sdkKey.member.memberId!!
 
-        val flagList = flagRepository.findByMaintainerIdAndDeletedAtIsNull(maintainerId)
+        val flagList = flagRepository.findByMaintainerMemberIdAndDeletedAtIsNull(maintainerId)
         return flagList.map { flag ->
             val allVariation = variationRepository.findByFlagAndDeletedAtIsNull(flag)
 
@@ -579,7 +613,7 @@ class FlagService(
                 defaultPortion = defaultPortion,
                 defaultDescription = defaultDescription,
                 variations = variations,
-                maintainerId = flag.maintainerId,
+                maintainerId = flag.maintainer.memberId!!,
                 createdAt = flag.createdAt.toString(),
                 updatedAt = flag.updatedAt.toString(),
                 deleteAt = flag.deletedAt.toString(),
@@ -661,7 +695,7 @@ class FlagService(
                 tags = flag.tags.map { TagResponseDto(it.colorHex, it.content) },
                 active = flag.active,
                 //Todo : User 기능 구현 후 maintainerName 변경
-                maintainerName = "test",
+                maintainerName = "${flag.maintainer.firstName} ${flag.maintainer.lastName}",
             )
         }
     }

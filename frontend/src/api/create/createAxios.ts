@@ -23,9 +23,9 @@ interface FlagItem {
   tags: Array<TagItem>;
   description: string;
   type: string;
-  keywords: string;
+  keywords: string[];
   defaultValueForKeyword: string;
-  defaultPortionForKeyword: string;
+  defaultPortionForKeyword: number;
   defaultDescriptionForKeyword: string;
   variationsForKeyword: Array<Variation>;
   defaultValue: string;
@@ -33,7 +33,7 @@ interface FlagItem {
   defaultDescription: string;
   variations: Array<Variation>;
 
-  userId: number;
+  memberId: number;
 }
 
 export async function createFlag<T>(
