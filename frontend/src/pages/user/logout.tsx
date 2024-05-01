@@ -10,7 +10,13 @@ const LogOut = () => {
   const auth = useRecoilValue(AuthAtom);
 
   const handleLogOut = () => {
-    setAuthState({ isAuthenticated: false, email: auth.email, password: auth.password });
+    setAuthState({
+      isAuthenticated: false,
+      email: auth.email,
+      memberId: auth.memberId,
+      firstName: auth.firstName,
+      lastName: auth.lastName,
+    });
     navigate('/');
   };
 

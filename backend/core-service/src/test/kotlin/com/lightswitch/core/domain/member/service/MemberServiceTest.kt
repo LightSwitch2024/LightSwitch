@@ -3,6 +3,7 @@ package com.lightswitch.core.domain.member.service
 import com.lightswitch.core.common.service.PasswordService
 import com.lightswitch.core.domain.mail.service.MailService
 import com.lightswitch.core.domain.member.dto.req.SignupReqDto
+import com.lightswitch.core.domain.member.dto.res.MemberResponseDto
 import com.lightswitch.core.domain.member.entity.Member
 import com.lightswitch.core.domain.member.exception.MemberException
 import com.lightswitch.core.domain.member.repository.MemberRepository
@@ -109,7 +110,7 @@ class MemberServiceTest(
 
         val redisValue: String? = redisService.find("$signupCode:$email")
         assertThat(redisValue).isNotNull
-        val member: Member = memberService.signUp(
+        val member: MemberResponseDto = memberService.signUp(
             SignupReqDto(
                 firstName = "동훈",
                 lastName = "김",

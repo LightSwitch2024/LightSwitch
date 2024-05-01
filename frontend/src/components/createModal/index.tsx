@@ -460,7 +460,9 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
             placeholder="값을 입력하세요"
             value={variation.value}
             // 변경된 값이 있을 때 처리하는 함수 바인딩
-            onChange={(e) => handleVariationChange(e, idx)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              handleVariationChange(e, idx)
+            }
             $flag={isDetailMode()}
           />
           <S.FlagVariationInput
@@ -468,7 +470,9 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
             placeholder="변수 비율"
             value={variation.portion}
             // 변경된 값이 있을 때 처리하는 함수 바인딩
-            onChange={(e) => handleVariationPortionChange(e, idx)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              handleVariationPortionChange(e, idx)
+            }
             $flag={isDetailMode()}
           />
         </S.FlagVariationRowContainer>
@@ -478,7 +482,9 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
             placeholder="설명"
             value={variation.description}
             // 변경된 값이 있을 때 처리하는 함수 바인딩
-            onChange={(e) => handleVariationDescriptionChange(e, idx)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              handleVariationDescriptionChange(e, idx)
+            }
             $flag={isDetailMode()}
           />
         </S.FlagVariationRowContainer>
@@ -701,7 +707,9 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
         <S.ModalInputForm
           id="modal-scrollable"
           className="modal-scrollable"
-          onClick={(event) => stopPropagation(event)}
+          onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
+            stopPropagation(e)
+          }
         >
           {renderTotalForm()}
         </S.ModalInputForm>
