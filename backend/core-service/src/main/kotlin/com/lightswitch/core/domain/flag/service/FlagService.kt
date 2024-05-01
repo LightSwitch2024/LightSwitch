@@ -376,8 +376,8 @@ class FlagService(
         sseService.sendData(
             SseDto(
                 userKey,
-                SseDto.SseType.UPDATE,
-                FlagIdResponseDto(flagId)
+                SseDto.SseType.SWITCH,
+                FlagIdResponseDto(flagId, flag.active)
             )
         )
 
