@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { confirmAuthCode, sendAuthCode, signUp } from '@/api/userDetail/userAxios';
 import * as S from '@/pages/signup/indexStyle';
@@ -23,6 +24,8 @@ type SignUpData = {
 };
 
 const SignUp = () => {
+  const navigator = useNavigate();
+
   const [firstName, setFirstName] = useState<string>('');
   const [firstNameCheck, setFirstNameCheck] = useState<boolean>(false);
   const [lastName, setLastName] = useState<string>('');
@@ -112,11 +115,7 @@ const SignUp = () => {
       email: email,
     };
 
-    sendAuthCode(
-      sendAuthCodeData,
-      (data: string) => console.log(data),
-      (err) => console.log(err),
-    );
+    axios.post('/mails/send', sendAuthCodeData);
   };
 
   const handleConfirmAuthCode = (): void => {
@@ -125,15 +124,16 @@ const SignUp = () => {
       authCode: authCode,
     };
 
-    confirmAuthCode(
-      confirmAuthCodeData,
-      (data: boolean) => setIsAuth(data),
-      (err) => console.log(err),
-    );
+    axios.post('/mails/confirm', confirmAuthCodeData).then((res) => {
+      if (res && res.data && res.data.data) {
+        setIsAuth(res.data.data);
+      }
+    });
   };
 
   const handleCancle = (): void => {
     // Todo... 취소 시 페이지 이동 처리
+    navigator('/login');
   };
 
   const handleSignUp = (): void => {
@@ -151,15 +151,9 @@ const SignUp = () => {
       authCode: authCode,
     };
 
-    signUp(
-      signUpData,
-      (data) => {
-        console.log(data);
-      },
-      (err) => {
-        console.log(err);
-      },
-    );
+    axios.post('/users', signUpData).then(() => {
+      // Todo... 회원가입 성공 시 페이지 이동 처리
+    });
   };
 
   useEffect(() => {

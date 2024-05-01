@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
 import { deleteUser, getUserDetail, updateUser } from '@/api/userDetail/userAxios';
-import { AuthAtom } from '@/AuthAtom';
+import { AuthAtom } from '@/global/AuthAtom';
 import * as M from '@/pages/mypage/indexStyle';
 
 interface UserData {
@@ -50,7 +50,7 @@ const UserDetail = () => {
         console.log(err);
       },
     );
-  }, [auth.email]);
+  }, []);
 
   /**
    * 수정에 사용할 User 정보를 셋업하는 함수

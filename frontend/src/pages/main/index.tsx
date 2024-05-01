@@ -2,6 +2,7 @@ import LunitLogo from '@assets/LunitLogo.png';
 import { Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useRecoilValue } from 'recoil';
 
 import { getMainPageOverview } from '@/api/main/mainAxios';
 import CopyButton from '@/assets/content-copy.svg?react';
@@ -11,6 +12,7 @@ import OutlinedFlag from '@/assets/outlined-flag.svg?react';
 import SdkKey from '@/assets/sdk-key.svg?react';
 import SearchIcon from '@/assets/search.svg?react';
 import CreateModal from '@/components/createModal';
+import { AuthAtom } from '@/global/AuthAtom';
 import * as S from '@/pages/main/indexStyle';
 import FlagTable from '@/pages/main/table';
 
@@ -27,16 +29,21 @@ const index = () => {
   const [isModalOpened, setIsModalOpened] = useState(false);
   const [flagKeyword, setFlagKeyword] = useState<string>('');
 
+  const auth = useRecoilValue(AuthAtom);
+  useEffect(() => {
+    console.log(auth);
+  });
+
   /**
    * 화면 마운트 시 필요한 정보 가져오기
    */
   useEffect(() => {
-    //TODO : memberId를 어떻게 가져올지 고민해보기
-    const memberId = 1;
+    const memberId = auth.memberId;
     getMainPageOverview(
       memberId,
       (data: OverviewInfo) => {
-        setSdkKey(data.sdkKey);
+        console.log(data);
+        setSdkKey(data.sdkKey ? data.sdkKey : '');
         setTotalFlags(data.totalFlags);
         setActiveFlags(data.activeFlags);
       },

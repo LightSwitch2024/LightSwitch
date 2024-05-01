@@ -33,7 +33,7 @@ interface FlagItem {
   defaultDescription: string;
   variations: Array<Variation>;
 
-  userId: number;
+  memberId: number;
 }
 
 export async function createFlag<T>(

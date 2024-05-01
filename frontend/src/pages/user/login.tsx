@@ -4,8 +4,15 @@ import { useSetRecoilState } from 'recoil';
 
 import { logIn } from '@/api/userDetail/userAxios';
 import LightswitchLogo from '@/assets/lightswitchLogo.svg?react';
-import { AuthAtom } from '@/AuthAtom';
+import { AuthAtom } from '@/global/AuthAtom';
 import * as L from '@/pages/user/loginStyle';
+
+interface MemberInfo {
+  memberId: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+}
 
 const LogIn = () => {
   const [email, setEmail] = useState<string>('');
@@ -27,18 +34,21 @@ const LogIn = () => {
   };
 
   const onClickLogIn = (): void => {
-    logIn(
+    logIn<MemberInfo>(
       {
         email: email,
         password: password,
       },
-      () => {
+      (data) => {
+        console.log(data);
         setAuthState({
           isAuthenticated: true,
-          email: email,
-          password: password,
+          memberId: data.memberId,
+          email: data.email,
+          firstName: data.firstName,
+          lastName: data.lastName,
         });
-        navigate('/mypage');
+        navigate('/');
       },
       (err) => {
         console.log(err);

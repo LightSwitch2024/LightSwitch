@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-import { AuthAtom } from '@/AuthAtom';
+import { AuthAtom } from '@/global/AuthAtom';
 import * as L from '@/pages/user/logoutStyle';
 
 const LogOut = () => {
