@@ -8,12 +8,9 @@ import com.lightswitch.core.domain.flag.dto.req.TagRequestDto
 import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.flag.repository.TagRepository
 import com.lightswitch.core.domain.flag.repository.VariationRepository
-import com.lightswitch.core.domain.member.entity.Member
-import com.lightswitch.core.domain.member.repository.MemberRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -34,28 +31,6 @@ class FlagServiceTest {
 
     @Autowired
     private lateinit var variationRepository: VariationRepository
-
-    @Autowired
-    private lateinit var memberRepository: MemberRepository
-
-    var memberId: Long = 0L
-
-    @BeforeEach
-    fun setUp() {
-        val savedMember = memberRepository.findByEmail("test@gmail.com") ?: let {
-            memberRepository.save(
-                Member(
-                    lastName = "test",
-                    firstName = "test",
-                    telNumber = "01012345678",
-                    email = "test@gmail.com",
-                    password = "test",
-                )
-            )
-        }
-
-        memberId = savedMember.memberId!!
-    }
 
     @Test
     fun `flag 생성 test 1 _ 일반값 Boolean`() {
@@ -85,7 +60,7 @@ class FlagServiceTest {
                     description = "test",
                 )
             ),
-            memberId = memberId,
+            userId = 1L,
             keywords = listOf(
                 KeywordDto(
                     keyword = "test",
@@ -149,7 +124,7 @@ class FlagServiceTest {
                     description = "test",
                 )
             ),
-            memberId = memberId,
+            userId = 1L,
 
             keywords = listOf(
                 KeywordDto(
@@ -212,7 +187,7 @@ class FlagServiceTest {
                     description = "test",
                 )
             ),
-            memberId = memberId,
+            userId = 1L,
 
             keywords = listOf(
                 KeywordDto(
@@ -275,7 +250,7 @@ class FlagServiceTest {
                     description = "test",
                 )
             ),
-            memberId = memberId,
+            userId = 1L,
 
             keywords = listOf(
                 KeywordDto(
@@ -332,7 +307,7 @@ class FlagServiceTest {
                     description = "test",
                 )
             ),
-            memberId = memberId,
+            userId = 1L,
 
             keywords = listOf(
                 KeywordDto(
@@ -398,7 +373,7 @@ class FlagServiceTest {
                     description = "false test",
                 )
             ),
-            memberId = memberId,
+            userId = 1L,
 
             keywords = listOf(
                 KeywordDto(
@@ -439,7 +414,7 @@ class FlagServiceTest {
                     description = "3 test",
                 )
             ),
-            memberId = memberId,
+            userId = 2L,
 
             keywords = listOf(
                 KeywordDto(
@@ -480,7 +455,7 @@ class FlagServiceTest {
                     description = "C test",
                 )
             ),
-            memberId = memberId,
+            userId = 3L,
 
             keywords = listOf(
                 KeywordDto(
@@ -564,7 +539,7 @@ class FlagServiceTest {
                     description = "false test",
                 ),
             ),
-            memberId = memberId,
+            userId = 1L,
 
             keywords = listOf(
                 KeywordDto(
@@ -614,7 +589,7 @@ class FlagServiceTest {
                     description = "false test",
                 )
             ),
-            memberId = memberId,
+            userId = 1L,
 
             keywords = listOf(
                 KeywordDto(
@@ -673,7 +648,7 @@ class FlagServiceTest {
                     description = "test",
                 )
             ),
-            memberId = memberId,
+            userId = 1L,
 
             keywords = listOf(
                 KeywordDto(
@@ -787,7 +762,7 @@ class FlagServiceTest {
                     description = "false test",
                 )
             ),
-            memberId = memberId,
+            userId = 1L,
 
             keywords = listOf(
                 KeywordDto(
@@ -824,7 +799,7 @@ class FlagServiceTest {
                     description = "false test",
                 )
             ),
-            memberId = memberId,
+            userId = 1L,
 
             keywords = listOf(
                 KeywordDto(
@@ -881,7 +856,7 @@ class FlagServiceTest {
                     description = "test",
                 )
             ),
-            memberId = memberId,
+            userId = 1L,
             keywords = listOf(
                 KeywordDto(
                     keyword = "test",
