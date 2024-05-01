@@ -656,12 +656,12 @@ class FlagServiceTest {
                     description = "test",
                 )
             ),
-            defaultValueForKeyword = "TRUE",
+            defaultValueForKeyword = "1",
             defaultValuePortionForKeyword = 100,
             defaultValueDescriptionForKeyword = "test",
             variationsForKeyword = listOf(
                 VariationDto(
-                    value = "FALSE",
+                    value = "2",
                     portion = 0,
                     description = "test",
                 )
@@ -694,8 +694,26 @@ class FlagServiceTest {
                         description = "updatedC",
                     )
                 ),
+                keywords = listOf(
+                    KeywordDto(
+                        keyword = "updated",
+                        description = "updated",
+                    )
+                ),
+                defaultValueForKeyword = "A",
+                defaultValuePortionForKeyword = 70,
+                defaultValueDescriptionForKeyword = "updated",
+                variationsForKeyword = listOf(
+                    VariationDto(
+                        value = "B",
+                        portion = 30,
+                        description = "updated",
+                    )
+                )
             )
         )
+        println(flagResponseDto.toString())
+        println(updatedFlagResponseDto.toString())
 
         // then
         assertThat(updatedFlagResponseDto.flagId).isEqualTo(flagResponseDto.flagId)
@@ -714,6 +732,15 @@ class FlagServiceTest {
         assertThat(updatedFlagResponseDto.variations.last().value).isEqualTo("C")
         assertThat(updatedFlagResponseDto.variations.last().portion).isEqualTo(10)
         assertThat(updatedFlagResponseDto.variations.last().description).isEqualTo("updatedC")
+        assertThat(updatedFlagResponseDto.keywords).hasSize(1)
+        assertThat(updatedFlagResponseDto.keywords.first().keyword).isEqualTo("updated")
+        assertThat(updatedFlagResponseDto.keywords.first().description).isEqualTo("updated")
+        assertThat(updatedFlagResponseDto.defaultValueForKeyword).isEqualTo("A")
+        assertThat(updatedFlagResponseDto.defaultValuePortionForKeyword).isEqualTo(70)
+        assertThat(updatedFlagResponseDto.defaultValueDescriptionForKeyword).isEqualTo("updated")
+        assertThat(updatedFlagResponseDto.variationsForKeyword).hasSize(1)
+        assertThat(updatedFlagResponseDto.variationsForKeyword.first().value).isEqualTo("B")
+        assertThat(updatedFlagResponseDto.variationsForKeyword.first().portion).isEqualTo(30)
     }
 
     @Test
