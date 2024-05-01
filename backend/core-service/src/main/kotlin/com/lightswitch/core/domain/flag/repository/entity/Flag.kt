@@ -29,5 +29,6 @@ class Flag(
         inverseJoinColumns = [JoinColumn(name = "tag_id")]
     )
     val tags: MutableList<Tag> = mutableListOf(),
+
     var active: Boolean = false,
 ) : BaseEntity()

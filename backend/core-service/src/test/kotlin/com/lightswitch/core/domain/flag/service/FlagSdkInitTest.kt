@@ -1,6 +1,9 @@
 package com.lightswitch.core.domain.flag.service
 
+import com.lightswitch.core.common.dto.ResponseCode
+import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.domain.flag.common.enum.FlagType
+import com.lightswitch.core.domain.flag.dto.KeywordDto
 import com.lightswitch.core.domain.flag.dto.VariationDto
 import com.lightswitch.core.domain.flag.dto.req.FlagInitRequestDto
 import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
@@ -33,16 +36,25 @@ class FlagSdkInitTest(
 ) {
 
     fun signUpAndSdkKeyForTest(): String {
-        val member = Member(
-            firstName = "동훈",
-            lastName = "김",
-            telNumber = "01012345678",
-            email = "huni19541@gmail.com",
-            password = "1234"
-        )
-        memberRepository.save(member)
 
-        val sdkKeyReqDto = SdkKeyReqDto(member.email)
+        memberRepository.findByEmail("test@gmail.com")?.let {
+            memberRepository.delete(it)
+        }
+        val member = memberRepository.save(
+            Member(
+                lastName = "test",
+                firstName = "test",
+                telNumber = "01012345678",
+                email = "test@gmail.com",
+                password = "test",
+            )
+        )
+
+
+        val sdkKeyReqDto = SdkKeyReqDto(
+            email = member.email
+        )
+
         return sdkKeyService.createSdkKey(sdkKeyReqDto).key
     }
 
@@ -78,7 +90,13 @@ class FlagSdkInitTest(
 
                 )
             ),
-            userId = memberId!!
+            userId = memberId!!,
+
+            keywords = listOf(),
+            defaultValueForKeyword = "",
+            defaultValuePortionForKeyword = 0,
+            defaultValueDescriptionForKeyword = "",
+            variationsForKeyword = listOf()
         )
         flagService.createFlag(flagRequestDto)
 
@@ -102,7 +120,24 @@ class FlagSdkInitTest(
                     description = "3 test"
                 )
             ),
-            userId = memberId
+            userId = memberId,
+
+            keywords = listOf(
+                KeywordDto(
+                    keyword = "test",
+                    description = "test",
+                )
+            ),
+            defaultValueForKeyword = "1",
+            defaultValuePortionForKeyword = 100,
+            defaultValueDescriptionForKeyword = "test",
+            variationsForKeyword = listOf(
+                VariationDto(
+                    value = "2",
+                    portion = 0,
+                    description = "test",
+                )
+            )
         )
         flagService.createFlag(flagRequestDto2)
 
@@ -110,7 +145,7 @@ class FlagSdkInitTest(
             title = "test3",
             tags = listOf(tag1),
             description = "test3",
-            type = FlagType.INTEGER,
+            type = FlagType.STRING,
             defaultValue = "A",
             defaultValuePortion = 10,
             defaultValueDescription = "A test",
@@ -131,7 +166,24 @@ class FlagSdkInitTest(
                     description = "D test"
                 )
             ),
-            userId = memberId
+            userId = memberId,
+
+            keywords = listOf(
+                KeywordDto(
+                    keyword = "test",
+                    description = "test",
+                )
+            ),
+            defaultValueForKeyword = "A",
+            defaultValuePortionForKeyword = 100,
+            defaultValueDescriptionForKeyword = "test",
+            variationsForKeyword = listOf(
+                VariationDto(
+                    value = "B",
+                    portion = 0,
+                    description = "test",
+                )
+            )
         )
         flagService.createFlag(flagRequestDto3)
 
@@ -142,7 +194,6 @@ class FlagSdkInitTest(
         val flagList = flagService.getAllFlagForInit(flagInitRequestDto)
 
         // then
-        println(flagList.toString())
         Assertions.assertThat(flagList).hasSize(3)
     }
 }

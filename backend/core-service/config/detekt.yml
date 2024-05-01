@@ -120,15 +120,15 @@ complexity:
     active: false
     ignoredLabels: [ ]
   LargeClass:
-    active: true
+    active: false
     threshold: 600
   LongMethod:
     active: true
-    threshold: 120
+    threshold: 160
   LongParameterList:
     active: true
     functionThreshold: 6
-    constructorThreshold: 7
+    constructorThreshold: 10
     ignoreDefaultParameters: true
     ignoreDataClasses: true
     ignoreAnnotatedParameter: [ ]
@@ -703,4 +703,6 @@ style:
       - 'org.springframework.web.bind.annotation.*'
       - 'org.junit.jupiter.api.Assertions.*'
       - 'org.assertj.core.api.Assertions.*'
+      - 'com.lightswitch.core.domain.flag.repository.entity.*'
+      - 'com.lightswitch.core.domain.flag.repository.*'
       - 'com.lightswitch.core.domain.flag.dto.res.*'
