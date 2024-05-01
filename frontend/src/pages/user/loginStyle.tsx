@@ -81,10 +81,12 @@ export const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
+  margin: 5rem 0 5rem 0;
   gap: 1rem;
 `;
 
 export const LogoWrapper = styled.div`
+  width: 100%;
   display: flex;
   justify-content: center;
 `;
