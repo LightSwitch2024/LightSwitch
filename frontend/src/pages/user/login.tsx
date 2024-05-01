@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 
 import { logIn } from '@/api/userDetail/userAxios';
+import LightswitchLogo from '@/assets/lightswitchLogo.svg?react';
 import { AuthAtom } from '@/AuthAtom';
 import * as L from '@/pages/user/loginStyle';
 
@@ -48,6 +49,7 @@ const LogIn = () => {
   return (
     <L.LogInLayout>
       <L.LogInContainer>
+        <LightswitchLogo />
         <L.LogInInputBox>
           <L.LogInInput
             type="text"

@@ -83,3 +83,13 @@ export const ButtonWrapper = styled.div`
   justify-content: center;
   gap: 1rem;
 `;
+
+export const LogoWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+export const Logo = styled.img`
+  display: flex;
+  height: auto;
+`;
