@@ -1,6 +1,11 @@
 package com.lightswitch.core.domain.member.service
 
+import com.lightswitch.core.common.dto.ResponseCode
+import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.common.service.PasswordService
+import com.lightswitch.core.domain.member.dto.req.LogInReqDto
+import com.lightswitch.core.domain.member.dto.req.MemberUpdateReqDto
+import com.lightswitch.core.domain.member.dto.req.PasswordUpdateReqDto
 import com.lightswitch.core.domain.member.dto.req.SignupReqDto
 import com.lightswitch.core.domain.member.dto.res.MemberResDto
 import com.lightswitch.core.domain.member.entity.Member
@@ -78,42 +83,94 @@ class MemberService(
         return matcher.matches()
     }
 
-    fun logIn(email: String, password: String): Boolean {
+    fun logIn(logInReqDto: LogInReqDto): MemberResDto {
 
-        val savedMember: Member? = memberRepository.findByEmail(email)
-        var savedPassword: String = ""
+        val savedMember: Member? = memberRepository.findByEmail(logInReqDto.email)
 
-        savedMember?.let {
-            savedPassword = savedMember.password
-        }
+        val isCorrectPW = (logInReqDto.password == savedMember?.password)
 
-        val encodedPassword = passwordService.encode(password)
-
-        if (savedPassword == encodedPassword) {
-            return true
+        return if (isCorrectPW && savedMember != null) {
+            MemberResDto(
+                email = savedMember.email,
+                firstName = savedMember.firstName,
+                lastName = savedMember.lastName,
+                telNumber = savedMember.telNumber
+            )
         } else {
             throw MemberException("비밀번호가 틀렸습니다.")
         }
     }
 
+    //     유저 정보 읽기
+    fun getUser(email: String): MemberResDto {
+        val savedMember = memberRepository.findByEmail(email)
+        println("service 진행됌")
+        println(savedMember?.email)
+
+        return if (savedMember != null) {
+            MemberResDto(
+                email = savedMember.email,
+                firstName = savedMember.firstName,
+                lastName = savedMember.lastName,
+                telNumber = savedMember.telNumber,
+            )
+        } else {
+            throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
+        }
+    }
+
+//     유저 정보 삭제
+//    @Transactional
+//    fun deleteUser(email: String): Long {
+//        val savedUser = memberRepository.findByEmail(email)
+//        //savedUser 삭제
+//        savedUser?.delete()
+//
+//        return savedUser.memberId ?: throw MemberException("유저가 없습니다.")
+//    }
+
     // 이름, 전화번호 변경
-    fun modifyUserdata(email: String, newData: MemberResDto): Member? {
+    fun updateUser(email: String, newData: MemberUpdateReqDto): MemberResDto? {
         val oldData: Member? = memberRepository.findByEmail(email)
         oldData?.let {
             oldData.firstName = newData.firstName
             oldData.lastName = newData.lastName
             oldData.telNumber = newData.telNumber
+            oldData.email = newData.email
+            memberRepository.save(it)
         }
-        return oldData?.let { memberRepository.save(it) }
+
+        val updatedData: MemberResDto? = oldData?.let {
+            MemberResDto(
+                firstName = it.firstName,
+                lastName = it.lastName,
+                telNumber = it.telNumber,
+                email = it.email
+            )
+        }
+        return updatedData
     }
 
     // 비밀번호 변경
-    fun modifyPassword(email: String, newPassword: String): Member? {
-        val user: Member? = memberRepository.findByEmail(email)
-        user?.let {
-            user.password = newPassword
+    fun updatePassword(email: String, newData: PasswordUpdateReqDto): MemberResDto? {
+        val savedMember: Member? = memberRepository.findByEmail(email)
+
+        if (savedMember != null && passwordService.matches(newData.oldPassword, savedMember.password)) {
+            savedMember.password = newData.newPassword
+            memberRepository.save(savedMember)
+        } else {
+            throw MemberException("입력하신 비밀번호가 틀렸습니다.")
         }
-        return user?.let { memberRepository.save(it) }
+
+        val updatedData: MemberResDto = savedMember.let {
+            MemberResDto(
+                email = it.email,
+                firstName = it.firstName,
+                lastName = it.lastName,
+                telNumber = it.telNumber,
+            )
+        }
+        return updatedData
     }
 
     /*
