@@ -1,5 +1,5 @@
 import axios from '@api/axios';
-import { Axios, AxiosError, AxiosResponse } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 
 interface BaseResponse<T> {
   code: number;
