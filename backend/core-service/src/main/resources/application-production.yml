@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://52.79.143.176:5432/lightswitch
+    url: jdbc:postgresql://lightswitch_db:5432/lightswitch
     username: lightswitch2024
     password: switchlight2024!
     driver-class-name: org.postgresql.Driver
@@ -11,16 +11,10 @@ spring:
       ddl-auto: update
 
     show-sql: true
+  data:
+    redis:
+      host: redis
 
-springdoc:
-  packages-to-scan: com.colabear754.springdoc_example.controllers
-  default-consumes-media-type: application/json;charset=UTF-8
-  default-produces-media-type: application/json;charset=UTF-8
-  swagger-ui:
-    path: /
-    disable-swagger-default-url: true
-    display-request-duration: true
-    operations-sorter: alpha
 
 #logging
 logging:

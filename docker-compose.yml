@@ -9,7 +9,7 @@ services:
     environment:
       - TZ=Asia/Seoul
     networks:
-      - backend-network
+      - my-network
 
   prometheus:
     image: prom/prometheus
@@ -17,10 +17,10 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - /home/ubuntu/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
-      - backend-network
+      - my-network
 
 networks:
-  backend-network:
-    driver: bridge
+  my-network:
+    external: true

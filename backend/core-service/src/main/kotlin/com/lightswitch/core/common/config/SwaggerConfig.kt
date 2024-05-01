@@ -7,17 +7,17 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.filter.ForwardedHeaderFilter
 
-
 @Configuration
 class SwaggerConfig {
+
     @Bean
     fun openAPI(): OpenAPI = OpenAPI()
         .components(Components())
         .info(apiInfo())
 
     private fun apiInfo() = Info()
-        .title("Springdoc 테스트")
-        .description("Springdoc을 사용한 Swagger UI 테스트")
+        .title("Light Switch API Document")
+        .description("Light Switch Web Application API 문서입니다.")
         .version("1.0.0")
 
     @Bean

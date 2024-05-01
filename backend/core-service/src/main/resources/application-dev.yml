@@ -10,3 +10,6 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  data:
+    redis:
+      host: 15.165.127.196

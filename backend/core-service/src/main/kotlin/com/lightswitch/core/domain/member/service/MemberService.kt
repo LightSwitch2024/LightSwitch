@@ -174,4 +174,12 @@ class MemberService(
         return updatedData
     }
 
+    /*
+    * 테스트 코드 setUp()에서 사용하기 위해 추가
+    * SdkKey는 Member와 CascadeType.ALL로 연결되어 있기 때문에 Member 삭제 시 함께 삭제
+    * */
+    fun deleteAll() {
+        memberRepository.deleteAll()
+    }
+
 }

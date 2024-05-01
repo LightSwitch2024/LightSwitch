@@ -27,7 +27,7 @@ p {
   font-size: 0.9rem;
 }
 
-button {
+/* button {
   outline: none;
   border: none;
   border-radius: 8px;
@@ -35,7 +35,7 @@ button {
 
   background: #845ec2;
   color: white;
-}
+} */
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
@@ -72,4 +72,32 @@ button {
 
 button {
   font-size: calc(10px + 2vmin);
+}
+
+.scroll-locked {
+  overflow: hidden;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox  */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.modal-scrollable {
+  height: 80%;
+  overflow-y: scroll;
+
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.modal-scrollable::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera*/
 }

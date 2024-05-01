@@ -30,3 +30,15 @@ export async function deleteFlag<T>(
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
     .catch((err: AxiosError) => onFail(err));
 }
+
+export async function updateFlag<T, G>(
+  flagId: number,
+  flagData: G,
+  onSuccess: (data: T) => void,
+  onFail: (err: AxiosError) => void,
+): Promise<void> {
+  axios
+    .put<BaseResponse<T>>(`/api/v1/flag/${flagId}`, flagData)
+    .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
+    .catch((err: AxiosError) => onFail(err));
+}

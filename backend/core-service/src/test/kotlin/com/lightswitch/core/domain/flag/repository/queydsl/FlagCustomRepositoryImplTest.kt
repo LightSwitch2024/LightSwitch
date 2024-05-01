@@ -13,7 +13,9 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.transaction.annotation.Transactional
 
+@Transactional
 @SpringBootTest
 class FlagCustomRepositoryImplTest(
     @Autowired
@@ -22,10 +24,6 @@ class FlagCustomRepositoryImplTest(
     private val flagRepository: FlagRepository,
     @Autowired
     private val tagRepository: TagRepository,
-    @Autowired
-    private val variationRepository: VariationRepository,
-    @Autowired
-    private val flagService: FlagService
 ) {
 
     private var flag: Flag? = null
@@ -39,9 +37,6 @@ class FlagCustomRepositoryImplTest(
 
     @BeforeEach
     fun setUp() {
-        variationRepository.deleteAll()
-        flagService.deleteAllFlag()
-        tagRepository.deleteAll()
 
         flag = Flag(
             title = "test",

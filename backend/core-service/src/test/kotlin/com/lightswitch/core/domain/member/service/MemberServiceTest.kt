@@ -14,7 +14,9 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.transaction.annotation.Transactional
 
+@Transactional
 @SpringBootTest
 class MemberServiceTest(
     @Autowired
@@ -28,11 +30,11 @@ class MemberServiceTest(
     @Autowired
     private val redisService: RedisService,
     @Value("\${spring.data.redis.code.signup}")
-    private val signupCode: String
+    private val signupCode: String,
 ) {
     @BeforeEach
     fun setUp() {
-        memberRepository.deleteAll()
+        memberService.deleteAll()
     }
 
     @Test

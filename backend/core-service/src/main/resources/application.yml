@@ -1,6 +1,7 @@
 server:
   port: 8000
-
+  servlet:
+    context-path: /api
 spring:
   application:
     name: core-service
@@ -20,7 +21,6 @@ spring:
             enable: true
   data:
     redis:
-      host: k10s202.p.ssafy.io
       port: 6379
       password: switchlight2024!
       code:
