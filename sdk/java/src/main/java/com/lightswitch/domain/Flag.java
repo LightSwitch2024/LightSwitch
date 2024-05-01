@@ -28,22 +28,23 @@ public class Flag {
 
 	public Object getValue(Context context) {
 		double percentage = HashUtil.getHashedPercentage(String.valueOf(context.getUserId()), 1);
-
+		String value = defaultValue;
 		for (Variation variation : variations) {
 			int portion = variation.getPortion();
 
 			percentage -= portion;
 			if(percentage < 0){
-				if (type.equals(FlagType.BOOLEAN)) {
-					return Boolean.valueOf(variation.getValue());
-				} else if (type.equals(FlagType.STRING)) {
-					return variation.getValue();
-				} else if (type.equals(FlagType.NUMBER)) {
-					return Integer.valueOf(variation.getValue());
-				}
+				value = variation.getValue();
+				break;
 			}
 		}
-		return null;
+
+		if (type.equals(FlagType.BOOLEAN)) {
+			return Boolean.valueOf(value);
+		} else if (type.equals(FlagType.NUMBER)) {
+			return Integer.valueOf(value);
+		}
+		return value;
 	}
 
 	protected Flag(Builder builder) {

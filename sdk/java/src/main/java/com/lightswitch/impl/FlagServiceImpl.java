@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.util.Objects;
 
 import com.google.gson.Gson;
 import com.lightswitch.domain.Context;
@@ -37,7 +38,7 @@ public class FlagServiceImpl implements FlagService {
 
 	@Override
 	public void init(String sdkKey) {
-		if (!setupConnection("init", sdkKey)) {
+		if (!setupConnection("sdk/init", sdkKey)) {
 			throw new FlagServerConnectException("INIT() POST request not worked");
 		}
 		handleResponse();
@@ -59,7 +60,7 @@ public class FlagServiceImpl implements FlagService {
 			new InputStreamReader(connection.getInputStream(), UTF_8))) {
 			StringBuilder response = new StringBuilder();
 			String line;
-			while ((line = reader.readLine()) != null) {
+			while (Objects.nonNull(line = reader.readLine())) {
 				response.append(line.trim());
 			}
 
@@ -94,7 +95,7 @@ public class FlagServiceImpl implements FlagService {
 			String inputLine;
 			StringBuffer dataBuffer = new StringBuffer();
 
-			while (!Thread.interrupted() && (inputLine = in.readLine()) != null) {
+			while (!Thread.interrupted() && Objects.nonNull((inputLine = in.readLine()))) {
 				if (inputLine.startsWith("data:")) {
 					dataBuffer.append(inputLine.substring(5));
 				} else if (inputLine.isEmpty()) {
