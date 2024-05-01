@@ -68,7 +68,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   const [type, setType] = useState<string>(props.flagDetail?.type || 'BOOLEAN');
   const [keywords, setKeywords] = useState<Array<string>>([]);
   const [defaultValueForKeyword, setDefaultValueForKeyword] = useState<string>('');
-  const [defaultPortionForKeyword, setDefaultPortionForKeyword] = useState<number | ''>(
+  const [defaultPortionForKeyword, setDefaultPortionForKeyword] = useState<number | 0>(
     100,
   );
   const [defaultDescriptionForKeyword, setDefaultDescriptionForKeyword] =
