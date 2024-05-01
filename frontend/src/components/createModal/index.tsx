@@ -408,7 +408,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   };
 
   const onClickSave = (): void => {
-    if (!props.flagDetail || addValidation()) {
+    if (!props.flagDetail || !addValidation()) {
       alert('필수 입력값을 입력해주세요');
       return;
     }
