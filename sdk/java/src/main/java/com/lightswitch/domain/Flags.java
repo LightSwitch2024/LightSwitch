@@ -43,6 +43,11 @@ public class Flags {
 		flags.clear();
 	}
 
+	private static void switchFlag(SseResponse sseResponse) {
+		flags.get(sseResponse.getData().getTitle())
+			.switchFlag(sseResponse.getData().isActive());
+	}
+
 	public static void event(SseResponse sseResponse) {
 		SseType type = sseResponse.getType();
 		FlagResponse data = sseResponse.getData();
@@ -50,6 +55,8 @@ public class Flags {
 			addFlag(data.toFlag());
 		} else if (type.equals(SseType.UPDATE)) {
 			addFlag(data.toFlag());
+		} else if (type.equals(SseType.SWITCH)) {
+			switchFlag(sseResponse);
 		} else if (type.equals(SseType.DELETE)) {
 			deleteFlag(data.getTitle());
 		}

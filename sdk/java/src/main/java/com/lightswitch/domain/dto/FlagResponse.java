@@ -33,6 +33,10 @@ public class FlagResponse {
 		return title;
 	}
 
+	public boolean isActive() {
+		return active;
+	}
+
 	public Flag toFlag() {
 		List<Variation> variationsForKeyword = new ArrayList<>();
 		this.variationsForKeyword.forEach(variationResponse -> variationsForKeyword.add(variationResponse.toVariation()));

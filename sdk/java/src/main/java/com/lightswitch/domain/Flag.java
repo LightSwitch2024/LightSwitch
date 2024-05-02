@@ -38,27 +38,43 @@ public class Flag {
 		return type;
 	}
 
+	public boolean isActive() {
+		return active;
+	}
+
+	public void switchFlag(boolean active) {
+		this.active = active;
+	}
+
 	public Object getValue(Context context) {
 		List<String> properties = context.getProperty();
 		boolean containsKeyword = keywords.stream().
 			anyMatch(flagKeywords -> properties.contains(flagKeywords.getKeyword()));
 
-		if(containsKeyword){
+		if (containsKeyword) {
 			return getValue(context, variationsForKeyword, defaultValueForKeyword);
 		}
 		return getValue(context, variations, defaultValue);
 	}
 
+	public String getDefaultValue() {
+		return defaultValue;
+	}
+
 	private Serializable getValue(Context context, List<Variation> variations, String defaultValue) {
 		double percentage = HashUtil.getHashedPercentage(String.valueOf(context.getUserId()), 1);
 		String value = defaultValue;
-		for (Variation variation : variations) {
-			int portion = variation.getPortion();
 
-			percentage -= portion;
-			if(percentage < 0){
-				value = variation.getValue();
-				break;
+		if(active){
+			for (Variation variation : variations) {
+				int portion = variation.getPortion();
+				percentage -= portion;
+				if (percentage <= 0) {
+					value = variation.getValue();
+					System.out.println("------");
+
+					break;
+				}
 			}
 		}
 
