@@ -1,6 +1,7 @@
 package com.lightswitch.core.domain.sse.service
 
 import com.lightswitch.core.domain.sse.dto.SseDto
+import com.lightswitch.core.domain.sse.dto.req.SseRequestDto
 import com.lightswitch.core.domain.sse.dto.res.SseUserKeyResponseDto
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
@@ -53,8 +54,8 @@ class SseService {
         return SseEmitter(Long.MAX_VALUE)
     }
 
-    fun createUserKey(sdkKey: String): SseUserKeyResponseDto {
-        return SseUserKeyResponseDto(userKey = hash(sdkKey))
+    fun createUserKey(sseRequestDto: SseRequestDto): SseUserKeyResponseDto {
+        return SseUserKeyResponseDto(userKey = hash(sseRequestDto.sdkKey))
     }
 
     fun hash(value: String): String {
