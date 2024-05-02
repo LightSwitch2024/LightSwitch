@@ -29,6 +29,11 @@ class FlagController(
         return success(flagService.createFlag(flagRequestDto))
     }
 
+    @GetMapping("/confirm/{title}")
+    fun confirmDuplicateTitle(@PathVariable title: String): BaseResponse<Boolean> {
+        return success(flagService.confirmDuplicateTitle(title))
+    }
+
     @GetMapping("")
     fun getAllFlagsSummary(): BaseResponse<List<FlagSummaryDto>> {
         return success(flagService.getAllFlag())

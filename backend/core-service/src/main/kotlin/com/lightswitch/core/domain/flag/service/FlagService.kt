@@ -176,6 +176,10 @@ class FlagService(
         return this.getFlag(savedFlag.flagId!!)
     }
 
+    fun confirmDuplicateTitle(title: String): Boolean {
+        return flagRepository.existsByTitleAndDeletedAtIsNull(title)
+    }
+
     fun getAllFlag(): List<FlagSummaryDto> {
         val flagList = flagRepository.findByDeletedAtIsNull()
         return flagList.map { flag ->
