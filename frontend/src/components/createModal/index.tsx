@@ -74,7 +74,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   const [type, setType] = useState<string>(props.flagDetail?.type || 'BOOLEAN');
   const [keywords, setKeywords] = useState<Array<Keyword>>([]);
   const [defaultValue, setDefaultValue] = useState<string>(
-    props.flagDetail?.defaultValue || '',
+    props.flagDetail?.defaultValue || 'TRUE',
   );
   const [defaultPortion, setDefaultPortion] = useState<number | ''>(
     props.flagDetail?.defaultPortion || 100,
@@ -84,7 +84,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   );
   const [variation, setVariation] = useState<string>('');
   const [variations, setVariations] = useState<Array<Variation>>(
-    props.flagDetail?.variations || [],
+    props.flagDetail?.variations || [{ value: 'FALSE', portion: '', description: '' }],
   );
 
   const [tagSearchKeyword, setTagSearchKeyword] = useState<string>('');
@@ -92,7 +92,10 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
 
   const [isTypeEdited, setIsTypeEdited] = useState<boolean>(false);
   const [isDuplicatedTitle, setIsDuplicatedTitle] = useState<boolean>(false);
-
+  const [isInvalidBooleanVariation, setIsInvalidBooleanVariation] =
+    useState<boolean>(false);
+  const [isInvalidIntegerVariation, setIsInvalidIntegerVariation] =
+    useState<boolean>(false);
   const [flagMode, setFlagMode] = useState<string>(props.mode);
 
   const typeConfig = ['BOOLEAN', 'INTEGER', 'STRING', 'JSON'];
@@ -324,7 +327,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   };
 
   /**
-   * 태그 검색어로 태그 목록 업데이트
+   * 타입 변경 시 default value & variations 초기화 함수
    * @param typeItem
    * @returns
    */
@@ -332,13 +335,50 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
     if (isDetailMode()) {
       return;
     }
+
+    setIsInvalidBooleanVariation(false);
     setType(typeItem);
     if (typeItem === 'BOOLEAN') {
       setDefaultValue('TRUE');
-      setVariation('FALSE');
+      setVariations([
+        {
+          value: 'FALSE',
+          portion: 0,
+          description: '',
+        },
+      ]);
+    } else {
+      setDefaultValue('');
+      setVariations([]);
     }
 
     setIsTypeEdited(false);
+  };
+
+  const checkFormatWithType = (event: React.FocusEvent<HTMLInputElement, Element>) => {
+    // invalid 초기화
+    setIsInvalidBooleanVariation(false);
+    setIsInvalidIntegerVariation(false);
+
+    if (type === 'BOOLEAN') {
+      event.target.value = event.target.value.toUpperCase();
+      if (!(event.target.value === 'TRUE' || event.target.value === 'FALSE')) {
+        setIsInvalidBooleanVariation(true);
+      } else if (defaultValue === 'TRUE' && variations[0].value === 'TRUE') {
+        setIsInvalidBooleanVariation(true);
+      } else if (defaultValue === 'FALSE' && variations[0].value === 'FALSE') {
+        setIsInvalidBooleanVariation(true);
+      } else {
+        setIsInvalidBooleanVariation(false);
+      }
+    } else if (type === 'INTEGER') {
+      // 정수만 입력 가능하도록 설정
+      if (isNaN(Number(event.target.value))) {
+        setIsInvalidIntegerVariation(true);
+      } else {
+        setIsInvalidIntegerVariation(false);
+      }
+    }
   };
 
   /**
@@ -413,6 +453,13 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   }, [tags]);
 
   const onClickAddVariation = (): void => {
+    if (type === 'BOOLEAN' && variations.length >= 1) {
+      setIsInvalidBooleanVariation(true);
+      return;
+    } else {
+      setIsInvalidBooleanVariation(false);
+    }
+
     setVariations([
       ...variations,
       {
@@ -445,7 +492,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
         defaultPortion: defaultPortion ? defaultPortion : 0,
         defaultDescription: defaultDescription,
         variations: variations,
-        //TODO : userId 전역설정 기능 추가 후 수정
+
         memberId: auth.memberId,
       },
       (data: FlagDetailItem) => {
@@ -478,6 +525,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               handleVariationChange(e, idx)
             }
+            onBlur={(e) => checkFormatWithType(e)}
             $flag={isDetailMode()}
           />
           <S.FlagVariationInput
@@ -666,6 +714,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
                 placeholder="값을 입력하세요"
                 value={defaultValue}
                 onChange={handleDefaultValueChange}
+                onBlur={checkFormatWithType}
                 $flag={isDetailMode()}
               />
               <S.FlagVariationInput
@@ -693,6 +742,9 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
               추가
             </S.ConfirmButton>
           </S.ButtonLayer>
+          {isInvalidBooleanVariation && (
+            <S.WarnText>BOOLEAN 타입은 TRUE 와 FALSE 값만 유효합니다.</S.WarnText>
+          )}
         </S.FlagVariationContentLayer>
         <S.ButtonLayer>
           {flagMode === 'create' ? (
