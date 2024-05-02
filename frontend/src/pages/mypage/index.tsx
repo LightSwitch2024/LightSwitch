@@ -1,10 +1,10 @@
+import { AuthAtom } from '@global/AuthAtom';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
 import { deleteUser, getUserDetail, updateUser } from '@/api/userDetail/userAxios';
 import DelIcon from '@/assets/delete_forever.svg?react';
-import { AuthAtom } from '@/global/AuthAtom';
 import * as M from '@/pages/mypage/indexStyle';
 
 interface UserData {
@@ -25,10 +25,10 @@ const UserDetail = () => {
   const [userDetail, setUserDetail] = useState<UserData>();
   const [isEditMode, setIsEditMode] = useState<boolean>(true);
 
-  const [editedUserEmail, setEditedUserEmail] = useState<string>('summa911@naver.com');
-  const [editedFirstName, setEditedFristName] = useState<string>('ssafy');
-  const [editedLastName, setEditedLastName] = useState<string>('kim');
-  const [editedTelNumber, setEditedTelNumber] = useState<string>('010-1234-5678');
+  const [editedUserEmail, setEditedUserEmail] = useState<string>('');
+  const [editedFirstName, setEditedFristName] = useState<string>('');
+  const [editedLastName, setEditedLastName] = useState<string>('');
+  const [editedTelNumber, setEditedTelNumber] = useState<string>('');
 
   const { email } = useParams<{ email: string }>();
 

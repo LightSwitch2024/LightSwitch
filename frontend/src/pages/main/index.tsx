@@ -1,5 +1,5 @@
 import LunitLogo from '@assets/LunitLogo.png';
-import { Grid } from '@mui/material';
+import { AuthAtom } from '@global/AuthAtom';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useRecoilValue } from 'recoil';
@@ -12,7 +12,6 @@ import OutlinedFlag from '@/assets/outlined-flag.svg?react';
 import SdkKey from '@/assets/sdk-key.svg?react';
 import SearchIcon from '@/assets/search.svg?react';
 import CreateModal from '@/components/createModal';
-import { AuthAtom } from '@/global/AuthAtom';
 import * as S from '@/pages/main/indexStyle';
 import FlagTable from '@/pages/main/table';
 
@@ -32,7 +31,7 @@ const index = () => {
   const auth = useRecoilValue(AuthAtom);
   useEffect(() => {
     console.log(auth);
-  });
+  }, []);
 
   /**
    * 화면 마운트 시 필요한 정보 가져오기
@@ -159,7 +158,7 @@ const index = () => {
                   <S.FlagCountTextSmall>활성</S.FlagCountTextSmall>
                 </S.FlagCountTextSmallContainer>
                 <S.FlagCountTextBigContainer>
-                  <S.FlagCountTextBig>{totalFlags}</S.FlagCountTextBig>
+                  <S.FlagCountTextBig>{activeFlags}</S.FlagCountTextBig>
                   {/* <S.FlagCountTextBig>7</S.FlagCountTextBig> */}
                 </S.FlagCountTextBigContainer>
                 <S.FlagCountTextSmallContainer>
