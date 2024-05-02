@@ -1,5 +1,6 @@
 package com.lightswitch.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.lightswitch.util.HashUtil;
@@ -51,10 +52,12 @@ public class Flag {
 	}
 
 	private String calValue(LSUser LSUser) {
-		for (Keyword keyword : keywords) {
-			if (keyword.getProperties().stream()
-				.allMatch(property -> LSUser.getProperty(property.getProperty()).equals(property.getData()))) {
-				return keyword.getValue();
+		if(!keywords.isEmpty() && LSUser.hasProperty()){
+			for (Keyword keyword : keywords) {
+				if (keyword.getProperties().stream()
+					.allMatch(property -> LSUser.getProperty(property.getProperty()).equals(property.getData()))) {
+					return keyword.getValue();
+				}
 			}
 		}
 		return calValue(LSUser.getUserId());
@@ -83,7 +86,7 @@ public class Flag {
 		return defaultValue;
 	}
 
-	public Flag(long flagId, String title, String description, FlagType type, List<Keyword> conditions,
+	public Flag(long flagId, String title, String description, FlagType type, List<Keyword> keywords,
 		String defaultValue, int defaultPortion, String defaultDescription, List<Variation> variations,
 		int maintainerId,
 		String createdAt, String updatedAt, String deletedAt, boolean active) {
@@ -91,11 +94,17 @@ public class Flag {
 		this.title = title;
 		this.description = description;
 		this.type = type;
-		this.keywords = conditions;
+		this.keywords = keywords;
+		if (keywords == null) {
+			this.keywords = new ArrayList<>();
+		}
 		this.defaultValue = defaultValue;
 		this.defaultPortion = defaultPortion;
 		this.defaultDescription = defaultDescription;
 		this.variations = variations;
+		if (variations == null) {
+			this.variations = new ArrayList<>();
+		}
 		this.maintainerId = maintainerId;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
