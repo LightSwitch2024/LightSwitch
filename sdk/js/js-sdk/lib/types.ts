@@ -1,4 +1,4 @@
-export type LSMessageData = Flag | Title | FlagId | string;
+export type LSMessageData = Flag | Title | Switch | string;
 export type LSFlagType = 'BOOLEAN' | 'STRING' | 'NUMBER';
 export type LSDefaultValueType = boolean | string | number;
 export type ErrorCallback = (error: any) => void;
@@ -60,8 +60,9 @@ export interface Title {
   title: string;
 }
 
-export interface FlagId {
+export interface Switch {
   flagId: number;
+  active: boolean;
 }
 
 export interface Flag {

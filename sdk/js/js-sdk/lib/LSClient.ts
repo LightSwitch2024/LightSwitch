@@ -10,12 +10,11 @@ import {
   ILSUser,
   Title,
   flagChangedCallback,
-  FlagId,
+  Switch,
 } from './types';
 import { LSLogger } from './LSLogger';
 import { getRequest, postRequest, getHashedPercentageForObjectIds } from './utils';
 import ReconnectingEventSource from 'reconnecting-eventsource';
-import { log } from 'console';
 
 const IS_DEV = true;
 
@@ -89,10 +88,7 @@ class LSClient implements ILSClient {
       throw new Error('Failed to get data for sse connection');
     }
 
-    this.eventSource = this.getEventSource(
-      '/8030ca7d78fb464fb9b661a715bbab13',
-      this.reconnectTime,
-    );
+    this.eventSource = this.getEventSource(this.userKey, this.reconnectTime);
     this.addSseListener();
     this.isInitialized = true;
     logger.info('success to initialize client sdk');
@@ -102,7 +98,7 @@ class LSClient implements ILSClient {
     userKey: string,
     reconnectTime: number,
   ): ReconnectingEventSource {
-    return new ReconnectingEventSource(SSE_CONNECT_PATH + userKey, {
+    return new ReconnectingEventSource(SSE_CONNECT_PATH + '/' + userKey, {
       // indicating if CORS should be set to include credentials, default `false`
       withCredentials: true,
       // the maximum time to wait before attempting to reconnect in ms, default `3000`
@@ -136,9 +132,9 @@ class LSClient implements ILSClient {
   private async getUserKey(): Promise<void> {
     try {
       logger.info(this.sdkKey);
-      const response: ApiResponse<userKey> = await postRequest(
-        `${SSE_CONNECT_PATH}?sdkKey=${this.sdkKey}`,
-      );
+      const response: ApiResponse<userKey> = await postRequest(`${SSE_CONNECT_PATH}`, {
+        sdkKey: this.sdkKey,
+      });
       if (response.code == SDK_KEY_NOT_FOUND) {
         throw new Error(response.message);
       }
@@ -223,7 +219,7 @@ class LSClient implements ILSClient {
           this.deleteFlag(deleteData);
           break;
         case 'SWITCH': // not used
-          const switchData = data.data as FlagId;
+          const switchData = data.data as Switch;
           this.switchFlag(switchData);
           break;
       }
@@ -254,13 +250,13 @@ class LSClient implements ILSClient {
       logger.error(`Flag with title ${title.title} not found.`);
     }
   }
-  private switchFlag(flagId: FlagId): void {
+  private switchFlag(sw: Switch): void {
     logger.info('switchFlag call');
-    const index = this.flags.findIndex((flag) => flag.flagId === flagId.flagId);
+    const index = this.flags.findIndex((flag) => flag.flagId === sw.flagId);
     if (index !== -1) {
-      this.flags[index].active = !this.flags[index].active;
+      this.flags[index].active = this.flags[index].active;
     } else {
-      logger.error(`Flag with id : ${flagId.flagId} not found.`);
+      logger.error(`Flag with id : ${sw.flagId} not found.`);
     }
   }
 
