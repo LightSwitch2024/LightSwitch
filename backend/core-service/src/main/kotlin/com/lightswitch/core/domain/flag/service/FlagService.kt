@@ -256,7 +256,7 @@ class FlagService(
                     keyword = it.keyword,
                     description = it.description
                 )
-            } ?: listOf(),
+            },
             defaultValueForKeyword = defaultVariationForKeyword?.value ?: "",
             defaultPortionForKeyword = defaultVariationForKeyword?.portion ?: 0,
             defaultDescriptionForKeyword = defaultVariationForKeyword?.description ?: "",
