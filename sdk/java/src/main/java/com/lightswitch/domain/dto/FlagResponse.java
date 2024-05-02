@@ -14,7 +14,7 @@ public class FlagResponse {
 	private String title;
 	private String description;
 	private FlagType type;
-	private List<Keyword> keywords;
+	private List<KeywordResponse> keywords;
 	private String defaultValue;
 	private int defaultPortion;
 	private String defaultDescription;
@@ -34,6 +34,8 @@ public class FlagResponse {
 	}
 
 	public Flag toFlag() {
+		List<Keyword> keywords = new ArrayList<>();
+		this.keywords.forEach(keywordResponse -> keywords.add(keywordResponse.toKeyword()));
 		List<Variation> variations = new ArrayList<>();
 		this.variations.forEach(variationResponse -> variations.add(variationResponse.toVariation()));
 
