@@ -3,7 +3,6 @@ package com.lightswitch.core.domain.member.service
 import com.lightswitch.core.common.service.PasswordService
 import com.lightswitch.core.domain.mail.service.MailService
 import com.lightswitch.core.domain.member.dto.req.SignupReqDto
-import com.lightswitch.core.domain.member.dto.res.MemberResponseDto
 import com.lightswitch.core.domain.member.entity.Member
 import com.lightswitch.core.domain.member.exception.MemberException
 import com.lightswitch.core.domain.member.repository.MemberRepository
@@ -35,7 +34,9 @@ class MemberServiceTest(
 ) {
     @BeforeEach
     fun setUp() {
-        memberService.deleteAll()
+        memberRepository.findAllAByDeletedAtIsNull().map {
+            memberService.deleteUser(it.memberId!!)
+        }
     }
 
     @Test
@@ -54,7 +55,7 @@ class MemberServiceTest(
         )
         memberRepository.save(member)
 
-        val findMember: Member? = memberRepository.findByEmail("test@gmail.com")
+        val findMember: Member? = memberRepository.findByEmailAndDeletedAtIsNull("test@gmail.com")
         assertThat(findMember).isNotNull
 
         assertThat(member.memberId).isEqualTo(findMember!!.memberId)
@@ -110,7 +111,7 @@ class MemberServiceTest(
 
         val redisValue: String? = redisService.find("$signupCode:$email")
         assertThat(redisValue).isNotNull
-        val member: MemberResponseDto = memberService.signUp(
+        val memberResDto = memberService.signUp(
             SignupReqDto(
                 firstName = "동훈",
                 lastName = "김",
@@ -121,12 +122,12 @@ class MemberServiceTest(
             )
         )
 
-        val findMember: Member? = memberRepository.findByEmail(email)
+        val findMember: Member? = memberRepository.findByEmailAndDeletedAtIsNull(email)
         assertThat(findMember).isNotNull
 
-        assertThat(member.memberId).isEqualTo(findMember!!.memberId)
-        assertThat(member.email).isEqualTo(findMember.email)
-        assertThat(passwordService.matches("1234", member.password)).isTrue()
+        assertThat(memberResDto.memberId).isEqualTo(findMember!!.memberId)
+        assertThat(memberResDto.email).isEqualTo(findMember.email)
+        assertThat(passwordService.matches("1234", memberResDto.password)).isTrue()
     }
 
     @Test

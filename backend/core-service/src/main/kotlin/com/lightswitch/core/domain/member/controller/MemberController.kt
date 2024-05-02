@@ -77,12 +77,10 @@ class MemberController(
     }
 
     // 유저 삭제
-//    @DeleteMapping("/{email}")
-//    fun deleteUser(
-//        @RequestBody newUserData: MemberUpdateRequestDto
-//    ): ResponseEntity<MemberResponseDto> {
-//        return ResponseEntity.ok(memberService.deleteUser(newUserData))
-//    }
+    @DeleteMapping("/{memberId}")
+    fun deleteUser(@PathVariable(name = "memberId") memberId: Long): BaseResponse<MemberResponseDto> {
+        return success(memberService.deleteUser(memberId))
+    }
 
 
     @PostMapping("/sdkKey")

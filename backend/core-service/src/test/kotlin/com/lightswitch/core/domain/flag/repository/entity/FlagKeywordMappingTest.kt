@@ -5,8 +5,11 @@ import com.lightswitch.core.domain.flag.repository.FlagKeywordMappingRepository
 import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.flag.repository.KeywordRepository
 import com.lightswitch.core.domain.flag.repository.VariationRepository
+import com.lightswitch.core.domain.member.entity.Member
+import com.lightswitch.core.domain.member.repository.MemberRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -28,21 +31,45 @@ class FlagKeywordMappingTest {
     @Autowired
     private lateinit var variationRepository: VariationRepository
 
+    @Autowired
+    private lateinit var memberRepository: MemberRepository
+
+    var memberId: Long = 0L
+    var member: Member? = null
+
+    @BeforeEach
+    fun setUp() {
+        val savedMember = memberRepository.findByEmailAndDeletedAtIsNull("test@gmail.com") ?: let {
+            memberRepository.save(
+                Member(
+                    lastName = "test",
+                    firstName = "test",
+                    telNumber = "01012345678",
+                    email = "test@gmail.com",
+                    password = "test",
+                )
+            )
+        }
+
+        memberId = savedMember.memberId!!
+        member = savedMember
+    }
+
     @Test
     fun `FlagKeywordMapping 저장 테스트`() {
 
         var flag = Flag(
             title = "test",
             description = "test test",
-            maintainerId = 1,
+            maintainer = member!!,
             type = FlagType.BOOLEAN,
         )
         val savedFlag = flagRepository.save(flag)
 
-        var keyword1 = Keyword(
+        val keyword1 = Keyword(
             keyword = "test", description = "test"
         )
-        var keyword2 = Keyword(
+        val keyword2 = Keyword(
             keyword = "test2", description = "test2"
         )
         val keywordList = keywordRepository.saveAll(listOf(keyword1, keyword2))
@@ -64,15 +91,15 @@ class FlagKeywordMappingTest {
         var flag = Flag(
             title = "test",
             description = "test test",
-            maintainerId = 1,
+            maintainer = member!!,
             type = FlagType.BOOLEAN,
         )
         val savedFlag = flagRepository.save(flag)
 
-        var keyword1 = Keyword(
+        val keyword1 = Keyword(
             keyword = "test", description = "test"
         )
-        var keyword2 = Keyword(
+        val keyword2 = Keyword(
             keyword = "test2", description = "test2"
         )
         val keywordList = keywordRepository.saveAll(listOf(keyword1, keyword2))

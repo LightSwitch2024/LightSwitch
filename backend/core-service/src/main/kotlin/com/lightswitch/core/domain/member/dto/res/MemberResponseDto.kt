@@ -10,4 +10,5 @@ data class MemberResponseDto(
     var sdkKey: String,
     val createdAt: String,
     val updatedAt: String,
+    val deletedAt: String,
 )

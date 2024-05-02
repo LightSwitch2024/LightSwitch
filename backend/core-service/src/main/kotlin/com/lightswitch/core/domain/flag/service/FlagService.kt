@@ -54,7 +54,6 @@ class FlagService(
     private val memberRepository: MemberRepository,
 ) {
 
-    @Transactional
     fun createFlag(flagRequestDto: FlagRequestDto): FlagResponseDto {
         // flag 저장
         val member = memberRepository.findById(flagRequestDto.memberId)
@@ -181,11 +180,15 @@ class FlagService(
         )
 
         // SSE 데이터 전송
-        if (savedFlag.maintainer.sdkKeys.isEmpty()) {
-            throw BaseException(ResponseCode.SDK_KEY_NOT_FOUND)
-        }
+        val sdkKey = sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(member.memberId!!) ?: throw BaseException(
+            ResponseCode.SDK_KEY_NOT_FOUND
+        )
 
-        val sdkKey = savedFlag.maintainer.sdkKeys[0]
+//        if (savedFlag.maintainer.sdkKeys.isEmpty()) {
+//            throw BaseException(ResponseCode.SDK_KEY_NOT_FOUND)
+//        }
+
+//        val sdkKey = savedFlag.maintainer.sdkKeys[0]
         val userKey = sseService.hash(sdkKey.key)
         sseService.sendData(SseDto(userKey, SseDto.SseType.CREATE, flagInitResponseDto))
 
@@ -253,7 +256,7 @@ class FlagService(
                     keyword = it.keyword,
                     description = it.description
                 )
-            } ?: listOf(),
+            },
             defaultValueForKeyword = defaultVariationForKeyword?.value ?: "",
             defaultPortionForKeyword = defaultVariationForKeyword?.portion ?: 0,
             defaultDescriptionForKeyword = defaultVariationForKeyword?.description ?: "",
@@ -315,7 +318,7 @@ class FlagService(
                         keyword = it.keyword,
                         description = it.description
                     )
-                } ?: listOf(),
+                },
                 defaultValueForKeyword = defaultVariationForKeyword?.value ?: "",
                 defaultPortionForKeyword = defaultVariationForKeyword?.portion ?: 0,
                 defaultDescriptionForKeyword = defaultVariationForKeyword?.description ?: "",
@@ -366,12 +369,11 @@ class FlagService(
         val flag = flagRepository.findById(flagId).get()
         flag.active = !flag.active
 
-        // SSE 데이터 전송
-        if (flag.maintainer.sdkKeys.isEmpty()) {
-            throw BaseException(ResponseCode.SDK_KEY_NOT_FOUND)
-        }
+        val sdkKey =
+            sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(flag.maintainer.memberId!!) ?: throw BaseException(
+                ResponseCode.SDK_KEY_NOT_FOUND
+            )
 
-        val sdkKey = flag.maintainer.sdkKeys[0]
         val userKey = sseService.hash(sdkKey.key)
         sseService.sendData(
             SseDto(
@@ -527,12 +529,11 @@ class FlagService(
             variationsForKeyword = flagRequestDto.variationsForKeyword,
         )
 
-        // SSE 데이터 전송
-        if (flag.maintainer.sdkKeys.isEmpty()) {
-            throw BaseException(ResponseCode.SDK_KEY_NOT_FOUND)
-        }
+        val sdkKey =
+            sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(flag.maintainer.memberId!!) ?: throw BaseException(
+                ResponseCode.SDK_KEY_NOT_FOUND
+            )
 
-        val sdkKey = flag.maintainer.sdkKeys[0]
         val userKey = sseService.hash(sdkKey.key)
         sseService.sendData(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
 

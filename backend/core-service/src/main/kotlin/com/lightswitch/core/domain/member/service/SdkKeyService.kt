@@ -20,11 +20,14 @@ class SdkKeyService(
     fun createSdkKey(sdkKeyReqDto: SdkKeyReqDto): SdkKeyResDto {
 
         val email = sdkKeyReqDto.email
-        val member: Member = memberRepository.findByEmail(email) ?: throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
+        val member: Member = memberRepository.findByEmailAndDeletedAtIsNull(email) ?: throw BaseException(
+            ResponseCode.MEMBER_NOT_FOUND
+        )
 
-        val existsSdkKey = sdkKeyRepository.findByMemberMemberId(member.memberId!!)
-        if (existsSdkKey.isNotEmpty()) {
-            throw BaseException(ResponseCode.SDK_KEY_ALREADY_EXISTS)
+        sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(member.memberId!!)?.let {
+            throw BaseException(
+                ResponseCode.SDK_KEY_ALREADY_EXISTS
+            )
         }
 
         var newKey = ""

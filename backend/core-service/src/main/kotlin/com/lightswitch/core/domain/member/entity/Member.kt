@@ -13,7 +13,4 @@ class Member(
     var telNumber: String,
     var email: String,
     var password: String,
-
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-    var sdkKeys: MutableList<SdkKey> = mutableListOf()
 ) : BaseEntity()
