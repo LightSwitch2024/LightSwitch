@@ -42,6 +42,7 @@ export const LogInLinkBox = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 0.5rem;
+  margin: 0 0 3rem 0;
 `;
 
 export const SignUpText = styled(Link)`
@@ -93,5 +94,4 @@ export const LogoWrapper = styled.div`
 
 export const Logo = styled.img`
   display: flex;
-  height: auto;
 `;
