@@ -54,7 +54,6 @@ class FlagService(
     private val memberRepository: MemberRepository,
 ) {
 
-    @Transactional
     fun createFlag(flagRequestDto: FlagRequestDto): FlagResponseDto {
         // flag 저장
         val member = memberRepository.findById(flagRequestDto.memberId)
@@ -319,7 +318,7 @@ class FlagService(
                         keyword = it.keyword,
                         description = it.description
                     )
-                } ?: listOf(),
+                },
                 defaultValueForKeyword = defaultVariationForKeyword?.value ?: "",
                 defaultPortionForKeyword = defaultVariationForKeyword?.portion ?: 0,
                 defaultDescriptionForKeyword = defaultVariationForKeyword?.description ?: "",

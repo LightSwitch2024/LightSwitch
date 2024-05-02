@@ -3,6 +3,7 @@ package com.lightswitch.core.domain.member.service
 import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.common.service.PasswordService
+import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.member.dto.req.LogInReqDto
 import com.lightswitch.core.domain.member.dto.req.MemberUpdateReqDto
 import com.lightswitch.core.domain.member.dto.req.PasswordUpdateReqDto
@@ -17,15 +18,18 @@ import com.lightswitch.core.domain.member.repository.SdkKeyRepository
 import com.lightswitch.core.domain.redis.service.RedisService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
+@Transactional
 @Service
 class MemberService(
     private val memberRepository: MemberRepository,
     private val passwordService: PasswordService,
     private val redisService: RedisService,
     private val sdkKeyRepository: SdkKeyRepository,
+    private val flagRepository: FlagRepository,
     @Value("\${spring.data.redis.code.signup}")
     val signupCode: String
 ) {
@@ -39,7 +43,7 @@ class MemberService(
         val password = signupReqDto.password
         val authCode = signupReqDto.authCode
 
-        val existsMember: Member? = memberRepository.findByEmail(email)
+        val existsMember: Member? = memberRepository.findByEmailAndDeletedAtIsNull(email)
         existsMember?.let {
             throw MemberException("이미 가입된 이메일 입니다.")
         }
@@ -72,7 +76,8 @@ class MemberService(
             password = savedMember.password,
             sdkKey = sdkKey?.key ?: "",
             createdAt = savedMember.createdAt.toString(),
-            updatedAt = savedMember.updatedAt.toString()
+            updatedAt = savedMember.updatedAt.toString(),
+            deletedAt = savedMember.deletedAt?.toString() ?: "",
         )
     }
 
@@ -103,7 +108,8 @@ class MemberService(
     fun logIn(logInReqDto: LogInReqDto): MemberResDto {
 
         val savedMember: Member =
-            memberRepository.findByEmail(logInReqDto.email) ?: throw MemberException("가입되지 않은 이메일입니다.")
+            memberRepository.findByEmailAndDeletedAtIsNull(logInReqDto.email)
+                ?: throw MemberException("가입되지 않은 이메일입니다.")
 
         val isCorrectPW = passwordService.matches(logInReqDto.password, savedMember.password)
 
@@ -122,7 +128,7 @@ class MemberService(
 
     //     유저 정보 읽기
     fun getUser(email: String): MemberResDto {
-        val savedMember = memberRepository.findByEmail(email)
+        val savedMember = memberRepository.findByEmailAndDeletedAtIsNull(email)
         println("service 진행됌")
         println(savedMember?.email)
 
@@ -139,19 +145,37 @@ class MemberService(
         }
     }
 
-//     유저 정보 삭제
-//    @Transactional
-//    fun deleteUser(email: String): Long {
-//        val savedUser = memberRepository.findByEmail(email)
-//        //savedUser 삭제
-//        savedUser?.delete()
-//
-//        return savedUser.memberId ?: throw MemberException("유저가 없습니다.")
-//    }
+    //     유저 정보 삭제
+    fun deleteUser(memberId: Long): MemberResponseDto {
+        val savedUser = memberRepository.findById(memberId)
+            .orElseThrow { throw BaseException(ResponseCode.MEMBER_NOT_FOUND) }
+
+        savedUser.sdkKeys.clear()
+        savedUser.delete()
+
+        sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(savedUser.memberId!!)?.delete()
+
+        flagRepository.findByMaintainerMemberIdAndDeletedAtIsNull(savedUser.memberId!!).map {
+            it.delete()
+        }
+
+        return MemberResponseDto(
+            memberId = savedUser.memberId!!,
+            firstName = savedUser.firstName,
+            lastName = savedUser.lastName,
+            telNumber = savedUser.telNumber,
+            email = savedUser.email,
+            password = savedUser.password,
+            sdkKey = "",
+            createdAt = savedUser.createdAt.toString(),
+            updatedAt = savedUser.updatedAt.toString(),
+            deletedAt = savedUser.deletedAt.toString(),
+        )
+    }
 
     // 이름, 전화번호 변경
     fun updateUser(email: String, newData: MemberUpdateReqDto): MemberResDto? {
-        val oldData: Member? = memberRepository.findByEmail(email)
+        val oldData: Member? = memberRepository.findByEmailAndDeletedAtIsNull(email)
         oldData?.let {
             oldData.firstName = newData.firstName
             oldData.lastName = newData.lastName
@@ -174,7 +198,7 @@ class MemberService(
 
     // 비밀번호 변경
     fun updatePassword(email: String, newData: PasswordUpdateReqDto): MemberResDto? {
-        val savedMember: Member? = memberRepository.findByEmail(email)
+        val savedMember: Member? = memberRepository.findByEmailAndDeletedAtIsNull(email)
 
         if (savedMember != null && passwordService.matches(newData.oldPassword, savedMember.password)) {
             savedMember.password = newData.newPassword

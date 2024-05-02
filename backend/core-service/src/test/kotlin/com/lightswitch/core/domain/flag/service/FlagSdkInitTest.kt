@@ -12,8 +12,10 @@ import com.lightswitch.core.domain.member.dto.req.SdkKeyReqDto
 import com.lightswitch.core.domain.member.entity.Member
 import com.lightswitch.core.domain.member.repository.MemberRepository
 import com.lightswitch.core.domain.member.repository.SdkKeyRepository
+import com.lightswitch.core.domain.member.service.MemberService
 import com.lightswitch.core.domain.member.service.SdkKeyService
 import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -33,13 +35,20 @@ class FlagSdkInitTest(
 
     @Autowired
     private val sdkKeyRepository: SdkKeyRepository,
+
+    @Autowired
+    private val memberService: MemberService
 ) {
+
+    @BeforeEach
+    fun setUp() {
+        memberRepository.findAllAByDeletedAtIsNull().map {
+            memberService.deleteUser(it.memberId!!)
+        }
+    }
 
     fun signUpAndSdkKeyForTest(): String {
 
-        memberRepository.findByEmail("test@gmail.com")?.let {
-            memberRepository.delete(it)
-        }
         val member = memberRepository.save(
             Member(
                 lastName = "test",
@@ -90,7 +99,7 @@ class FlagSdkInitTest(
 
                 )
             ),
-            userId = memberId!!,
+            memberId = memberId!!,
 
             keywords = listOf(),
             defaultValueForKeyword = "",
@@ -120,7 +129,7 @@ class FlagSdkInitTest(
                     description = "3 test"
                 )
             ),
-            userId = memberId,
+            memberId = memberId,
 
             keywords = listOf(
                 KeywordDto(
@@ -166,7 +175,7 @@ class FlagSdkInitTest(
                     description = "D test"
                 )
             ),
-            userId = memberId,
+            memberId = memberId,
 
             keywords = listOf(
                 KeywordDto(

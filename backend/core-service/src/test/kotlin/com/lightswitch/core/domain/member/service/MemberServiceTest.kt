@@ -34,7 +34,9 @@ class MemberServiceTest(
 ) {
     @BeforeEach
     fun setUp() {
-        memberService.deleteAll()
+        memberRepository.findAllAByDeletedAtIsNull().map {
+            memberService.deleteUser(it.memberId!!)
+        }
     }
 
     @Test
@@ -53,7 +55,7 @@ class MemberServiceTest(
         )
         memberRepository.save(member)
 
-        val findMember: Member? = memberRepository.findByEmail("test@gmail.com")
+        val findMember: Member? = memberRepository.findByEmailAndDeletedAtIsNull("test@gmail.com")
         assertThat(findMember).isNotNull
 
         assertThat(member.memberId).isEqualTo(findMember!!.memberId)
@@ -120,7 +122,7 @@ class MemberServiceTest(
             )
         )
 
-        val findMember: Member? = memberRepository.findByEmail(email)
+        val findMember: Member? = memberRepository.findByEmailAndDeletedAtIsNull(email)
         assertThat(findMember).isNotNull
 
         assertThat(memberResDto.memberId).isEqualTo(findMember!!.memberId)
