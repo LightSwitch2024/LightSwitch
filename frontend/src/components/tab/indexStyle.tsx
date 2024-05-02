@@ -29,10 +29,72 @@ export const TabLogo = styled.div`
 `;
 
 export const LogoName = styled.div`
+  display: flex;
+  padding: 0.63rem 0.31rem;
+  flex-direction: row;
+  align-items: center;
   color: #fff;
   font-family: Pretendard;
   font-size: 1.5rem;
   font-style: normal;
   font-weight: 800;
   line-height: normal;
+`;
+
+export const LogInButton = styled.button`
+  display: flex;
+  width: 100%;
+  padding: 0.3rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 1.4rem;
+  background-color: #1e3232;
+  color: #fff;
+  cursor: pointer;
+`;
+
+export const LogOutButton = styled.button`
+  display: flex;
+  width: 100%;
+  padding: 0.3rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 1.4rem;
+  background-color: #1e3232;
+  color: #fff;
+  cursor: pointer;
+`;
+
+export const ButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 5rem 0 5rem 0;
+  gap: 1rem;
+`;
+
+export const LogoWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 12rem;
+  height: 100%;
+  gap: 1rem;
+`;
+
+export const LogoButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 5rem 0 5rem 0;
+  gap: 5rem;
+`;
+
+export const LogoText = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.5rem;
+  gap: 0.5rem;
 `;

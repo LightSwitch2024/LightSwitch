@@ -1,13 +1,24 @@
 import DashBoard from '@assets/dashboard.svg?react';
 import * as S from '@components/tab/indexStyle';
-import React from 'react';
+// import { useNavigate } from 'react-router-dom';
 
 const index = () => {
+  // const navigate = useNavigate();
+  // const onClickLogIn = (): void => {
+  //   navigate('/login');
+  // };
   return (
     <S.TabBar>
       <S.TabLogo>
-        <DashBoard />
-        <S.LogoName>Light Switch</S.LogoName>
+        <S.LogoButtonWrapper>
+          <S.LogoWrapper>
+            <DashBoard />
+            <S.LogoText>Light Switch</S.LogoText>
+          </S.LogoWrapper>
+          <S.ButtonWrapper>
+            {/* <S.LogInButton onClick={onClickLogIn}>로그인</S.LogInButton> */}
+          </S.ButtonWrapper>
+        </S.LogoButtonWrapper>
       </S.TabLogo>
       {/* 
       <S.TabRouteList>
