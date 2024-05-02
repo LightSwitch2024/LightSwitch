@@ -14,16 +14,18 @@ import java.util.Objects;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.lightswitch.domain.dto.BaseResponse;
 import com.lightswitch.domain.Config;
-import com.lightswitch.domain.LSUser;
 import com.lightswitch.domain.Flag;
 import com.lightswitch.domain.Flags;
+import com.lightswitch.domain.LSUser;
+import com.lightswitch.domain.dto.BaseResponse;
 import com.lightswitch.domain.dto.FlagResponse;
 import com.lightswitch.domain.dto.SseResponse;
 import com.lightswitch.domain.dto.UserKeyResponse;
+import com.lightswitch.exception.FlagNotFoundException;
 import com.lightswitch.exception.FlagRuntimeException;
 import com.lightswitch.exception.FlagServerConnectException;
+import com.lightswitch.exception.InvalidSSEFormatException;
 import com.lightswitch.util.SseServlet;
 
 public class FlagServiceImpl implements FlagService {
@@ -45,12 +47,14 @@ public class FlagServiceImpl implements FlagService {
 	@Override
 	public void init(String sdkKey) {
 		HttpURLConnection initConnection = setupPostConnection("sdk/init", sdkKey);
-		Type responseType = new TypeToken<BaseResponse<List<FlagResponse>>>() {}.getType();
+		Type responseType = new TypeToken<BaseResponse<List<FlagResponse>>>() {
+		}.getType();
 		BaseResponse<List<FlagResponse>> response = handleResponse(initConnection, responseType);
 		Flags.addAllFlags(response.getData());
 
 		HttpURLConnection subscribeConnection = setupPostConnection("sse/subscribe", sdkKey);
-		Type responseType2 = new TypeToken<BaseResponse<UserKeyResponse>>() {}.getType();
+		Type responseType2 = new TypeToken<BaseResponse<UserKeyResponse>>() {
+		}.getType();
 		BaseResponse<UserKeyResponse> response2 = handleResponse(subscribeConnection, responseType2);
 		String userKey = response2.getData().getUserKey();
 		System.out.println(userKey);
@@ -64,10 +68,11 @@ public class FlagServiceImpl implements FlagService {
 		SseServlet servlet = new SseServlet();
 		HttpURLConnection connection = servlet.getConnect(endpoint, "POST", 0, false);
 
-		if(writeSdkKey(connection, sdkKey) == HTTP_OK){
-			return connection;
+		try {
+			return writeSdkKey(connection, sdkKey);
+		} catch (IOException e) {
+			throw new FlagServerConnectException("Failed To Connect Flag Server");
 		}
-		throw new FlagServerConnectException("Feature Flagging Server Connection Error");
 	}
 
 	private <T> T handleResponse(HttpURLConnection connection, Type responseType) {
@@ -76,7 +81,7 @@ public class FlagServiceImpl implements FlagService {
 			String response = readResponse(connection);
 			return gson.fromJson(response, responseType);
 		} catch (IOException e) {
-			throw new FlagRuntimeException("Failed to read response: " + e.getMessage(), e);
+			throw new InvalidSSEFormatException("Failed To Read Response");
 		}
 	}
 
@@ -97,18 +102,14 @@ public class FlagServiceImpl implements FlagService {
 		return servlet.getConnect(endpoint, "GET", 0, true);
 	}
 
+	private HttpURLConnection writeSdkKey(HttpURLConnection connection, String sdkKey) throws IOException {
+		OutputStream os = connection.getOutputStream();
+		Gson gson = new Gson();
+		String json = gson.toJson(new Config(sdkKey));
 
-	private int writeSdkKey(HttpURLConnection connection, String sdkKey) {
-		try (OutputStream os = connection.getOutputStream()) {
-			Gson gson = new Gson();
-			String json = gson.toJson(new Config(sdkKey));
-
-			byte[] input = json.getBytes(UTF_8);
-			os.write(input, 0, input.length);
-			return connection.getResponseCode();
-		} catch (IOException e) {
-			throw new FlagServerConnectException("Failed to send SDK key: " + e.getMessage(), e);
-		}
+		byte[] input = json.getBytes(UTF_8);
+		os.write(input, 0, input.length);
+		return connection;
 	}
 
 	private void connectToSse() {
@@ -135,7 +136,7 @@ public class FlagServiceImpl implements FlagService {
 				}
 			}
 		} catch (IOException io) {
-			throw new FlagRuntimeException("Error during SSE connection: " + io.getMessage(), io);
+			throw new InvalidSSEFormatException("Failed To Read Response");
 		}
 	}
 
@@ -157,9 +158,9 @@ public class FlagServiceImpl implements FlagService {
 	}
 
 	@Override
-	public <T>T getFlag(String key, LSUser LSUser) {
+	public <T> T getFlag(String key, LSUser LSUser) {
 		//todo. 세 번째 인자 default 값 추가하기
-		Flag flag = Flags.getFlag(key).orElseThrow(FlagRuntimeException::new);
+		Flag flag = Flags.getFlag(key).orElseThrow(FlagNotFoundException::new);
 		return flag.getValue(LSUser);
 	}
 
