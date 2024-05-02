@@ -16,7 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lightswitch.domain.dto.BaseResponse;
 import com.lightswitch.domain.Config;
-import com.lightswitch.domain.Context;
+import com.lightswitch.domain.LSUser;
 import com.lightswitch.domain.Flag;
 import com.lightswitch.domain.Flags;
 import com.lightswitch.domain.dto.FlagResponse;
@@ -53,6 +53,7 @@ public class FlagServiceImpl implements FlagService {
 		Type responseType2 = new TypeToken<BaseResponse<UserKeyResponse>>() {}.getType();
 		BaseResponse<UserKeyResponse> response2 = handleResponse(subscribeConnection, responseType2);
 		String userKey = response2.getData().getUserKey();
+		System.out.println(userKey);
 
 		connection = setupGetConnection("sse/subscribe/" + userKey);
 		thread = new Thread(this::connectToSse);
@@ -156,20 +157,42 @@ public class FlagServiceImpl implements FlagService {
 	}
 
 	@Override
-	public Object getFlag(String key, Context context) {
+	public <T>T getFlag(String key, LSUser LSUser) {
 		//todo. 세 번째 인자 default 값 추가하기
 		Flag flag = Flags.getFlag(key).orElseThrow(FlagRuntimeException::new);
-		return flag.getValue(context);
+		return flag.getValue(LSUser);
 	}
 
 	public static void main(String[] args) {
 		FlagService flagService = FlagServiceImpl.getInstance();
-		flagService.init("8030ca7d78fb464fb9b661a715bbab13");
+		flagService.init("d8d2d76fc0514279b00c82bf9515f66d");
 
-		// Context build = new Context.Builder(123)
-		// 	.build();
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
 
-		// Object testTitle = flagService.getFlag("test", build);
-		// System.out.println(testTitle);
+		LSUser build = new LSUser.Builder(123)
+			.property("blog", "https://olrlobt.tistory.com/")
+			.build();
+
+		LSUser build2 = new LSUser.Builder(123)
+			.property("kk", "aab")
+			.build();
+
+		Object testTitle = flagService.getFlag("img5", build);
+		Object testTitle2 = flagService.getFlag("img5", build2);
+		System.out.println(testTitle + " // " + testTitle2);
+
+		try {
+			Thread.sleep(6000);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+
+		Object testTitle3 = flagService.getFlag("img5", build);
+		Object testTitle4 = flagService.getFlag("img5", build2);
+		System.out.println(testTitle3 + " // " + testTitle4);
 	}
 }
