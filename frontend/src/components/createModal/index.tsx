@@ -299,6 +299,18 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
     if (!addValidation()) {
       alert('필수 입력값을 입력해주세요');
       return;
+    } else if (isDuplicatedTitle) {
+      alert('중복된 플래그 이름이 존재합니다.');
+      return;
+    } else if (calculateTotalPortion() !== 100) {
+      alert('변수 비율의 합이 100이 되도록 설정해주세요.');
+      return;
+    } else if (isInvalidBooleanVariation) {
+      alert('BOOLEAN 타입은 TRUE 와 FALSE 값만 유효합니다.');
+      return;
+    } else if (isInvalidIntegerVariation) {
+      alert('정수만 입력 가능합니다.');
+      return;
     }
 
     createFlag(
@@ -477,6 +489,18 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   const onClickSave = (): void => {
     if (!props.flagDetail || !addValidation()) {
       alert('필수 입력값을 입력해주세요');
+      return;
+    } else if (isDuplicatedTitle) {
+      alert('중복된 플래그 이름이 존재합니다.');
+      return;
+    } else if (calculateTotalPortion() !== 100) {
+      alert('변수 비율의 합이 100이 되도록 설정해주세요.');
+      return;
+    } else if (isInvalidBooleanVariation) {
+      alert('BOOLEAN 타입은 TRUE 와 FALSE 값만 유효합니다.');
+      return;
+    } else if (isInvalidIntegerVariation) {
+      alert('정수만 입력 가능합니다.');
       return;
     }
 
