@@ -83,7 +83,7 @@ class MemberController(
     }
 
 
-    @PostMapping("/sdkKey")
+    @PostMapping("/sdkkey")
     fun createSdkKey(@RequestBody sdkKeyReqDto: SdkKeyReqDto): BaseResponse<SdkKeyResDto> {
         return success(sdkKeyService.createSdkKey(sdkKeyReqDto))
     }

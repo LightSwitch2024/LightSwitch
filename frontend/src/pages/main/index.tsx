@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useRecoilValue } from 'recoil';
 
-import { getMainPageOverview } from '@/api/main/mainAxios';
+import { createSdkKey, getMainPageOverview } from '@/api/main/mainAxios';
 import CopyButton from '@/assets/content-copy.svg?react';
 import FilteringIcon from '@/assets/filtering.svg?react';
 import FilledFlag from '@/assets/flag.svg?react';
@@ -19,6 +19,10 @@ interface OverviewInfo {
   sdkKey: string;
   totalFlags: number;
   activeFlags: number;
+}
+
+interface SdkKeyResDto {
+  key: string;
 }
 
 const index = () => {
@@ -52,6 +56,11 @@ const index = () => {
     );
   }, []);
 
+  // sdk 발급 받으면 sdk component 갱신
+  useEffect(() => {
+    console.log(sdkKey);
+  }, [sdkKey]);
+
   const html = document.querySelector('html');
   const openCreateModal = () => {
     setIsModalOpened(true);
@@ -68,6 +77,21 @@ const index = () => {
 
   const handleFlagSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFlagKeyword(e.target.value);
+  };
+
+  const handleClickCreateSdkKeyButton = () => {
+    console.log('sdk key 발급');
+    console.log(auth.email);
+    createSdkKey<SdkKeyResDto>(
+      { email: auth.email },
+      (data: SdkKeyResDto) => {
+        console.log(data);
+        setSdkKey(data.key ? data.key : '');
+      },
+      (err) => {
+        console.error(err);
+      },
+    );
   };
 
   return (
@@ -120,7 +144,17 @@ const index = () => {
               <SdkKey />
             </S.SdkKeyIconContainer>
             <S.SdkKeyTextContainer>
-              <S.SdkKeyText>{sdkKey}</S.SdkKeyText>
+              {sdkKey.length > 0 ? (
+                <S.SdkKeyText>{sdkKey}</S.SdkKeyText>
+              ) : (
+                <S.NoExistSdkKeyText>
+                  <S.SdkKeyText>SDK 키가 없습니다.</S.SdkKeyText>
+                  <S.createSdkKeyButton onClick={handleClickCreateSdkKeyButton}>
+                    <S.SdkKeyText>SDK 키 발급</S.SdkKeyText>
+                  </S.createSdkKeyButton>
+                </S.NoExistSdkKeyText>
+              )}
+              {/* <S.SdkKeyText>{sdkKey}</S.SdkKeyText> */}
               {/* <S.SdkKeyText>asdfasdfasdfasdf-asdf-qwerqwer</S.SdkKeyText> */}
             </S.SdkKeyTextContainer>
           </S.SdkkeyContentContainer>
