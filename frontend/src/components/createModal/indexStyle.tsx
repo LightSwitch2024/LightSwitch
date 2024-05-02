@@ -59,7 +59,6 @@ export const ModalInputForm = styled.div`
 export const FlagTitleAndTagsLayer = styled.div`
   display: flex;
   width: 100%;
-  height: 10.3125rem;
   flex-direction: column;
   align-items: center;
   gap: 0.3125rem;
@@ -111,6 +110,13 @@ export const FlagTitleInput = styled.input<{ $flag: boolean }>`
     background-color: #f2f2f2;
     pointer-events: none;
   `}
+`;
+
+export const WarnText = styled.div`
+  align-self: flex-end;
+  font-size: 1rem;
+  color: red;
+  font-weight: 500;
 `;
 
 export const FlagTagsInputContainer = styled.div`

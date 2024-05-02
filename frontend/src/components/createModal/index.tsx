@@ -10,7 +10,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
-import { createFlag } from '@/api/create/createAxios';
+import { confirmDuplicateFlag, createFlag } from '@/api/create/createAxios';
 import { updateFlag } from '@/api/flagDetail/flagDetailAxios';
 import { getTagList, getTagListByKeyword } from '@/api/main/mainAxios';
 import { AuthAtom } from '@/global/AuthAtom';
@@ -65,11 +65,6 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
 
   const auth = useRecoilValue(AuthAtom);
 
-  // 모달 밖 클릭에 대한 이벤트 전파 막기
-  const stopPropagation = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-  };
-
   const [title, setTitle] = useState<string>(props.flagDetail?.title || '');
   const [allTags, setAllTags] = useState<Array<TagItem>>([]);
   const [tags, setTags] = useState<Array<TagItem>>(props.flagDetail?.tags || []);
@@ -96,10 +91,16 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   const [selectedTags, setSelectedTags] = useState<Array<TagItem>>([]);
 
   const [isTypeEdited, setIsTypeEdited] = useState<boolean>(false);
+  const [isDuplicatedTitle, setIsDuplicatedTitle] = useState<boolean>(false);
+
+  const [flagMode, setFlagMode] = useState<string>(props.mode);
 
   const typeConfig = ['BOOLEAN', 'INTEGER', 'STRING', 'JSON'];
 
-  const [flagMode, setFlagMode] = useState<string>(props.mode);
+  // 모달 밖 클릭에 대한 이벤트 전파 막기
+  const stopPropagation = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setTitle(e.target.value);
@@ -234,6 +235,26 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
     if (isDetailMode()) return;
     setIsTypeEdited(true);
     console.log('타입 수정 버튼 클릭');
+  };
+
+  /**
+   * 타이틀이 있는지 확인하는 함수
+   */
+  const checkDuplicatedTitle = () => {
+    if (title === '') {
+      return;
+    }
+
+    confirmDuplicateFlag(
+      title,
+      (data: boolean) => {
+        console.log(data);
+        setIsDuplicatedTitle(data);
+      },
+      (err) => {
+        console.log(err);
+      },
+    );
   };
 
   const addValidation = (): boolean => {
@@ -498,9 +519,11 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
               placeholder="플래그 이름"
               value={title}
               onChange={handleTitleChange}
+              onBlur={checkDuplicatedTitle}
               $flag={isDetailMode()}
             />
           </S.FlagTitleInputContainer>
+          {isDuplicatedTitle && <S.WarnText>중복된 플래그 이름이 존재합니다.</S.WarnText>}
           <S.FlagTagsInputContainer>
             <S.FlagTagsInputLabel>
               <Bookmark />
