@@ -121,8 +121,8 @@ const index = () => {
               <SdkKey />
             </S.SdkKeyIconContainer>
             <S.SdkKeyTextContainer>
-              {/* <S.SdkKeyText>{sdkKey}</S.SdkKeyText> */}
-              <S.SdkKeyText>asdfasdfasdfasdf-asdf-qwerqwer</S.SdkKeyText>
+              <S.SdkKeyText>{sdkKey}</S.SdkKeyText>
+              {/* <S.SdkKeyText>asdfasdfasdfasdf-asdf-qwerqwer</S.SdkKeyText> */}
             </S.SdkKeyTextContainer>
           </S.SdkkeyContentContainer>
         </S.SdkKeyComponent>
@@ -141,8 +141,8 @@ const index = () => {
                   <S.FlagCountTextSmall>총</S.FlagCountTextSmall>
                 </S.FlagCountTextSmallContainer>
                 <S.FlagCountTextBigContainer>
-                  {/* <S.FlagCountTextBig>{totalFlags}</S.FlagCountTextBig> */}
-                  <S.FlagCountTextBig>13</S.FlagCountTextBig>
+                  <S.FlagCountTextBig>{totalFlags}</S.FlagCountTextBig>
+                  {/* <S.FlagCountTextBig>13</S.FlagCountTextBig> */}
                 </S.FlagCountTextBigContainer>
                 <S.FlagCountTextSmallContainer>
                   <S.FlagCountTextSmall>개</S.FlagCountTextSmall>
@@ -159,8 +159,8 @@ const index = () => {
                   <S.FlagCountTextSmall>활성</S.FlagCountTextSmall>
                 </S.FlagCountTextSmallContainer>
                 <S.FlagCountTextBigContainer>
-                  {/* <S.FlagCountTextBig>{totalFlags}</S.FlagCountTextBig> */}
-                  <S.FlagCountTextBig>7</S.FlagCountTextBig>
+                  <S.FlagCountTextBig>{totalFlags}</S.FlagCountTextBig>
+                  {/* <S.FlagCountTextBig>7</S.FlagCountTextBig> */}
                 </S.FlagCountTextBigContainer>
                 <S.FlagCountTextSmallContainer>
                   <S.FlagCountTextSmall>개</S.FlagCountTextSmall>

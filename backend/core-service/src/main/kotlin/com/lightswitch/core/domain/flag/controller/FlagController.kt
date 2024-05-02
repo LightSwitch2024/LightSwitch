@@ -63,18 +63,25 @@ class FlagController(
     }
 
     @GetMapping("/overview")
-    fun getFlagOverview(@PathParam(value = "memberId") memberId: Long): MainPageOverviewDto {
+    fun getFlagOverview(@PathParam(value = "memberId") memberId: Long): BaseResponse<MainPageOverviewDto> {
         val flagCountForOverview = flagService.getFlagCountForOverview()
         val sdkKeyForOverview = sdkKeyService.getSdkKeyForOverview(memberId)
 
         val totalFlags = flagCountForOverview["totalFlags"] ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
         val activeFlags = flagCountForOverview["activeFlags"] ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
-        val sdkKey = sdkKeyForOverview["sdkKey"] ?: throw BaseException(ResponseCode.SDK_KEY_NOT_FOUND)
+        var sdkKey: String? = ""
+        if (sdkKeyForOverview["sdkKey"] != null) {
+            sdkKey = sdkKeyForOverview["sdkKey"]
+        } else {
+            sdkKey = ""
+        }
 
-        return MainPageOverviewDto(
-            totalFlags = totalFlags,
-            activeFlags = activeFlags,
-            sdkKey = sdkKey,
+        return success(
+            MainPageOverviewDto(
+                totalFlags = totalFlags,
+                activeFlags = activeFlags,
+                sdkKey = sdkKey!!,
+            )
         )
     }
 
