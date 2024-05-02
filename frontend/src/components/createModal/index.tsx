@@ -32,18 +32,29 @@ interface Variation {
   description: string;
 }
 
+interface Keyword {
+  properties: Array<Property>;
+  description: string;
+  value: string;
+}
+
+interface Property {
+  property: string;
+  data: string;
+}
+
 interface FlagDetailItem {
   flagId: number;
   title: string;
   tags: Array<{ content: string; colorHex: string }>;
   description: string;
   type: string;
+  keywords: Array<Keyword>;
   defaultValue: string;
   defaultPortion: number;
   defaultDescription: string;
   variations: Array<Variation>;
-
-  userId: number;
+  memberId: number;
   createdAt: string;
   updatedAt: string;
   active: boolean;
@@ -66,15 +77,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
     props.flagDetail?.description || '',
   );
   const [type, setType] = useState<string>(props.flagDetail?.type || 'BOOLEAN');
-  const [keywords, setKeywords] = useState<Array<string>>([]);
-  const [defaultValueForKeyword, setDefaultValueForKeyword] = useState<string>('');
-  const [defaultPortionForKeyword, setDefaultPortionForKeyword] = useState<number | 0>(
-    100,
-  );
-  const [defaultDescriptionForKeyword, setDefaultDescriptionForKeyword] =
-    useState<string>('');
-  const [variationsForKeyword, setVariationsForKeyword] = useState<Array<Variation>>([]);
-
+  const [keywords, setKeywords] = useState<Array<Keyword>>([]);
   const [defaultValue, setDefaultValue] = useState<string>(
     props.flagDetail?.defaultValue || '',
   );
@@ -269,7 +272,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
    * 플래그 "추가하기" 버튼 클릭 이벤트 핸들러
    */
   const onClickAdd = (): void => {
-    if (!addValidation) {
+    if (!addValidation()) {
       alert('필수 입력값을 입력해주세요');
       return;
     }
@@ -281,10 +284,6 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
         description: description,
         type: type,
         keywords: keywords,
-        defaultValueForKeyword: defaultValueForKeyword,
-        defaultPortionForKeyword: defaultPortionForKeyword,
-        defaultDescriptionForKeyword: defaultDescriptionForKeyword,
-        variationsForKeyword: variationsForKeyword,
         defaultValue: defaultValue,
         defaultPortion: defaultPortion ? defaultPortion : 0,
         defaultDescription: defaultDescription,
@@ -421,15 +420,10 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
         description: description,
         type: type,
         keywords: keywords,
-        defaultValueForKeyword: defaultValueForKeyword,
-        defaultPortionForKeyword: defaultPortionForKeyword,
-        defaultDescriptionForKeyword: defaultDescriptionForKeyword,
-        variationsForKeyword: variationsForKeyword,
         defaultValue: defaultValue,
         defaultPortion: defaultPortion ? defaultPortion : 0,
         defaultDescription: defaultDescription,
         variations: variations,
-
         //TODO : userId 전역설정 기능 추가 후 수정
         memberId: auth.memberId,
       },

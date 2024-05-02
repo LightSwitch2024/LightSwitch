@@ -4,6 +4,7 @@ import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.common.service.PasswordService
 import com.lightswitch.core.domain.flag.repository.FlagRepository
+import com.lightswitch.core.domain.flag.service.FlagService
 import com.lightswitch.core.domain.member.dto.req.LogInReqDto
 import com.lightswitch.core.domain.member.dto.req.MemberUpdateReqDto
 import com.lightswitch.core.domain.member.dto.req.PasswordUpdateReqDto
@@ -30,6 +31,7 @@ class MemberService(
     private val redisService: RedisService,
     private val sdkKeyRepository: SdkKeyRepository,
     private val flagRepository: FlagRepository,
+    private val flagService: FlagService,
     @Value("\${spring.data.redis.code.signup}")
     val signupCode: String
 ) {
@@ -155,7 +157,7 @@ class MemberService(
         sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(savedUser.memberId!!)?.delete()
 
         flagRepository.findByMaintainerMemberIdAndDeletedAtIsNull(savedUser.memberId!!).map {
-            it.delete()
+            flagService.deleteFlag(it.flagId!!)
         }
 
         return MemberResponseDto(

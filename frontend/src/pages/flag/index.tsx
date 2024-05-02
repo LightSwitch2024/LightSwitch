@@ -11,18 +11,29 @@ interface Variation {
   description: string;
 }
 
+interface Keyword {
+  properties: Array<Property>;
+  description: string;
+  value: string;
+}
+
+interface Property {
+  property: string;
+  data: string;
+}
+
 interface FlagDetailItem {
   flagId: number;
   title: string;
   tags: Array<{ content: string; colorHex: string }>;
   description: string;
   type: string;
+  keywords: Array<Keyword>;
   defaultValue: string;
   defaultPortion: number;
   defaultDescription: string;
   variations: Array<Variation>;
-
-  userId: number;
+  memberId: number;
   createdAt: string;
   updatedAt: string;
   active: boolean;

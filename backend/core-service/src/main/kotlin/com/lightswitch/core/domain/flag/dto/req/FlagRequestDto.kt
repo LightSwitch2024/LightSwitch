@@ -9,16 +9,10 @@ data class FlagRequestDto(
     val tags: List<TagRequestDto>,
     val description: String,
     val type: FlagType,
+    val keywords: List<KeywordDto>,
     val defaultValue: String,
     val defaultPortion: Int,
     val defaultDescription: String,
     val variations: List<VariationDto>,
-
     val memberId: Long,
-
-    val keywords: List<KeywordDto>,
-    val defaultValueForKeyword: String,
-    val defaultPortionForKeyword: Int,
-    val defaultDescriptionForKeyword: String,
-    val variationsForKeyword: List<VariationDto>,
 )

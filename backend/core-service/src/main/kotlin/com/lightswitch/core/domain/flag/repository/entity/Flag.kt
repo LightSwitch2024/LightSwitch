@@ -31,5 +31,8 @@ class Flag(
     )
     val tags: MutableList<Tag> = mutableListOf(),
 
+    @OneToMany(mappedBy = "flag", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    val keywords: MutableList<Keyword> = mutableListOf(),
+
     var active: Boolean = false,
 ) : BaseEntity()

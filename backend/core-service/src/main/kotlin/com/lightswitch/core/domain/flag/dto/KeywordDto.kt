@@ -1,6 +1,7 @@
 package com.lightswitch.core.domain.flag.dto
 
 data class KeywordDto(
-    val keyword: String,
-    val description: String
+    val properties: List<PropertyDto>,
+    val description: String,
+    val value: String
 )

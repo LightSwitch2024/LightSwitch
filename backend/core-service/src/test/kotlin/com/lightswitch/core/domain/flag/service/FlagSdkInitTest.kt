@@ -4,6 +4,7 @@ import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.domain.flag.common.enum.FlagType
 import com.lightswitch.core.domain.flag.dto.KeywordDto
+import com.lightswitch.core.domain.flag.dto.PropertyDto
 import com.lightswitch.core.domain.flag.dto.VariationDto
 import com.lightswitch.core.domain.flag.dto.req.FlagInitRequestDto
 import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
@@ -101,11 +102,22 @@ class FlagSdkInitTest(
             ),
             memberId = memberId!!,
 
-            keywords = listOf(),
-            defaultValueForKeyword = "",
-            defaultPortionForKeyword = 0,
-            defaultDescriptionForKeyword = "",
-            variationsForKeyword = listOf()
+            keywords = listOf(
+                KeywordDto(
+                    properties = listOf(
+                        PropertyDto(
+                            property = "test",
+                            data = "test"
+                        ),
+                        PropertyDto(
+                            property = "test2",
+                            data = "test2"
+                        )
+                    ),
+                    description = "test",
+                    value = "test"
+                )
+            ),
         )
         flagService.createFlag(flagRequestDto)
 
@@ -133,20 +145,34 @@ class FlagSdkInitTest(
 
             keywords = listOf(
                 KeywordDto(
-                    keyword = "test",
+                    properties = listOf(
+                        PropertyDto(
+                            property = "test",
+                            data = "test"
+                        ),
+                        PropertyDto(
+                            property = "test2",
+                            data = "test2"
+                        )
+                    ),
                     description = "test",
+                    value = "test"
+                ),
+                KeywordDto(
+                    properties = listOf(
+                        PropertyDto(
+                            property = "test3",
+                            data = "test3"
+                        ),
+                        PropertyDto(
+                            property = "test4",
+                            data = "test4"
+                        )
+                    ),
+                    description = "test2",
+                    value = "test2"
                 )
             ),
-            defaultValueForKeyword = "1",
-            defaultPortionForKeyword = 100,
-            defaultDescriptionForKeyword = "test",
-            variationsForKeyword = listOf(
-                VariationDto(
-                    value = "2",
-                    portion = 0,
-                    description = "test",
-                )
-            )
         )
         flagService.createFlag(flagRequestDto2)
 
@@ -177,22 +203,7 @@ class FlagSdkInitTest(
             ),
             memberId = memberId,
 
-            keywords = listOf(
-                KeywordDto(
-                    keyword = "test",
-                    description = "test",
-                )
-            ),
-            defaultValueForKeyword = "A",
-            defaultPortionForKeyword = 100,
-            defaultDescriptionForKeyword = "test",
-            variationsForKeyword = listOf(
-                VariationDto(
-                    value = "B",
-                    portion = 0,
-                    description = "test",
-                )
-            )
+            keywords = listOf(),
         )
         flagService.createFlag(flagRequestDto3)
 

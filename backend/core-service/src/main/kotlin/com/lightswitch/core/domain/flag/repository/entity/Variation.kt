@@ -14,11 +14,6 @@ class Variation(
     @JoinColumn(name = "flag_id")
     val flag: Flag,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "flag_keyword_mapping_id")
-    @Nullable
-    val flagKeywordMapping: FlagKeywordMapping?,
-
     var value: String,
     var portion: Int,
     var description: String,
