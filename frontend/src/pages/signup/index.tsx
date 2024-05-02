@@ -132,7 +132,7 @@ const SignUp = () => {
       authCode: authCode,
     };
 
-    confirmAuthCode<ConfirmAuthCodeData>(
+    confirmAuthCode<boolean>(
       confirmAuthCodeData,
       (data) => {
         setIsAuth(data);

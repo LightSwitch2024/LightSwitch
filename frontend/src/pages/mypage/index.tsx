@@ -4,7 +4,7 @@ import { useRecoilValue } from 'recoil';
 
 import { deleteUser, getUserDetail, updateUser } from '@/api/userDetail/userAxios';
 import DelIcon from '@/assets/delete_forever.svg?react';
-import { AuthAtom } from '@/AuthAtom';
+import { AuthAtom } from '@/global/AuthAtom';
 import * as M from '@/pages/mypage/indexStyle';
 
 interface UserData {
