@@ -42,7 +42,7 @@ class FlagServiceTest {
 
     @BeforeEach
     fun setUp() {
-        val savedMember = memberRepository.findByEmail("test@gmail.com") ?: let {
+        val savedMember = memberRepository.findByEmailAndDeletedAtIsNull("test@gmail.com") ?: let {
             memberRepository.save(
                 Member(
                     lastName = "test",
