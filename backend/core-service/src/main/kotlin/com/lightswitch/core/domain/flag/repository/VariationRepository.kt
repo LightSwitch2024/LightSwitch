@@ -9,11 +9,8 @@ import org.springframework.stereotype.Repository
 interface VariationRepository : JpaRepository<Variation, Long> {
     //    fun findByFlagAndDefaultFlag(flag: Flag, defaultFlag: Boolean): Variation?
     fun findByFlagAndDeletedAtIsNull(flag: Flag): List<Variation>
-    fun findByFlagAndDefaultFlagIsTrueAndFlagKeywordMappingIsNullAndDeletedAtIsNull(flag: Flag): Variation?
-    fun findByFlagAndDefaultFlagIsFalseAndFlagKeywordMappingIsNullAndDeletedAtIsNull(flag: Flag): List<Variation>
     fun findByFlagFlagId(flagId: Long): List<Variation>
 
-    fun findByFlagAndDefaultFlagIsTrueAndFlagKeywordMappingIsNotNullAndDeletedAtIsNull(flag: Flag): Variation?
-    fun findByFlagAndDefaultFlagIsFalseAndFlagKeywordMappingIsNotNullAndDeletedAtIsNull(flag: Flag): List<Variation>
-
+    fun findByFlagAndDefaultFlagIsTrueAndDeletedAtIsNull(flag: Flag): Variation?
+    fun findByFlagAndDefaultFlagIsFalseAndDeletedAtIsNull(flag: Flag): List<Variation>
 }

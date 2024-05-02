@@ -18,21 +18,27 @@ interface Variation {
   description: string;
 }
 
+interface Keyword {
+  properties: Array<Property>;
+  description: string;
+  value: string;
+}
+
+interface Property {
+  property: string;
+  data: string;
+}
+
 interface FlagItem {
   title: string;
   tags: Array<TagItem>;
   description: string;
   type: string;
-  keywords: string[];
-  defaultValueForKeyword: string;
-  defaultPortionForKeyword: number;
-  defaultDescriptionForKeyword: string;
-  variationsForKeyword: Array<Variation>;
+  keywords: Array<Keyword>;
   defaultValue: string;
   defaultPortion: number;
   defaultDescription: string;
   variations: Array<Variation>;
-
   memberId: number;
 }
 
