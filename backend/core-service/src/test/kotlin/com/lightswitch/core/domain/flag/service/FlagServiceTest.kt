@@ -8,8 +8,11 @@ import com.lightswitch.core.domain.flag.dto.req.TagRequestDto
 import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.flag.repository.TagRepository
 import com.lightswitch.core.domain.flag.repository.VariationRepository
+import com.lightswitch.core.domain.member.dto.req.SdkKeyReqDto
 import com.lightswitch.core.domain.member.entity.Member
 import com.lightswitch.core.domain.member.repository.MemberRepository
+import com.lightswitch.core.domain.member.service.MemberService
+import com.lightswitch.core.domain.member.service.SdkKeyService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -38,10 +41,21 @@ class FlagServiceTest {
     @Autowired
     private lateinit var memberRepository: MemberRepository
 
+    @Autowired
+    private lateinit var memberService: MemberService
+
+    @Autowired
+    private lateinit var sdkKeyService: SdkKeyService
+
     var memberId: Long = 0L
 
     @BeforeEach
     fun setUp() {
+
+        memberRepository.findAllAByDeletedAtIsNull().map {
+            memberService.deleteUser(it.memberId!!)
+        }
+
         val savedMember = memberRepository.findByEmailAndDeletedAtIsNull("test@gmail.com") ?: let {
             memberRepository.save(
                 Member(
@@ -55,6 +69,12 @@ class FlagServiceTest {
         }
 
         memberId = savedMember.memberId!!
+
+        val sdkKeyReqDto = SdkKeyReqDto(
+            email = savedMember.email
+        )
+
+        sdkKeyService.createSdkKey(sdkKeyReqDto).key
     }
 
     @Test

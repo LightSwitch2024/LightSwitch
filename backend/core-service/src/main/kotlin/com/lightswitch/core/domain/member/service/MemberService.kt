@@ -150,7 +150,6 @@ class MemberService(
         val savedUser = memberRepository.findById(memberId)
             .orElseThrow { throw BaseException(ResponseCode.MEMBER_NOT_FOUND) }
 
-        savedUser.sdkKeys.clear()
         savedUser.delete()
 
         sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(savedUser.memberId!!)?.delete()
