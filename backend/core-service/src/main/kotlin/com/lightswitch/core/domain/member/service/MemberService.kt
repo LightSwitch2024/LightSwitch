@@ -110,8 +110,7 @@ class MemberService(
     fun logIn(logInReqDto: LogInReqDto): MemberResDto {
 
         val savedMember: Member =
-            memberRepository.findByEmailAndDeletedAtIsNull(logInReqDto.email)
-                ?: throw MemberException("가입되지 않은 이메일입니다.")
+            memberRepository.findByEmail(logInReqDto.email) ?: throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
 
         val isCorrectPW = passwordService.matches(logInReqDto.password, savedMember.password)
 
@@ -124,7 +123,7 @@ class MemberService(
                 telNumber = savedMember.telNumber
             )
         } else {
-            throw MemberException("비밀번호가 틀렸습니다.")
+            throw BaseException(ResponseCode.INVALID_PASSWORD)
         }
     }
 
@@ -143,36 +142,10 @@ class MemberService(
                 telNumber = savedMember.telNumber,
             )
         } else {
-            throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
+            throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
         }
     }
 
-    //     유저 정보 삭제
-    fun deleteUser(memberId: Long): MemberResponseDto {
-        val savedUser = memberRepository.findById(memberId)
-            .orElseThrow { throw BaseException(ResponseCode.MEMBER_NOT_FOUND) }
-
-        savedUser.delete()
-
-        sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(savedUser.memberId!!)?.delete()
-
-        flagRepository.findByMaintainerMemberIdAndDeletedAtIsNull(savedUser.memberId!!).map {
-            flagService.deleteFlag(it.flagId!!)
-        }
-
-        return MemberResponseDto(
-            memberId = savedUser.memberId!!,
-            firstName = savedUser.firstName,
-            lastName = savedUser.lastName,
-            telNumber = savedUser.telNumber,
-            email = savedUser.email,
-            password = savedUser.password,
-            sdkKey = "",
-            createdAt = savedUser.createdAt.toString(),
-            updatedAt = savedUser.updatedAt.toString(),
-            deletedAt = savedUser.deletedAt.toString(),
-        )
-    }
 
     // 이름, 전화번호 변경
     fun updateUser(email: String, newData: MemberUpdateReqDto): MemberResDto? {
