@@ -549,7 +549,9 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               handleVariationChange(e, idx)
             }
-            onBlur={(e) => checkFormatWithType(e)}
+            onBlur={(e: React.FocusEvent<HTMLInputElement, Element>) =>
+              checkFormatWithType(e)
+            }
             $flag={isDetailMode()}
           />
           <S.FlagVariationInput

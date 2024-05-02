@@ -390,17 +390,17 @@ class FlagServiceTest {
             tags = listOf(tag3, tag4),
             description = "test3",
             type = FlagType.INTEGER,
-            defaultValue = "A",
+            defaultValue = "1",
             defaultPortion = 10,
             defaultDescription = "A test",
             variations = listOf(
                 VariationDto(
-                    value = "B",
+                    value = "10",
                     portion = 40,
                     description = "B test",
                 ),
                 VariationDto(
-                    value = "C",
+                    value = "100",
                     portion = 50,
                     description = "C test",
                 )
