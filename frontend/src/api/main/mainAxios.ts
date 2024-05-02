@@ -9,6 +9,10 @@ interface BaseResponse<T> {
   data: T;
 }
 
+interface SdkKeyReqDto {
+  email: string;
+}
+
 export async function getMainPageOverview<T>(
   memberId: number,
   onSuccess: (data: T) => void,
@@ -69,6 +73,17 @@ export async function getFlagListByKeyword<T>(
 ): Promise<void> {
   axios
     .get<BaseResponse<T>>(`/api/v1/flag/keyword/${keyword}`)
+    .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
+    .catch((err: AxiosError) => onFail(err));
+}
+
+export async function createSdkKey<T>(
+  data: SdkKeyReqDto,
+  onSuccess: (data: T) => void,
+  onFail: (err: AxiosError) => void,
+): Promise<void> {
+  axios
+    .post<BaseResponse<T>>('/api/v1/member/sdkkey', data)
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
     .catch((err: AxiosError) => onFail(err));
 }
