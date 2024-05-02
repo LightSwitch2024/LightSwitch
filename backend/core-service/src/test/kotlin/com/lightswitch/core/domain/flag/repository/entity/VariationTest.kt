@@ -60,7 +60,6 @@ class VariationTest {
             portion = 100,
             description = "test",
             value = "TRUE",
-            flagKeywordMapping = null,
         )
 
         val variationOfFalse = Variation(
@@ -68,7 +67,6 @@ class VariationTest {
             portion = 0,
             description = "test",
             value = "FALSE",
-            flagKeywordMapping = null,
         )
 
         // when

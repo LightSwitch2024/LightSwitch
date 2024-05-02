@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface KeywordRepository : JpaRepository<Keyword, Long> {
-    fun findByKeyword(keyword: String): Keyword?
+    fun findByFlagFlagId(flagId: Long): List<Keyword>
 }

@@ -3,6 +3,7 @@ package com.lightswitch.core.domain.flag.repository.entity
 import com.lightswitch.core.domain.flag.common.enum.FlagType
 import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.flag.repository.KeywordRepository
+import com.lightswitch.core.domain.flag.repository.PropertyRepository
 import com.lightswitch.core.domain.member.entity.Member
 import com.lightswitch.core.domain.member.repository.MemberRepository
 import com.lightswitch.core.domain.member.service.MemberService
@@ -16,13 +17,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Transactional
 @SpringBootTest
-class KeywordTest {
-
-    @Autowired
-    private lateinit var keywordRepository: KeywordRepository
-
-    @Autowired
-    private lateinit var flagRepository: FlagRepository
+class PropertyTest {
 
     @Autowired
     private lateinit var memberRepository: MemberRepository
@@ -30,7 +25,16 @@ class KeywordTest {
     @Autowired
     private lateinit var memberService: MemberService
 
-    var flag: Flag? = null
+    @Autowired
+    private lateinit var flagRepository: FlagRepository
+
+    @Autowired
+    private lateinit var keywordRepository: KeywordRepository
+
+    @Autowired
+    private lateinit var propertyRepository: PropertyRepository
+
+    var keyword: Keyword? = null
 
     @BeforeEach
     fun setUp() {
@@ -50,35 +54,39 @@ class KeywordTest {
 
         val savedFlag = flagRepository.save(
             Flag(
-                title = "test",
-                description = "test",
-                type = FlagType.BOOLEAN,
-                maintainer = savedMember
+                title = "test", description = "test", type = FlagType.BOOLEAN, maintainer = savedMember
             )
         )
-        flag = savedFlag
+
+        val savedKeyword = keywordRepository.save(
+            Keyword(
+                flag = savedFlag,
+                description = "test",
+                value = "test"
+            )
+        )
+        keyword = savedKeyword
     }
 
     @Test
-    fun `keyword 저장 테스트`() {
+    fun `property 저장 테스트`() {
         // given
-        val keyword1 = Keyword(
-            flag = flag!!, description = "test", value = "test"
+        val property1 = Property(
+            keyword = keyword!!, property = "test", data = "test"
         )
 
-        val keyword2 = Keyword(
-            flag = flag!!, description = "test2", value = "test2"
+        val property2 = Property(
+            keyword = keyword!!, property = "test2", data = "test2"
         )
 
         // when
-        val keywordList = keywordRepository.saveAll(listOf(keyword1, keyword2))
+        val propertyList = propertyRepository.saveAll(listOf(property1, property2))
 
         // then
-        assertThat(keywordList).hasSize(2)
-        assertThat(keywordList.first().description).isEqualTo("test")
-        assertThat(keywordList.first().value).isEqualTo("test")
-        assertThat(keywordList.last().description).isEqualTo("test2")
-        assertThat(keywordList.last().value).isEqualTo("test2")
+        assertThat(propertyList).hasSize(2)
+        assertThat(propertyList.first().property).isEqualTo("test")
+        assertThat(propertyList.first().data).isEqualTo("test")
+        assertThat(propertyList.last().property).isEqualTo("test2")
+        assertThat(propertyList.last().data).isEqualTo("test2")
     }
-
 }
