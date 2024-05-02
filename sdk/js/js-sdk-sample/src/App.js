@@ -11,7 +11,7 @@ function App() {
       const lightswitch = new LSClient();
       const user = new LSUser("123", 1);
       lightswitch.init({
-        sdkKey: "8030ca7d78fb464fb9b661a715bbab13",
+        sdkKey: "d8d2d76fc0514279b00c82bf9515f66d",
         onError: (err) => {
           console.log(err);
         },
