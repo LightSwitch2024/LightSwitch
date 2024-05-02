@@ -1,6 +1,5 @@
 package com.lightswitch.impl;
 
-import static java.net.HttpURLConnection.*;
 import static java.nio.charset.StandardCharsets.*;
 
 import java.io.BufferedReader;
@@ -23,25 +22,24 @@ import com.lightswitch.domain.dto.FlagResponse;
 import com.lightswitch.domain.dto.SseResponse;
 import com.lightswitch.domain.dto.UserKeyResponse;
 import com.lightswitch.exception.FlagNotFoundException;
-import com.lightswitch.exception.FlagRuntimeException;
 import com.lightswitch.exception.FlagServerConnectException;
 import com.lightswitch.exception.InvalidSSEFormatException;
-import com.lightswitch.util.SseServlet;
+import com.lightswitch.util.HttpConnector;
 
-public class FlagServiceImpl implements FlagService {
+public class LightSwitch implements FlagService {
 
 	private HttpURLConnection connection;
 	private Thread thread;
 
-	private FlagServiceImpl() {
+	private LightSwitch() {
 	}
 
-	private static class FlagServiceHolder {
-		private static final FlagServiceImpl INSTANCE = new FlagServiceImpl();
+	private static class LightSwitchHolder {
+		private static final LightSwitch INSTANCE = new LightSwitch();
 	}
 
-	public static FlagServiceImpl getInstance() {
-		return FlagServiceHolder.INSTANCE;
+	public static LightSwitch getInstance() {
+		return LightSwitchHolder.INSTANCE;
 	}
 
 	@Override
@@ -65,8 +63,8 @@ public class FlagServiceImpl implements FlagService {
 	}
 
 	private HttpURLConnection setupPostConnection(String endpoint, String sdkKey) {
-		SseServlet servlet = new SseServlet();
-		HttpURLConnection connection = servlet.getConnect(endpoint, "POST", 0, false);
+		HttpConnector connector = new HttpConnector();
+		HttpURLConnection connection = connector.getConnect(endpoint, "POST", 0, false);
 
 		try {
 			return writeSdkKey(connection, sdkKey);
@@ -98,8 +96,8 @@ public class FlagServiceImpl implements FlagService {
 	}
 
 	private HttpURLConnection setupGetConnection(String endpoint) {
-		SseServlet servlet = new SseServlet();
-		return servlet.getConnect(endpoint, "GET", 0, true);
+		HttpConnector connector = new HttpConnector();
+		return connector.getConnect(endpoint, "GET", 0, true);
 	}
 
 	private HttpURLConnection writeSdkKey(HttpURLConnection connection, String sdkKey) throws IOException {
@@ -165,7 +163,7 @@ public class FlagServiceImpl implements FlagService {
 	}
 
 	public static void main(String[] args) {
-		FlagService flagService = FlagServiceImpl.getInstance();
+		FlagService flagService = LightSwitch.getInstance();
 		flagService.init("d8d2d76fc0514279b00c82bf9515f66d");
 
 		try {
