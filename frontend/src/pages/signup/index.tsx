@@ -134,8 +134,8 @@ const SignUp = () => {
 
     confirmAuthCode<boolean>(
       confirmAuthCodeData,
-      (data) => {
-        setIsAuth(data);
+      () => {
+        setIsAuth(true);
       },
       (err) => {
         console.log(err);
