@@ -7,11 +7,12 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 from models import Flags
-from streaming import StreamEvent
+from stream_manager import StreamManager, StreamEvent
 from exceptions import StreamDataError, InvalidJsonResponseError
+from utils import handle_event
 
 DEFAULT_API_URL = 'http://localhost:8000/api/v1/'
-DEFAULT_REALTIME_API_URL = 'http://localhost:8000/api/sse/subscribe/a'
+DEFAULT_REALTIME_API_URL = 'http://localhost:8000/api/v1/sse/subscribe'
 JsonType = typing.Union[
     None,
     int,
@@ -28,6 +29,10 @@ class Lightswitch:
     lightswitch http API와 통신하는 interface를 제공
     """
 
+    # 초기화할 때
+    # 1.모든 플래그를 가져와서 저장
+    # 2.sdk 키로 subscribe post 해서 userkey 받고 : api/v1/sse/subscribe
+    # 3.subscribe/userkey 로 sse연결
     def __init__(
         self,
         environment_key: typing.Optional[str]= None,
@@ -48,9 +53,9 @@ class Lightswitch:
             raise ValueError("환경 키가 필요합니다.")
 
         self.session = requests.Session()
-        self.session.headers.update(
-            **{"X-Environment-Key": environment_key}
-        )
+        # self.session.headers.update(
+        #     **{"X-Environment-Key": environment_key}
+        # )
         self.session.proxies.update(proxies or {})
         retries = retries or Retry(total=5, backoff_factor=0.1, status_forcelist=[500, 502, 503, 504])
 
@@ -67,6 +72,53 @@ class Lightswitch:
         self.environment_url = f"{self.api_url}environment"
         self.environment_flags_url = f"{self.api_url}sdk/init" # 현재는 이 주소만 정의됨
         self.identity_flags_url = f"{self.api_url}identity"
+
+        self.flags = None
+        self.userkey = None
+
+        # 모든 플래그 가져오기
+        self._initialize_environment(environment_key)
+        # userkey 받아오기
+        self.userkey = self._get_userkey(environment_key)
+        # 받아온 userkey로 SSE 구독하기
+        self.initialize_sse_stream_manager()
+        # self.stream_manager = StreamManager(
+        #     stream_url=sse_realtime_api_url,
+        #     on_event=handle_event,
+        #     request_timeout_seconds=request_timeout_seconds,
+        # )
+        # self.stream_manager.start()
+
+    def initialize_sse_stream_manager(self):
+        self.stream_manager = StreamManager(
+            stream_url=self.sse_realtime_api_url,
+            on_event=self.handle_event,
+            request_timeout_seconds=self.request_timeout_seconds,
+        )
+        self.stream_manager.start()
+
+    # sdk 키로 subscribe post 해서 userkey 받기
+    def _get_userkey(self):
+        headers={
+            'Content-Type': 'application/json',
+        }
+        payload={
+            'sdkKey': 'SDK_KEY'
+        }
+        response = self.session.post(
+            url=self.sse_realtime_api_url,
+            headers=headers,
+            json=payload
+        )
+        if response.status_code == 200:
+            data = response.json()
+            user_key = data['data']['userKey']
+            return user_key
+        else:
+            raise Exception(f"userKey를 받아오는 데 실패했습니다. 상태 코드: {response.status_code}")
+
+    def _initialize_environment(self, environment_key: typing.Optional[str]) -> None:
+        self.flags = self._get_all_environment_flags_from_api()
 
     # 새로운 SSE event를 받았을 때 EventStreamManager 스레드에 의해 호출되는 메서드
     def process_stream_event_update(self, event: StreamEvent) -> None:
@@ -120,6 +172,7 @@ class Lightswitch:
     def _get_environment_from_api(self) -> JsonType:
         environment_data = self._get_json_response(self.environment_url, method="GET")
         return environment_data # 나중에 응답 데이터 유효성 검사 로직 추가
+
     # 해당 환경의 플래그 데이터 모두 가져오기
     def _get_all_environment_flags_from_api(self) -> Flags:
         try:

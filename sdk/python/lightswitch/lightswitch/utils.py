@@ -1,6 +1,8 @@
 import hashlib
 import typing
 
+from lightswitch.lightswitch.stream_manager import StreamEvent
+
 
 def get_hashed_percentage_for_object_ids(
     object_ids: typing.Iterable[str], iterations: int = 1
@@ -29,6 +31,10 @@ def get_hashed_percentage_for_object_ids(
         )
 
     return value
+
+
+def handle_event(event: StreamEvent) -> None:
+    print(f"Received event: {event.event}, {event.data}")
 
 
 print(get_hashed_percentage_for_object_ids(["123"]))

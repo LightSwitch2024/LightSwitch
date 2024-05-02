@@ -19,15 +19,34 @@ lightswitch = Lightswitch(
 # 해당 환경의 플래그 데이터 전부 가져오기 - 최초에 DB의 데이터를 모두 가져오고, 그런 다음 SSE 연결
 flags = lightswitch.get_all_environment_flags()
 """
-"data": [
+{
+  "code": 0,
+  "message": "string",
+  "data": [
     {
       "flagId": 0,
       "title": "string",
       "description": "string",
       "type": "BOOLEAN",
+      "keywords": [
+        {
+          "keyword": "string",
+          "description": "string"
+        }
+      ],
+      "defaultValueForKeyword": "string",
+      "defaultPortionForKeyword": 0,
+      "defaultDescriptionForKeyword": "string",
+      "variationsForKeyword": [
+        {
+          "value": "string",
+          "portion": 0,
+          "description": "string"
+        }
+      ],
       "defaultValue": "string",
-      "defaultValuePortion": 0,
-      "defaultValueDescription": "string",
+      "defaultPortion": 0,
+      "defaultDescription": "string",
       "variations": [
         {
           "value": "string",
@@ -42,6 +61,7 @@ flags = lightswitch.get_all_environment_flags()
       "active": true
     }
   ]
+}
 """
 # "PD-L1 22C3 Bladder"플래그가 켜져있는지 확인
 new_Biomarker = flags.is_feature_enabled("PD-L1 22C3 Bladder")

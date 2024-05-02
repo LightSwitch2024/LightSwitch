@@ -10,8 +10,10 @@ from exceptions import StreamDataError
 
 logger = logging.getLogger(__name__)
 
+
 class StreamEvent(Protocol):
     data: str
+
 
 class StreamManager(threading.Thread):
     def __init__(
@@ -31,19 +33,23 @@ class StreamManager(threading.Thread):
     def run(self) -> None:
         while not self._stop_event.is_set():
             try:
-                with requests.get(
-                    self.stream_url,
-                    stream=True,
-                    headers={"Accept": "application/json, text/event-stream"},
-                    timeout=self.request_timeout_seconds
-                ) as r: # r 객체는 HTTP 응답임
-                    sse_client = sseclient.SSEClient(
-                        # HTTP 응답 객체를 Generator[bytes, None, None]타입으로 변환
-                        # -> 메모리 사용의 효율성을 높이는 방식으로 byte 데이터를 생성하고 반환
-                        cast(Generator[bytes, None, None], r)
-                    )
-                    for event in sse_client.events(): # SSE 스트림에서 이벤트를 반복해서 읽어옴
-                        self.on_event(event) # event는 StreamEvent 객체
+                # response = requests.get(self.stream_url, stream=True)
+                # print("res", response)
+                sse_client = sseclient.SSEClient(self.stream_url, headers={"Accept": "application/json, text/event-stream"}, timeout=None)
+                # sse_client = sseclient.SSEClient(
+                #     self.stream_url,
+                #     headers={"Accept": "application/json, text/event-stream"},
+                #     timeout=None
+                # )
+                print("sse client 출력", sse_client)
+                for event in sse_client:
+                    print(f"Event: {event.event}")
+                    print(f"Data: {event.data}")
+                    self.on_event(event)
+                # for event in sse_client:
+                #     print("event 출력", event.data)
+                #     self.on_event(event)
+
             except requests.exceptions.ReadTimeout:
                 pass
             except (StreamDataError, requests.RequestException):
