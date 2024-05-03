@@ -6,17 +6,20 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kr.lightswitch.network.LightSwitchService
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-
+import kotlinx.serialization.json.Json
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-    const val BASE_URL = "https://lightswitch.kr/"
+    const val BASE_URL = "http://172.31.16.1:8000/"
+//    const val BASE_URL = "https://lightswitch.kr/"
 
     @Provides
     @Singleton
@@ -46,7 +49,9 @@ object NetworkModule {
         return Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl(BASE_URL)
-//            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(
+                Json.asConverterFactory(
+                    "application/json; charset=UTF8".toMediaType()))
             .build()
     }
 

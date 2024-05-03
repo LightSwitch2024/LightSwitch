@@ -2,8 +2,16 @@ package kr.lightswitch.ui
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
+import kr.lightswitch.model.response.Flag
 import kr.lightswitch.network.LightSwitchRepository
 import javax.inject.Inject
 
@@ -11,7 +19,8 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val lightSwitchRepository: LightSwitchRepository
 ): ViewModel() {
-    private val _text = MutableStateFlow("")
-    val text = _text.asStateFlow()
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val flagState: Flow<List<Flag>> = lightSwitchRepository.getExample()
+        .mapNotNull { it.data }
 }
