@@ -1,3 +1,6 @@
+import Description from '@assets/description.svg?react';
+import OutlinedFlagBig from '@assets/outlined-flag-big.svg?react';
+import * as S from '@pages/flag/indexStyle';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -61,29 +64,7 @@ interface TagItem {
 }
 
 const FlagDetail = () => {
-  const [flagDetail, setFlagDetail] = useState<FlagDetailItem>();
-  // const [isEditMode, setIsEditMode] = useState<boolean>(false);
-
-  // const [allTags, setAllTags] = useState<Array<TagItem>>([]);
-
-  // const [editedFlagId, setEditedFlagId] = useState<number>();
-  // const [editedTitle, setEditedTitle] = useState<string>('');
-  // const [editedDescription, setEditedDescription] = useState<string>('');
-  // const [editedType, setEditedType] = useState<string>();
-  // const [editedDefaultValue, setEditedDefaultValue] = useState<string>('');
-  // const [editedDefaultPortion, setEditedDefaultPortion] = useState<number>(100);
-  // const [editedDefaultDescription, setEditedDefaultDescription] = useState<string>('');
-  // const [editedVariation, setEditedVariation] = useState<string>('');
-  // const [editedVariationPortion, setEditedVariationPortion] = useState<number>(0);
-  // const [editedVariationDescription, setEditedVariationDescription] =
-  //   useState<string>('');
-
-  // const [tags, setTags] = useState<Array<{ content: string; colorHex: string }>>([]);
-  // const [selectedTags, setSelectedTags] = useState<
-  //   Array<{ content: string; colorHex: string }>
-  // >([]);
-  // const [tagSearchKeyword, setTagSearchKeyword] = useState<string>('');
-
+  const [flagDetail, setFlagDetail] = useState<FlagDetailItem>({} as FlagDetailItem);
   const { flagId } = useParams<{ flagId: string }>();
 
   /**
@@ -331,8 +312,8 @@ const FlagDetail = () => {
   // }, [tagSearchKeyword]);
 
   return (
-    <div>
-      {flagDetail && (
+    <S.MainContainer>
+      {/* {flagDetail && (
         <CreateModal
           closeCreateModal={(): void => {
             console.log('close');
@@ -340,8 +321,43 @@ const FlagDetail = () => {
           mode="detail"
           flagDetail={flagDetail}
         />
-      )}
-    </div>
+      )} */}
+      <S.FlagContainer>
+        <S.FlagTitleAndTagsLayer>
+          <S.FlagTitleInputContainer>
+            <S.FlagTitleIconContainer>
+              <OutlinedFlagBig />
+            </S.FlagTitleIconContainer>
+            <S.FlagTitleInput
+              placeholder="플래그 이름"
+              value={flagDetail.title}
+              // onChange={handleTitleChange}
+              // onBlur={checkDuplicatedTitle}
+            />
+          </S.FlagTitleInputContainer>
+        </S.FlagTitleAndTagsLayer>
+
+        <S.FlagDescriptionLabel>
+          <S.FlagDescriptionContainer>
+            <S.FlagDescriptionIconContainer>
+              <Description />
+            </S.FlagDescriptionIconContainer>
+            <S.FlagDescriptionTextContainer>
+              <S.LabelText>설명</S.LabelText>
+            </S.FlagDescriptionTextContainer>
+          </S.FlagDescriptionContainer>
+        </S.FlagDescriptionLabel>
+        <S.FlagDescriptionTextArea
+          placeholder="설명"
+          value={description}
+          onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
+            handleDescriptionChange(event)
+          }
+          $flag={isDetailMode()}
+        />
+      </S.FlagContainer>
+      <S.HistoryContainer></S.HistoryContainer>
+    </S.MainContainer>
   );
 };
 
