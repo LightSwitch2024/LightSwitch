@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation)
     // DI
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
@@ -70,6 +71,9 @@ dependencies {
     api(libs.retrofit.core)
     api(libs.retrofit.kotlin.serialization)
     implementation(libs.kotlinx.serialization.json)
+
+    // Logger
+    implementation(libs.timber)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
