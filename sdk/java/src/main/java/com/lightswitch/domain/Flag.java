@@ -1,6 +1,5 @@
 package com.lightswitch.domain;
 
-import java.io.Serializable;
 import java.util.List;
 
 import com.lightswitch.util.HashUtil;
@@ -11,11 +10,7 @@ public class Flag {
 	private String title;
 	private String description;
 	private FlagType type;
-	private List<Keywords> keywords;
-	private String defaultValueForKeyword;
-	private int defaultPortionForKeyword;
-	private String defaultDescriptionForKeyword;
-	private List<Variation> variationsForKeyword;
+	private List<Keyword> keywords;
 	private String defaultValue;
 	private int defaultPortion;
 	private String defaultDescription;
@@ -38,52 +33,65 @@ public class Flag {
 		return type;
 	}
 
-	public Object getValue(Context context) {
-		List<String> properties = context.getProperty();
-		boolean containsKeyword = keywords.stream().
-			anyMatch(flagKeywords -> properties.contains(flagKeywords.getKeyword()));
-
-		if(containsKeyword){
-			return getValue(context, variationsForKeyword, defaultValueForKeyword);
-		}
-		return getValue(context, variations, defaultValue);
+	public boolean isActive() {
+		return active;
 	}
 
-	private Serializable getValue(Context context, List<Variation> variations, String defaultValue) {
-		double percentage = HashUtil.getHashedPercentage(String.valueOf(context.getUserId()), 1);
-		String value = defaultValue;
-		for (Variation variation : variations) {
-			int portion = variation.getPortion();
+	public void switchFlag(boolean active) {
+		this.active = active;
+	}
 
-			percentage -= portion;
-			if(percentage < 0){
-				value = variation.getValue();
-				break;
+	public String getDefaultValue() {
+		return defaultValue;
+	}
+
+	public <T> T getValue(LSUser LSUser) {
+		String value = isActive() ? calValue(LSUser) : defaultValue;
+		return getValueWithType(value);
+	}
+
+	private String calValue(LSUser LSUser) {
+		for (Keyword keyword : keywords) {
+			if (keyword.getProperties().stream()
+				.allMatch(property -> LSUser.getProperty(property.getProperty()).equals(property.getData()))) {
+				return keyword.getValue();
 			}
 		}
-
-		if (type.equals(FlagType.BOOLEAN)) {
-			return Boolean.valueOf(value);
-		} else if (type.equals(FlagType.NUMBER)) {
-			return Integer.valueOf(value);
-		}
-		return value;
+		return calValue(LSUser.getUserId());
 	}
 
-	public Flag(long flagId, String title, String description, FlagType type, List<Keywords> keywords,
-		String defaultValueForKeyword, int defaultPortionForKeyword, String defaultDescriptionForKeyword,
-		List<Variation> variationsForKeyword, String defaultValue, int defaultPortion, String defaultDescription,
-		List<Variation> variations, int maintainerId, String createdAt, String updatedAt, String deletedAt,
-		boolean active) {
+	private <T> T getValueWithType(String value) {
+		if (type.equals(FlagType.BOOLEAN)) {
+			return (T)Boolean.valueOf(value);
+		} else if (type.equals(FlagType.STRING)) {
+			return (T)String.valueOf(value);
+		} else if (type.equals(FlagType.NUMBER)) {
+			return (T)Integer.valueOf(value);
+		}
+		return null;
+	}
+
+	private String calValue(int userId) {
+		double percentage = HashUtil.getHashedPercentage(String.valueOf(userId), 1);
+
+		for (Variation variation : variations) {
+			percentage -= variation.getPortion();
+			if (percentage <= 0) {
+				return variation.getValue();
+			}
+		}
+		return defaultValue;
+	}
+
+	public Flag(long flagId, String title, String description, FlagType type, List<Keyword> conditions,
+		String defaultValue, int defaultPortion, String defaultDescription, List<Variation> variations,
+		int maintainerId,
+		String createdAt, String updatedAt, String deletedAt, boolean active) {
 		this.flagId = flagId;
 		this.title = title;
 		this.description = description;
 		this.type = type;
-		this.keywords = keywords;
-		this.defaultValueForKeyword = defaultValueForKeyword;
-		this.defaultPortionForKeyword = defaultPortionForKeyword;
-		this.defaultDescriptionForKeyword = defaultDescriptionForKeyword;
-		this.variationsForKeyword = variationsForKeyword;
+		this.keywords = conditions;
 		this.defaultValue = defaultValue;
 		this.defaultPortion = defaultPortion;
 		this.defaultDescription = defaultDescription;

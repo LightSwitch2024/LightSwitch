@@ -1,6 +1,6 @@
 package com.lightswitch.impl;
 
-import com.lightswitch.domain.Context;
+import com.lightswitch.domain.LSUser;
 
 public interface FlagService {
 
@@ -8,6 +8,5 @@ public interface FlagService {
 
 	void destroy();
 
-	Object getFlag(String key, Context context);
-
+	<T> T getFlag(String key, LSUser LSUser);
 }
