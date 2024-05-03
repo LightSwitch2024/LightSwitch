@@ -3,11 +3,21 @@ import DashBoard from '@assets/dashboard.svg?react';
 import Log from '@assets/logout.svg?react';
 import Flags from '@assets/miniflag.svg?react';
 import * as S from '@components/tab/indexStyle';
-import { isLoggedInSelector } from '@global/AuthAtom';
-import { useRecoilValue } from 'recoil';
+import { AuthAtom } from '@global/AuthAtom';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 
 const index = () => {
-  const isLoggedIn = useRecoilValue(isLoggedInSelector);
+  const [auth, setAuth] = useRecoilState(AuthAtom);
+  const navigate = useNavigate();
+
+  const handleLogout = (): void => {
+    setAuth((prevAuth) => ({
+      ...prevAuth,
+      isAuthenticated: false,
+    }));
+    navigate('/login');
+  };
 
   return (
     <S.TabBar>
@@ -22,15 +32,31 @@ const index = () => {
               <Flags />
               <S.NavLinkWrapper to="/create">Features</S.NavLinkWrapper>
             </S.LoginWrapper>
-            {isLoggedIn ? (
+            {auth.isAuthenticated ? (
               <S.OutWrapper>
                 <S.LoginWrapper>
                   <Account />
                   <S.NavLinkWrapper to="/mypage">사용자 계정</S.NavLinkWrapper>
                 </S.LoginWrapper>
                 <S.LogoutWrapper>
-                  <Log />
-                  <S.JustText>로그 아웃</S.JustText>
+                  <Log style={{ marginTop: '0.3rem' }} />
+                  <S.LogOutbutton
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      fontWeight: 'bold',
+                      fontSize: '1.2rem',
+                      border: 'none',
+                      textDecoration: 'none',
+                      background: 'none',
+                      cursor: 'pointer',
+                      color: 'white',
+                    }}
+                    onClick={handleLogout}
+                  >
+                    로그 아웃
+                  </S.LogOutbutton>
                 </S.LogoutWrapper>
               </S.OutWrapper>
             ) : (
