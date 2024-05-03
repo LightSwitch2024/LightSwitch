@@ -4,7 +4,7 @@ MAINTAINER LightSwitch <lightswitch2024@gmail.com>
 
 ARG JAR_FILE=build/libs/*.jar
 COPY ${JAR_FILE} app.jar
-ENTRYPOINT ["java", "-Dspring.profiles.active=production", "-jar", "/app.jar"]
+ENTRYPOINT ["java" , "-jar", "/app.jar"]
 
 RUN \
     apt-get update && \

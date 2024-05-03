@@ -38,3 +38,19 @@ logging:
 
 server:
   forward-headers-strategy: framework
+
+---
+spring:
+  config:
+    activate:
+      on-profile: blue
+server:
+  port: 8000
+
+---
+spring:
+  config:
+    activate:
+      on-profile: green
+server:
+  port: 8001
