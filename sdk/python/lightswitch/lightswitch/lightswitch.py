@@ -6,10 +6,10 @@ from datetime import datetime, timezone
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
-from models import Flags
-from stream_manager import StreamManager, StreamEvent
-from exceptions import StreamDataError, InvalidJsonResponseError
-from utils import handle_event
+from .models import Flags
+from .stream_manager import StreamManager, StreamEvent
+from .exceptions import StreamDataError, InvalidJsonResponseError
+from .utils import handle_event
 
 DEFAULT_API_URL = 'http://localhost:8000/api/v1/'
 DEFAULT_REALTIME_API_URL = 'http://localhost:8000/api/v1/sse/subscribe'
@@ -82,12 +82,7 @@ class Lightswitch:
         self.userkey = self._get_userkey(environment_key)
         # 받아온 userkey로 SSE 구독하기
         self.initialize_sse_stream_manager()
-        # self.stream_manager = StreamManager(
-        #     stream_url=sse_realtime_api_url,
-        #     on_event=handle_event,
-        #     request_timeout_seconds=request_timeout_seconds,
-        # )
-        # self.stream_manager.start()
+
 
     def initialize_sse_stream_manager(self):
         self.stream_manager = StreamManager(
@@ -209,14 +204,25 @@ class Lightswitch:
     def _get_json_response(
         self,
         url: str,
-        method: str
+        method: str,
+        body: typing.Optional[typing.Dict[str, typing.Any]] = None
     ) -> JsonType:
         try:
             request_method = getattr(self.session, method.lower())
-            response = request_method(
-                url,
-                timeout=self.request_timeout_seconds
-            )
+            headers = {}
+            if body is not None and method.upper() == "POST":
+                headers["Content-Type"] = "application/json"
+                response = request_method(
+                    url,
+                    data=json.dumps(body),
+                    headers=headers,
+                    timeout=self.request_timeout_seconds
+                )
+            else:
+                response = request_method(
+                    url,
+                    timeout=self.request_timeout_seconds
+                )
             if response.status_code != 200:
                 raise InvalidJsonResponseError(
                     "유효하지 않은 request입니다. Response status code: %d",

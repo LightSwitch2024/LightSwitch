@@ -6,7 +6,7 @@ from typing import Callable, Generator, Optional, Protocol, cast
 import requests
 import sseclient
 
-from exceptions import StreamDataError
+from .exceptions import StreamDataError
 
 logger = logging.getLogger(__name__)
 

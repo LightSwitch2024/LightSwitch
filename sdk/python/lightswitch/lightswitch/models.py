@@ -7,6 +7,15 @@ from lightswitch.lightswitch.exceptions import FeatureNotFoundError
 
 # 데이터 모델 정의
 @dataclass
+class LSUser:
+    user_id: int
+    property: typing.Dict[str, str] = field(default_factory=dict)
+
+    def set_property(self, key: str, value: str) -> 'LSUser':
+        self.property[key] = value
+        return self
+
+@dataclass
 class BaseFlag:
     enabled: bool
     value: typing.Union[bool, None]
