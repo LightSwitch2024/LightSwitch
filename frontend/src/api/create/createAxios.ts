@@ -52,3 +52,14 @@ export async function createFlag<T>(
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
     .catch((err: AxiosError) => onFail(err));
 }
+
+export async function confirmDuplicateFlag<T>(
+  keyword: string,
+  onSuccess: (data: T) => void,
+  onFail: (err: AxiosError) => void,
+): Promise<void> {
+  axios
+    .get<BaseResponse<T>>(`/api/v1/flag/confirm/${keyword}`)
+    .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
+    .catch((err: AxiosError) => onFail(err));
+}

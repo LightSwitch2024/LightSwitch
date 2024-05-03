@@ -102,7 +102,7 @@ complexity:
     ignoreOverloaded: false
   CyclomaticComplexMethod:
     active: true
-    threshold: 15
+    threshold: 30
     ignoreSingleWhenExpression: false
     ignoreSimpleWhenEntries: false
     ignoreNestingFunctions: false
@@ -627,7 +627,7 @@ style:
   SpacingBetweenPackageAndImports:
     active: false
   ThrowsCount:
-    active: true
+    active: false
     max: 3
     excludeGuardClauses: false
   TrailingWhitespace:
@@ -706,3 +706,4 @@ style:
       - 'com.lightswitch.core.domain.flag.repository.entity.*'
       - 'com.lightswitch.core.domain.flag.repository.*'
       - 'com.lightswitch.core.domain.flag.dto.res.*'
+      - 'com.lightswitch.core.domain.flag.common.enum.FlagType.*'

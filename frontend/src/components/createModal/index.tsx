@@ -10,7 +10,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
-import { createFlag } from '@/api/create/createAxios';
+import { confirmDuplicateFlag, createFlag } from '@/api/create/createAxios';
 import { updateFlag } from '@/api/flagDetail/flagDetailAxios';
 import { getTagList, getTagListByKeyword } from '@/api/main/mainAxios';
 import { AuthAtom } from '@/global/AuthAtom';
@@ -65,11 +65,6 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
 
   const auth = useRecoilValue(AuthAtom);
 
-  // 모달 밖 클릭에 대한 이벤트 전파 막기
-  const stopPropagation = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-  };
-
   const [title, setTitle] = useState<string>(props.flagDetail?.title || '');
   const [allTags, setAllTags] = useState<Array<TagItem>>([]);
   const [tags, setTags] = useState<Array<TagItem>>(props.flagDetail?.tags || []);
@@ -79,7 +74,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   const [type, setType] = useState<string>(props.flagDetail?.type || 'BOOLEAN');
   const [keywords, setKeywords] = useState<Array<Keyword>>([]);
   const [defaultValue, setDefaultValue] = useState<string>(
-    props.flagDetail?.defaultValue || '',
+    props.flagDetail?.defaultValue || 'TRUE',
   );
   const [defaultPortion, setDefaultPortion] = useState<number | ''>(
     props.flagDetail?.defaultPortion || 100,
@@ -89,17 +84,26 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   );
   const [variation, setVariation] = useState<string>('');
   const [variations, setVariations] = useState<Array<Variation>>(
-    props.flagDetail?.variations || [],
+    props.flagDetail?.variations || [{ value: 'FALSE', portion: '', description: '' }],
   );
 
   const [tagSearchKeyword, setTagSearchKeyword] = useState<string>('');
   const [selectedTags, setSelectedTags] = useState<Array<TagItem>>([]);
 
   const [isTypeEdited, setIsTypeEdited] = useState<boolean>(false);
+  const [isDuplicatedTitle, setIsDuplicatedTitle] = useState<boolean>(false);
+  const [isInvalidBooleanVariation, setIsInvalidBooleanVariation] =
+    useState<boolean>(false);
+  const [isInvalidIntegerVariation, setIsInvalidIntegerVariation] =
+    useState<boolean>(false);
+  const [flagMode, setFlagMode] = useState<string>(props.mode);
 
   const typeConfig = ['BOOLEAN', 'INTEGER', 'STRING', 'JSON'];
 
-  const [flagMode, setFlagMode] = useState<string>(props.mode);
+  // 모달 밖 클릭에 대한 이벤트 전파 막기
+  const stopPropagation = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setTitle(e.target.value);
@@ -236,6 +240,26 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
     console.log('타입 수정 버튼 클릭');
   };
 
+  /**
+   * 타이틀이 있는지 확인하는 함수
+   */
+  const checkDuplicatedTitle = () => {
+    if (title === '') {
+      return;
+    }
+
+    confirmDuplicateFlag(
+      title,
+      (data: boolean) => {
+        console.log(data);
+        setIsDuplicatedTitle(data);
+      },
+      (err) => {
+        console.log(err);
+      },
+    );
+  };
+
   const addValidation = (): boolean => {
     if (
       title === '' ||
@@ -275,6 +299,18 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
     if (!addValidation()) {
       alert('필수 입력값을 입력해주세요');
       return;
+    } else if (isDuplicatedTitle) {
+      alert('중복된 플래그 이름이 존재합니다.');
+      return;
+    } else if (calculateTotalPortion() !== 100) {
+      alert('변수 비율의 합이 100이 되도록 설정해주세요.');
+      return;
+    } else if (isInvalidBooleanVariation) {
+      alert('BOOLEAN 타입은 TRUE 와 FALSE 값만 유효합니다.');
+      return;
+    } else if (isInvalidIntegerVariation) {
+      alert('정수만 입력 가능합니다.');
+      return;
     }
 
     createFlag(
@@ -303,7 +339,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   };
 
   /**
-   * 태그 검색어로 태그 목록 업데이트
+   * 타입 변경 시 default value & variations 초기화 함수
    * @param typeItem
    * @returns
    */
@@ -311,13 +347,50 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
     if (isDetailMode()) {
       return;
     }
+
+    setIsInvalidBooleanVariation(false);
     setType(typeItem);
     if (typeItem === 'BOOLEAN') {
       setDefaultValue('TRUE');
-      setVariation('FALSE');
+      setVariations([
+        {
+          value: 'FALSE',
+          portion: 0,
+          description: '',
+        },
+      ]);
+    } else {
+      setDefaultValue('');
+      setVariations([]);
     }
 
     setIsTypeEdited(false);
+  };
+
+  const checkFormatWithType = (event: React.FocusEvent<HTMLInputElement, Element>) => {
+    // invalid 초기화
+    setIsInvalidBooleanVariation(false);
+    setIsInvalidIntegerVariation(false);
+
+    if (type === 'BOOLEAN') {
+      event.target.value = event.target.value.toUpperCase();
+      if (!(event.target.value === 'TRUE' || event.target.value === 'FALSE')) {
+        setIsInvalidBooleanVariation(true);
+      } else if (defaultValue === 'TRUE' && variations[0].value === 'TRUE') {
+        setIsInvalidBooleanVariation(true);
+      } else if (defaultValue === 'FALSE' && variations[0].value === 'FALSE') {
+        setIsInvalidBooleanVariation(true);
+      } else {
+        setIsInvalidBooleanVariation(false);
+      }
+    } else if (type === 'INTEGER') {
+      // 정수만 입력 가능하도록 설정
+      if (isNaN(Number(event.target.value))) {
+        setIsInvalidIntegerVariation(true);
+      } else {
+        setIsInvalidIntegerVariation(false);
+      }
+    }
   };
 
   /**
@@ -392,6 +465,13 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   }, [tags]);
 
   const onClickAddVariation = (): void => {
+    if (type === 'BOOLEAN' && variations.length >= 1) {
+      setIsInvalidBooleanVariation(true);
+      return;
+    } else {
+      setIsInvalidBooleanVariation(false);
+    }
+
     setVariations([
       ...variations,
       {
@@ -410,6 +490,18 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
     if (!props.flagDetail || !addValidation()) {
       alert('필수 입력값을 입력해주세요');
       return;
+    } else if (isDuplicatedTitle) {
+      alert('중복된 플래그 이름이 존재합니다.');
+      return;
+    } else if (calculateTotalPortion() !== 100) {
+      alert('변수 비율의 합이 100이 되도록 설정해주세요.');
+      return;
+    } else if (isInvalidBooleanVariation) {
+      alert('BOOLEAN 타입은 TRUE 와 FALSE 값만 유효합니다.');
+      return;
+    } else if (isInvalidIntegerVariation) {
+      alert('정수만 입력 가능합니다.');
+      return;
     }
 
     updateFlag(
@@ -424,7 +516,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
         defaultPortion: defaultPortion ? defaultPortion : 0,
         defaultDescription: defaultDescription,
         variations: variations,
-        //TODO : userId 전역설정 기능 추가 후 수정
+
         memberId: auth.memberId,
       },
       (data: FlagDetailItem) => {
@@ -456,6 +548,9 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
             // 변경된 값이 있을 때 처리하는 함수 바인딩
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               handleVariationChange(e, idx)
+            }
+            onBlur={(e: React.FocusEvent<HTMLInputElement, Element>) =>
+              checkFormatWithType(e)
             }
             $flag={isDetailMode()}
           />
@@ -498,9 +593,11 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
               placeholder="플래그 이름"
               value={title}
               onChange={handleTitleChange}
+              onBlur={checkDuplicatedTitle}
               $flag={isDetailMode()}
             />
           </S.FlagTitleInputContainer>
+          {isDuplicatedTitle && <S.WarnText>중복된 플래그 이름이 존재합니다.</S.WarnText>}
           <S.FlagTagsInputContainer>
             <S.FlagTagsInputLabel>
               <Bookmark />
@@ -643,6 +740,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
                 placeholder="값을 입력하세요"
                 value={defaultValue}
                 onChange={handleDefaultValueChange}
+                onBlur={checkFormatWithType}
                 $flag={isDetailMode()}
               />
               <S.FlagVariationInput
@@ -670,6 +768,9 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
               추가
             </S.ConfirmButton>
           </S.ButtonLayer>
+          {isInvalidBooleanVariation && (
+            <S.WarnText>BOOLEAN 타입은 TRUE 와 FALSE 값만 유효합니다.</S.WarnText>
+          )}
         </S.FlagVariationContentLayer>
         <S.ButtonLayer>
           {flagMode === 'create' ? (

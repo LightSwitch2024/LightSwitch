@@ -11,4 +11,6 @@ interface FlagRepository : JpaRepository<Flag, Long> {
     fun findByMaintainerMemberIdAndDeletedAtIsNull(maintainerId: Long): List<Flag>
 
     fun findByTitleContainingAndDeletedAtIsNull(title: String): List<Flag>
+
+    fun existsByTitleAndDeletedAtIsNull(title: String): Boolean
 }

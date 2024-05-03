@@ -2,6 +2,7 @@ package com.lightswitch.core.domain.flag.service
 
 import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.exception.BaseException
+import com.lightswitch.core.domain.flag.common.enum.FlagType.*
 import com.lightswitch.core.domain.flag.dto.KeywordDto
 import com.lightswitch.core.domain.flag.dto.PropertyDto
 import com.lightswitch.core.domain.flag.dto.VariationDto
@@ -52,6 +53,7 @@ class FlagService(
     private val propertyRepository: PropertyRepository,
 ) {
 
+    @Transactional
     fun createFlag(flagRequestDto: FlagRequestDto): FlagResponseDto {
         // flag 저장
         val member = memberRepository.findById(flagRequestDto.memberId)
@@ -104,6 +106,50 @@ class FlagService(
                 value = variation.value,
             )
             variationRepository.save(savedVariation)
+        }
+
+        // type & value validation
+        when (flagRequestDto.type) {
+            BOOLEAN -> {
+                if (flagRequestDto.defaultValue != "TRUE" && flagRequestDto.defaultValue != "FALSE") {
+                    throw BaseException(ResponseCode.INVALID_FLAG_VALUE)
+                }
+                for (variation in flagRequestDto.variations) {
+                    if (variation.value != "TRUE" && variation.value != "FALSE") {
+                        throw BaseException(ResponseCode.INVALID_FLAG_VALUE)
+                    }
+                }
+                // 둘다 True 인 경우
+                if (flagRequestDto.defaultValue == "TRUE" && flagRequestDto.variations.any { it.value == "TRUE" }) {
+                    throw BaseException(ResponseCode.INVALID_FLAG_VALUE)
+                }
+                // 둘다 False 인 경우
+                if (flagRequestDto.defaultValue == "FALSE" && flagRequestDto.variations.any { it.value == "FALSE" }) {
+                    throw BaseException(ResponseCode.INVALID_FLAG_VALUE)
+                }
+            }
+            STRING -> {
+                if (flagRequestDto.defaultValue.isEmpty()) {
+                    throw BaseException(ResponseCode.INVALID_FLAG_VALUE)
+                }
+                for (variation in flagRequestDto.variations) {
+                    if (variation.value.isEmpty()) {
+                        throw BaseException(ResponseCode.INVALID_FLAG_VALUE)
+                    }
+                }
+            }
+            INTEGER -> {
+                if (!flagRequestDto.defaultValue.matches(Regex("^[0-9]*$"))) {
+                    throw BaseException(ResponseCode.INVALID_FLAG_VALUE)
+                }
+                for (variation in flagRequestDto.variations) {
+                    if (!variation.value.matches(Regex("^[0-9]*$"))) {
+                        throw BaseException(ResponseCode.INVALID_FLAG_VALUE)
+                    }
+                }
+            }
+
+            JSON -> TODO()
         }
 
         // keyword, property 저장
@@ -174,6 +220,10 @@ class FlagService(
         sseService.sendData(SseDto(userKey, SseDto.SseType.CREATE, flagInitResponseDto))
 
         return this.getFlag(savedFlag.flagId!!)
+    }
+
+    fun confirmDuplicateTitle(title: String): Boolean {
+        return flagRepository.existsByTitleAndDeletedAtIsNull(title)
     }
 
     fun getAllFlag(): List<FlagSummaryDto> {
