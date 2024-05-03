@@ -29,10 +29,6 @@ const LogIn = () => {
     setPassword(e.target.value);
   };
 
-  const onClickSignUp = (): void => {
-    navigate('/signup');
-  };
-
   const onClickLogIn = (): void => {
     logIn<MemberInfo>(
       {

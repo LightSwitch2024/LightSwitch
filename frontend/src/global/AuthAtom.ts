@@ -23,7 +23,7 @@ export const AuthAtom = atom<MemberAtom>({
   effects_UNSTABLE: [persistAtom],
 });
 
-export const isLogInSelector = selector({
+export const isLoggedInSelector = selector({
   key: 'isLogInSelector',
   get: ({ get }) => {
     const auth = get(AuthAtom);
