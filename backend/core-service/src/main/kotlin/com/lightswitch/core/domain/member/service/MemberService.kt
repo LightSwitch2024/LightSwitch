@@ -115,31 +115,33 @@ class MemberService(
                 ?: throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
 //         회원가입 후 로그인할 때 isCorrectPW 코드
         val isCorrectPW = passwordService.matches(logInReqDto.password, savedMember.password)
-        // 로컬에서 암호화 안 된 비밀번호 쓸 때 코드
-//        val isCorrectPW = (logInReqDto.password == savedMember.password)
 
-        return MemberResDto(
+        return if(isCorrectPW) {
+            MemberResDto(
                 memberId = savedMember.memberId!!,
                 email = savedMember.email,
                 firstName = savedMember.firstName,
                 lastName = savedMember.lastName,
                 telNumber = savedMember.telNumber
-            )
+            )} else {
+                throw BaseException(ResponseCode.INVALID_PASSWORD)
+        }
     }
 
     //     유저 정보 읽기
     fun getUser(email: String): MemberResDto {
-        val savedMember = memberRepository.findByEmailAndDeletedAtIsNull(email) ?: throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
+        val savedMember =
+            memberRepository.findByEmailAndDeletedAtIsNull(email) ?: throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
         println("service 진행됌")
         println(savedMember?.email)
 
         return MemberResDto(
-                memberId = savedMember.memberId!!,
-                email = savedMember.email,
-                firstName = savedMember.firstName,
-                lastName = savedMember.lastName,
-                telNumber = savedMember.telNumber,
-            )
+            memberId = savedMember.memberId!!,
+            email = savedMember.email,
+            firstName = savedMember.firstName,
+            lastName = savedMember.lastName,
+            telNumber = savedMember.telNumber,
+        )
     }
 
     //     유저 정보 삭제
