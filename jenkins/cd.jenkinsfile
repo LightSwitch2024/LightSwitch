@@ -236,28 +236,55 @@ pipeline {
                 }
             }
         }
-        stage ('Service Stop') {
-            steps {
-                echo 'Service Stop'
-                sh'''
-                    docker-compose down
-                '''
-            }
-            post{
-                success {
-                    echo 'Success Service Stop'
-                }
-                failure {
-                    error 'Fail Service Stop'
-                }
-            }
-        }
         stage ('Service Start') {
             steps {
                 echo 'Service Start'
                 sh'''
+                    EXIST_BLUE=$(docker-compose ps | grep "backend-blue" | grep Up || echo "NoActive")
+                    echo "EXIST_BLUE: $EXIST_BLUE"
+
+                    if [ "$EXIST_BLUE" = "NoActive" ]; then
+                        BEFORE_COLOR="green"
+                        AFTER_COLOR="blue"
+                        BEFORE_PORT=8001
+                        AFTER_PORT=8000
+                    else
+                        BEFORE_COLOR="blue"
+                        AFTER_COLOR="green"
+                        BEFORE_PORT=8000
+                        AFTER_PORT=8001
+                    fi
+
+                    echo "===== Continue =====";
+                    sed -i 's/${BEFORE_PORT}/${AFTER_PORT}/' /var/jenkins_home/workspace/lightswitch-web-cd/prometheus.yml
                     scp -i /ssh/private/.pem /var/jenkins_home/workspace/lightswitch-web-cd/prometheus.yml ubuntu@ip-172-26-5-31:/home/ubuntu/prometheus/prometheus.yml
+                    export COMPOSE_PROFILES=$AFTER_COLOR
                     docker-compose up -d --build
+
+                    # 2
+                    for cnt in {1..10}
+                    do
+                        echo "===== 서버 응답 확인중(${cnt}/10) =====";
+                        UP=$(curl -s http://lightswitch.kr:${AFTER_PORT}/api/actuator/health)
+                        if [ -z "${UP}" ]
+                            then
+                                sleep 10
+                                continue
+                            else
+                                break
+                        fi
+                    done
+
+                    if [ $cnt -eq 10 ]
+                    then
+                        echo "===== 서버 실행 실패 ====="
+                        exit 1
+                    fi
+
+                    docker exec -it nginx /bin/bash -c "sed -i 's/${BEFORE_PORT}/${AFTER_PORT}/' /etc/nginx/conf.d/app.conf && nginx -s reload"
+
+                    echo "$BEFORE_COLOR server down(port:${BEFORE_PORT})"
+                    docker-compose stop backend-${BEFORE_COLOR}
                 '''
             }
             post{
