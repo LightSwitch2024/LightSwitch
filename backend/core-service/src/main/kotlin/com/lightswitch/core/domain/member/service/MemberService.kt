@@ -110,9 +110,12 @@ class MemberService(
     fun logIn(logInReqDto: LogInReqDto): MemberResDto {
 
         val savedMember: Member =
-            memberRepository.findByEmail(logInReqDto.email) ?: throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
+            memberRepository.findByEmailAndDeletedAtIsNull(logInReqDto.email) ?: throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
 
-        val isCorrectPW = passwordService.matches(logInReqDto.password, savedMember.password)
+        // 회원가입해서 암호화 된 비밀번호를 가진 유저에 로그인 할 때 사용하는 isCorrectPW
+//        val isCorrectPW = passwordService.matches(logInReqDto.password, savedMember.password)
+        // 교육장에서 회원가입 안하고 그냥 쓸 때 사용하는 isCorrectPW
+        val isCorrectPW = (logInReqDto.password == savedMember.password)
 
         return if (isCorrectPW) {
             MemberResDto(
@@ -129,21 +132,17 @@ class MemberService(
 
     //     유저 정보 읽기
     fun getUser(email: String): MemberResDto {
-        val savedMember = memberRepository.findByEmailAndDeletedAtIsNull(email)
-        println("service 진행됌")
-        println(savedMember?.email)
+        val savedMember = memberRepository.findByEmailAndDeletedAtIsNull(email) ?: throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
+        println("service 진행됌 =========================")
+        println(savedMember.email)
 
-        return if (savedMember != null) {
-            MemberResDto(
+        return MemberResDto(
                 memberId = savedMember.memberId!!,
                 email = savedMember.email,
                 firstName = savedMember.firstName,
                 lastName = savedMember.lastName,
                 telNumber = savedMember.telNumber,
             )
-        } else {
-            throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
-        }
     }
 
 

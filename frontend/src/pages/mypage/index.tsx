@@ -38,20 +38,21 @@ const UserDetail = () => {
   /**
    * userEmail를 통해 마운트 시 해당 user의 상세 정보를 가져옴
    */
-  // useEffect(() => {
-  //   if (!auth.email) return navigate('/login');
+  useEffect(() => {
+    if (!auth.email) return navigate('/login');
 
-  //   getUserDetail<UserData>(
-  //     auth.email,
-  //     (data: UserData) => {
-  //       setUserDetail(data);
-  //       setEditedUserEmail(data.email);
-  //     },
-  //     (err) => {
-  //       console.log(err);
-  //     },
-  //   );
-  // }, [auth.email]);
+    getUserDetail<UserData>(
+      auth.email,
+      (data: UserData) => {
+        console.log(data);
+        setUserDetail(data);
+        setEditedUserEmail(data.email);
+      },
+      (err) => {
+        console.log(err);
+      },
+    );
+  }, [auth.email]);
 
   /**
    * 수정에 사용할 User 정보를 셋업하는 함수
@@ -67,21 +68,21 @@ const UserDetail = () => {
   /**
    * User 삭제 버튼 클릭 이벤트 핸들러
    */
-  // const onPressDeleteButton = () => {
-  //   const deleteConfirm: boolean = confirm('삭제하기');
+  const onPressDeleteButton = () => {
+    const deleteConfirm: boolean = confirm('삭제하기');
 
-  //   if (deleteConfirm) {
-  //     deleteUser<UserData>(
-  //       auth.email,
-  //       (data: UserData) => {
-  //         console.log(`${data} user 삭제 완료`);
-  //       },
-  //       (err) => {
-  //         console.log(err);
-  //       },
-  //     );
-  //   }
-  // };
+    if (deleteConfirm) {
+      deleteUser<UserData>(
+        auth.email,
+        (data: UserData) => {
+          console.log(`${data} user 삭제 완료`);
+        },
+        (err) => {
+          console.log(err);
+        },
+      );
+    }
+  };
 
   /**
    * User정보 수정 버튼 클릭 이벤트 핸들러
@@ -150,21 +151,21 @@ const UserDetail = () => {
         </M.MyPageTitleContainer>
         <M.MyPageMemberDataContainer>
           <M.MyPageText>Email 주소</M.MyPageText>
-          <M.EmailText>ssafy1234@gmail.com</M.EmailText>
+          <M.EmailText>{userDetail?.email}</M.EmailText>
           <M.NameWrapper>
             <M.NameBox>
               <M.MyPageText>이름</M.MyPageText>
-              <M.NameInputBox>ssafy</M.NameInputBox>
+              <M.NameInputBox>{userDetail?.firstName}</M.NameInputBox>
             </M.NameBox>
             <M.NameBox>
               <M.MyPageText>성</M.MyPageText>
-              <M.NameInputBox>Kim</M.NameInputBox>
+              <M.NameInputBox>{userDetail?.lastName}</M.NameInputBox>
             </M.NameBox>
           </M.NameWrapper>
           <M.TelWrapper>
             <M.TelBox>
               <M.MyPageText>전화번호</M.MyPageText>
-              <M.TelInputBox>ssafy1234@gmail.com</M.TelInputBox>
+              <M.TelInputBox>{userDetail?.telNumber}</M.TelInputBox>
             </M.TelBox>
           </M.TelWrapper>
           <M.ButtonWrapper>
@@ -176,7 +177,7 @@ const UserDetail = () => {
           <M.DelText>계정 삭제</M.DelText>
           <M.DelWrapper>
             <M.Text>계정이 영구적으로 삭제됩니다.</M.Text>
-            <M.DelButton>
+            <M.DelButton onClick={onPressDeleteButton}>
               <DelIcon />
               <span>계정 삭제하기</span>
             </M.DelButton>

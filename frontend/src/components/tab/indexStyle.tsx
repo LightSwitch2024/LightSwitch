@@ -1,3 +1,4 @@
+import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const TabBar = styled.nav`
@@ -41,18 +42,7 @@ export const LogoName = styled.div`
   line-height: normal;
 `;
 
-export const LogInButton = styled.button`
-  display: flex;
-  width: 100%;
-  padding: 0.3rem 1rem;
-  border-radius: 0.5rem;
-  font-size: 1.4rem;
-  background-color: #1e3232;
-  color: #fff;
-  cursor: pointer;
-`;
-
-export const LogOutButton = styled.button`
+export const Button = styled.button`
   display: flex;
   width: 100%;
   padding: 0.3rem 1rem;
@@ -67,15 +57,31 @@ export const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin-top: 8rem;
   align-items: center;
-  margin: 5rem 0 5rem 0;
   gap: 1rem;
 `;
 
 export const LogoWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  width: 12rem;
+  height: 100%;
+  gap: 1rem;
+`;
+
+export const LoginWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 12rem;
+  height: 100%;
+  gap: 1rem;
+`;
+
+export const LogoutWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin-top: 10rem;
   width: 12rem;
   height: 100%;
   gap: 1rem;
@@ -86,8 +92,18 @@ export const LogoButtonWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 5rem 0 5rem 0;
+  margin: 0 0 5rem 0;
   gap: 5rem;
+`;
+
+export const OutWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 12rem;
+  height: 100%;
+  gap: 1rem;
 `;
 
 export const LogoText = styled.div`
@@ -96,5 +112,34 @@ export const LogoText = styled.div`
   justify-content: center;
   font-weight: bold;
   font-size: 1.5rem;
+  gap: 0.5rem;
+`;
+
+export const JustText = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  gap: 0.5rem;
+`;
+
+export const LogOutbutton = styled.button`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  gap: 0.5rem;
+`;
+
+export const NavLinkWrapper = styled(NavLink)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: white;
+  text-decoration: none;
   gap: 0.5rem;
 `;
