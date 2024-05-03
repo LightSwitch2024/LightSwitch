@@ -20,6 +20,10 @@ public class LSUser {
 		return property.get(key);
 	}
 
+	public boolean hasProperty(){
+		return !property.isEmpty();
+	}
+
 	public static class Builder {
 		private final int userId;
 		private final Map<String, String> property;
