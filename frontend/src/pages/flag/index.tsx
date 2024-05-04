@@ -1,5 +1,10 @@
+import CallSplit from '@assets/call-split.svg?react';
 import Description from '@assets/description.svg?react';
-import OutlinedFlagBig from '@assets/outlined-flag-big.svg?react';
+import FlagBig from '@assets/flag-big.svg?react';
+import Loop from '@assets/loop.svg?react';
+import Code from '@assets/code.svg?react';
+import ToggleOnIcon from '@assets/unfold-more.svg?react';
+import ToggleOffIcon from '@assets/unfold_less.svg?react';
 import * as S from '@pages/flag/indexStyle';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -42,30 +47,15 @@ interface FlagDetailItem {
   active: boolean;
 }
 
-// interface FlagUpdateRuquest {
-//   flagId: number;
-//   title: string;
-//   tags: Array<{ content: string; colorHex: string }>;
-//   description: string;
-//   type: string;
-//   defaultValue: string;
-//   defaultValuePortion: number;
-//   defaultValueDescription: string;
-//   variation: string;
-//   variationPortion: number;
-//   variationDescription: string;
-
-//   userId: number;
-// }
-
 interface TagItem {
   content: string;
   colorHex: string;
 }
 
 const FlagDetail = () => {
-  const [flagDetail, setFlagDetail] = useState<FlagDetailItem>({} as FlagDetailItem);
   const { flagId } = useParams<{ flagId: string }>();
+  const [flagDetail, setFlagDetail] = useState<FlagDetailItem>({} as FlagDetailItem);
+  const [isToggle, setIsToggle] = useState<boolean[]>([]);
 
   /**
    * flagId를 통해 마운트 시 해당 flag의 상세 정보를 가져옴
@@ -78,6 +68,7 @@ const FlagDetail = () => {
       (data: FlagDetailItem) => {
         console.log(data);
         setFlagDetail(data);
+        setIsToggle(new Array(data.keywords.length).fill(false));
         // setupEditedFlag(data);
       },
       (err) => {
@@ -86,253 +77,26 @@ const FlagDetail = () => {
     );
   }, [flagId]);
 
-  /**
-   * 수정에 사용할 Flag 정보를 셋업하는 함수
-   * @param data FlagDetailItem
-   */
-  // const setupEditedFlag = (data: FlagDetailItem): void => {
-  //   setEditedFlagId(data.flagId);
-  //   setEditedTitle(data.title);
-  //   setEditedDescription(data.description);
-  //   setEditedType(data.type);
-  //   setEditedDefaultValue(data.defaultValue);
-  //   setEditedDefaultPortion(data.defaultValuePortion);
-  //   setEditedDefaultDescription(data.defaultValueDescription);
-  //   setEditedVariation(data.variation);
-  //   setEditedVariationPortion(data.variationPortion);
-  //   setEditedVariationDescription(data.variationDescription);
+  const openUpdateModal = () => {
+    console.log('openUpdateModal');
+  };
 
-  //   setSelectedTags(data.tags);
-  // };
-
-  // /**
-  //  * Flag 삭제 버튼 클릭 이벤트 핸들러
-  //  */
-  // const onPressDeleteButton = () => {
-  //   const deleteConfirm: boolean = confirm('삭제하기');
-
-  //   if (deleteConfirm) {
-  //     deleteFlag<FlagDetailItem>(
-  //       Number(flagId),
-  //       (data: FlagDetailItem) => {
-  //         console.log(`${data}번 flag 삭제 완료`);
-  //       },
-  //       (err) => {
-  //         console.log(err);
-  //       },
-  //     );
-  //   }
-  // };
-
-  // /**
-  //  * Flag 수정 버튼 클릭 이벤트 핸들러
-  //  */
-  // const onPressEditButton = () => {
-  //   setIsEditMode(true);
-  // };
-
-  // /**
-  //  * 수정 모드(edit mode == true)일 때, setupAllTags 함수 호출
-  //  */
-  // useEffect(() => {
-  //   if (isEditMode == false) return;
-  //   setupAllTags();
-  // }, [isEditMode]);
-
-  // /**
-  //  * 전체 태그 목록을 가져오는 함수
-  //  */
-  // const setupAllTags = (): void => {
-  //   getTagList(
-  //     (data: Array<{ content: string; colorHex: string }>) => {
-  //       setAllTags(data);
-  //       setTags(data);
-  //     },
-  //     (err) => {
-  //       console.log(err);
-  //     },
-  //   );
-  // };
-
-  // /**
-  //  * 태그 검색어 입력 onBlur 이벤트 핸들러
-  //  */
-  // const updateTagListByKeyword = (): void => {
-  //   // 태그 검색어가 없으면 axios 호출하지 않음
-  //   if (
-  //     tagSearchKeyword === '' ||
-  //     tagSearchKeyword === undefined ||
-  //     tagSearchKeyword === null
-  //   ) {
-  //     return;
-  //   }
-
-  //   getTagListByKeyword(
-  //     tagSearchKeyword,
-  //     (data: Array<{ content: string; colorHex: string }>) => {
-  //       setTags(data);
-  //     },
-  //     (err) => {
-  //       console.log(err);
-  //     },
-  //   );
-  // };
-
-  // const handleEditedTitleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-  //   setEditedTitle(e.target.value);
-  // };
-
-  // const handleEditedDescriptionChange = (
-  //   e: React.ChangeEvent<HTMLInputElement>,
-  // ): void => {
-  //   setEditedDescription(e.target.value);
-  // };
-
-  // const handleEditedTypeChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
-  //   setEditedType(e.target.value);
-  // };
-
-  // const handleEditedDefaultValueChange = (
-  //   e: React.ChangeEvent<HTMLInputElement>,
-  // ): void => {
-  //   setEditedDefaultValue(e.target.value);
-  // };
-
-  // const handleEditedDefaultPortionChange = (
-  //   e: React.ChangeEvent<HTMLInputElement>,
-  // ): void => {
-  //   setEditedDefaultPortion(Number(e.target.value));
-  // };
-
-  // const handleEditedDefaultDescriptionChange = (
-  //   e: React.ChangeEvent<HTMLInputElement>,
-  // ): void => {
-  //   setEditedDefaultDescription(e.target.value);
-  // };
-
-  // const handleEditedVariationChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-  //   setEditedVariation(e.target.value);
-  // };
-
-  // const handleEditedVariationPortionChange = (
-  //   e: React.ChangeEvent<HTMLInputElement>,
-  // ): void => {
-  //   setEditedVariationPortion(Number(e.target.value));
-  // };
-
-  // const handleEditedVariationDescriptionChange = (
-  //   e: React.ChangeEvent<HTMLInputElement>,
-  // ): void => {
-  //   setEditedVariationDescription(e.target.value);
-  // };
-
-  // const handleTagSearchKeywordChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-  //   setTagSearchKeyword(e.target.value);
-  // };
-
-  // const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-  //   // 선택인지 해제인지 확인
-  //   if (e.target.checked) {
-  //     // 선택된 태그 추가
-  //     setSelectedTags([
-  //       ...selectedTags,
-  //       { content: e.target.value, colorHex: '#bdbdbd' },
-  //     ]);
-  //   } else {
-  //     // 선택 해제된 태그 제거
-  //     setSelectedTags(selectedTags.filter((tag) => tag.content !== e.target.value));
-  //   }
-  // };
-
-  // /**
-  //  * 태그 목록이 비어있고 태그 검색어가 있으면 새로운 태그 생성
-  //  */
-  // useEffect(() => {
-  //   // 태그 목록이 비어있고 태그 검색어가 있으면 새로운 태그 생성
-  //   if (tags.length === 0 && tagSearchKeyword) {
-  //     setSelectedTags([
-  //       ...selectedTags,
-  //       { content: tagSearchKeyword, colorHex: '#909090' },
-  //     ]);
-  //   }
-  // }, [tags]);
-
-  // /**
-  //  * 취소하기 버튼 클릭 이벤트 핸들러
-  //  */
-  // const onPressCancelButton = () => {
-  //   setIsEditMode(false);
-  //   if (flagDetail) {
-  //     setupEditedFlag(flagDetail);
-  //   }
-  // };
-
-  // /**
-  //  * 저장하기 버튼 클릭 이벤트 핸들러
-  //  */
-  // const onPressSaveButton = () => {
-  //   updateFlag<FlagDetailItem, FlagUpdateRuquest>(
-  //     editedFlagId || 0,
-  //     {
-  //       flagId: editedFlagId || 0,
-  //       title: editedTitle,
-  //       tags: selectedTags,
-  //       description: editedDescription,
-  //       type: editedType || '',
-  //       defaultValue: editedDefaultValue,
-  //       defaultValuePortion: editedDefaultPortion,
-  //       defaultValueDescription: editedDefaultDescription,
-  //       variation: editedVariation,
-  //       variationPortion: editedVariationPortion,
-  //       variationDescription: editedVariationDescription,
-
-  //       userId: 1,
-  //     },
-  //     (data: FlagDetailItem) => {
-  //       console.log(data);
-  //     },
-  //     (err) => {
-  //       console.log(err);
-  //     },
-  //   );
-  //   console.log('저장하기');
-  // };
-
-  // /**
-  //  * 태그 검색어 비울때 전체 태그로 변경
-  //  */
-  // useEffect(() => {
-  //   if (
-  //     tagSearchKeyword === '' ||
-  //     tagSearchKeyword === undefined ||
-  //     tagSearchKeyword === null
-  //   ) {
-  //     setTags(allTags);
-  //   }
-  // }, [tagSearchKeyword]);
+  const deleteFlag = () => {
+    console.log('deleteFlag');
+  };
 
   return (
     <S.MainContainer>
-      {/* {flagDetail && (
-        <CreateModal
-          closeCreateModal={(): void => {
-            console.log('close');
-          }}
-          mode="detail"
-          flagDetail={flagDetail}
-        />
-      )} */}
       <S.FlagContainer>
         <S.FlagTitleAndTagsLayer>
           <S.FlagTitleInputContainer>
             <S.FlagTitleIconContainer>
-              <OutlinedFlagBig />
+              <FlagBig />
             </S.FlagTitleIconContainer>
             <S.FlagTitleInput
               placeholder="플래그 이름"
               value={flagDetail.title}
-              // onChange={handleTitleChange}
-              // onBlur={checkDuplicatedTitle}
+              readOnly
             />
           </S.FlagTitleInputContainer>
         </S.FlagTitleAndTagsLayer>
@@ -349,13 +113,227 @@ const FlagDetail = () => {
         </S.FlagDescriptionLabel>
         <S.FlagDescriptionTextArea
           placeholder="설명"
-          value={description}
-          onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
-            handleDescriptionChange(event)
-          }
-          $flag={isDetailMode()}
+          value={flagDetail.description}
+          readOnly
         />
+
+        <S.FlagTypeLayer>
+          <S.FlagTypeLabel>
+            <S.FlagTypeIconContainer>
+              <CallSplit />
+            </S.FlagTypeIconContainer>
+            <S.FlagTypeLabelTextContainer>
+              <S.LabelText>변수 타입</S.LabelText>
+            </S.FlagTypeLabelTextContainer>
+          </S.FlagTypeLabel>
+          <S.FlagTypeContainer>
+            <S.FlagTypeContentContainer>
+              <S.FlagTypeTextContainer>
+                <S.FlagTypeText>{flagDetail.type}</S.FlagTypeText>
+              </S.FlagTypeTextContainer>
+            </S.FlagTypeContentContainer>
+          </S.FlagTypeContainer>
+        </S.FlagTypeLayer>
+
+        <S.FlagVariationLabel>
+          <S.FlagVariationContainer>
+            <S.FlagVariationIconContainer>
+              <Loop />
+            </S.FlagVariationIconContainer>
+            <S.FlagVariationLabelTextContainer>
+              <S.LabelText>변수</S.LabelText>
+            </S.FlagVariationLabelTextContainer>
+          </S.FlagVariationContainer>
+        </S.FlagVariationLabel>
+
+        <S.FlagVariationContentLayer>
+          <S.FlagVariationRowContainer>
+            <S.PropertyContainer>
+              <S.KeywordLabelContainer>
+                <S.KeywordText>변수</S.KeywordText>
+              </S.KeywordLabelContainer>
+              <S.KeywordValueContainer
+                type="text"
+                placeholder="값을 입력하세요"
+                value={flagDetail.defaultValue}
+                readOnly
+              />
+            </S.PropertyContainer>
+            <S.PropertyContainer>
+              <S.KeywordLabelContainer>
+                <S.KeywordText>비율</S.KeywordText>
+              </S.KeywordLabelContainer>
+              <S.KeywordValueContainer
+                type="number"
+                placeholder="변수 비율"
+                value={flagDetail.defaultPortion}
+                readOnly
+              />
+            </S.PropertyContainer>
+          </S.FlagVariationRowContainer>
+          <S.FlagVariationRowContainer>
+            <S.PropertyContainer>
+              <S.KeywordLabelContainer>
+                <S.KeywordText>설명</S.KeywordText>
+              </S.KeywordLabelContainer>
+              <S.KeywordValueContainer
+                type="text"
+                placeholder="설명"
+                value={flagDetail.defaultDescription}
+                readOnly
+              />
+            </S.PropertyContainer>
+          </S.FlagVariationRowContainer>
+        </S.FlagVariationContentLayer>
+        <S.FlagVariationDivisionLine />
+        {flagDetail.variations &&
+          flagDetail.variations.map((variation, index) => (
+            <>
+              <S.FlagVariationContentLayer key={index}>
+                <S.FlagVariationRowContainer>
+                  <S.PropertyContainer>
+                    <S.KeywordLabelContainer>
+                      <S.KeywordText>변수</S.KeywordText>
+                    </S.KeywordLabelContainer>
+                    <S.KeywordValueContainer
+                      type="text"
+                      placeholder="값을 입력하세요"
+                      value={variation.value}
+                      readOnly
+                    />
+                  </S.PropertyContainer>
+                  <S.PropertyContainer>
+                    <S.KeywordLabelContainer>
+                      <S.KeywordText>비율</S.KeywordText>
+                    </S.KeywordLabelContainer>
+                    <S.KeywordValueContainer
+                      type="number"
+                      placeholder="변수 비율"
+                      value={variation.portion}
+                      readOnly
+                    />
+                  </S.PropertyContainer>
+                </S.FlagVariationRowContainer>
+                <S.FlagVariationRowContainer>
+                  <S.PropertyContainer>
+                    <S.KeywordLabelContainer>
+                      <S.KeywordText>설명</S.KeywordText>
+                    </S.KeywordLabelContainer>
+                    <S.KeywordValueContainer
+                      type="text"
+                      placeholder="설명"
+                      value={variation.description}
+                      readOnly
+                    />
+                  </S.PropertyContainer>
+                </S.FlagVariationRowContainer>
+              </S.FlagVariationContentLayer>
+
+              <S.FlagVariationDivisionLine />
+            </>
+          ))}
+
+        <S.FlagTypeLayer>
+          <S.FlagTypeLabel>
+            <S.FlagTypeIconContainer>
+              <Code />
+            </S.FlagTypeIconContainer>
+            <S.FlagTypeLabelTextContainer>
+              <S.LabelText>키워드</S.LabelText>
+            </S.FlagTypeLabelTextContainer>
+          </S.FlagTypeLabel>
+        </S.FlagTypeLayer>
+
+        {flagDetail.keywords && flagDetail.keywords.length === 0 && (
+          <>
+            <S.OutsideToggleContainer>
+              <S.KeywordText>
+                키워드가 존재하지 않습니다. &quot;수정하기&quot; 버튼을 클릭하여 추가해
+                주세요.
+              </S.KeywordText>
+            </S.OutsideToggleContainer>
+          </>
+        )}
+
+        {flagDetail.keywords &&
+          flagDetail.keywords.map((keyword, index) => (
+            <S.KeywordContainer key={index}>
+              <S.OutsideToggleContainer>
+                <S.OutsideToggleRowContainer>
+                  <S.KeywordLabelContainer>
+                    <S.KeywordText>설명</S.KeywordText>
+                  </S.KeywordLabelContainer>
+                  <S.KeywordValueContainer value={keyword.description} readOnly />
+                </S.OutsideToggleRowContainer>
+
+                <S.OutsideToggleRowContainer>
+                  <S.KeywordLabelContainer>
+                    <S.KeywordText>변수</S.KeywordText>
+                  </S.KeywordLabelContainer>
+                  <S.KeywordValueContainer value={keyword.description} readOnly />
+                </S.OutsideToggleRowContainer>
+
+                <S.OutsideToggleRowContainer>
+                  {isToggle[index] ? (
+                    <S.ToggleButtonContainer
+                      onClick={() => {
+                        const newToggle = [...isToggle];
+                        newToggle[index] = !newToggle[index];
+                        setIsToggle(newToggle);
+                      }}
+                    >
+                      <S.ToggleTextContainer>
+                        <S.ToggleText>키워드를 가리려면 클릭하세요.</S.ToggleText>
+                      </S.ToggleTextContainer>
+                      <ToggleOffIcon />
+                    </S.ToggleButtonContainer>
+                  ) : (
+                    <S.ToggleButtonContainer
+                      onClick={() => {
+                        const newToggle = [...isToggle];
+                        newToggle[index] = !newToggle[index];
+                        setIsToggle(newToggle);
+                      }}
+                    >
+                      <ToggleOnIcon />
+                      <S.ToggleTextContainer>
+                        <S.ToggleText>키워드를 확인하려면 클릭하세요.</S.ToggleText>
+                      </S.ToggleTextContainer>
+                    </S.ToggleButtonContainer>
+                  )}
+                </S.OutsideToggleRowContainer>
+                {isToggle[index] && <S.FlagVariationDivisionLine />}
+                {isToggle[index] &&
+                  keyword.properties.map((property, index) => (
+                    <S.OutsideToggleRowContainer key={index}>
+                      <S.PropertyContainer>
+                        <S.KeywordLabelContainer>
+                          <S.KeywordText>키</S.KeywordText>
+                        </S.KeywordLabelContainer>
+                        <S.KeywordValueContainer value={property.property} readOnly />
+                      </S.PropertyContainer>
+                      <S.PropertyContainer>
+                        <S.KeywordLabelContainer>
+                          <S.KeywordText>값</S.KeywordText>
+                        </S.KeywordLabelContainer>
+                        <S.KeywordValueContainer value={property.data} readOnly />
+                      </S.PropertyContainer>
+                    </S.OutsideToggleRowContainer>
+                  ))}
+              </S.OutsideToggleContainer>
+            </S.KeywordContainer>
+          ))}
+
+        <S.ButtonLayer>
+          <S.DeleteButton onClick={deleteFlag}>
+            <S.DeleteButtonText>삭제하기</S.DeleteButtonText>
+          </S.DeleteButton>
+          <S.UpdateButton onClick={openUpdateModal}>
+            <S.UpdateButtonText>수정하기</S.UpdateButtonText>
+          </S.UpdateButton>
+        </S.ButtonLayer>
       </S.FlagContainer>
+
       <S.HistoryContainer></S.HistoryContainer>
     </S.MainContainer>
   );
