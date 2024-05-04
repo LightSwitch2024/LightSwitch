@@ -162,6 +162,25 @@ public class LightSwitch implements FlagService {
 		return flag.getValue(LSUser);
 	}
 
+	@Override
+	public Boolean getBooleanFlag(String key, LSUser LSUser) {
+		return getFlag(key, LSUser);
+	}
+
+	@Override
+	public Integer getNumberFlag(String key, LSUser LSUser) {
+		return getFlag(key, LSUser);
+	}
+
+	@Override
+	public String getStringFlag(String key, LSUser LSUser) {
+		return getFlag(key, LSUser);
+	}
+
+
+
+
+
 	public static void main(String[] args) {
 		FlagService flagService = LightSwitch.getInstance();
 		flagService.init("d8d2d76fc0514279b00c82bf9515f66d");
