@@ -139,7 +139,7 @@ pipeline {
                         failure{
                             error 'BE - Fail Build'
                         }
-                    }              
+                    }
                 }
                 stage ('FE Build') {
                     steps {
@@ -157,7 +157,7 @@ pipeline {
                         failure{
                             error 'FE - Fail Build'
                         }
-                    }    
+                    }
                 }
                  stage ('SDK Build') {
                     steps {
@@ -236,29 +236,44 @@ pipeline {
                 }
             }
         }
-        stage ('Service Stop') {
-            steps {
-                echo 'Service Stop'
-                sh'''
-                    docker-compose down
-                '''
-            }
-            post{
-                success {
-                    echo 'Success Service Stop'
-                }
-                failure {
-                    error 'Fail Service Stop'
-                }
-            }
-        }
         stage ('Service Start') {
             steps {
-                echo 'Service Start'
-                sh'''
-                    scp -i /ssh/private/.pem /var/jenkins_home/workspace/lightswitch-web-cd/prometheus.yml ubuntu@ip-172-26-5-31:/home/ubuntu/prometheus/prometheus.yml
-                    docker-compose up -d --build
-                '''
+                 script {
+                    def status = sh(script: '''
+                        EXIST_BLUE=$(docker-compose ps | grep "backend-blue" | grep Up || echo "NoActive")
+                        echo "EXIST_BLUE: $EXIST_BLUE"
+                    ''', returnStdout: true).trim()
+
+                    def BEFORE_COLOR = status.contains("NoActive") ? "green" : "blue"
+                    def AFTER_COLOR = status.contains("NoActive") ? "blue" : "green"
+                    def BEFORE_PORT = status.contains("NoActive") ? 8001 : 8000
+                    def AFTER_PORT = status.contains("NoActive") ? 8000 : 8001
+
+                    sh "scp -i /ssh/private/.pem /var/jenkins_home/workspace/lightswitch-web-cd/prometheus.yml ubuntu@ip-172-26-5-31:/home/ubuntu/prometheus/prometheus.yml"
+                    sh "export COMPOSE_PROFILES=$AFTER_COLOR && docker-compose up -d --build"
+
+                    int retryCount = 0
+                    while (retryCount++ < 5) {
+                        echo "===== Checking server response (${retryCount}/10) ====="
+                        def UP = sh(script: "curl -s http://lightswitch.kr:${AFTER_PORT}/api/actuator/health || echo 'NoActive'", returnStdout: true).trim()
+                        if (UP == "NoActive") {
+                            sleep(10)
+                        } else {
+                            break
+                        }
+                    }
+
+                    if (retryCount == 5) {
+                        error("Server startup failed")
+                    }
+
+                    sh """
+                        docker exec nginx /bin/bash -c "cp /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.bak && sed 's/${BEFORE_COLOR}:${BEFORE_PORT}/${AFTER_COLOR}:${AFTER_PORT}/' /etc/nginx/conf.d/default.conf.bak > /etc/nginx/conf.d/default.conf && nginx -s reload"
+
+                        echo "${BEFORE_COLOR} server down(port:${BEFORE_PORT})"
+                        docker-compose stop backend-${BEFORE_COLOR}
+                    """
+                }
             }
             post{
                 success {

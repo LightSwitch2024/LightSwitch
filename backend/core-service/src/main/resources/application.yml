@@ -1,12 +1,11 @@
 server:
-  port: 8000
   servlet:
     context-path: /api
 spring:
   application:
     name: core-service
   profiles:
-    active: dev
+    active: dev,blue
   mail:
     host: smtp.gmail.com
     port: 587
@@ -39,3 +38,18 @@ management:
           - metrics
           - shutdown
           - prometheus
+---
+spring:
+  config:
+    activate:
+      on-profile: blue
+server:
+  port: 8000
+
+---
+spring:
+  config:
+    activate:
+      on-profile: green
+server:
+  port: 8001

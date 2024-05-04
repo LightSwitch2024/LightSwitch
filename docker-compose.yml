@@ -1,15 +1,31 @@
 version: "3.9"
 
 services:
-  backend:
+  backend-blue:
     image: ls-backend:latest
-    container_name: backend
+    container_name: backend-blue
     ports:
       - "8000:8000"
     environment:
       - TZ=Asia/Seoul
+      - SPRING_PROFILES_ACTIVE=production,blue
     networks:
       - my-network
+    profiles:
+      - blue
+
+  backend-green:
+    image: ls-backend:latest
+    container_name: backend-green
+    ports:
+      - "8001:8001"
+    environment:
+      - TZ=Asia/Seoul
+      - SPRING_PROFILES_ACTIVE=production,green
+    networks:
+      - my-network
+    profiles:
+      - green
 
   prometheus:
     image: prom/prometheus
