@@ -6,5 +6,7 @@ import kr.lightswitch.model.response.Flag
 
 
 interface LightSwitchRepository {
-    fun getExample(): Flow<BaseResponse<List<Flag>>>
+    fun getExample(onStart: () -> Unit,
+                   onComplete: () -> Unit,
+                   onError: (cause: Throwable) -> Unit): Flow<BaseResponse<List<Flag>>>
 }
