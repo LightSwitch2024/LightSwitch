@@ -388,7 +388,7 @@ class FlagService(
             SseDto(
                 userKey,
                 SseDto.SseType.SWITCH,
-                FlagIdResponseDto(flagId, flag.active)
+                FlagIdResponseDto(flag.title, flag.active)
             )
         )
 
