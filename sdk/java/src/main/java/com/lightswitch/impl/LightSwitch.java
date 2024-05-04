@@ -22,6 +22,7 @@ import com.lightswitch.domain.dto.FlagResponse;
 import com.lightswitch.domain.dto.SseResponse;
 import com.lightswitch.domain.dto.UserKeyResponse;
 import com.lightswitch.exception.FlagNotFoundException;
+import com.lightswitch.exception.FlagRuntimeException;
 import com.lightswitch.exception.FlagServerConnectException;
 import com.lightswitch.exception.InvalidSSEFormatException;
 import com.lightswitch.util.HttpConnector;
@@ -43,18 +44,12 @@ public class LightSwitch implements FlagService {
 	}
 
 	@Override
-	public void init(String sdkKey) {
+	public void init(String sdkKey) throws FlagRuntimeException {
 		HttpURLConnection initConnection = setupPostConnection("sdk/init", sdkKey);
-		Type responseType = new TypeToken<BaseResponse<List<FlagResponse>>>() {
-		}.getType();
-		BaseResponse<List<FlagResponse>> response = handleResponse(initConnection, responseType);
-		Flags.addAllFlags(response.getData());
+		getAllFlags(initConnection);
 
 		HttpURLConnection subscribeConnection = setupPostConnection("sse/subscribe", sdkKey);
-		Type responseType2 = new TypeToken<BaseResponse<UserKeyResponse>>() {
-		}.getType();
-		BaseResponse<UserKeyResponse> response2 = handleResponse(subscribeConnection, responseType2);
-		String userKey = response2.getData().getUserKey();
+		String userKey = getUserKey(subscribeConnection);
 		System.out.println(userKey);
 
 		connection = setupGetConnection("sse/subscribe/" + userKey);
@@ -62,28 +57,39 @@ public class LightSwitch implements FlagService {
 		thread.start();
 	}
 
-	private HttpURLConnection setupPostConnection(String endpoint, String sdkKey) {
-		HttpConnector connector = new HttpConnector();
-		HttpURLConnection connection = connector.getConnect(endpoint, "POST", 0, false);
-
-		try {
-			return writeSdkKey(connection, sdkKey);
-		} catch (IOException e) {
+	private String getUserKey(HttpURLConnection subscribeConnection) throws FlagRuntimeException {
+		Type responseType = new TypeToken<BaseResponse<UserKeyResponse>>() {
+		}.getType();
+		BaseResponse<UserKeyResponse> response = handleResponse(subscribeConnection, responseType);
+		if (response.getCode() != HttpURLConnection.HTTP_OK) {
 			throw new FlagServerConnectException("Failed To Connect Flag Server");
 		}
+		return response.getData().getUserKey();
 	}
 
-	private <T> T handleResponse(HttpURLConnection connection, Type responseType) {
-		try {
-			Gson gson = new Gson();
-			String response = readResponse(connection);
-			return gson.fromJson(response, responseType);
-		} catch (IOException e) {
-			throw new InvalidSSEFormatException("Failed To Read Response");
+	private void getAllFlags(HttpURLConnection initConnection) throws FlagRuntimeException {
+		Type responseType = new TypeToken<BaseResponse<List<FlagResponse>>>() {
+		}.getType();
+		BaseResponse<List<FlagResponse>> response = handleResponse(initConnection, responseType);
+		if (response.getCode() != HttpURLConnection.HTTP_OK) {
+			throw new FlagServerConnectException("Failed To Connect Flag Server");
 		}
+		Flags.addAllFlags(response.getData());
 	}
 
-	private String readResponse(HttpURLConnection connection) throws IOException {
+	private HttpURLConnection setupPostConnection(String endpoint, String sdkKey) throws FlagRuntimeException {
+		HttpConnector connector = new HttpConnector();
+		HttpURLConnection connection = connector.getConnect(endpoint, "POST", 0, false);
+		return writeSdkKey(connection, sdkKey);
+	}
+
+	private <T> T handleResponse(HttpURLConnection connection, Type responseType) throws InvalidSSEFormatException {
+		Gson gson = new Gson();
+		String response = readResponse(connection);
+		return gson.fromJson(response, responseType);
+	}
+
+	private String readResponse(HttpURLConnection connection) throws InvalidSSEFormatException {
 		try (BufferedReader reader = new BufferedReader(
 			new InputStreamReader(connection.getInputStream(), UTF_8))) {
 			StringBuilder response = new StringBuilder();
@@ -92,25 +98,32 @@ public class LightSwitch implements FlagService {
 				response.append(line.trim());
 			}
 			return response.toString();
+		} catch (IOException e) {
+			throw new InvalidSSEFormatException("Failed To Read Response");
 		}
 	}
 
-	private HttpURLConnection setupGetConnection(String endpoint) {
+	private HttpURLConnection setupGetConnection(String endpoint) throws FlagServerConnectException {
 		HttpConnector connector = new HttpConnector();
 		return connector.getConnect(endpoint, "GET", 0, true);
 	}
 
-	private HttpURLConnection writeSdkKey(HttpURLConnection connection, String sdkKey) throws IOException {
-		OutputStream os = connection.getOutputStream();
-		Gson gson = new Gson();
-		String json = gson.toJson(new Config(sdkKey));
+	private HttpURLConnection writeSdkKey(HttpURLConnection connection, String sdkKey) throws
+		InvalidSSEFormatException {
+		try {
+			OutputStream os = connection.getOutputStream();
+			Gson gson = new Gson();
+			String json = gson.toJson(new Config(sdkKey));
 
-		byte[] input = json.getBytes(UTF_8);
-		os.write(input, 0, input.length);
+			byte[] input = json.getBytes(UTF_8);
+			os.write(input, 0, input.length);
+		} catch (IOException e) {
+			throw new InvalidSSEFormatException("Failed To send SDK key");
+		}
 		return connection;
 	}
 
-	private void connectToSse() {
+	private void connectToSse() throws InvalidSSEFormatException {
 		try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
 			String inputLine;
 			StringBuffer dataBuffer = new StringBuffer();
@@ -176,10 +189,6 @@ public class LightSwitch implements FlagService {
 	public String getStringFlag(String key, LSUser LSUser) {
 		return getFlag(key, LSUser);
 	}
-
-
-
-
 
 	public static void main(String[] args) {
 		FlagService flagService = LightSwitch.getInstance();
