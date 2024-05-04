@@ -17,7 +17,7 @@ public class LSUser {
 	}
 
 	public String getProperty(String key) {
-		return property.get(key);
+		return property.getOrDefault(key, "");
 	}
 
 	public boolean hasProperty(){
