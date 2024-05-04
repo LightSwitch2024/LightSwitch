@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kr.lightswitch.model.response.Flag
 import kr.lightswitch.network.LightSwitchRepository
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,6 +22,17 @@ class MainViewModel @Inject constructor(
 ): ViewModel() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val flagState: Flow<List<Flag>> = lightSwitchRepository.getExample()
+    val flagState: Flow<List<Flag>> = lightSwitchRepository.getExample(
+        onStart = {
+            Timber.d("onStart getExample")
+        },
+        onComplete = {
+            Timber.d("onComplete getExample")
+        },
+        onError = {
+            error ->
+            Timber.d("error occured : $error")
+        }
+    )
         .mapNotNull { it.data }
 }

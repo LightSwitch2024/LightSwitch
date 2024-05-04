@@ -3,6 +3,7 @@ package kr.lightswitch.ui
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -15,13 +16,13 @@ import kr.lightswitch.ui.flag.FlagScreen
 fun Navigation() {
 
     val navController = rememberNavController()
-
+//    val mainViewModel: MainViewModel = viewModel()
     NavHost(navController = navController, startDestination = NavScreen.Home.route) {
         composable(
             route = NavScreen.Home.route
         ) {
-            val mainViewModel: MainViewModel = viewModel()
-            MainScreen(mainViewModel, onBtnClick = {navController.navigate(NavScreen.Flags.route)})
+            val mainViewModel: MainViewModel = hiltViewModel()
+            MainScreen(mainViewModel = mainViewModel, onBtnClick = {navController.navigate(NavScreen.Flags.route)})
         }
         composable(
             route = NavScreen.Flags.route,
