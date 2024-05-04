@@ -24,6 +24,7 @@ import com.lightswitch.domain.dto.UserKeyResponse;
 import com.lightswitch.exception.FlagNotFoundException;
 import com.lightswitch.exception.FlagRuntimeException;
 import com.lightswitch.exception.FlagServerConnectException;
+import com.lightswitch.exception.FlagValueCastingException;
 import com.lightswitch.exception.InvalidSSEFormatException;
 import com.lightswitch.util.HttpConnector;
 
@@ -62,7 +63,7 @@ public class LightSwitch implements FlagService {
 		}.getType();
 		BaseResponse<UserKeyResponse> response = handleResponse(subscribeConnection, responseType);
 		if (response.getCode() != HttpURLConnection.HTTP_OK) {
-			throw new FlagServerConnectException("Failed To Connect Flag Server");
+			throw new FlagServerConnectException("Failed To Connect Flag Server : Invalid SDK key");
 		}
 		return response.getData().getUserKey();
 	}
@@ -72,7 +73,7 @@ public class LightSwitch implements FlagService {
 		}.getType();
 		BaseResponse<List<FlagResponse>> response = handleResponse(initConnection, responseType);
 		if (response.getCode() != HttpURLConnection.HTTP_OK) {
-			throw new FlagServerConnectException("Failed To Connect Flag Server");
+			throw new FlagServerConnectException("Failed To Connect Flag Server : Invalid SDK key");
 		}
 		Flags.addAllFlags(response.getData());
 	}
@@ -110,23 +111,21 @@ public class LightSwitch implements FlagService {
 
 	private HttpURLConnection writeSdkKey(HttpURLConnection connection, String sdkKey) throws
 		InvalidSSEFormatException {
-		try {
-			OutputStream os = connection.getOutputStream();
+		try (OutputStream os = connection.getOutputStream()) {
 			Gson gson = new Gson();
 			String json = gson.toJson(new Config(sdkKey));
-
 			byte[] input = json.getBytes(UTF_8);
 			os.write(input, 0, input.length);
+			return connection;
 		} catch (IOException e) {
 			throw new InvalidSSEFormatException("Failed To send SDK key");
 		}
-		return connection;
 	}
 
 	private void connectToSse() throws InvalidSSEFormatException {
 		try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
 			String inputLine;
-			StringBuffer dataBuffer = new StringBuffer();
+			StringBuilder dataBuffer = new StringBuilder();
 
 			while (!Thread.interrupted() && Objects.nonNull((inputLine = in.readLine()))) {
 				if (inputLine.startsWith("data:")) {
@@ -142,7 +141,7 @@ public class LightSwitch implements FlagService {
 						Gson gson = new Gson();
 						SseResponse sseResponse = gson.fromJson(jsonData, SseResponse.class);
 						Flags.event(sseResponse);
-						dataBuffer = new StringBuffer();
+						dataBuffer = new StringBuilder();
 					}
 				}
 			}
@@ -153,73 +152,51 @@ public class LightSwitch implements FlagService {
 
 	@Override
 	public void destroy() {
-		if (thread != null) {
-			thread.interrupt();
-			try {
+		try {
+			if (thread != null) {
+				thread.interrupt();
 				thread.join();
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
 			}
+			if (connection != null) {
+				connection.disconnect();
+			}
+			Flags.clear();
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
 		}
-		if (connection != null) {
-			connection.disconnect();
-		}
-
-		Flags.clear();
 	}
 
 	@Override
-	public <T> T getFlag(String key, LSUser LSUser) {
+	public <T> T getFlag(String key, LSUser LSUser) throws FlagRuntimeException {
 		//todo. 세 번째 인자 default 값 추가하기
-		Flag flag = Flags.getFlag(key).orElseThrow(FlagNotFoundException::new);
+		Flag flag = Flags.getFlag(key).orElseThrow(() -> new FlagNotFoundException("Flag Not Found Exception"));
 		return flag.getValue(LSUser);
 	}
 
 	@Override
-	public Boolean getBooleanFlag(String key, LSUser LSUser) {
-		return getFlag(key, LSUser);
+	public Boolean getBooleanFlag(String key, LSUser LSUser) throws FlagRuntimeException {
+		try {
+			return getFlag(key, LSUser);
+		} catch (ClassCastException e) {
+			throw new FlagValueCastingException("Flag Value Type is Not Boolean");
+		}
 	}
 
 	@Override
-	public Integer getNumberFlag(String key, LSUser LSUser) {
-		return getFlag(key, LSUser);
+	public Integer getNumberFlag(String key, LSUser LSUser) throws FlagRuntimeException {
+		try {
+			return getFlag(key, LSUser);
+		} catch (ClassCastException e) {
+			throw new FlagValueCastingException("Flag Value Type is Not Number");
+		}
 	}
 
 	@Override
-	public String getStringFlag(String key, LSUser LSUser) {
-		return getFlag(key, LSUser);
-	}
-
-	public static void main(String[] args) {
-		FlagService flagService = LightSwitch.getInstance();
-		flagService.init("d8d2d76fc0514279b00c82bf9515f66d");
-
+	public String getStringFlag(String key, LSUser LSUser) throws FlagRuntimeException {
 		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
+			return getFlag(key, LSUser);
+		} catch (ClassCastException e) {
+			throw new FlagValueCastingException("Flag Value Type is Not String");
 		}
-
-		LSUser build = new LSUser.Builder(123)
-			.property("blog", "https://olrlobt.tistory.com/")
-			.build();
-
-		LSUser build2 = new LSUser.Builder(123)
-			.property("kk", "aab")
-			.build();
-
-		Object testTitle = flagService.getFlag("img5", build);
-		Object testTitle2 = flagService.getFlag("img5", build2);
-		System.out.println(testTitle + " // " + testTitle2);
-
-		try {
-			Thread.sleep(6000);
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
-
-		Object testTitle3 = flagService.getFlag("img5", build);
-		Object testTitle4 = flagService.getFlag("img5", build2);
-		System.out.println(testTitle3 + " // " + testTitle4);
 	}
 }

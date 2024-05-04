@@ -13,22 +13,17 @@ public class HttpConnector {
 		FlagServerConnectException {
 		try {
 			URL url = new URL(HOST_URL + endPoint);
-			return openConnection(url, httpMethod, connectTime, isSSE);
+			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+			connection.setDoOutput(true);
+			connection.setRequestMethod(httpMethod);
+			connection.setRequestProperty("Content-Type", "application/json");
+			connection.setReadTimeout(connectTime);
+			if (isSSE) {
+				connection.setRequestProperty("Accept", "text/event-stream");
+			}
+			return connection;
 		} catch (IOException e) {
 			throw new FlagServerConnectException("Failed To Connect Flag Server");
 		}
-	}
-
-	protected HttpURLConnection openConnection(URL url, String httpMethod, int connectTime, boolean isSSE) throws
-		IOException {
-		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-		connection.setDoOutput(true);
-		connection.setRequestMethod(httpMethod);
-		connection.setRequestProperty("Content-Type", "application/json");
-		connection.setReadTimeout(connectTime);
-		if (isSSE) {
-			connection.setRequestProperty("Accept", "text/event-stream");
-		}
-		return connection;
 	}
 }
