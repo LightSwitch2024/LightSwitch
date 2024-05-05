@@ -9,4 +9,10 @@ public interface FlagService {
 	void destroy();
 
 	<T> T getFlag(String key, LSUser LSUser);
+
+	Boolean getBooleanFlag(String key, LSUser LSUser);
+
+	Integer getNumberFlag(String key, LSUser LSUser);
+
+	String getStringFlag(String key, LSUser LSUser);
 }

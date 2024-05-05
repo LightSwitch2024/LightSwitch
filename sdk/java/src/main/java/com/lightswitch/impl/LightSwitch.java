@@ -22,7 +22,9 @@ import com.lightswitch.domain.dto.FlagResponse;
 import com.lightswitch.domain.dto.SseResponse;
 import com.lightswitch.domain.dto.UserKeyResponse;
 import com.lightswitch.exception.FlagNotFoundException;
+import com.lightswitch.exception.FlagRuntimeException;
 import com.lightswitch.exception.FlagServerConnectException;
+import com.lightswitch.exception.FlagValueCastingException;
 import com.lightswitch.exception.InvalidSSEFormatException;
 import com.lightswitch.util.HttpConnector;
 
@@ -43,18 +45,12 @@ public class LightSwitch implements FlagService {
 	}
 
 	@Override
-	public void init(String sdkKey) {
+	public void init(String sdkKey) throws FlagRuntimeException {
 		HttpURLConnection initConnection = setupPostConnection("sdk/init", sdkKey);
-		Type responseType = new TypeToken<BaseResponse<List<FlagResponse>>>() {
-		}.getType();
-		BaseResponse<List<FlagResponse>> response = handleResponse(initConnection, responseType);
-		Flags.addAllFlags(response.getData());
+		getAllFlags(initConnection);
 
 		HttpURLConnection subscribeConnection = setupPostConnection("sse/subscribe", sdkKey);
-		Type responseType2 = new TypeToken<BaseResponse<UserKeyResponse>>() {
-		}.getType();
-		BaseResponse<UserKeyResponse> response2 = handleResponse(subscribeConnection, responseType2);
-		String userKey = response2.getData().getUserKey();
+		String userKey = getUserKey(subscribeConnection);
 		System.out.println(userKey);
 
 		connection = setupGetConnection("sse/subscribe/" + userKey);
@@ -62,28 +58,39 @@ public class LightSwitch implements FlagService {
 		thread.start();
 	}
 
-	private HttpURLConnection setupPostConnection(String endpoint, String sdkKey) {
+	private String getUserKey(HttpURLConnection subscribeConnection) throws FlagRuntimeException {
+		Type responseType = new TypeToken<BaseResponse<UserKeyResponse>>() {
+		}.getType();
+		BaseResponse<UserKeyResponse> response = handleResponse(subscribeConnection, responseType);
+		if (response.getCode() != HttpURLConnection.HTTP_OK) {
+			throw new FlagServerConnectException("Failed To Connect Flag Server : Invalid SDK key");
+		}
+		return response.getData().getUserKey();
+	}
+
+	private void getAllFlags(HttpURLConnection initConnection) throws FlagRuntimeException {
+		Type responseType = new TypeToken<BaseResponse<List<FlagResponse>>>() {
+		}.getType();
+		BaseResponse<List<FlagResponse>> response = handleResponse(initConnection, responseType);
+		if (response.getCode() != HttpURLConnection.HTTP_OK) {
+			throw new FlagServerConnectException("Failed To Connect Flag Server : Invalid SDK key");
+		}
+		Flags.addAllFlags(response.getData());
+	}
+
+	private HttpURLConnection setupPostConnection(String endpoint, String sdkKey) throws FlagRuntimeException {
 		HttpConnector connector = new HttpConnector();
 		HttpURLConnection connection = connector.getConnect(endpoint, "POST", 0, false);
-
-		try {
-			return writeSdkKey(connection, sdkKey);
-		} catch (IOException e) {
-			throw new FlagServerConnectException("Failed To Connect Flag Server");
-		}
+		return writeSdkKey(connection, sdkKey);
 	}
 
-	private <T> T handleResponse(HttpURLConnection connection, Type responseType) {
-		try {
-			Gson gson = new Gson();
-			String response = readResponse(connection);
-			return gson.fromJson(response, responseType);
-		} catch (IOException e) {
-			throw new InvalidSSEFormatException("Failed To Read Response");
-		}
+	private <T> T handleResponse(HttpURLConnection connection, Type responseType) throws InvalidSSEFormatException {
+		Gson gson = new Gson();
+		String response = readResponse(connection);
+		return gson.fromJson(response, responseType);
 	}
 
-	private String readResponse(HttpURLConnection connection) throws IOException {
+	private String readResponse(HttpURLConnection connection) throws InvalidSSEFormatException {
 		try (BufferedReader reader = new BufferedReader(
 			new InputStreamReader(connection.getInputStream(), UTF_8))) {
 			StringBuilder response = new StringBuilder();
@@ -92,28 +99,33 @@ public class LightSwitch implements FlagService {
 				response.append(line.trim());
 			}
 			return response.toString();
+		} catch (IOException e) {
+			throw new InvalidSSEFormatException("Failed To Read Response");
 		}
 	}
 
-	private HttpURLConnection setupGetConnection(String endpoint) {
+	private HttpURLConnection setupGetConnection(String endpoint) throws FlagServerConnectException {
 		HttpConnector connector = new HttpConnector();
 		return connector.getConnect(endpoint, "GET", 0, true);
 	}
 
-	private HttpURLConnection writeSdkKey(HttpURLConnection connection, String sdkKey) throws IOException {
-		OutputStream os = connection.getOutputStream();
-		Gson gson = new Gson();
-		String json = gson.toJson(new Config(sdkKey));
-
-		byte[] input = json.getBytes(UTF_8);
-		os.write(input, 0, input.length);
-		return connection;
+	private HttpURLConnection writeSdkKey(HttpURLConnection connection, String sdkKey) throws
+		InvalidSSEFormatException {
+		try (OutputStream os = connection.getOutputStream()) {
+			Gson gson = new Gson();
+			String json = gson.toJson(new Config(sdkKey));
+			byte[] input = json.getBytes(UTF_8);
+			os.write(input, 0, input.length);
+			return connection;
+		} catch (IOException e) {
+			throw new InvalidSSEFormatException("Failed To send SDK key");
+		}
 	}
 
-	private void connectToSse() {
+	private void connectToSse() throws InvalidSSEFormatException {
 		try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
 			String inputLine;
-			StringBuffer dataBuffer = new StringBuffer();
+			StringBuilder dataBuffer = new StringBuilder();
 
 			while (!Thread.interrupted() && Objects.nonNull((inputLine = in.readLine()))) {
 				if (inputLine.startsWith("data:")) {
@@ -129,7 +141,7 @@ public class LightSwitch implements FlagService {
 						Gson gson = new Gson();
 						SseResponse sseResponse = gson.fromJson(jsonData, SseResponse.class);
 						Flags.event(sseResponse);
-						dataBuffer = new StringBuffer();
+						dataBuffer = new StringBuilder();
 					}
 				}
 			}
@@ -140,58 +152,51 @@ public class LightSwitch implements FlagService {
 
 	@Override
 	public void destroy() {
-		if (thread != null) {
-			thread.interrupt();
-			try {
+		try {
+			if (thread != null) {
+				thread.interrupt();
 				thread.join();
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
 			}
+			if (connection != null) {
+				connection.disconnect();
+			}
+			Flags.clear();
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
 		}
-		if (connection != null) {
-			connection.disconnect();
-		}
-
-		Flags.clear();
 	}
 
 	@Override
-	public <T> T getFlag(String key, LSUser LSUser) {
+	public <T> T getFlag(String key, LSUser LSUser) throws FlagRuntimeException {
 		//todo. 세 번째 인자 default 값 추가하기
-		Flag flag = Flags.getFlag(key).orElseThrow(FlagNotFoundException::new);
+		Flag flag = Flags.getFlag(key).orElseThrow(() -> new FlagNotFoundException("Flag Not Found Exception"));
 		return flag.getValue(LSUser);
 	}
 
-	public static void main(String[] args) {
-		FlagService flagService = LightSwitch.getInstance();
-		flagService.init("d8d2d76fc0514279b00c82bf9515f66d");
-
+	@Override
+	public Boolean getBooleanFlag(String key, LSUser LSUser) throws FlagRuntimeException {
 		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
+			return getFlag(key, LSUser);
+		} catch (ClassCastException e) {
+			throw new FlagValueCastingException("Flag Value Type is Not Boolean");
 		}
+	}
 
-		LSUser build = new LSUser.Builder(123)
-			.property("blog", "https://olrlobt.tistory.com/")
-			.build();
-
-		LSUser build2 = new LSUser.Builder(123)
-			.property("kk", "aab")
-			.build();
-
-		Object testTitle = flagService.getFlag("img5", build);
-		Object testTitle2 = flagService.getFlag("img5", build2);
-		System.out.println(testTitle + " // " + testTitle2);
-
+	@Override
+	public Integer getNumberFlag(String key, LSUser LSUser) throws FlagRuntimeException {
 		try {
-			Thread.sleep(6000);
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
+			return getFlag(key, LSUser);
+		} catch (ClassCastException e) {
+			throw new FlagValueCastingException("Flag Value Type is Not Number");
 		}
+	}
 
-		Object testTitle3 = flagService.getFlag("img5", build);
-		Object testTitle4 = flagService.getFlag("img5", build2);
-		System.out.println(testTitle3 + " // " + testTitle4);
+	@Override
+	public String getStringFlag(String key, LSUser LSUser) throws FlagRuntimeException {
+		try {
+			return getFlag(key, LSUser);
+		} catch (ClassCastException e) {
+			throw new FlagValueCastingException("Flag Value Type is Not String");
+		}
 	}
 }

@@ -3,6 +3,7 @@ package com.lightswitch.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.lightswitch.exception.FlagValueCastingException;
 import com.lightswitch.util.HashUtil;
 
 public class Flag {
@@ -46,7 +47,7 @@ public class Flag {
 		return defaultValue;
 	}
 
-	public <T> T getValue(LSUser LSUser) {
+	public <T> T getValue(LSUser LSUser) throws FlagValueCastingException {
 		String value = isActive() ? calValue(LSUser) : defaultValue;
 		return getValueWithType(value);
 	}
@@ -63,15 +64,19 @@ public class Flag {
 		return calValue(LSUser.getUserId());
 	}
 
-	private <T> T getValueWithType(String value) {
-		if (type.equals(FlagType.BOOLEAN)) {
-			return (T)Boolean.valueOf(value);
-		} else if (type.equals(FlagType.STRING)) {
-			return (T)String.valueOf(value);
-		} else if (type.equals(FlagType.NUMBER)) {
-			return (T)Integer.valueOf(value);
+	private <T> T getValueWithType(String value) throws FlagValueCastingException {
+		try {
+			if (type.equals(FlagType.BOOLEAN)) {
+				return (T)Boolean.valueOf(value);
+			} else if (type.equals(FlagType.STRING)) {
+				return (T)String.valueOf(value);
+			} else if (type.equals(FlagType.NUMBER)) {
+				return (T)Integer.valueOf(value);
+			}
+			return null;
+		} catch (ClassCastException e) {
+			throw new FlagValueCastingException("Flag Value Type is Not " + type.toString());
 		}
-		return null;
 	}
 
 	private String calValue(int userId) {
