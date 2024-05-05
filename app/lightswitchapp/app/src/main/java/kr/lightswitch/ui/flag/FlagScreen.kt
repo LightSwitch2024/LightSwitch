@@ -113,7 +113,8 @@ fun FlagView(flag: Flag, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
             }
             Row (Modifier.fillMaxSize()){
                 Text(
-                    text = flag.description
+                    text = flag.description,
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
             Switch(
