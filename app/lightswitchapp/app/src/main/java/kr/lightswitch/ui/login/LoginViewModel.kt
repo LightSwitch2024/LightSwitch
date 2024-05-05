@@ -16,25 +16,14 @@ class LoginViewModel @Inject constructor(
     private val lightSwitchRepository: LightSwitchRepository
 ) : ViewModel() {
 
-    private val _email = MutableStateFlow("")
-    private val _password = MutableStateFlow("")
-
     private val _loginResponse = MutableStateFlow<LoginResponse?>(null)
     val loginState: StateFlow<LoginResponse?> = _loginResponse
 
-    fun setEmail(email: String) {
-        _email.value = email
-    }
-
-    fun setPassword(password: String) {
-        _password.value = password
-    }
-
-    fun startLogin() {
+    fun login(email: String, password: String) {
         viewModelScope.launch {
             lightSwitchRepository.login(
-                email = _email.value,
-                password = _password.value,
+                email = email,
+                password = password,
                 onStart = {
                     Timber.d("onStart login")
                 },

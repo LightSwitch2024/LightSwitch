@@ -38,9 +38,7 @@ fun LoginScreen(loginViewModel: LoginViewModel) {
 
         Button(
             onClick = {
-                loginViewModel.setEmail(emailState.value)
-                loginViewModel.setPassword(passwordState.value)
-                loginViewModel.startLogin()
+                loginViewModel.login(emailState.value, passwordState.value)
             },
             modifier = Modifier.padding(top = 16.dp)
         ) {
