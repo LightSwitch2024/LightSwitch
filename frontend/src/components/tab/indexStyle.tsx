@@ -130,6 +130,10 @@ export const LogOutbutton = styled.button`
   justify-content: center;
   font-weight: bold;
   font-size: 1.2rem;
+  border: 'none',
+  textDecoration: 'none',
+  cursor: 'pointer',
+  color: 'white',
   gap: 0.5rem;
 `;
 

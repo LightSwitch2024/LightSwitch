@@ -37,13 +37,10 @@ const LogIn = () => {
       },
       (data) => {
         console.log(data);
-        setAuthState({
+        setAuthState((data) => ({
+          ...data,
           isAuthenticated: true,
-          memberId: data.memberId,
-          email: data.email,
-          firstName: data.firstName,
-          lastName: data.lastName,
-        });
+        }));
         navigate('/');
       },
       (err) => {
