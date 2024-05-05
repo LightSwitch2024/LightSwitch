@@ -59,12 +59,11 @@ class MemberController(
     }
 
     // 유저 이름,전화번호 수정
-    @PutMapping("/{email}")
+    @PutMapping("/{memberId}")
     fun updateUser(
-        @PathVariable email: String,
         @RequestBody newUserData: MemberUpdateReqDto
     ): BaseResponse<MemberResDto?> {
-        return success(memberService.updateUser(email, newUserData))
+        return success(memberService.updateUser(newUserData))
     }
 
     // 비밀번호 수정
@@ -72,6 +71,8 @@ class MemberController(
     fun updatePassword(
         @RequestBody pwData: PasswordUpdateReqDto
     ): BaseResponse<MemberResDto?> {
+        println("Controller")
+        println(pwData)
         return success(memberService.updatePassword(pwData))
     }
 

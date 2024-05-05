@@ -133,8 +133,6 @@ class MemberService(
     fun getUser(email: String): MemberResDto {
         val savedMember =
             memberRepository.findByEmailAndDeletedAtIsNull(email) ?: throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
-        println("service 진행됌")
-        println(savedMember?.email)
 
         return MemberResDto(
             memberId = savedMember.memberId!!,
@@ -173,26 +171,35 @@ class MemberService(
     }
 
     // 이름, 전화번호 변경
-    fun updateUser(email: String, newData: MemberUpdateReqDto): MemberResDto? {
-        val oldData: Member? = memberRepository.findByEmailAndDeletedAtIsNull(email)
-        oldData?.let {
-            oldData.firstName = newData.firstName
-            oldData.lastName = newData.lastName
-            oldData.telNumber = newData.telNumber
-            oldData.email = newData.email
-            memberRepository.save(it)
-        }
+    @Transactional
+    fun updateUser(newData: MemberUpdateReqDto): MemberResDto? {
+        println("Service")
+        println(newData)
+        val savedMember: Member = memberRepository.findByEmailAndDeletedAtIsNull(newData.email) ?: throw BaseException(
+            ResponseCode.MEMBER_NOT_FOUND
+        )
 
-        val updatedData: MemberResDto? = oldData?.let {
-            MemberResDto(
-                memberId = it.memberId!!,
-                firstName = it.firstName,
-                lastName = it.lastName,
-                telNumber = it.telNumber,
-                email = it.email
-            )
-        }
-        return updatedData
+        val updatedMember: Member = Member(
+            memberId = savedMember.memberId!!,
+            email = savedMember.email,
+            firstName = newData.firstName,
+            lastName = newData.lastName,
+            telNumber = newData.telNumber,
+            password = savedMember.password
+//            updatedAt = LocalDateTime.now()
+        )
+
+        memberRepository.save(updatedMember)
+        println("service 이후")
+        println(updatedMember.firstName)
+
+        return MemberResDto(
+            memberId = savedMember.memberId!!,
+            firstName = savedMember.firstName,
+            lastName = savedMember.lastName,
+            telNumber = savedMember.telNumber,
+            email = savedMember.email,
+        )
     }
 
     // 비밀번호 변경
@@ -213,8 +220,6 @@ class MemberService(
 //            updatedAt = LocalDateTime.now()
         )
 
-        println(updatedMember.email)
-        println("진행service")
         memberRepository.save(updatedMember)
 
         return MemberResDto(
