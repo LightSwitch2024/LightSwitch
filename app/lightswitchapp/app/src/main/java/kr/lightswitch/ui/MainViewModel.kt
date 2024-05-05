@@ -21,18 +21,26 @@ class MainViewModel @Inject constructor(
     private val lightSwitchRepository: LightSwitchRepository
 ): ViewModel() {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val flagState: Flow<List<Flag>> = lightSwitchRepository.getExample(
-        onStart = {
-            Timber.d("onStart getExample")
-        },
-        onComplete = {
-            Timber.d("onComplete getExample")
-        },
-        onError = {
-            error ->
-            Timber.d("error occured : $error")
-        }
-    )
-        .mapNotNull { it.data }
+    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    val uiState = _uiState.asStateFlow()
+
+    init {
+        lightSwitchRepository.getExample(
+            onStart = {
+                Timber.d("onStart getExample")
+                _uiState.value = UiState.Loading
+            },
+            onComplete = {
+                Timber.d("onComplete getExample")
+            },
+            onError = {
+                    error ->
+                Timber.d("error occured : $error")
+                _uiState.value = UiState.Error(error)
+            }
+        ).mapNotNull {
+                _uiState.value = UiState.Success(it.data)
+                it.data
+            }
+    }
 }
