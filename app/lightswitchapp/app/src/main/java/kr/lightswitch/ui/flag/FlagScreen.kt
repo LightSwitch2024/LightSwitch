@@ -11,8 +11,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +40,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.lightswitch.R
 import kr.lightswitch.model.response.Flag
 import kr.lightswitch.ui.UiState
+import kr.lightswitch.ui.theme.C900
+import kr.lightswitch.ui.theme.L200
+import kr.lightswitch.ui.theme.L500
+import kr.lightswitch.ui.theme.L600
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -82,12 +92,23 @@ fun FlagPage(data: List<Flag>, flagViewModel: FlagViewModel) {
 @Composable
 fun FlagView(flag: Flag, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
 
-    Card(modifier = Modifier.padding(12.dp), shape = RoundedCornerShape(20.dp)) {
+    Card(modifier = Modifier.padding(12.dp), shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = L200)) {
         Column(modifier = Modifier.padding(12.dp)) {
-            Row(Modifier.fillMaxSize()) {
+            Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(
                     text = flag.title,
-                    style = TextStyle()
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = C900
+                )
+                AssistChip(
+                    onClick = {  },
+                    label = { Text("${flag.maintainerName}") },
+                    leadingIcon = {
+                        Icon(
+                            Icons.Filled.AccountCircle,
+                            contentDescription = "flag maintainer",
+                        )
+                    }
                 )
             }
             Row (Modifier.fillMaxSize()){
