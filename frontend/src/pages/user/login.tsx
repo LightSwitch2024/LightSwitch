@@ -41,8 +41,6 @@ const LogIn = () => {
         password: password,
       },
       (data) => {
-        console.log(data);
-        console.log('여기야!');
         const memId = Number(data.memberId);
         const memEmail = data.email;
         const memFirstname = data.firstName;

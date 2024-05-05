@@ -18,6 +18,7 @@ interface PWData {
 }
 
 interface UserData {
+  memberId: number;
   email: string;
   firstName: string;
   lastName: string;
@@ -108,14 +109,14 @@ export async function deleteUser<T>(
     .catch((err: AxiosError) => onFail(err));
 }
 
-export async function updateUser<T, G>(
-  email: string,
-  userData: G,
+export async function updateUser<T>(
+  memberId: number,
+  userData: UserData,
   onSuccess: (data: T) => void,
   onFail: (err: AxiosError) => void,
 ): Promise<void> {
   axios
-    .put<BaseResponse<T>>(`/api/v1/member/${email}`, userData)
+    .put<BaseResponse<T>>(`/api/v1/member/${memberId}`, userData)
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
     .catch((err: AxiosError) => onFail(err));
 }
