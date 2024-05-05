@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 import { logIn } from '@/api/userDetail/userAxios';
 import LightswitchLogo from '@/assets/lightswitchLogo.svg?react';
@@ -18,7 +18,7 @@ const LogIn = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  const setAuthState = useSetRecoilState(AuthAtom);
+  const [auth, setAuth] = useRecoilState(AuthAtom);
   const navigate = useNavigate();
 
   const handleEmail = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -29,6 +29,11 @@ const LogIn = () => {
     setPassword(e.target.value);
   };
 
+  useEffect(() => {
+    console.log(auth);
+    console.log('hello');
+  }, [auth]);
+
   const onClickLogIn = (): void => {
     logIn<MemberInfo>(
       {
@@ -37,8 +42,16 @@ const LogIn = () => {
       },
       (data) => {
         console.log(data);
-        setAuthState((data) => ({
-          ...data,
+        console.log('여기야!');
+        const memId = Number(data.memberId);
+        const memEmail = data.email;
+        const memFirstname = data.firstName;
+        const memLastname = data.lastName;
+        setAuth(() => ({
+          memberId: memId,
+          email: memEmail,
+          firstName: memFirstname,
+          lastName: memLastname,
           isAuthenticated: true,
         }));
         navigate('/');

@@ -12,8 +12,11 @@ const index = () => {
   const navigate = useNavigate();
 
   const handleLogout = (): void => {
-    setAuth((prevAuth) => ({
-      ...prevAuth,
+    setAuth(() => ({
+      memberId: 0,
+      email: '',
+      firstName: '',
+      lastName: '',
       isAuthenticated: false,
     }));
     navigate('/login');

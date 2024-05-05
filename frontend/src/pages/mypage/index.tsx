@@ -5,6 +5,7 @@ import { useRecoilValue } from 'recoil';
 
 import { deleteUser, getUserDetail, updateUser } from '@/api/userDetail/userAxios';
 import DelIcon from '@/assets/delete_forever.svg?react';
+import PasswordModal from '@/components/passwordModal/passwordModal';
 import * as M from '@/pages/mypage/indexStyle';
 
 interface UserData {
@@ -31,6 +32,8 @@ const UserDetail = () => {
   const [editedTelNumber, setEditedTelNumber] = useState<string>('');
 
   const { email } = useParams<{ email: string }>();
+
+  const [isModalOpen, setModalOpen] = useState(false);
 
   const auth = useRecoilValue(AuthAtom);
   const navigate = useNavigate();
@@ -170,7 +173,8 @@ const UserDetail = () => {
           </M.TelWrapper>
           <M.ButtonWrapper>
             <M.Button onClick={onPressMemberUpdateButton}>회원정보 수정</M.Button>
-            <M.Button onClick={onPressUpdateButton}>비밀번호 수정</M.Button>
+            <M.Button onClick={() => setModalOpen(true)}>비밀번호 수정</M.Button>
+            <PasswordModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
           </M.ButtonWrapper>
         </M.MyPageMemberDataContainer>
         <M.DelContainer>

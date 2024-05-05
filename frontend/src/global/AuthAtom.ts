@@ -16,7 +16,7 @@ export const AuthAtom = atom<MemberAtom>({
   default: {
     isAuthenticated: false,
     memberId: 0,
-    email: '',
+    email: 'default',
     firstName: '',
     lastName: '',
   },

@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 
 import { createFlag } from '@/api/create/createAxios';
 import { getTagList, getTagListByKeyword } from '@/api/main/mainAxios';
+import { useRecoilState } from 'recoil';
+import { AuthAtom } from '@/global/AuthAtom';
 
 interface TagItem {
   content: string;
@@ -10,6 +12,7 @@ interface TagItem {
 }
 
 const CreateFlag = () => {
+  const auth = useRecoilState(AuthAtom);
   const [title, setTitle] = useState<string>('');
   const [allTags, setAllTags] = useState<Array<TagItem>>([]);
   const [tags, setTags] = useState<Array<TagItem>>([]);
@@ -129,6 +132,7 @@ const CreateFlag = () => {
    * 컴포넌트 마운트 시 전체 태그 목록을 가져옴
    */
   useEffect(() => {
+    console.log(auth);
     setupAllTags();
   }, []);
 
