@@ -1,9 +1,9 @@
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
 
 import { createFlag } from '@/api/create/createAxios';
 import { getTagList, getTagListByKeyword } from '@/api/main/mainAxios';
-import { useRecoilState } from 'recoil';
 import { AuthAtom } from '@/global/AuthAtom';
 
 interface TagItem {

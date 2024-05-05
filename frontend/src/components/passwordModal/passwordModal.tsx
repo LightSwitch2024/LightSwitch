@@ -90,7 +90,9 @@ const PasswordModal: React.FC<Props> = ({ isOpen, onClose }) => {
               type="password"
               placeholder="새 비밀번호 입력"
               value={password}
-              onChange={(e) => handlePasswordChange(e)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                handlePasswordChange(e)
+              }
             />
             {passwordCheck ? (
               <P.SignUpText>안전한 비밀번호 입니다.</P.SignUpText>
@@ -106,7 +108,9 @@ const PasswordModal: React.FC<Props> = ({ isOpen, onClose }) => {
               type="password"
               placeholder="새 비밀번호 확인"
               value={confirmPassword}
-              onChange={(e) => handleConfirmPasswordChange(e)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                handleConfirmPasswordChange(e)
+              }
             />
             {confirmPassword &&
               (password !== confirmPassword ? (
