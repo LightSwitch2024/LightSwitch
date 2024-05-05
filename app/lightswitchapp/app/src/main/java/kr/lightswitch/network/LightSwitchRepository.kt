@@ -9,4 +9,9 @@ interface LightSwitchRepository {
     fun getExample(onStart: () -> Unit,
                    onComplete: () -> Unit,
                    onError: (cause: Throwable) -> Unit): Flow<BaseResponse<List<Flag>>>
+    fun switchFlag(
+                   flagId: Int,
+                   onStart: () -> Unit,
+                   onComplete: () -> Unit,
+                   onError: (cause: Throwable) -> Unit): Flow<BaseResponse<Int>>
 }

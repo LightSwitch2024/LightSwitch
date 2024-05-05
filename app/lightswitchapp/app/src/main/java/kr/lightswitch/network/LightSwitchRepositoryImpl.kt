@@ -24,4 +24,15 @@ class LightSwitchRepositoryImpl @Inject constructor(
         val response = lightSwitchService.exampleRequest()
         emit(response)
     }.flowOn(ioDispatcher).onStart{ onStart() }.onCompletion { onComplete() }.catch { error -> onError(error) }
+
+    override fun switchFlag(
+        flagId: Int,
+        onStart: () -> Unit,
+        onComplete: () -> Unit,
+        onError: (cause: Throwable) -> Unit
+    ): Flow<BaseResponse<Int>> = flow {
+        val response = lightSwitchService.switchFlag(flagId = flagId)
+        emit(response)
+    }.flowOn(ioDispatcher).onStart{ onStart() }.onCompletion { onComplete() }.catch { error -> onError(error) }
+
 }

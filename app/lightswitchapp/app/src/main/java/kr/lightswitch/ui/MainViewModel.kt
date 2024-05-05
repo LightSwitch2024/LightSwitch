@@ -22,27 +22,4 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val lightSwitchRepository: LightSwitchRepository
 ): ViewModel() {
-
-    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
-    val uiState = _uiState.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            lightSwitchRepository.getExample(
-                onStart = {
-                    Timber.d("onStart getExample")
-                    _uiState.value = UiState.Loading
-                },
-                onComplete = {
-                    Timber.d("onComplete getExample")
-                },
-                onError = { error ->
-                    Timber.d("error occured : $error")
-                    _uiState.value = UiState.Error(error)
-                }
-            ).collectLatest {response ->
-                _uiState.value = UiState.Success(response.data)
-            }
-        }
-    }
 }

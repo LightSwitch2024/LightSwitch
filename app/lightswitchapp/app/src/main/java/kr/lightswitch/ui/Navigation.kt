@@ -19,6 +19,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kr.lightswitch.ui.flag.FlagScreen
+import kr.lightswitch.ui.flag.FlagViewModel
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,7 +79,8 @@ fun Navigation(modifier: Modifier = Modifier) {
                 composable(
                     route = NavScreen.Flags.route,
                 ) { backStackEntry ->
-                    FlagScreen()
+                    val flagViewModel: FlagViewModel = hiltViewModel()
+                    FlagScreen(flagViewModel = flagViewModel)
                 }
                 composable(
                     route = NavScreen.Login.route,
