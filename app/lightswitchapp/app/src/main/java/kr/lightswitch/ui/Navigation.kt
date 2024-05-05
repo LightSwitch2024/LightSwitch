@@ -35,7 +35,7 @@ fun Navigation() {
             route = NavScreen.Login.route,
         ) { backStackEntry ->
             val loginViewModel: LoginViewModel = hiltViewModel()
-            LoginScreen(loginViewModel = loginViewModel)
+            LoginScreen(loginViewModel = loginViewModel, navController = navController)
         }
     }
 }

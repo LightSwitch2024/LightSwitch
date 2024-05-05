@@ -16,4 +16,5 @@ interface LightSwitchRepository {
               onStart: () -> Unit,
               onComplete: () -> Unit,
               onError: (cause: Throwable) -> Unit): Flow<BaseResponse<LoginResponse>>
+
 }
