@@ -116,15 +116,16 @@ class MemberService(
 //         회원가입 후 로그인할 때 isCorrectPW 코드
         val isCorrectPW = passwordService.matches(logInReqDto.password, savedMember.password)
 
-        return if(isCorrectPW) {
+        return if (isCorrectPW) {
             MemberResDto(
                 memberId = savedMember.memberId!!,
                 email = savedMember.email,
                 firstName = savedMember.firstName,
                 lastName = savedMember.lastName,
                 telNumber = savedMember.telNumber
-            )} else {
-                throw BaseException(ResponseCode.INVALID_PASSWORD)
+            )
+        } else {
+            throw BaseException(ResponseCode.INVALID_PASSWORD)
         }
     }
 
@@ -196,7 +197,9 @@ class MemberService(
 
     // 비밀번호 변경
     fun updatePassword(update: PasswordUpdateReqDto): MemberResDto? {
-        val savedMember: Member = memberRepository.findByEmailAndDeletedAtIsNull(update.email) ?:throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
+        val savedMember: Member = memberRepository.findByEmailAndDeletedAtIsNull(update.email) ?: throw BaseException(
+            ResponseCode.MEMBER_NOT_FOUND
+        )
 
         val encodedPassword = passwordService.encode(update.newPassword)
 

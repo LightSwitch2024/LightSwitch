@@ -70,10 +70,8 @@ class MemberController(
     // 비밀번호 수정
     @PutMapping("/{memberId}/password")
     fun updatePassword(
-        @PathVariable memberId: Int,
         @RequestBody pwData: PasswordUpdateReqDto
     ): BaseResponse<MemberResDto?> {
-        println("controller 성공")
         return success(memberService.updatePassword(pwData))
     }
 
