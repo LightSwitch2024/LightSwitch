@@ -11,6 +11,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kr.lightswitch.model.response.Flag
 import kr.lightswitch.ui.flag.FlagScreen
+import kr.lightswitch.ui.login.LoginScreen
+import kr.lightswitch.ui.login.LoginViewModel
 
 @Composable
 fun Navigation() {
@@ -22,7 +24,7 @@ fun Navigation() {
             route = NavScreen.Home.route
         ) {
             val mainViewModel: MainViewModel = hiltViewModel()
-            MainScreen(mainViewModel = mainViewModel, onBtnClick = {navController.navigate(NavScreen.Flags.route)})
+            MainScreen(mainViewModel = mainViewModel, onBtnClick = {navController.navigate(NavScreen.Flags.route)}, onLoginBtnClick = {navController.navigate(NavScreen.Login.route)})
         }
         composable(
             route = NavScreen.Flags.route,
@@ -32,7 +34,8 @@ fun Navigation() {
         composable(
             route = NavScreen.Login.route,
         ) { backStackEntry ->
-
+            val loginViewModel: LoginViewModel = hiltViewModel()
+            LoginScreen(loginViewModel = loginViewModel)
         }
     }
 }
