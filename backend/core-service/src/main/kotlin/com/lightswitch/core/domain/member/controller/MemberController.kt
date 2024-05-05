@@ -68,12 +68,13 @@ class MemberController(
     }
 
     // 비밀번호 수정
-    @PutMapping("/{email}/password")
+    @PutMapping("/{memberId}/password")
     fun updatePassword(
-        @PathVariable email: String,
-        @RequestBody pwUpdateData: PasswordUpdateReqDto
+        @PathVariable memberId: Int,
+        @RequestBody pwData: PasswordUpdateReqDto
     ): BaseResponse<MemberResDto?> {
-        return success(memberService.updatePassword(email, pwUpdateData))
+        println("controller 성공")
+        return success(memberService.updatePassword(pwData))
     }
 
     // 유저 삭제

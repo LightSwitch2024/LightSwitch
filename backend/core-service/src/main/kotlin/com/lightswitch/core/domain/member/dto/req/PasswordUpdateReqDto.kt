@@ -6,7 +6,5 @@ data class PasswordUpdateReqDto(
     @field:NotBlank
     val email: String,
     @field:NotBlank
-    val oldPassword: String,
-    @field:NotBlank
     val newPassword: String,
 )

@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-
+import java.time.LocalDateTime
 
 @Transactional
 @Service
@@ -195,26 +195,32 @@ class MemberService(
     }
 
     // 비밀번호 변경
-    fun updatePassword(email: String, newData: PasswordUpdateReqDto): MemberResDto? {
-        val savedMember: Member? = memberRepository.findByEmailAndDeletedAtIsNull(email)
+    fun updatePassword(update: PasswordUpdateReqDto): MemberResDto? {
+        val savedMember: Member = memberRepository.findByEmailAndDeletedAtIsNull(update.email) ?:throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
 
-        if (savedMember != null && passwordService.matches(newData.oldPassword, savedMember.password)) {
-            savedMember.password = newData.newPassword
-            memberRepository.save(savedMember)
-        } else {
-            throw MemberException("입력하신 비밀번호가 틀렸습니다.")
-        }
+        val encodedPassword = passwordService.encode(update.newPassword)
 
-        val updatedData: MemberResDto = savedMember.let {
-            MemberResDto(
-                memberId = it.memberId!!,
-                email = it.email,
-                firstName = it.firstName,
-                lastName = it.lastName,
-                telNumber = it.telNumber,
-            )
-        }
-        return updatedData
+        val updatedMember: Member = Member(
+            memberId = savedMember.memberId!!,
+            firstName = savedMember.firstName,
+            lastName = savedMember.lastName,
+            telNumber = savedMember.telNumber,
+            email = savedMember.email,
+            password = encodedPassword,
+//            updatedAt = LocalDateTime.now()
+        )
+
+        println(updatedMember.email)
+        println("진행service")
+        memberRepository.save(updatedMember)
+
+        return MemberResDto(
+            memberId = savedMember.memberId!!,
+            firstName = savedMember.firstName,
+            lastName = savedMember.lastName,
+            telNumber = savedMember.telNumber,
+            email = savedMember.email,
+        )
     }
 
     /*
