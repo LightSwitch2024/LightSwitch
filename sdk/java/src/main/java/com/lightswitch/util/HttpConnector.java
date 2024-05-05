@@ -7,7 +7,8 @@ import java.net.URL;
 import com.lightswitch.exception.FlagServerConnectException;
 
 public class HttpConnector {
-	private static final String HOST_URL = "http://localhost:8000/api/v1/";
+	// private static final String HOST_URL = "http://localhost:8000/api/v1/";
+	private static final String HOST_URL = "https://lightswitch.kr/api/v1/";
 
 	public HttpURLConnection getConnect(String endPoint, String httpMethod, int connectTime, boolean isSSE) throws
 		FlagServerConnectException {
