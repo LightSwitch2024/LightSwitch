@@ -74,7 +74,7 @@ class MemberController(
 
     // 유저 삭제
     @DeleteMapping("/{memberId}")
-    fun deleteUser(@PathVariable(name = "memberId") memberId: Long ): BaseResponse<MemberResponseDto> {
+    fun deleteUser(@PathVariable(name = "memberId") memberId: Long): BaseResponse<MemberResponseDto> {
         return success(memberService.deleteUser(memberId))
     }
 
