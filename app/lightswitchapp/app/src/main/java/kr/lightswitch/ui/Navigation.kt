@@ -1,6 +1,9 @@
 package kr.lightswitch.ui
 
+import android.app.Activity
 import android.os.Build
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -14,9 +17,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
@@ -35,72 +41,34 @@ import kr.lightswitch.ui.login.LoginViewModel
 fun Navigation(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val (navTitleState, setNavTitleState) = remember {
-        mutableStateOf("LightSwitch")
+        mutableStateOf("로그인")
     }
-    val (navBtnState, setNavBtnState) = remember {
-        mutableStateOf(false)
-    }
+
     navController.addOnDestinationChangedListener { // 라우팅 발생 시 마다 호출되도록
-        _, destination, _ ->
+            _, destination, _ ->
         when (destination.route) {
-            NavScreen.Home.route -> {
-                Timber.d("home")
-                setNavBtnState(false)
-                setNavTitleState("LightSwitch")
-            }
             NavScreen.Login.route -> {
                 Timber.d("login")
-                setNavBtnState(true)
                 setNavTitleState("로그인")
             }
+
             NavScreen.Flags.route -> {
                 Timber.d("flags")
-                setNavBtnState(true)
                 setNavTitleState("플래그 관리")
             }
-//    val mainViewModel: MainViewModel = viewModel()
-    NavHost(navController = navController, startDestination = NavScreen.Home.route) {
-        composable(
-            route = NavScreen.Home.route
-        ) {
-            val mainViewModel: MainViewModel = hiltViewModel()
-            MainScreen(mainViewModel = mainViewModel, onBtnClick = {navController.navigate(NavScreen.Flags.route)}, onLoginBtnClick = {navController.navigate(NavScreen.Login.route)})
-        }
-        composable(
-            route = NavScreen.Flags.route,
-        ) { backStackEntry ->
-            FlagScreen()
-        }
-        composable(
-            route = NavScreen.Login.route,
-        ) { backStackEntry ->
-            val loginViewModel: LoginViewModel = hiltViewModel()
-            LoginScreen(loginViewModel = loginViewModel, navController = navController)
         }
     }
 
-    val navigationIcon: (@Composable () -> Unit) =
-        if (navBtnState) {
-            {
-                IconButton(onClick = {
-                    navController.popBackStack()
-                }) {
-                    Icon(Icons.Filled.ArrowBack, contentDescription = "arrowBack")
-                }
-            }
-        } else {
-            {} // empty view
-        }
-
-    Scaffold(topBar = { CenterAlignedTopAppBar(title = { Text(text = navTitleState, style = MaterialTheme.typography.titleLarge) }, navigationIcon = navigationIcon)
+    BackOnPressed()
+    Scaffold(topBar = { CenterAlignedTopAppBar(title = { Text(text = navTitleState, style = MaterialTheme.typography.titleLarge) })
     }) {
         Column(modifier = Modifier.padding(it)) {
-            NavHost(navController = navController, startDestination = NavScreen.Home.route) {
+            NavHost(navController = navController, startDestination = NavScreen.Login.route) {
                 composable(
-                    route = NavScreen.Home.route
-                ) {
-                    val mainViewModel: MainViewModel = hiltViewModel()
-                    MainScreen(mainViewModel = mainViewModel, onBtnClick = {navController.navigate(NavScreen.Flags.route)})
+                    route = NavScreen.Login.route,
+                ) { backStackEntry ->
+                    val loginViewModel: LoginViewModel = hiltViewModel()
+                    LoginScreen(loginViewModel = loginViewModel, navController = navController)
                 }
                 composable(
                     route = NavScreen.Flags.route,
@@ -108,22 +76,31 @@ fun Navigation(modifier: Modifier = Modifier) {
                     val flagViewModel: FlagViewModel = hiltViewModel()
                     FlagScreen(flagViewModel = flagViewModel)
                 }
-                composable(
-                    route = NavScreen.Login.route,
-                ) { backStackEntry ->
-
-                }
             }
         }
     }
 
 }
 
+@Composable
+fun BackOnPressed() {
+    val context = LocalContext.current
+    var backPressedState by remember { mutableStateOf(true) }
+    var backPressedTime = 0L
+    BackHandler(enabled = backPressedState) {
+        if(System.currentTimeMillis() - backPressedTime <= 400L) {
+            // 앱 종료
+            (context as Activity).finish()
+        } else {
+            backPressedState = true
+            Toast.makeText(context, "한 번 더 누르시면 앱이 종료됩니다.", Toast.LENGTH_SHORT).show()
+        }
+        backPressedTime = System.currentTimeMillis()
+    }
 
+}
 
 sealed class NavScreen(val route: String) {
-
-    object Home : NavScreen("Home")
 
     object Login : NavScreen("Login")
 
