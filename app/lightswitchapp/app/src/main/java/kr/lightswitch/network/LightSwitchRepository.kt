@@ -11,6 +11,12 @@ interface LightSwitchRepository {
                    onComplete: () -> Unit,
                    onError: (cause: Throwable) -> Unit): Flow<BaseResponse<List<Flag>>>
 
+    fun switchFlag(
+                   flagId: Int,
+                   onStart: () -> Unit,
+                   onComplete: () -> Unit,
+                   onError: (cause: Throwable) -> Unit): Flow<BaseResponse<Int>>
+
     fun login(email: String,
               password: String,
               onStart: () -> Unit,
