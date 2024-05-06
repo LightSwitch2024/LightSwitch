@@ -5,6 +5,7 @@ import { useRecoilValue } from 'recoil';
 
 import { deleteUser, getUserDetail, updateUser } from '@/api/userDetail/userAxios';
 import DelIcon from '@/assets/delete_forever.svg?react';
+import DeleteModal from '@/components/deleteModal/deleteModal';
 import PasswordModal from '@/components/passwordModal/passwordModal';
 import * as M from '@/pages/mypage/indexStyle';
 
@@ -19,7 +20,7 @@ interface UserData {
 const UserDetail = () => {
   const [userDetail, setUserDetail] = useState<UserData>();
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
-
+  const [isDeleteModal, setIsDeleteModal] = useState<boolean>(false);
   const [editedFirstName, setEditedFristName] = useState<string>('');
   const [firstNameCheck, setFirstNameCheck] = useState<boolean>(true);
   const [editedLastName, setEditedLastName] = useState<string>('');
@@ -29,7 +30,8 @@ const UserDetail = () => {
 
   // const { email } = useParams<{ email: string }>();
 
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 
   const auth = useRecoilValue(AuthAtom);
   const navigate = useNavigate();
@@ -57,20 +59,12 @@ const UserDetail = () => {
   /**
    * User 삭제 버튼 클릭 이벤트 핸들러
    */
-  const onPressDeleteButton = () => {
-    const deleteConfirm: boolean = confirm('삭제하기');
-
-    if (deleteConfirm) {
-      deleteUser<UserData>(
-        auth.email,
-        (data: UserData) => {
-          console.log(`${data} user 삭제 완료`);
-        },
-        (err) => {
-          console.log(err);
-        },
-      );
-    }
+  const onPressDeleteButton = (): void => {
+    // const deleteConfirm: boolean = confirm('삭제하기');
+    setIsDeleteModal(true);
+    setDeleteModalOpen(true);
+    // if (deleteConfirm) {
+    // }
   };
 
   /**
@@ -235,6 +229,10 @@ const UserDetail = () => {
               <DelIcon />
               <span>계정 삭제하기</span>
             </M.DelButton>
+            <DeleteModal
+              isDeleteModal={isDeleteModalOpen}
+              onClose={() => setModalOpen(false)}
+            />
           </M.DelWrapper>
         </M.DelContainer>
       </M.MyPageContainer>

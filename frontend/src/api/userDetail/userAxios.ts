@@ -17,6 +17,11 @@ interface PWData {
   newPassword: string;
 }
 
+interface ForDelete {
+  memberId: number;
+  password: string;
+}
+
 interface UserData {
   memberId: number;
   email: string;
@@ -99,12 +104,12 @@ export async function getUserDetail<T>(
 }
 
 export async function deleteUser<T>(
-  email: string,
+  memberId: number,
   onSuccess: (data: T) => void,
   onFail: (err: AxiosError) => void,
 ): Promise<void> {
   axios
-    .delete<BaseResponse<T>>(`/api/v1/member/${email}`)
+    .delete<BaseResponse<T>>(`/api/v1/member/${memberId}`)
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
     .catch((err: AxiosError) => onFail(err));
 }
@@ -129,6 +134,18 @@ export async function updatePassword<T>(
 ): Promise<void> {
   axios
     .put<BaseResponse<T>>(`/api/v1/member/${memberId}/password`, data)
+    .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
+    .catch((err: AxiosError) => onFail(err));
+}
+
+export async function checkPassword<T>(
+  memberId: number,
+  data: ForDelete,
+  onSuccess: (data: T) => void,
+  onFail: (err: AxiosError) => void,
+): Promise<void> {
+  await axios
+    .post<BaseResponse<T>>(`/api/v1/member/${memberId}`, data)
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
     .catch((err: AxiosError) => onFail(err));
 }
