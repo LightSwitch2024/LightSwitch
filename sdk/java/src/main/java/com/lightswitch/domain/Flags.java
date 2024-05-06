@@ -28,9 +28,6 @@ public class Flags {
 		return Optional.ofNullable(flags.get(flagKey));
 	}
 
-	/**
-	 * add & update
-	 */
 	public static void addFlag(Flag flag) {
 		flags.put(flag.getTitle(), flag);
 	}

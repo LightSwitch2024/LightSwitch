@@ -70,7 +70,7 @@ public class FlagTest {
 	@Test
 	void Flag는_Value_타입으로_반환() {
 		Flag booleanFlag = getFlagByType(FlagType.BOOLEAN,"true");
-		Flag numberFlag = getFlagByType(FlagType.NUMBER, "1");
+		Flag numberFlag = getFlagByType(FlagType.INTEGER, "1");
 		Flag stringFlag = getFlagByType(FlagType.STRING, "string");
 
 		Boolean booleanValue = booleanFlag.getValue(getNoPropertyUser());
@@ -83,7 +83,7 @@ public class FlagTest {
 	@Test
 	void Flag는_Value_타입으로_반환_에러() {
 		Flag booleanFlag = getFlagByType(FlagType.BOOLEAN,"true");
-		Flag numberFlag = getFlagByType(FlagType.NUMBER, "1");
+		Flag numberFlag = getFlagByType(FlagType.INTEGER, "1");
 		Flag stringFlag = getFlagByType(FlagType.STRING, "string");
 
 		assertThrows(ClassCastException.class, () -> {

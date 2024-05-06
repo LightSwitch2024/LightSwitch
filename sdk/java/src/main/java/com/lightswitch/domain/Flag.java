@@ -70,7 +70,7 @@ public class Flag {
 				return (T)Boolean.valueOf(value);
 			} else if (type.equals(FlagType.STRING)) {
 				return (T)String.valueOf(value);
-			} else if (type.equals(FlagType.NUMBER)) {
+			} else if (type.equals(FlagType.INTEGER)) {
 				return (T)Integer.valueOf(value);
 			}
 			return null;
