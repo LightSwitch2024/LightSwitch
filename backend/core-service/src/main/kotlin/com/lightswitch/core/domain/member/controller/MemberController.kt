@@ -4,11 +4,7 @@ import com.lightswitch.core.common.dto.BaseResponse
 import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.dto.success
 import com.lightswitch.core.common.exception.BaseException
-import com.lightswitch.core.domain.member.dto.req.SdkKeyReqDto
-import com.lightswitch.core.domain.member.dto.req.MemberUpdateReqDto
-import com.lightswitch.core.domain.member.dto.req.LogInReqDto
-import com.lightswitch.core.domain.member.dto.req.PasswordUpdateReqDto
-import com.lightswitch.core.domain.member.dto.req.SignupReqDto
+import com.lightswitch.core.domain.member.dto.req.*
 import com.lightswitch.core.domain.member.dto.res.MemberResDto
 import com.lightswitch.core.domain.member.dto.res.MemberResponseDto
 import com.lightswitch.core.domain.member.dto.res.SdkKeyResDto
@@ -59,21 +55,21 @@ class MemberController(
     }
 
     // 유저 이름,전화번호 수정
-    @PutMapping("/{email}")
+    @PutMapping("/{memberId}")
     fun updateUser(
-        @PathVariable email: String,
         @RequestBody newUserData: MemberUpdateReqDto
     ): BaseResponse<MemberResDto?> {
-        return success(memberService.updateUser(email, newUserData))
+        return success(memberService.updateUser(newUserData))
     }
 
     // 비밀번호 수정
-    @PutMapping("/{email}/password")
+    @PutMapping("/{memberId}/password")
     fun updatePassword(
-        @PathVariable email: String,
-        @RequestBody pwUpdateData: PasswordUpdateReqDto
+        @RequestBody pwData: PasswordUpdateReqDto
     ): BaseResponse<MemberResDto?> {
-        return success(memberService.updatePassword(email, pwUpdateData))
+        println("Controller")
+        println(pwData)
+        return success(memberService.updatePassword(pwData))
     }
 
     // 유저 삭제

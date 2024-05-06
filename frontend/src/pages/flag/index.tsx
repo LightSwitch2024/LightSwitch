@@ -1,10 +1,10 @@
 import CallSplit from '@assets/call-split.svg?react';
+import Code from '@assets/code.svg?react';
 import Description from '@assets/description.svg?react';
 import FlagBig from '@assets/flag-big.svg?react';
 import Loop from '@assets/loop.svg?react';
-import Code from '@assets/code.svg?react';
-import ToggleOnIcon from '@assets/unfold-more.svg?react';
 import ToggleOffIcon from '@assets/unfold_less.svg?react';
+import ToggleOnIcon from '@assets/unfold-more.svg?react';
 import * as S from '@pages/flag/indexStyle';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';

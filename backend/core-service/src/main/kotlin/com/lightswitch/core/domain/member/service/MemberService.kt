@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-
+import java.time.LocalDateTime
 
 @Transactional
 @Service
@@ -116,15 +116,16 @@ class MemberService(
 //         회원가입 후 로그인할 때 isCorrectPW 코드
         val isCorrectPW = passwordService.matches(logInReqDto.password, savedMember.password)
 
-        return if(isCorrectPW) {
+        return if (isCorrectPW) {
             MemberResDto(
                 memberId = savedMember.memberId!!,
                 email = savedMember.email,
                 firstName = savedMember.firstName,
                 lastName = savedMember.lastName,
                 telNumber = savedMember.telNumber
-            )} else {
-                throw BaseException(ResponseCode.INVALID_PASSWORD)
+            )
+        } else {
+            throw BaseException(ResponseCode.INVALID_PASSWORD)
         }
     }
 
@@ -132,8 +133,6 @@ class MemberService(
     fun getUser(email: String): MemberResDto {
         val savedMember =
             memberRepository.findByEmailAndDeletedAtIsNull(email) ?: throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
-        println("service 진행됌")
-        println(savedMember?.email)
 
         return MemberResDto(
             memberId = savedMember.memberId!!,
@@ -157,6 +156,7 @@ class MemberService(
             flagService.deleteFlag(it.flagId!!)
         }
 
+
         return MemberResponseDto(
             memberId = savedUser.memberId!!,
             firstName = savedUser.firstName,
@@ -172,49 +172,62 @@ class MemberService(
     }
 
     // 이름, 전화번호 변경
-    fun updateUser(email: String, newData: MemberUpdateReqDto): MemberResDto? {
-        val oldData: Member? = memberRepository.findByEmailAndDeletedAtIsNull(email)
-        oldData?.let {
-            oldData.firstName = newData.firstName
-            oldData.lastName = newData.lastName
-            oldData.telNumber = newData.telNumber
-            oldData.email = newData.email
-            memberRepository.save(it)
-        }
+    @Transactional
+    fun updateUser(newData: MemberUpdateReqDto): MemberResDto? {
+        println("Service")
+        println(newData)
+        val savedMember: Member = memberRepository.findByEmailAndDeletedAtIsNull(newData.email) ?: throw BaseException(
+            ResponseCode.MEMBER_NOT_FOUND
+        )
 
-        val updatedData: MemberResDto? = oldData?.let {
-            MemberResDto(
-                memberId = it.memberId!!,
-                firstName = it.firstName,
-                lastName = it.lastName,
-                telNumber = it.telNumber,
-                email = it.email
-            )
-        }
-        return updatedData
+        val updatedMember: Member = Member(
+            memberId = savedMember.memberId!!,
+            email = savedMember.email,
+            firstName = newData.firstName,
+            lastName = newData.lastName,
+            telNumber = newData.telNumber,
+            password = savedMember.password
+//            updatedAt = LocalDateTime.now()
+        )
+
+        memberRepository.save(updatedMember)
+
+        return MemberResDto(
+            memberId = savedMember.memberId!!,
+            firstName = savedMember.firstName,
+            lastName = savedMember.lastName,
+            telNumber = savedMember.telNumber,
+            email = savedMember.email,
+        )
     }
 
     // 비밀번호 변경
-    fun updatePassword(email: String, newData: PasswordUpdateReqDto): MemberResDto? {
-        val savedMember: Member? = memberRepository.findByEmailAndDeletedAtIsNull(email)
+    fun updatePassword(update: PasswordUpdateReqDto): MemberResDto? {
+        val savedMember: Member = memberRepository.findByEmailAndDeletedAtIsNull(update.email) ?: throw BaseException(
+            ResponseCode.MEMBER_NOT_FOUND
+        )
 
-        if (savedMember != null && passwordService.matches(newData.oldPassword, savedMember.password)) {
-            savedMember.password = newData.newPassword
-            memberRepository.save(savedMember)
-        } else {
-            throw MemberException("입력하신 비밀번호가 틀렸습니다.")
-        }
+        val encodedPassword = passwordService.encode(update.newPassword)
 
-        val updatedData: MemberResDto = savedMember.let {
-            MemberResDto(
-                memberId = it.memberId!!,
-                email = it.email,
-                firstName = it.firstName,
-                lastName = it.lastName,
-                telNumber = it.telNumber,
-            )
-        }
-        return updatedData
+        val updatedMember: Member = Member(
+            memberId = savedMember.memberId!!,
+            firstName = savedMember.firstName,
+            lastName = savedMember.lastName,
+            telNumber = savedMember.telNumber,
+            email = savedMember.email,
+            password = encodedPassword,
+//            updatedAt = LocalDateTime.now()
+        )
+
+        memberRepository.save(updatedMember)
+
+        return MemberResDto(
+            memberId = savedMember.memberId!!,
+            firstName = savedMember.firstName,
+            lastName = savedMember.lastName,
+            telNumber = savedMember.telNumber,
+            email = savedMember.email,
+        )
     }
 
     /*

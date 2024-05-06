@@ -53,9 +53,9 @@ export const MyPageInput = styled.input`
 `;
 
 export const MyPageText = styled.div`
-  font-size: 1rem;
+  font-size: 1.3rem;
   color: #000000;
-  font-weight: 700;
+  font-weight: bold;
 `;
 
 export const EmailText = styled.div`
@@ -77,7 +77,24 @@ export const TelWrapper = styled.div`
   display: flex;
   flex-direction: row;
   padding: 0.2rem 10rem 0.2rem 0;
-  margin-bottom: 1rem;
+  margin-bottom: 4rem;
+  gap: 0.5rem;
+`;
+
+export const Wrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-self: flex-end;
+  padding: 0.2rem 5rem 0 0;
+  margin-right: 10rem;
+  gap: 3rem;
+`;
+
+export const NWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  padding: 0 5rem 0 0;
+  margin-left: 1rem;
   gap: 0.5rem;
 `;
 
@@ -85,7 +102,16 @@ export const NameBox = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
+  padding: 0.2rem 2.5rem 0.2rem 0;
+  gap: 0.5rem;
+`;
+
+export const NameBoxWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  // margin-bottom: 2rem;
   padding: 0.2rem 2.5rem 0.2rem 0;
   gap: 0.5rem;
 `;
@@ -94,26 +120,28 @@ export const TelBox = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 0 10rem 0.2rem 0;
+  padding: 0 5rem 0.2rem 0;
   gap: 0.5rem;
 `;
 
-export const NameInputBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background-color: #fff;
-  padding: 0.7rem 7rem 0.7rem 1rem;
-  gap: 0.5rem;
+export const NameInputBox = styled.input`
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ddd;
+  font-size: 1.3rem;
+  &::placeholder {
+    color: #bdbdbd;
+  }
 `;
 
-export const TelInputBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background-color: #fff;
-  padding: 0.7rem 12rem 0.7rem 1rem;
-  gap: 0.5rem;
+export const TelInputBox = styled.input`
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ddd;
+  font-size: 1.3rem;
+  &::placeholder {
+    color: #bdbdbd;
+  }
 `;
 
 export const ButtonWrapper = styled.div`
@@ -169,7 +197,7 @@ export const DelButton = styled.button`
   align-items: center;
   justify-content: center;
   width: 12rem;
-  padding: 0.3rem 1rem;
+
   border-radius: 7rem;
   border: 1px solid #e8d4d4;
   font-size: 1rem;
@@ -183,4 +211,22 @@ export const DelButton = styled.button`
     margin-right: 0.5rem;
     margin-top: 0.1rem;
   }
+`;
+
+export const CloseButton = styled.button`
+  display: flex;
+  margin-left: auto;
+  padding-top: 2rem;
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-size: 30px;
+`;
+
+export const WarnText = styled.div`
+  font-size: 0.6rem;
+  margin-top: 2.5rem;
+  padding-right: 2.5rem;
+  color: red;
+  font-weight: 500;
 `;

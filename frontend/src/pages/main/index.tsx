@@ -34,8 +34,9 @@ const index = () => {
 
   const auth = useRecoilValue(AuthAtom);
   useEffect(() => {
+    console.log('auth');
     console.log(auth);
-  }, []);
+  }, [auth]);
 
   /**
    * 화면 마운트 시 필요한 정보 가져오기
@@ -45,7 +46,8 @@ const index = () => {
     getMainPageOverview(
       memberId,
       (data: OverviewInfo) => {
-        console.log(data);
+        console.log('data');
+        console.log(auth);
         setSdkKey(data.sdkKey ? data.sdkKey : '');
         setTotalFlags(data.totalFlags);
         setActiveFlags(data.activeFlags);
@@ -54,7 +56,7 @@ const index = () => {
         console.error(err);
       },
     );
-  }, []);
+  }, [auth]);
 
   // sdk 발급 받으면 sdk component 갱신
   useEffect(() => {
