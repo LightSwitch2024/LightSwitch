@@ -156,6 +156,7 @@ class MemberService(
             flagService.deleteFlag(it.flagId!!)
         }
 
+
         return MemberResponseDto(
             memberId = savedUser.memberId!!,
             firstName = savedUser.firstName,
@@ -190,8 +191,6 @@ class MemberService(
         )
 
         memberRepository.save(updatedMember)
-        println("service 이후")
-        println(updatedMember.firstName)
 
         return MemberResDto(
             memberId = savedMember.memberId!!,

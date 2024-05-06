@@ -4,11 +4,7 @@ import com.lightswitch.core.common.dto.BaseResponse
 import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.dto.success
 import com.lightswitch.core.common.exception.BaseException
-import com.lightswitch.core.domain.member.dto.req.SdkKeyReqDto
-import com.lightswitch.core.domain.member.dto.req.MemberUpdateReqDto
-import com.lightswitch.core.domain.member.dto.req.LogInReqDto
-import com.lightswitch.core.domain.member.dto.req.PasswordUpdateReqDto
-import com.lightswitch.core.domain.member.dto.req.SignupReqDto
+import com.lightswitch.core.domain.member.dto.req.*
 import com.lightswitch.core.domain.member.dto.res.MemberResDto
 import com.lightswitch.core.domain.member.dto.res.MemberResponseDto
 import com.lightswitch.core.domain.member.dto.res.SdkKeyResDto
@@ -78,7 +74,7 @@ class MemberController(
 
     // 유저 삭제
     @DeleteMapping("/{memberId}")
-    fun deleteUser(@PathVariable(name = "memberId") memberId: Long): BaseResponse<MemberResponseDto> {
+    fun deleteUser(@PathVariable(name = "memberId") memberId: Long ): BaseResponse<MemberResponseDto> {
         return success(memberService.deleteUser(memberId))
     }
 
