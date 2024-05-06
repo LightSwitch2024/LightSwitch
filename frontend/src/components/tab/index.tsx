@@ -26,10 +26,12 @@ const index = () => {
     <S.TabBar>
       <S.TabLogo>
         <S.LogoButtonWrapper>
-          <S.LogoWrapper>
-            <DashBoard />
-            <S.LogoText>Light Switch</S.LogoText>
-          </S.LogoWrapper>
+          <S.NavLinkWrapper to="/">
+            <S.LogoWrapper>
+              <DashBoard />
+              <S.LogoText>Light Switch</S.LogoText>
+            </S.LogoWrapper>
+          </S.NavLinkWrapper>
           <S.ButtonWrapper>
             <S.LoginWrapper>
               <Flags />
