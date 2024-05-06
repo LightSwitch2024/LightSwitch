@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import kr.lightswitch.model.response.Flag
+import kr.lightswitch.model.response.LoginResponse
 import kr.lightswitch.network.LightSwitchRepository
 import timber.log.Timber
 import javax.inject.Inject

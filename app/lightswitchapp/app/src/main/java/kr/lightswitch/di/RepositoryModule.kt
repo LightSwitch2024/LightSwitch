@@ -16,6 +16,8 @@ class RepositoryModule {
     @Singleton
     @Provides
     fun provideLightSwitchRepository(
-        lightSwitchService: LightSwitchService
-    ): LightSwitchRepository = LightSwitchRepositoryImpl(lightSwitchService = lightSwitchService)
+        lightSwitchService: LightSwitchService,
+    ): LightSwitchRepository = LightSwitchRepositoryImpl(
+        lightSwitchService = lightSwitchService,
+    )
 }

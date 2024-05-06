@@ -26,6 +26,8 @@ import kr.lightswitch.ui.flag.FlagScreen
 import kr.lightswitch.ui.flag.FlagViewModel
 import kr.lightswitch.ui.theme.pretendard
 import timber.log.Timber
+import kr.lightswitch.ui.login.LoginScreen
+import kr.lightswitch.ui.login.LoginViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,6 +58,24 @@ fun Navigation(modifier: Modifier = Modifier) {
                 setNavBtnState(true)
                 setNavTitleState("플래그 관리")
             }
+//    val mainViewModel: MainViewModel = viewModel()
+    NavHost(navController = navController, startDestination = NavScreen.Home.route) {
+        composable(
+            route = NavScreen.Home.route
+        ) {
+            val mainViewModel: MainViewModel = hiltViewModel()
+            MainScreen(mainViewModel = mainViewModel, onBtnClick = {navController.navigate(NavScreen.Flags.route)}, onLoginBtnClick = {navController.navigate(NavScreen.Login.route)})
+        }
+        composable(
+            route = NavScreen.Flags.route,
+        ) { backStackEntry ->
+            FlagScreen()
+        }
+        composable(
+            route = NavScreen.Login.route,
+        ) { backStackEntry ->
+            val loginViewModel: LoginViewModel = hiltViewModel()
+            LoginScreen(loginViewModel = loginViewModel, navController = navController)
         }
     }
 

@@ -51,6 +51,8 @@ android {
 }
 
 dependencies {
+    //Shared Preferences
+    implementation(libs.androidx.datastore)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
