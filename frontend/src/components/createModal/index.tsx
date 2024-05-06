@@ -302,7 +302,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
     } else if (isDuplicatedTitle) {
       alert('중복된 플래그 이름이 존재합니다.');
       return;
-    } else if (calculateTotalPortion() !== 100) {
+    } else if (calculateTotalPortion() + Number(defaultPortion) !== 100) {
       alert('변수 비율의 합이 100이 되도록 설정해주세요.');
       return;
     } else if (isInvalidBooleanVariation) {
