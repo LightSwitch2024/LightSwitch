@@ -767,6 +767,10 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                 onBlur={() => setIsFocused(false)}
               />
             </S.Layer>
+
+            {isDuplicatedTitle && (
+              <S.WarnText>중복된 플래그 이름이 존재합니다.</S.WarnText>
+            )}
           </S.Container>
           <S.TagContainer>
             <S.Layer>
@@ -798,32 +802,11 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
               />
             </S.Layer>
           </S.Container>
-          {/* 
-          <input type="text" value={editedFlagInfo.title} onChange={handelChangeTitle} />
-          <textarea
-            value={editedFlagInfo.description}
-            onChange={handleChangeDescription}
-          /> */}
           <S.BottomButtonLayer>
             <S.CancelButton onClick={onClickCancelFlagInfo}>취소하기</S.CancelButton>
             <S.ConfirmButton onClick={onClickSaveFlagInfo}>저장하기</S.ConfirmButton>
+            {isBlankData && <S.WarnText>필수 값이 비어있습니다.</S.WarnText>}
           </S.BottomButtonLayer>
-
-          <input
-            type="text"
-            value={editedFlagInfo.title}
-            onChange={handelChangeTitle}
-            onBlur={checkDuplicatedTitle}
-          />
-          {isDuplicatedTitle && <S.WarnText>중복된 플래그 이름이 존재합니다.</S.WarnText>}
-
-          <textarea
-            value={editedFlagInfo.description}
-            onChange={handleChangeDescription}
-          />
-          <button onClick={onClickCancelFlagInfo}>취소하기</button>
-          <button onClick={onClickSaveFlagInfo}>저장하기</button>
-          {isBlankData && <S.WarnText>필수 값이 비어있습니다.</S.WarnText>}
         </S.FlagEditForm>
       );
     }
@@ -897,7 +880,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                 />
               </S.VarContainer>
             </S.VarVertical>
-            <S.Horizontal />
+            <S.Horizontal />\
           </div>
           {editedVariationInfo.variations.map((variation, index) => (
             <>
@@ -1087,6 +1070,8 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
         </S.Container>
       );
     }
+
+    return <></>;
   };
 
   return (
