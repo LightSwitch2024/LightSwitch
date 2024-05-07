@@ -48,7 +48,7 @@ export const DetailLayout = styled.div`
 export const ModalInputForm = styled.div`
   display: flex;
   color: #fff;
-  width: 50%;
+  width: 70%;
   height: 90%;
   background-color: #fff;
 
@@ -533,14 +533,14 @@ export const ModalTitleText = styled.div`
 
 export const ModalTitleTextContainer = styled.div`
   display: flex;
-  padding: 2rem 0;
+  padding: 0.325rem 0;
   gap: 0.625rem;
 `;
 
 export const FlagTitleContainer = styled.div`
   display: flex;
-  padding: 2rem 0;
-  gap: 0.625rem;
+  padding: 0.325rem 0;
+  gap: 0.325rem;
 `;
 
 export const FlagTitleTextContainer = styled.div`
