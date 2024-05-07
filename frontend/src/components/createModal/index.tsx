@@ -1,6 +1,7 @@
-import Bookmark from '@assets/bookmark.svg?react';
-import CallSplit from '@assets/call-split.svg?react';
-import Description from '@assets/description.svg?react';
+import BlackFlag from '@assets/black-flag.svg?react';
+import Bookmark from '@assets/bookmark1.svg?react';
+import CallSplit from '@assets/call-split1.svg?react';
+import Description from '@assets/description1.svg?react';
 import Edit from '@assets/edit.svg?react';
 import Loop from '@assets/loop.svg?react';
 import OutlinedFlagBig from '@assets/outlined-flag-big.svg?react';
@@ -585,163 +586,182 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   const renderTotalForm = () => {
     return (
       <>
-        <S.FlagTitleAndTagsLayer>
-          <S.FlagTitleInputContainer>
-            <S.FlagTitleIconContainer>
-              <OutlinedFlagBig />
-            </S.FlagTitleIconContainer>
-            <S.FlagTitleInput
-              placeholder="플래그 이름"
-              value={title}
-              onChange={handleTitleChange}
-              onBlur={checkDuplicatedTitle}
+        <S.LayOut>
+          <S.ModalTitleTextContainer>
+            <S.ModalTitleText>새 플래그 생성하기</S.ModalTitleText>
+          </S.ModalTitleTextContainer>
+          <S.FlagTitleAndTagsLayer>
+            <S.FlagTitleContainer>
+              <S.HeadFlagTitleIconContainer>
+                <BlackFlag />
+              </S.HeadFlagTitleIconContainer>
+              <S.FlagTitleTextContainer>
+                <S.LabelText>플래그 이름</S.LabelText>
+              </S.FlagTitleTextContainer>
+            </S.FlagTitleContainer>
+            <S.FlagTitleInputContainer $flag={isDetailMode()}>
+              <S.FlagTitleIconContainer>
+                <OutlinedFlagBig />
+              </S.FlagTitleIconContainer>
+              <S.FlagTitleInput
+                placeholder="ex. 사진 크기 등 ..."
+                value={title}
+                onChange={handleTitleChange}
+                onBlur={checkDuplicatedTitle}
+                $flag={isDetailMode()}
+              />
+            </S.FlagTitleInputContainer>
+            {isDuplicatedTitle && (
+              <S.WarnText>중복된 플래그 이름이 존재합니다.</S.WarnText>
+            )}
+              <S.FlagTagsInputContainer>
+                  <S.FlagTagsInputLabel>
+                      <Bookmark />
+                      <S.LabelTextContainer>
+                          <S.LabelText>태그</S.LabelText>
+                      </S.LabelTextContainer>
+                  </S.FlagTagsInputLabel>
+                  <TagsInputComponent
+                      selectedTags={selectedTags}
+                      setSelectedTags={setSelectedTags}
+                  />
+              </S.FlagTagsInputContainer>
+          </S.FlagTitleAndTagsLayer>
+          <S.FlagDescriptionLayer>
+            <S.FlagDescriptionLabel>
+              <S.FlagDescriptionContainer>
+                <S.FlagDescriptionIconContainer>
+                  <Description />
+                </S.FlagDescriptionIconContainer>
+                <S.FlagDescriptionTextContainer>
+                  <S.LabelText>설명</S.LabelText>
+                </S.FlagDescriptionTextContainer>
+              </S.FlagDescriptionContainer>
+            </S.FlagDescriptionLabel>
+            <S.FlagDescriptionTextArea
+              placeholder="설명"
+              value={description}
+              onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
+                handleDescriptionChange(event)
+              }
               $flag={isDetailMode()}
             />
-          </S.FlagTitleInputContainer>
-          {isDuplicatedTitle && <S.WarnText>중복된 플래그 이름이 존재합니다.</S.WarnText>}
-          <S.FlagTagsInputContainer>
-            <S.FlagTagsInputLabel>
-              <Bookmark />
-              <S.LabelTextContainer>
-                <S.LabelText>태그</S.LabelText>
-              </S.LabelTextContainer>
-            </S.FlagTagsInputLabel>
-            <TagsInputComponent
-              selectedTags={selectedTags}
-              setSelectedTags={setSelectedTags}
-            />
-          </S.FlagTagsInputContainer>
-        </S.FlagTitleAndTagsLayer>
-        <S.FlagDescriptionLabel>
-          <S.FlagDescriptionContainer>
-            <S.FlagDescriptionIconContainer>
-              <Description />
-            </S.FlagDescriptionIconContainer>
-            <S.FlagDescriptionTextContainer>
-              <S.LabelText>설명</S.LabelText>
-            </S.FlagDescriptionTextContainer>
-          </S.FlagDescriptionContainer>
-        </S.FlagDescriptionLabel>
-        <S.FlagDescriptionTextArea
-          placeholder="설명"
-          value={description}
-          onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
-            handleDescriptionChange(event)
-          }
-          $flag={isDetailMode()}
-        />
-        <S.FlagTypeLayer>
-          <S.FlagTypeLabel>
-            <S.FlagTypeIconContainer>
-              <CallSplit />
-            </S.FlagTypeIconContainer>
-            <S.FlagTypeLabelTextContainer>
-              <S.LabelText>변수 타입</S.LabelText>
-            </S.FlagTypeLabelTextContainer>
-          </S.FlagTypeLabel>
-          <S.FlagTypeContainer onClick={onClickTypeEdit} $flag={isDetailMode()}>
-            <S.FlagTypeContentContainer>
-              <S.FlagTypeTextContainer>
-                <S.FlagTypeText>{type}</S.FlagTypeText>
-              </S.FlagTypeTextContainer>
-              <S.FlagTypeEditIconContainer>
-                <Edit />
-              </S.FlagTypeEditIconContainer>
-            </S.FlagTypeContentContainer>
-          </S.FlagTypeContainer>
-          {isTypeEdited &&
-            typeConfig.map((typeItem, idx) =>
-              typeItem === type ? (
-                <S.FlagTypeContentContainerChecked
-                  key={idx}
-                  onClick={handleEditeType(typeItem)}
-                >
-                  <S.FlagTypeTextContainer>
-                    <S.FlagTypeText>{typeItem}</S.FlagTypeText>
-                  </S.FlagTypeTextContainer>
-                </S.FlagTypeContentContainerChecked>
-              ) : (
-                <S.FlagTypeContentContainerUnchecked
-                  key={idx}
-                  onClick={handleEditeType(typeItem)}
-                >
-                  <S.FlagTypeTextContainer>
-                    <S.FlagTypeText>{typeItem}</S.FlagTypeText>
-                  </S.FlagTypeTextContainer>
-                </S.FlagTypeContentContainerUnchecked>
-              ),
-            )}
-        </S.FlagTypeLayer>
-        <S.FlagVariationLabel>
-          <S.FlagVariationContainer>
-            <S.FlagVariationIconContainer>
-              <Loop />
-            </S.FlagVariationIconContainer>
-            <S.FlagVariationLabelTextContainer>
-              <S.LabelText>변수</S.LabelText>
-            </S.FlagVariationLabelTextContainer>
-          </S.FlagVariationContainer>
-        </S.FlagVariationLabel>
-        <S.FlagVariationContentLayer>
-          <S.FlagVariationContentLayer>
-            <S.FlagVariationRowContainer>
-              <S.FlagVariationInput
-                type="text"
-                placeholder="값을 입력하세요"
-                value={defaultValue}
-                onChange={handleDefaultValueChange}
-                onBlur={checkFormatWithType}
-                $flag={isDetailMode()}
-              />
-              <S.FlagVariationInput
-                type="number"
-                placeholder="변수 비율"
-                value={defaultPortion}
-                onChange={handleDefaultPortionChange}
-                $flag={isDetailMode()}
-              />
-            </S.FlagVariationRowContainer>
-            <S.FlagVariationRowContainer>
-              <S.FlagVariationInput
-                type="text"
-                placeholder="설명"
-                value={defaultDescription}
-                onChange={handleDefaultDescriptionChange}
-                $flag={isDetailMode()}
-              />
-            </S.FlagVariationRowContainer>
-          </S.FlagVariationContentLayer>
-          <S.FlagVariationDivisionLine />
-          {renderVariationForms()}
-          <S.ButtonLayer>
-            <S.ConfirmButton onClick={onClickAddVariation} $flag={isDetailMode()}>
-              추가
-            </S.ConfirmButton>
-          </S.ButtonLayer>
-          {isInvalidBooleanVariation && (
-            <S.WarnText>BOOLEAN 타입은 TRUE 와 FALSE 값만 유효합니다.</S.WarnText>
-          )}
-        </S.FlagVariationContentLayer>
-        <S.ButtonLayer>
-          {flagMode === 'create' ? (
-            <S.CancelButton onClick={props.closeCreateModal}>취소하기</S.CancelButton>
-          ) : flagMode === 'edit' ? (
-            <S.CancelButton onClick={onClickModifyCancle}>취소하기</S.CancelButton>
-          ) : null}
-          {flagMode === 'create' ? (
-            <S.ConfirmButton onClick={onClickAdd} $flag={false}>
-              추가하기
-            </S.ConfirmButton>
-          ) : flagMode === 'edit' ? (
-            <S.ConfirmButton onClick={onClickSave} $flag={false}>
-              저장하기
-            </S.ConfirmButton>
-          ) : flagMode === 'detail' ? (
-            <S.ConfirmButton onClick={onClickModify} $flag={false}>
-              수정하기
-            </S.ConfirmButton>
-          ) : null}
-        </S.ButtonLayer>
+          </S.FlagDescriptionLayer>
+          <S.FlagTypeLayer>
+            <S.FlagTypeLabel>
+              <S.FlagTypeIconContainer>
+                <CallSplit />
+              </S.FlagTypeIconContainer>
+              <S.FlagTypeLabelTextContainer>
+                <S.LabelText>변수 타입</S.LabelText>
+              </S.FlagTypeLabelTextContainer>
+            </S.FlagTypeLabel>
+            <S.FlagTypeContainer onClick={onClickTypeEdit} $flag={isDetailMode()}>
+              <S.FlagTypeContentContainer>
+                <S.FlagTypeTextContainer>
+                  <S.FlagTypeText>{type}</S.FlagTypeText>
+                </S.FlagTypeTextContainer>
+                <S.FlagTypeEditIconContainer>
+                  <Edit />
+                </S.FlagTypeEditIconContainer>
+              </S.FlagTypeContentContainer>
+            </S.FlagTypeContainer>
+            {isTypeEdited &&
+              typeConfig.map((typeItem, idx) =>
+                typeItem === type ? (
+                  <S.FlagTypeContentContainerChecked
+                    key={idx}
+                    onClick={handleEditeType(typeItem)}
+                  >
+                    <S.FlagTypeTextContainer>
+                      <S.FlagTypeText>{typeItem}</S.FlagTypeText>
+                    </S.FlagTypeTextContainer>
+                  </S.FlagTypeContentContainerChecked>
+                ) : (
+                  <S.FlagTypeContentContainerUnchecked
+                    key={idx}
+                    onClick={handleEditeType(typeItem)}
+                  >
+                    <S.FlagTypeTextContainer>
+                      <S.FlagTypeText>{typeItem}</S.FlagTypeText>
+                    </S.FlagTypeTextContainer>
+                  </S.FlagTypeContentContainerUnchecked>
+                ),
+              )}
+          </S.FlagTypeLayer>
+          <S.FlagVariationLayer>
+            <S.FlagVariationLabel>
+              <S.FlagVariationContainer>
+                <S.FlagVariationIconContainer>
+                  <Loop />
+                </S.FlagVariationIconContainer>
+                <S.FlagVariationLabelTextContainer>
+                  <S.LabelText>변수</S.LabelText>
+                </S.FlagVariationLabelTextContainer>
+              </S.FlagVariationContainer>
+            </S.FlagVariationLabel>
+            <S.FlagVariationContentLayer>
+              <S.FlagVariationContentLayer>
+                <S.FlagVariationRowContainer>
+                  <S.FlagVariationInput
+                    type="text"
+                    placeholder="값을 입력하세요"
+                    value={defaultValue}
+                    onChange={handleDefaultValueChange}
+                    onBlur={checkFormatWithType}
+                    $flag={isDetailMode()}
+                  />
+                  <S.FlagVariationInput
+                    type="number"
+                    placeholder="변수 비율"
+                    value={defaultPortion}
+                    onChange={handleDefaultPortionChange}
+                    $flag={isDetailMode()}
+                  />
+                </S.FlagVariationRowContainer>
+                <S.FlagVariationRowContainer>
+                  <S.FlagVariationInput
+                    type="text"
+                    placeholder="설명"
+                    value={defaultDescription}
+                    onChange={handleDefaultDescriptionChange}
+                    $flag={isDetailMode()}
+                  />
+                </S.FlagVariationRowContainer>
+              </S.FlagVariationContentLayer>
+              <S.FlagVariationDivisionLine />
+              {renderVariationForms()}
+              <S.ButtonLayer>
+                <S.ConfirmButton onClick={onClickAddVariation} $flag={isDetailMode()}>
+                  추가
+                </S.ConfirmButton>
+              </S.ButtonLayer>
+              {isInvalidBooleanVariation && (
+                <S.WarnText>BOOLEAN 타입은 TRUE 와 FALSE 값만 유효합니다.</S.WarnText>
+              )}
+            </S.FlagVariationContentLayer>
+            <S.ButtonLayer>
+              {flagMode === 'create' ? (
+                <S.CancelButton onClick={props.closeCreateModal}>취소하기</S.CancelButton>
+              ) : flagMode === 'edit' ? (
+                <S.CancelButton onClick={onClickModifyCancle}>취소하기</S.CancelButton>
+              ) : null}
+              {flagMode === 'create' ? (
+                <S.ConfirmButton onClick={onClickAdd} $flag={false}>
+                  추가하기
+                </S.ConfirmButton>
+              ) : flagMode === 'edit' ? (
+                <S.ConfirmButton onClick={onClickSave} $flag={false}>
+                  저장하기
+                </S.ConfirmButton>
+              ) : flagMode === 'detail' ? (
+                <S.ConfirmButton onClick={onClickModify} $flag={false}>
+                  수정하기
+                </S.ConfirmButton>
+              ) : null}
+            </S.ButtonLayer>
+          </S.FlagVariationLayer>
+        </S.LayOut>
       </>
     );
   };
