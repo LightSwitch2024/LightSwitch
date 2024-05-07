@@ -579,6 +579,37 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     );
   };
 
+  const calculateTotalPortion = (): number => {
+    let totalPortion = Number(0);
+    editedVariationInfo.variations.map((variation) => {
+      totalPortion += Number(variation.portion);
+    });
+    return totalPortion;
+  };
+
+  useEffect(() => {
+    if (calculateTotalPortion() > Number(100)) {
+      alert('변수 비율의 합이 100을 넘을 수 없습니다.');
+      for (let i = 0; i < editedVariationInfo.variations.length; i++) {
+        setEditedVariationInfo((prev) => {
+          const newVariations = [...prev.variations];
+          newVariations[i].portion = Number(0);
+          return {
+            ...prev,
+            variations: newVariations,
+          };
+        });
+      }
+    } else {
+      setEditedVariationInfo((prev) => {
+        return {
+          ...prev,
+          defaultPortion: Number(100) - calculateTotalPortion(),
+        };
+      });
+    }
+  }, [editedVariationInfo.variations]);
+
   const renderContentByTab = () => {
     // 플래그 수정 폼
     if (selectedTab === 0) {
