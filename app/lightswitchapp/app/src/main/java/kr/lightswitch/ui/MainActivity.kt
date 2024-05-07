@@ -27,18 +27,6 @@ import kr.lightswitch.ui.theme.LightswitchappTheme
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val _isLogin = MutableStateFlow<Boolean>(false)
-    private val _loginFetchFlag = MutableStateFlow<Boolean>(false)
-
-    init {
-        MainScope().launch {
-            LightSwitchApplication.getInstance().getDataStore().isLogin.collect {
-                _isLogin.value = it
-                _loginFetchFlag.value = true
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -48,7 +36,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Navigation(_isLogin, _loginFetchFlag)
+                    Navigation()
                 }
             }
         }
