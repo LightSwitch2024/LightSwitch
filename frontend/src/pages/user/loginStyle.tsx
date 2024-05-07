@@ -2,15 +2,20 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const LogInLayout = styled.div`
-  width: 100%;
-  height: calc(var(--vh, 1vh) * 100 - 60px);
+  width: 560px;
+  margin-right: 16rem;
+  border: 2px solid gray;
+  border-radius: 10px;
+  padding: 2rem;
+  // height: calc(var(--vh, 1vh) * 100 - 60px);
+  height: auto;
 `;
 
 export const LogInContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin: 2.5rem 3rem;
+  margin: 2.5rem 0 2.5rem 0;
   gap: 1rem;
 `;
 
