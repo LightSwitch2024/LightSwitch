@@ -89,7 +89,8 @@ const FlagDetail = () => {
   };
 
   const closeUpdateModal = () => {
-    setIsModalOpened(false);
+    const confirm = window.confirm('닫을 거라고??');
+    if (confirm) setIsModalOpened(false);
   };
 
   return (

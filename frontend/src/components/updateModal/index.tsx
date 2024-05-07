@@ -93,6 +93,8 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     keywords: props.flagDetail?.keywords || [],
   });
 
+  const [selectedTab, setSelectedTab] = useState<number>(0);
+
   const handelChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEditedflagInfo({
       ...editedFlagInfo,
@@ -442,34 +444,26 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     );
   };
 
-  return (
-    <S.ModalBackground onClick={() => props.closeUpdateModal()}>
-      <S.Modal>
-        <S.ModalInputForm
-          id="modal-scrollable"
-          className="modal-scrollable"
-          onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
-            stopPropagation(e)
-          }
-        >
-          {/* 플래그 수정 폼 */}
-          <S.FlagEditForm>
-            <input
-              type="text"
-              value={editedFlagInfo.title}
-              onChange={handelChangeTitle}
-            />
-            <textarea
-              value={editedFlagInfo.description}
-              onChange={handleChangeDescription}
-            />
+  const renderContentByTab = () => {
+    // 플래그 수정 폼
+    if (selectedTab === 0) {
+      return (
+        <S.FlagEditForm>
+          <input type="text" value={editedFlagInfo.title} onChange={handelChangeTitle} />
+          <textarea
+            value={editedFlagInfo.description}
+            onChange={handleChangeDescription}
+          />
 
-            <button onClick={onClickSaveFlagInfo}>저장하기</button>
-          </S.FlagEditForm>
+          <button onClick={onClickSaveFlagInfo}>저장하기</button>
+        </S.FlagEditForm>
+      );
+    }
 
-          <FlagVariationDivisionLine />
-
-          {/* 변수 수정 폼 */}
+    // 변수 수정 폼
+    if (selectedTab === 1) {
+      return (
+        <>
           <div>
             <select value={editedVariationInfo.type}>
               <option value={'BOOLEAN'}>boolean</option>
@@ -519,8 +513,14 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
 
             <button onClick={onClickSaveVariationInfo}>저장하기</button>
           </div>
+        </>
+      );
+    }
 
-          {/* 키워드 수정 폼 */}
+    //  키워드 수정 폼
+    if (selectedTab === 2) {
+      return (
+        <>
           <div>
             {editedKeywordInfo.keywords.map((keyword, indexOfKeyword) => (
               <div key={indexOfKeyword}>
@@ -563,6 +563,51 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
 
             <button onClick={onClickSaveKeywordInfo}>저장하기</button>
           </div>
+        </>
+      );
+    }
+  };
+
+  return (
+    <S.ModalBackground onClick={() => props.closeUpdateModal()}>
+      <S.Modal>
+        <S.ModalInputForm
+          id="modal-scrollable"
+          className="modal-scrollable"
+          onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
+            stopPropagation(e)
+          }
+        >
+          {/* 탭 부분 */}
+          <S.TabContainer>
+            <S.TabElementContainer
+              $select={selectedTab === 0}
+              onClick={() => {
+                setSelectedTab(0);
+              }}
+            >
+              <S.TabElementText $select={selectedTab === 0}>플래그</S.TabElementText>
+            </S.TabElementContainer>
+            <S.TabElementContainer
+              $select={selectedTab === 1}
+              onClick={() => {
+                setSelectedTab(1);
+              }}
+            >
+              <S.TabElementText $select={selectedTab === 1}>변수</S.TabElementText>
+            </S.TabElementContainer>
+            <S.TabElementContainer
+              $select={selectedTab === 2}
+              onClick={() => {
+                setSelectedTab(2);
+              }}
+            >
+              <S.TabElementText $select={selectedTab === 2}>키워드</S.TabElementText>
+            </S.TabElementContainer>
+          </S.TabContainer>
+
+          {/* 컨텐츠 부분 */}
+          <S.ContentContainer>{renderContentByTab()}</S.ContentContainer>
         </S.ModalInputForm>
       </S.Modal>
     </S.ModalBackground>
