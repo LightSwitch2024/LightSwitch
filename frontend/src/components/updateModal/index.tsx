@@ -9,6 +9,8 @@ import * as S from '@components/updateModal/indexStyle';
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 
+import { confirmDuplicateFlag } from '@/api/create/createAxios';
+
 import { FlagVariationDivisionLine } from '../createModal/indexStyle';
 
 interface UpdateModalProps {
@@ -94,6 +96,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
   });
 
   const [selectedTab, setSelectedTab] = useState<number>(0);
+  const [isDuplicatedTitle, setIsDuplicatedTitle] = useState<boolean>(false);
 
   const handelChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEditedflagInfo({
@@ -394,7 +397,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     console.log(editedKeywordInfo.keywords);
   };
 
-  // 저장하기 버튼 클릭 이벤트 (axios 함수 호출)
+  // 저장하기 & 취소하기 버튼 클릭 이벤트 (axios 함수 호출)
   const onClickSaveFlagInfo = () => {
     // 수정된게 없으면 return
 
@@ -444,17 +447,151 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     );
   };
 
+  const onClickCancelFlagInfo = () => {
+    // 수정된게 없으면 return
+    let confirm = false;
+    if (
+      editedFlagInfo.title === props.flagDetail.title &&
+      editedFlagInfo.description === props.flagDetail.description
+    ) {
+      confirm = window.confirm('수정을 종료하시겠습니까?');
+    } else {
+      confirm = window.confirm(
+        '수정된 내용이 저장되지 않습니다. 수정을 종료하시겠습니까?',
+      );
+    }
+
+    if (confirm) {
+      // editedFlagInfo 초기화
+      setEditedflagInfo({
+        title: props.flagDetail.title,
+        tags: props.flagDetail.tags,
+        description: props.flagDetail.description,
+      });
+      props.closeUpdateModal();
+    }
+  };
+
+  const onClickCancelVariationInfo = () => {
+    // 수정된게 없으면 return
+    let confirm = false;
+    if (
+      editedVariationInfo.defaultValue === props.flagDetail.defaultValue &&
+      editedVariationInfo.defaultPortion === props.flagDetail.defaultPortion &&
+      editedVariationInfo.defaultDescription === props.flagDetail.defaultDescription
+    ) {
+      confirm = window.confirm('수정을 종료하시겠습니까?');
+    } else {
+      confirm = window.confirm(
+        '수정된 내용이 저장되지 않습니다. 수정을 종료하시겠습니까?',
+      );
+    }
+
+    if (confirm) {
+      // editedVariationInfo 초기화
+      setEditedVariationInfo({
+        type: props.flagDetail.type,
+        defaultValue: props.flagDetail.defaultValue,
+        defaultPortion: props.flagDetail.defaultPortion,
+        defaultDescription: props.flagDetail.defaultDescription,
+        variations: props.flagDetail.variations,
+      });
+      props.closeUpdateModal();
+    }
+  };
+
+  const onClickCancelKeywordInfo = () => {
+    // 수정된게 없으면 return
+    let confirm = false;
+    if (editedKeywordInfo.keywords === props.flagDetail.keywords) {
+      confirm = window.confirm('수정을 종료하시겠습니까?');
+    } else {
+      confirm = window.confirm(
+        '수정된 내용이 저장되지 않습니다. 수정을 종료하시겠습니까?',
+      );
+    }
+
+    if (confirm) {
+      // editedKeywordInfo 초기화
+      setEditedKeywordInfo({
+        keywords: props.flagDetail.keywords,
+      });
+      props.closeUpdateModal();
+    }
+  };
+
+  // 탭 이동함수 & 초기화
+  const onClickTab = (select: number) => {
+    if (selectedTab === 0) {
+      setEditedflagInfo({
+        title: props.flagDetail.title,
+        tags: props.flagDetail.tags,
+        description: props.flagDetail.description,
+      });
+    }
+    if (selectedTab === 1) {
+      setEditedVariationInfo({
+        type: props.flagDetail.type,
+        defaultValue: props.flagDetail.defaultValue,
+        defaultPortion: props.flagDetail.defaultPortion,
+        defaultDescription: props.flagDetail.defaultDescription,
+        variations: props.flagDetail.variations,
+      });
+    }
+
+    if (selectedTab === 2) {
+      setEditedKeywordInfo({
+        keywords: props.flagDetail.keywords,
+      });
+    }
+
+    setSelectedTab(select);
+  };
+
+  // validation check
+  /**
+   * 중복된 타이틀 체크
+   */
+  const checkDuplicatedTitle = () => {
+    if (editedFlagInfo.title === '') {
+      return;
+    }
+
+    if (editedFlagInfo.title === props.flagDetail.title) {
+      setIsDuplicatedTitle(false);
+      return;
+    }
+
+    confirmDuplicateFlag(
+      editedFlagInfo.title,
+      (data: boolean) => {
+        console.log(data);
+        setIsDuplicatedTitle(data);
+      },
+      (err) => {
+        console.log(err);
+      },
+    );
+  };
+
   const renderContentByTab = () => {
     // 플래그 수정 폼
     if (selectedTab === 0) {
       return (
         <S.FlagEditForm>
-          <input type="text" value={editedFlagInfo.title} onChange={handelChangeTitle} />
+          <input
+            type="text"
+            value={editedFlagInfo.title}
+            onChange={handelChangeTitle}
+            onBlur={checkDuplicatedTitle}
+          />
+          {isDuplicatedTitle && <S.WarnText>중복된 플래그 이름이 존재합니다.</S.WarnText>}
+
           <textarea
             value={editedFlagInfo.description}
             onChange={handleChangeDescription}
           />
-
+          <button onClick={onClickCancelFlagInfo}>취소하기</button>
           <button onClick={onClickSaveFlagInfo}>저장하기</button>
         </S.FlagEditForm>
       );
@@ -511,7 +648,10 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
             ))}
             <button onClick={addVariation}>변수 추가</button>
 
-            <button onClick={onClickSaveVariationInfo}>저장하기</button>
+            <div>
+              <button onClick={onClickCancelVariationInfo}>취소하기</button>
+              <button onClick={onClickSaveVariationInfo}>저장하기</button>
+            </div>
           </div>
         </>
       );
@@ -561,11 +701,16 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
             ))}
             <button onClick={addKeyword}>Keyword 추가</button>
 
-            <button onClick={onClickSaveKeywordInfo}>저장하기</button>
+            <div>
+              <button onClick={onClickCancelKeywordInfo}>취소하기</button>
+              <button onClick={onClickSaveKeywordInfo}>저장하기</button>
+            </div>
           </div>
         </>
       );
     }
+
+    return <></>;
   };
 
   return (
@@ -582,25 +727,19 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
           <S.TabContainer>
             <S.TabElementContainer
               $select={selectedTab === 0}
-              onClick={() => {
-                setSelectedTab(0);
-              }}
+              onClick={() => onClickTab(0)}
             >
               <S.TabElementText $select={selectedTab === 0}>플래그</S.TabElementText>
             </S.TabElementContainer>
             <S.TabElementContainer
               $select={selectedTab === 1}
-              onClick={() => {
-                setSelectedTab(1);
-              }}
+              onClick={() => onClickTab(1)}
             >
               <S.TabElementText $select={selectedTab === 1}>변수</S.TabElementText>
             </S.TabElementContainer>
             <S.TabElementContainer
               $select={selectedTab === 2}
-              onClick={() => {
-                setSelectedTab(2);
-              }}
+              onClick={() => onClickTab(2)}
             >
               <S.TabElementText $select={selectedTab === 2}>키워드</S.TabElementText>
             </S.TabElementContainer>

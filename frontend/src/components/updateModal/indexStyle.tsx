@@ -114,3 +114,12 @@ export const ContentContainer = styled.div`
   background: #fff;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 `;
+
+export const WarnText = styled.div`
+  font-family: Pretendard;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  color: #ff0000;
+`;
