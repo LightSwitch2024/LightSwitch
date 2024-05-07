@@ -34,7 +34,8 @@ class LightSwitchRepositoryImpl @Inject constructor(
         onError: (cause: Throwable) -> Unit
     ): Flow<BaseResponse<Int>> = flow {
         val response = lightSwitchService.switchFlag(flagId = flagId)
-
+        emit(response)
+}.flowOn(ioDispatcher).onStart{ onStart() }.onCompletion { onComplete() }.catch { error -> onError(error) }
     override fun login(
         email: String,
         password: String,
@@ -45,5 +46,4 @@ class LightSwitchRepositoryImpl @Inject constructor(
         val response = lightSwitchService.loginRequest(loginRequest = LoginRequest(email = email, password = password))
         emit(response)
     }.flowOn(ioDispatcher).onStart{ onStart() }.onCompletion { onComplete() }.catch { error -> onError(error) }
-
 }
