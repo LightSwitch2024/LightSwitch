@@ -294,7 +294,16 @@ const FlagTable = (props: FlagTableProps) => {
       if (props.flagKeyword === '') {
         getFlagList(
           (data: Array<FlagListItem>) => {
-            setFlagList(data);
+            if (props.tags.length !== 0) {
+              const filteredData = data.filter((item) =>
+                item.tags.some((itemTag) =>
+                  props.tags.some((propTag) => propTag.content === itemTag.content),
+                ),
+              );
+              setFlagList(filteredData);
+            } else {
+              setFlagList(data);
+            }
           },
           (err) => {
             console.log(err);
@@ -304,7 +313,16 @@ const FlagTable = (props: FlagTableProps) => {
         getFlagListByKeyword(
           props.flagKeyword,
           (data: Array<FlagListItem>) => {
-            setFlagList(data);
+            if (props.tags.length !== 0) {
+              const filteredData = data.filter((item) =>
+                item.tags.some((itemTag) =>
+                  props.tags.some((propTag) => propTag.content === itemTag.content),
+                ),
+              );
+              setFlagList(filteredData);
+            } else {
+              setFlagList(data);
+            }
           },
           (err) => {
             console.log(err);
@@ -313,7 +331,7 @@ const FlagTable = (props: FlagTableProps) => {
       }
     }, 500);
     return () => clearTimeout(timer);
-  }, [props.flagKeyword]);
+  }, [props.flagKeyword, props.tags]);
 
   return (
     <>
