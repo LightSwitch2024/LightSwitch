@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,9 +26,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.StateFlow
 import kr.lightswitch.ui.flag.FlagScreen
 import kr.lightswitch.ui.flag.FlagViewModel
 import kr.lightswitch.ui.theme.pretendard
@@ -38,10 +42,25 @@ import kr.lightswitch.ui.login.LoginViewModel
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Navigation(modifier: Modifier = Modifier) {
+fun Navigation() {
     val navController = rememberNavController()
     val (navTitleState, setNavTitleState) = remember {
-        mutableStateOf("로그인")
+        mutableStateOf("")
+    }
+
+    val mainViewModel: MainViewModel = hiltViewModel()
+    val isLogin = mainViewModel.isLogin.collectAsStateWithLifecycle().value
+    val loginFetchFlag = mainViewModel.loginFetchFlag.collectAsStateWithLifecycle().value
+
+    LaunchedEffect(loginFetchFlag, isLogin) {
+        if (loginFetchFlag) {
+            navController.popBackStack()
+            if(isLogin) {
+                navController.navigate(NavScreen.Flags.route)
+            } else {
+                navController.navigate(NavScreen.Login.route)
+            }
+        }
     }
 
     navController.addOnDestinationChangedListener { // 라우팅 발생 시 마다 호출되도록
@@ -56,6 +75,11 @@ fun Navigation(modifier: Modifier = Modifier) {
                 Timber.d("flags")
                 setNavTitleState("플래그 관리")
             }
+
+            NavScreen.Main.route -> {
+                Timber.d("Main")
+                setNavTitleState("")
+            }
         }
     }
 
@@ -69,12 +93,21 @@ fun Navigation(modifier: Modifier = Modifier) {
         })
     }) {
         Column(modifier = Modifier.padding(it)) {
-            NavHost(navController = navController, startDestination = NavScreen.Login.route) {
+            NavHost(navController = navController, startDestination = NavScreen.Main.route) {
+                composable(
+                    route = NavScreen.Main.route,
+                ) {
+                    MainScreen(
+                    )
+                }
+
                 composable(
                     route = NavScreen.Login.route,
                 ) { backStackEntry ->
                     val loginViewModel: LoginViewModel = hiltViewModel()
-                    LoginScreen(loginViewModel = loginViewModel, navController = navController)
+                    LoginScreen(
+                        loginViewModel = loginViewModel,
+                    )
                 }
                 composable(
                     route = NavScreen.Flags.route,
@@ -116,4 +149,6 @@ sealed class NavScreen(val route: String) {
     object Login : NavScreen("Login")
 
     object Flags : NavScreen("Flags")
+
+    object Main : NavScreen("Main")
 }
