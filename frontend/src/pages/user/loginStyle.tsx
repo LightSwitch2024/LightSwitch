@@ -1,14 +1,21 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
+export const Layout = styled.div`
+  width: 100%;
+  height: calc(var(--vh, 1vh) * 100 - 60px);
+  display: flex;
+  margin-right: 10rem;
+  flex-direction: row;
+  justify-content: center;
+`;
+
 export const LogInLayout = styled.div`
   width: 560px;
   margin-top: 5rem;
-  margin-right: 16rem;
   border: 2px solid gray;
   border-radius: 10px;
   padding: 2rem;
-  // height: calc(var(--vh, 1vh) * 100 - 60px);
   height: auto;
 `;
 
@@ -51,15 +58,21 @@ export const LogInLinkBox = styled.div`
   margin: 0 0 3rem 0;
 `;
 
-export const SignUpText = styled(Link)`
+export const SignUpText = styled.button`
   color: #000000;
   text-decoration: underline;
+  background: none;
+  border: none;
+  padding-left: 5px;
+  margin: 0;
+  font-size: 16px;
   cursor: pointer;
 `;
 
 export const PasswordText = styled(Link)`
   color: #000000;
   text-decoration: underline;
+  margin-right: 3px;
   cursor: pointer;
 `;
 
