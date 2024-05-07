@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kr.lightswitch.model.response.Flag
 import kr.lightswitch.network.LightSwitchRepository
+import kr.lightswitch.ui.MainViewModel
 import kr.lightswitch.ui.UiState
 import timber.log.Timber
 import javax.inject.Inject
@@ -16,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FlagViewModel @Inject constructor(
     private val lightSwitchRepository: LightSwitchRepository
-): ViewModel() {
+): MainViewModel() {
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()

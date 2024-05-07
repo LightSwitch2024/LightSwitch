@@ -14,20 +14,6 @@ import kr.lightswitch.ui.login.LoginViewModel
 
 @Composable
 fun MainScreen(
-    mainViewModel: MainViewModel,
-    navController: NavController
 ) {
-    val isLogin = mainViewModel.isLogin.collectAsStateWithLifecycle().value
-    val loginFetchFlag = mainViewModel.loginFetchFlag.collectAsStateWithLifecycle().value
 
-    LaunchedEffect(loginFetchFlag, isLogin) {
-        // 앱 실행 시 로그인 상태 확인
-        if (loginFetchFlag) {
-            if(isLogin) {
-                navController.navigate(NavScreen.Flags.route)
-            } else {
-                navController.navigate(NavScreen.Login.route)
-            }
-        }
-    }
 }

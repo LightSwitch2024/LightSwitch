@@ -22,9 +22,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
-    private val lightSwitchRepository: LightSwitchRepository
-): ViewModel() {
+open class MainViewModel @Inject constructor(
+) : ViewModel() {
 
     private val _isLogin = MutableStateFlow<Boolean>(false)
     private val _loginFetchFlag = MutableStateFlow<Boolean>(false)
@@ -39,4 +38,16 @@ class MainViewModel @Inject constructor(
             }
         }
     }
+
+    open suspend fun login(loginResponse: LoginResponse) {
+        LightSwitchApplication.getInstance().getDataStore().saveLoginData(loginResponse)
+    }
+
+    open fun logout() {
+        viewModelScope.launch {
+            LightSwitchApplication.getInstance().getDataStore().removeLoginData()
+        }
+        _isLogin.value = false
+    }
+
 }

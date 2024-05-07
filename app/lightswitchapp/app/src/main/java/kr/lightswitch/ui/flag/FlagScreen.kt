@@ -63,8 +63,8 @@ fun FlagScreen(
 
     fun goLogin() {
         loginViewModel.logout()
-        navController.popBackStack()
-        navController.navigate(NavScreen.Login.route)
+//        navController.popBackStack()
+//        navController.navigate(NavScreen.Login.route)
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
