@@ -2,7 +2,6 @@ package kr.lightswitch.ui.flag
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,7 +14,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -28,12 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -42,12 +34,13 @@ import kr.lightswitch.model.response.Flag
 import kr.lightswitch.ui.UiState
 import kr.lightswitch.ui.theme.C900
 import kr.lightswitch.ui.theme.L200
-import kr.lightswitch.ui.theme.L500
-import kr.lightswitch.ui.theme.L600
+import timber.log.Timber
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun FlagScreen(flagViewModel: FlagViewModel) {
+    Timber.d("flagScreen")
     val uiState = flagViewModel.uiState.collectAsStateWithLifecycle().value
 
     Column (modifier = Modifier.fillMaxSize()){
