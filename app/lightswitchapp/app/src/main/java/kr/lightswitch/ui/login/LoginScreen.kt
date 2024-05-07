@@ -33,24 +33,22 @@ import timber.log.Timber
 @Composable
 fun LoginScreen(
     loginViewModel: LoginViewModel,
-    navController: NavController
+    navController: NavController,
 ) {
 
-    val loginResponse = loginViewModel.loginState.collectAsStateWithLifecycle().value
+    val loginResponse = loginViewModel.loginResponse.collectAsStateWithLifecycle().value
 
     LaunchedEffect(loginResponse) {
-        // 앱 실행 시 로그인 상태 확인
-        LightSwitchApplication.getInstance().getDataStore().isLogin.collect {
-            if(it) {
-                println("로그인 상태 확인됨")
-                navController.popBackStack()
-                navController.navigate(NavScreen.Flags.route)
-            } else {
-                println("로그인 상태 확인되지 않음")
-            }
+        if(loginResponse != null) {
+            navController.navigate(NavScreen.Flags.route)
         }
     }
 
+    LoginPage(loginViewModel = loginViewModel)
+}
+
+@Composable
+fun LoginPage(loginViewModel: LoginViewModel) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -74,7 +72,6 @@ fun LoginScreen(
                 )
             }
         )
-
 
         OutlinedTextField(
             value = emailState.value,
@@ -113,12 +110,5 @@ fun LoginScreen(
                 Text(text = "로그인")
             }
         )
-
-        // 로그인 응답 데이터가 있으면 표시
-//        loginResponse?.let {
-//            Timber.d("flag로 라우팅")
-//            navController.popBackStack()
-//            navController.navigate(NavScreen.Flags.route)
-//        }
     }
 }
