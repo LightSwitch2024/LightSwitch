@@ -8,6 +8,7 @@ export const Layout = styled.div`
   margin-right: 10rem;
   flex-direction: row;
   justify-content: center;
+  gap: 20px;
 `;
 
 export const LogInLayout = styled.div`
