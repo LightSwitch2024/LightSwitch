@@ -366,9 +366,16 @@ class FlagService(
             it.delete()
         }
 
+        val sdkKey =
+            sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(flag.maintainer.memberId!!) ?: throw BaseException(
+                ResponseCode.SDK_KEY_NOT_FOUND
+            )
+
+        val userKey = sseService.hash(sdkKey.key)
+
         sseService.sendData(
             SseDto(
-                "8030ca7d78fb464fb9b661a715bbab13",
+                userKey,
                 SseDto.SseType.DELETE,
                 FlagTitleResponseDto(flag.title)
             )
