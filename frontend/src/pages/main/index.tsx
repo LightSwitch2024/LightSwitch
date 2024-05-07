@@ -1,6 +1,7 @@
 import LunitLogo from '@assets/LunitLogo.png';
 import { AuthAtom } from '@global/AuthAtom';
-import React, { useEffect, useState } from 'react';
+import { TagsInputComponent } from '@pages/main/tagInput';
+import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useRecoilValue } from 'recoil';
 
@@ -31,8 +32,9 @@ const index = () => {
   const [activeFlags, setActiveFlags] = useState<number>(0);
   const [isModalOpened, setIsModalOpened] = useState(false);
   const [flagKeyword, setFlagKeyword] = useState<string>('');
-
+  const [isDropdownOpened, setIsDropdownOpened] = useState(false);
   const auth = useRecoilValue(AuthAtom);
+  const dropdownContainerRef = useRef(null);
   useEffect(() => {
     console.log('auth');
     console.log(auth);
@@ -77,6 +79,12 @@ const index = () => {
     }
   };
 
+  const openDropdown = () => {
+    setIsDropdownOpened(true);
+    if (isDropdownOpened) {
+      setIsDropdownOpened(false);
+    }
+  };
   const handleFlagSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFlagKeyword(e.target.value);
   };
@@ -218,7 +226,7 @@ const index = () => {
             <S.FlagNavTitleContainer>
               <S.Title>플래그</S.Title>
             </S.FlagNavTitleContainer>
-            <S.FlagNavSearchComponent>
+            <S.FlagNavSearchComponent ref={dropdownContainerRef}>
               <S.FlagNavSearchBoxContainer>
                 <S.FlagNavSearchInput placeholder="검색" onChange={handleFlagSearch} />
                 <S.SearchIconContainer>
@@ -227,13 +235,15 @@ const index = () => {
               </S.FlagNavSearchBoxContainer>
 
               <S.FlagNavFilteringContainer>
-                <S.FlagNavFilteringButton>
+                <S.FlagNavFilteringButton onClick={() => openDropdown()}>
                   <S.FlagNavFiltering>
                     <FilteringIcon />
                   </S.FlagNavFiltering>
                 </S.FlagNavFilteringButton>
-                {/* <S.FlagNavFilteringMenu></S.FlagNavFilteringMenu> */}
               </S.FlagNavFilteringContainer>
+              {isDropdownOpened &&
+                dropdownContainerRef.current &&
+                createPortal(<TagsInputComponent />, dropdownContainerRef.current)}
             </S.FlagNavSearchComponent>
           </S.FlagNavTitleContainer>
           <S.FlagNavCreateButtonContainer>
