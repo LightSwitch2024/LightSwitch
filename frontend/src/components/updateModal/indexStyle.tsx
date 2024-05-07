@@ -455,3 +455,12 @@ export const Boundary = styled.div`
   border-radius: 10px;
   padding: 1rem;
 `;
+
+export const WarnText = styled.div`
+  font-family: Pretendard;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  color: #ff0000;
+`;
