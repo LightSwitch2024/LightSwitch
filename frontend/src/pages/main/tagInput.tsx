@@ -1,3 +1,5 @@
+import { getFlagList, getTagList } from '@api/main/mainAxios';
+import { Tag } from '@pages/main/tag';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
@@ -72,20 +74,29 @@ const DropdownContainer = styled.div`
   overflow-y: auto; // 스크롤 활성화
 `;
 
-export const TagsInputComponent = () => {
-  const allTags = [
-    'CodeStates',
-    'kimcoding',
-    'JavaScript',
-    'React',
-    'NodeJS',
-    'HTML',
-    'CSS',
-    'Redux',
-    'TypeScript',
-  ];
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [filteredTags, setFilteredTags] = useState<string[]>([]);
+interface TagsInputProps {
+  selectedTags: Array<Tag>;
+  setSelectedTags: React.Dispatch<React.SetStateAction<Array<Tag>>>;
+}
+//getTagList
+export const TagsInputComponent: React.FC<TagsInputProps> = ({
+  selectedTags,
+  setSelectedTags,
+}) => {
+  const [allTags, setTagList] = useState<Array<Tag>>([]);
+
+  useEffect(() => {
+    getTagList(
+      (data: Array<Tag>) => {
+        setTagList(data);
+      },
+      (err) => {
+        console.log(err);
+      },
+    );
+  }, []);
+
+  const [filteredTags, setFilteredTags] = useState<Array<Tag>>([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
@@ -99,7 +110,7 @@ export const TagsInputComponent = () => {
       setFilteredTags(
         allTags.filter(
           (tag) =>
-            tag.toLowerCase().includes(inputText.toLowerCase()) &&
+            tag.content.toLowerCase().includes(inputText.toLowerCase()) &&
             !selectedTags.includes(tag),
         ),
       );
@@ -114,14 +125,14 @@ export const TagsInputComponent = () => {
     setFilteredTags(allTags.filter((tag) => !selectedTags.includes(tag))); // 포커스 시 필터링
   };
 
-  const selectTag = (tag: string) => {
+  const selectTag = (tag: Tag) => {
     if (!selectedTags.includes(tag)) {
       setSelectedTags([...selectedTags, tag]);
     }
     setShowDropdown(false);
   };
 
-  const removeTag = (tagToRemove: string) => {
+  const removeTag = (tagToRemove: Tag) => {
     setSelectedTags(selectedTags.filter((tag) => tag !== tagToRemove));
   };
 
@@ -131,7 +142,7 @@ export const TagsInputComponent = () => {
         <ul id="tags">
           {selectedTags.map((tag, index) => (
             <li className="tag" key={index}>
-              <span>{tag}</span>
+              <span>{tag.content}</span>
               <span className="tag-close-icon" onClick={() => removeTag(tag)}>
                 &times;
               </span>
@@ -154,7 +165,7 @@ export const TagsInputComponent = () => {
               style={{ padding: '10px', cursor: 'pointer' }}
               onClick={() => selectTag(tag)}
             >
-              {tag}
+              {tag.content}
             </div>
           ))}
         </DropdownContainer>

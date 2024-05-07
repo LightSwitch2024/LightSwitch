@@ -1,5 +1,6 @@
 import LunitLogo from '@assets/LunitLogo.png';
 import { AuthAtom } from '@global/AuthAtom';
+import { Tag } from '@pages/main/tag';
 import { TagsInputComponent } from '@pages/main/tagInput';
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -35,6 +36,8 @@ const index = () => {
   const [isDropdownOpened, setIsDropdownOpened] = useState(false);
   const auth = useRecoilValue(AuthAtom);
   const dropdownContainerRef = useRef(null);
+  const [selectedTags, setSelectedTags] = useState<Array<Tag>>([]);
+
   useEffect(() => {
     console.log('auth');
     console.log(auth);
@@ -243,7 +246,13 @@ const index = () => {
               </S.FlagNavFilteringContainer>
               {isDropdownOpened &&
                 dropdownContainerRef.current &&
-                createPortal(<TagsInputComponent />, dropdownContainerRef.current)}
+                createPortal(
+                  <TagsInputComponent
+                    selectedTags={selectedTags}
+                    setSelectedTags={setSelectedTags}
+                  />,
+                  dropdownContainerRef.current,
+                )}
             </S.FlagNavSearchComponent>
           </S.FlagNavTitleContainer>
           <S.FlagNavCreateButtonContainer>
@@ -254,7 +263,7 @@ const index = () => {
         </S.TableNavContainer>
 
         <S.FlagTableContainer>
-          <FlagTable flagKeyword={flagKeyword} />
+          <FlagTable flagKeyword={flagKeyword} tags={selectedTags} />
         </S.FlagTableContainer>
       </S.FlagTableComponent>
     </>

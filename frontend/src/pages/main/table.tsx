@@ -21,6 +21,7 @@ import {
   useTheme,
 } from '@mui/material';
 import * as S from '@pages/main/indexStyle';
+import { Tag } from '@pages/main/tag';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -42,6 +43,7 @@ interface TablePaginationActionsProps {
 
 interface FlagTableProps {
   flagKeyword: string;
+  tags: Array<Tag>;
 }
 
 /**
