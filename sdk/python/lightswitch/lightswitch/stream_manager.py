@@ -7,6 +7,7 @@ from typing import Callable, Generator, Optional, Protocol, cast
 import requests
 import sseclient
 
+from .custom_sseclient import CustomSSEClient
 # from . import Lightswitch
 from .exceptions import StreamDataError
 
@@ -39,7 +40,7 @@ class StreamManager(threading.Thread):
             try:
                 # response = requests.get(self.stream_url, stream=True)
                 # print("res", response)
-                sse_client = sseclient.SSEClient(self.stream_url, headers={"Accept": "application/json, text/event-stream"}, timeout=None)
+                sse_client = CustomSSEClient(self.stream_url, headers={"Accept": "application/json, text/event-stream"}, timeout=None)
                 # sse_client = sseclient.SSEClient(
                 #     self.stream_url,
                 #     headers={"Accept": "application/json, text/event-stream"},
