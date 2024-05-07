@@ -6,8 +6,7 @@ import com.lightswitch.core.domain.flag.common.enum.FlagType.*
 import com.lightswitch.core.domain.flag.dto.KeywordDto
 import com.lightswitch.core.domain.flag.dto.PropertyDto
 import com.lightswitch.core.domain.flag.dto.VariationDto
-import com.lightswitch.core.domain.flag.dto.req.FlagInitRequestDto
-import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
+import com.lightswitch.core.domain.flag.dto.req.*
 import com.lightswitch.core.domain.flag.dto.res.*
 import com.lightswitch.core.domain.flag.repository.*
 import com.lightswitch.core.domain.flag.repository.entity.*
@@ -128,6 +127,7 @@ class FlagService(
                     throw BaseException(ResponseCode.INVALID_FLAG_VALUE)
                 }
             }
+
             STRING -> {
                 if (flagRequestDto.defaultValue.isEmpty()) {
                     throw BaseException(ResponseCode.INVALID_FLAG_VALUE)
@@ -138,6 +138,7 @@ class FlagService(
                     }
                 }
             }
+
             INTEGER -> {
                 if (!flagRequestDto.defaultValue.matches(Regex("^[0-9]*$"))) {
                     throw BaseException(ResponseCode.INVALID_FLAG_VALUE)
@@ -241,7 +242,8 @@ class FlagService(
     }
 
     fun getFlag(flagId: Long): FlagResponseDto {
-        val flag = flagRepository.findById(flagId).get()
+        val flag = flagRepository.findFlagWithActiveKeywords(flagId) ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
+
         val defaultVariation =
             variationRepository.findByFlagAndDefaultFlagIsTrueAndDeletedAtIsNull(flag)
         val variations =
@@ -536,6 +538,90 @@ class FlagService(
 
         val userKey = sseService.hash(sdkKey.key)
         sseService.sendData(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
+
+        return this.getFlag(flag.flagId!!)
+    }
+
+    @Transactional
+    fun updateFlagInfo(flagId: Long, flagInfoRequestDto: FlagInfoRequestDto): FlagResponseDto {
+        val flag = flagRepository.findById(flagId).get()
+        flag.title = flagInfoRequestDto.title
+        flag.description = flagInfoRequestDto.description
+        val save = flagRepository.save(flag)
+        val variations = variationRepository.findByFlagAndDeletedAtIsNull(save)
+
+        return this.getFlag(flag.flagId!!)
+    }
+
+    fun updateVariationInfo(flagId: Long, variationInfoRequestDto: VariationInfoRequestDto): FlagResponseDto {
+        val flag = flagRepository.findById(flagId).get()
+        flag.type = variationInfoRequestDto.type
+        flagRepository.save(flag)
+
+        val defaultVariation =
+            variationRepository.findByFlagAndDefaultFlagIsTrueAndDeletedAtIsNull(flag)
+                ?: throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
+        defaultVariation.value = variationInfoRequestDto.defaultValue
+        defaultVariation.portion = variationInfoRequestDto.defaultPortion
+        defaultVariation.description = variationInfoRequestDto.defaultDescription
+        variationRepository.save(defaultVariation)
+
+        val variations = variationInfoRequestDto.variations
+        variationRepository.findByFlagAndDefaultFlagIsFalseAndDeletedAtIsNull(flag).map {
+            it.delete()
+        }
+        variations.map {
+            val updatedVariation = Variation(
+                flag = flag,
+                description = it.description,
+                portion = it.portion,
+                value = it.value,
+            )
+            variationRepository.save(updatedVariation)
+        }
+
+        return this.getFlag(flag.flagId!!)
+    }
+
+    fun updateKeywordInfo(flagId: Long, keywordInfoRequestDto: KeywordInfoRequestDto): FlagResponseDto {
+        val flag = flagRepository.findById(flagId).get()
+        flag.keywords.map { k ->
+            k.properties.map { p ->
+                p.delete()
+            }
+            k.properties.clear()
+            k.delete()
+        }
+        flag.keywords.clear()
+
+        val updatedKeywordList = mutableListOf<Keyword>()
+        for (keyword in keywordInfoRequestDto.keywords) {
+            val updatedPropertyList = mutableListOf<Property>()
+
+            val savedKeyword = keywordRepository.save(
+                Keyword(
+                    flag = flag,
+                    description = keyword.description,
+                    value = keyword.value,
+                )
+            )
+            updatedKeywordList.add(savedKeyword)
+
+            for (property in keyword.properties) {
+                val savedProperty = propertyRepository.save(
+                    Property(
+                        keyword = savedKeyword,
+                        property = property.property,
+                        data = property.data,
+                    )
+                )
+                updatedPropertyList.add(savedProperty)
+            }
+
+            savedKeyword.properties.addAll(updatedPropertyList)
+            keywordRepository.save(savedKeyword)
+        }
+        flag.keywords.addAll(updatedKeywordList)
 
         return this.getFlag(flag.flagId!!)
     }
