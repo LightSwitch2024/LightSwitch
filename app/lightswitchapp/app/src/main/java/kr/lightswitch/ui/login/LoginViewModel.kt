@@ -50,4 +50,10 @@ class LoginViewModel @Inject constructor(
             }
         }
     }
+
+    fun logout() {
+        viewModelScope.launch {
+            LightSwitchApplication.getInstance().getDataStore().removeLoginData()
+        }
+    }
 }
