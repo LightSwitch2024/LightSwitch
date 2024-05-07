@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 export const LogInLayout = styled.div`
   width: 560px;
+  margin-top: 5rem;
   margin-right: 16rem;
   border: 2px solid gray;
   border-radius: 10px;
