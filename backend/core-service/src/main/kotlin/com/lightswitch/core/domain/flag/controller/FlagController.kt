@@ -85,7 +85,8 @@ class FlagController(
     ): BaseResponse<FlagResponseDto> {
         return success(flagService.updateVariationInfo(flagId, variationInfoRequestDto))
     }
-//    @RequestBody Map<String, List<String>> params
+
+    //    @RequestBody Map<String, List<String>> params
     @PatchMapping("/keywordinfo/{flagId}")
     fun updateKeywordInfo(
         @PathVariable flagId: Long,
