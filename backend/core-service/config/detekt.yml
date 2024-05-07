@@ -705,5 +705,6 @@ style:
       - 'org.assertj.core.api.Assertions.*'
       - 'com.lightswitch.core.domain.flag.repository.entity.*'
       - 'com.lightswitch.core.domain.flag.repository.*'
+      - 'com.lightswitch.core.domain.flag.dto.req.*'
       - 'com.lightswitch.core.domain.flag.dto.res.*'
       - 'com.lightswitch.core.domain.flag.common.enum.FlagType.*'
