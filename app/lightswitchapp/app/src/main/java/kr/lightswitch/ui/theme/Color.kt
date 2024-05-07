@@ -10,6 +10,11 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
+val FlagTextColor = Color(0xFF30C2E7)
+val FlagOnColor = Color(0xFFF5F6F7)
+val FlagOffColor = Color(0xFF1E3232)
+val bgColor = Color(0xFFF5F6F7)
+
 val L50 = Color(0xFFEBFBFD)
 val L100 = Color(0xFFC4F3FA)
 val L200 = Color(0xFF89E6F5)
