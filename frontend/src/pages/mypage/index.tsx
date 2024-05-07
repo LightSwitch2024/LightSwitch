@@ -230,8 +230,8 @@ const UserDetail = () => {
               <span>계정 삭제하기</span>
             </M.DelButton>
             <DeleteModal
-              isDeleteModal={isDeleteModalOpen}
-              onClose={() => setModalOpen(false)}
+              isDeleteModal={isDeleteModal}
+              onClose={() => setIsDeleteModal(false)}
             />
           </M.DelWrapper>
         </M.DelContainer>

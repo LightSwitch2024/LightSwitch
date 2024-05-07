@@ -3,7 +3,12 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { confirmAuthCode, sendAuthCode, signUp } from '@/api/userDetail/userAxios';
-import * as S from '@/pages/signup/indexStyle';
+import * as S from '@/components/signup/indexStyle';
+
+type Props = {
+  isSignUpModal: boolean;
+  onClose: () => void;
+};
 
 type SendAuthCodeData = {
   email: string;
@@ -23,7 +28,7 @@ type SignUpData = {
   authCode: string;
 };
 
-const SignUp = () => {
+const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
   const navigator = useNavigate();
 
   const [firstName, setFirstName] = useState<string>('');
@@ -144,8 +149,7 @@ const SignUp = () => {
   };
 
   const handleCancle = (): void => {
-    // Todo... 취소 시 페이지 이동 처리
-    navigator('/login');
+    onClose();
   };
 
   const handleSignUp = (): void => {
@@ -192,8 +196,8 @@ const SignUp = () => {
   }, [firstNameCheck, lastNameCheck, telNumberCheck, emailCheck, passwordCheck, isAuth]);
 
   return (
-    <S.SignUpLayout>
-      <S.SignUpContainer>
+    <S.SignUpLayout isSignUpModal={isSignUpModal}>
+      <S.SignUpContainer isSignUpModal={isSignUpModal}>
         <S.SignUpInputBox>
           <S.SignUpInput
             type="text"
