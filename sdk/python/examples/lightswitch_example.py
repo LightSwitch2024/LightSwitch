@@ -15,54 +15,11 @@ sys.path.append(os.path.join(parent_dir, 'lightswitch'))
 # sdk 초기화 : Lightswitch 클래스의 인스턴스를 생성하여 사용
 # 해당 환경의 플래그 데이터 전부 가져오기 - 최초에 DB의 데이터를 모두 가져오고, 그런 다음 SSE 연결
 lightswitch = Lightswitch(
-    environment_key="83d9fa33f94d4736a78a21b416aa0fb8"
+    environment_key="826f68c4ec11422bb89e6511774bd62a"
 )
 
-"""
-{
-  "code": 0,
-  "message": "string",
-  "data": [
-    {
-      "flagId": 0,
-      "title": "string",
-      "description": "string",
-      "type": "BOOLEAN",
-      "keywords": [
-        {
-          "keyword": "string",
-          "description": "string"
-        }
-      ],
-      "defaultValueForKeyword": "string",
-      "defaultPortionForKeyword": 0,
-      "defaultDescriptionForKeyword": "string",
-      "variationsForKeyword": [
-        {
-          "value": "string",
-          "portion": 0,
-          "description": "string"
-        }
-      ],
-      "defaultValue": "string",
-      "defaultPortion": 0,
-      "defaultDescription": "string",
-      "variations": [
-        {
-          "value": "string",
-          "portion": 0,
-          "description": "string"
-        }
-      ],
-      "maintainerId": 0,
-      "createdAt": "string",
-      "updatedAt": "string",
-      "deleteAt": "string",
-      "active": true
-    }
-  ]
-}
-"""
+print("특정 플래그 활성화 여부 확인: ", lightswitch.flags.is_feature_enabled("new_biomarker"))
+
 # "PD-L1 22C3 Bladder"플래그가 켜져있는지 확인
 # new_Biomarker = flags.is_feature_enabled("PD-L1 22C3 Bladder")
 
@@ -94,4 +51,5 @@ user_id = 123
 key = "name"
 value = "LEE"
 
-user = LSUser(user_id=user_id).set_property(key, value)
+this_user = LSUser(user_id=user_id).set_property(key, value)
+print(this_user)

@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
-from .models import Flags
+from .models import Flags, Flag
 from .stream_manager import StreamManager, StreamEvent
 from .exceptions import StreamDataError, InvalidJsonResponseError
 from .utils import handle_event
@@ -28,6 +28,7 @@ class Lightswitch:
     """
     lightswitch http API와 통신하는 interface를 제공
     """
+    flags: typing.Optional[Flags] = None
 
     # 초기화할 때
     # 1.모든 플래그를 가져와서 저장
@@ -62,43 +63,45 @@ class Lightswitch:
         api_url = api_url or DEFAULT_API_URL
         self.api_url = api_url
 
-        sse_realtime_api_url  = sse_realtime_api_url or DEFAULT_REALTIME_API_URL
+        sse_realtime_api_url = sse_realtime_api_url or DEFAULT_REALTIME_API_URL
         self.sse_realtime_api_url = sse_realtime_api_url
 
         self.request_timeout_seconds = request_timeout_seconds
         self.session.mount(self.api_url, HTTPAdapter(max_retries=retries))
 
+        # event 처리 함수
+        self.handle_event = self.process_stream_event_update
+
         # 필요 시 api_url 이외의 url 속성 할당
         self.environment_url = f"{self.api_url}environment"
-        self.environment_flags_url = f"{self.api_url}sdk/init" # 현재는 이 주소만 정의됨
+        self.environment_flags_url = f"{self.api_url}sdk/init" # 현재는 이 주소만 정의됨 - 현재 환경의 모든 플래그 가져오기
         self.identity_flags_url = f"{self.api_url}identity"
 
-        self.flags = None
-        self.userkey = None
+        self.user_key = None
 
-        # 모든 플래그 가져오기
+        # 모든 플래그 가져오기 -> self.flags에 값 할당
         self._initialize_environment(environment_key)
         # userkey 받아오기
-        self.userkey = self._get_userkey(environment_key)
+        self.user_key = self._get_user_key(environment_key)
         # 받아온 userkey로 SSE 구독하기
-        self.initialize_sse_stream_manager()
+        self.initialize_sse_stream_manager(self.user_key)
 
-
-    def initialize_sse_stream_manager(self):
-        self.stream_manager = StreamManager(
-            stream_url=self.sse_realtime_api_url,
+    def initialize_sse_stream_manager(self, user_key):
+        stream_manager = StreamManager(
+            stream_url=self.sse_realtime_api_url + "/" + user_key,
             on_event=self.handle_event,
+            # lightswitch=self,
             request_timeout_seconds=self.request_timeout_seconds,
         )
-        self.stream_manager.start()
+        stream_manager.start()
 
     # sdk 키로 subscribe post 해서 userkey 받기
-    def _get_userkey(self):
+    def _get_user_key(self, environment_key):
         headers={
             'Content-Type': 'application/json',
         }
         payload={
-            'sdkKey': 'SDK_KEY'
+            'sdkKey': environment_key
         }
         response = self.session.post(
             url=self.sse_realtime_api_url,
@@ -113,35 +116,80 @@ class Lightswitch:
             raise Exception(f"userKey를 받아오는 데 실패했습니다. 상태 코드: {response.status_code}")
 
     def _initialize_environment(self, environment_key: typing.Optional[str]) -> None:
-        self.flags = self._get_all_environment_flags_from_api()
+        Lightswitch.flags = self._get_all_environment_flags_from_api(environment_key)
 
     # 새로운 SSE event를 받았을 때 EventStreamManager 스레드에 의해 호출되는 메서드
+    # SSE 응답을 매개변수로 받아 이벤트 타입에 따라 플래그 목록을 동기화
+    # response 형식은 다음과 같음
+    '''
+    {
+      "userKey": "string",
+      "type": "CREATE",
+      "data": {}
+    }
+    '''
     def process_stream_event_update(self, event: StreamEvent) -> None:
         try:
             new_stream_event = json.loads(event.data)
+            print("new_stream_event : ", new_stream_event)
+            event_type = new_stream_event.get('type')  # 예를 들어 CREATE
+            print("event-type : ", event_type)
+            new_flag_data = new_stream_event['data']
+            print("new_flag_data : ", new_flag_data)
+
+            if event_type == "CREATE":
+                new_flag = Flag.flag_from_api(new_flag_data)
+                self.add_flag(new_flag)
+
+            elif event_type == "UPDATE":
+                new_flag = Flag.flag_from_api(new_flag_data)
+                title = new_flag.title
+                self.update_flag(title, new_flag)
+
+            elif event_type == "SWITCH":
+                self.toggle_flag(new_flag_data['title'])
+            else: # DELETE
+                self.delete_flag(new_flag_data['title'])
+
         except json.JSONDecodeError as e:
             raise StreamDataError("new_stream_event로부터 유효한 json 데이터를 가져오는데 실패하였습니다.") from e
 
-        try:
-            stream_updated_at = datetime.fromtimestamp(new_stream_event.get("updated_at"), timezone.utc)
-        except TypeError as e:
-            raise StreamDataError("new_stream_event로부터 유효한 타임스탬프를 가져오지 못했습니다.")
+        # try:
+        #     stream_updated_at = datetime.fromtimestamp(new_stream_event.get("updated_at"), timezone.utc)
+        # except TypeError as e:
+        #     raise StreamDataError("new_stream_event로부터 유효한 타임스탬프를 가져오지 못했습니다.")
+        #
+        # if stream_updated_at.tzinfo is None:
+        #     stream_updated_at = stream_updated_at.astimezone(timezone.utc)
 
-        if stream_updated_at.tzinfo is None:
-            stream_updated_at = stream_updated_at.astimezone(timezone.utc)
+        # if not self._environment:
+        #     raise ValueError("환경에 접근할 수 없습니다. 환경 속성값이 null일 수 없습니다.")
 
-        if not self._environment:
-            raise ValueError("환경에 접근할 수 없습니다. 환경 속성값이 null일 수 없습니다.")
+        # environment_updated_at = self._environment.updated_at
+        # if environment_updated_at.tzinfo is None:
+        #     environment_updated_at = environment_updated_at.astimezone(timezone.utc)
+        # if stream_updated_at > environment_updated_at:
+        #     self.update_environment()
 
-        environment_updated_at = self._environment.updated_at
-        if environment_updated_at.tzinfo is None:
-            environment_updated_at = environment_updated_at.astimezone(timezone.utc)
-        if stream_updated_at > environment_updated_at:
-            self.update_environment()
+    def add_flag(self, new_flag : Flag):
+        # flag_title = new_flag.get_attribute_value('title')
+        if self.flags is None:  # Check if _flags is empty
+            self.flags = Flags()
+        # self._flags[flag_title] = new_flag
+        # _flags에 플래그 추가
+        self.flags.add_flag(new_flag)
 
+    def update_flag(self, title, new_data):
+        self.flags.update_flag_value(title, new_data)
+
+    def delete_flag(self, title):
+        self.flags.delete_flag_by_name(title)
+
+    def toggle_flag(self, title):  # 플래그 활성화 상태 변경
+        self.flags.toggle_flag_activation(title)
     # 현재 환경의 플래그 데이터를 모두 담고 있는 Flags 인스턴스 반환
-    def get_all_environment_flags(self) -> Flags:
-        return self._get_all_environment_flags_from_api()
+    # def get_all_environment_flags(self) -> Flags:
+    #     return self._get_all_environment_flags_from_api()
 
     def get_flags_for_identity(
         self,
@@ -169,14 +217,15 @@ class Lightswitch:
         return environment_data # 나중에 응답 데이터 유효성 검사 로직 추가
 
     # 해당 환경의 플래그 데이터 모두 가져오기
-    def _get_all_environment_flags_from_api(self) -> Flags:
+    def _get_all_environment_flags_from_api(self, environment_key) -> Flags:
         try:
             data = {
-                "sdkKey": ""
+                "sdkKey": environment_key
             }
             json_response: typing.List[typing.Mapping[str, JsonType]] = (
-                self._get_json_response(url=self.environment_flags_url, method="POST", body=data)
+                self._get_json_response(url=self.environment_flags_url, method="POST", body=data)['data']
             )
+            print("json res: ", json_response)
             return Flags.flags_from_api(
                 flags_data=json_response
             )
@@ -231,6 +280,7 @@ class Lightswitch:
             return response.json()
         except (requests.ConnectionError, json.JSONDecodeError) as e:
             raise InvalidJsonResponseError("Lightswitch API로부터 유효한 response를 받지 못하였습니다.") from e
+
 
 
 
