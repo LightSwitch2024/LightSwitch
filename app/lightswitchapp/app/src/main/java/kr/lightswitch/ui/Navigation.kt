@@ -40,7 +40,7 @@ import kr.lightswitch.ui.login.LoginViewModel
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Navigation(isLogin: StateFlow<Boolean>, isLoginFetchFlag: StateFlow<Boolean>) {
+fun Navigation() {
     val navController = rememberNavController()
     val (navTitleState, setNavTitleState) = remember {
         mutableStateOf("")
