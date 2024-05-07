@@ -60,7 +60,13 @@ fun Navigation(modifier: Modifier = Modifier) {
     }
 
     BackOnPressed()
-    Scaffold(topBar = { CenterAlignedTopAppBar(title = { Text(text = navTitleState, style = MaterialTheme.typography.titleLarge) })
+    Scaffold(topBar = {
+        CenterAlignedTopAppBar(title = {
+            Text(
+                text = navTitleState,
+                style = MaterialTheme.typography.titleLarge
+            )
+        })
     }) {
         Column(modifier = Modifier.padding(it)) {
             NavHost(navController = navController, startDestination = NavScreen.Login.route) {
@@ -74,7 +80,12 @@ fun Navigation(modifier: Modifier = Modifier) {
                     route = NavScreen.Flags.route,
                 ) { backStackEntry ->
                     val flagViewModel: FlagViewModel = hiltViewModel()
-                    FlagScreen(flagViewModel = flagViewModel)
+                    val loginViewModel: LoginViewModel = hiltViewModel()
+                    FlagScreen(
+                        flagViewModel = flagViewModel,
+                        loginViewModel = loginViewModel,
+                        navController = navController
+                    )
                 }
             }
         }
@@ -88,7 +99,7 @@ fun BackOnPressed() {
     var backPressedState by remember { mutableStateOf(true) }
     var backPressedTime = 0L
     BackHandler(enabled = backPressedState) {
-        if(System.currentTimeMillis() - backPressedTime <= 400L) {
+        if (System.currentTimeMillis() - backPressedTime <= 400L) {
             // 앱 종료
             (context as Activity).finish()
         } else {
