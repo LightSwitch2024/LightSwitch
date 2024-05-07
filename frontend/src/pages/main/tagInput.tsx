@@ -9,7 +9,8 @@ const TagsInput = styled.div`
   align-items: flex-start;
   flex-wrap: wrap;
   min-height: 20px;
-  width: 480px;
+  max-width: 400px;
+  min-width: 250px;
   padding: 0 8px;
   border: 1px solid rgb(1, 186, 138);
   border-radius: 6px;
@@ -19,34 +20,6 @@ const TagsInput = styled.div`
     flex-wrap: wrap;
     padding: 0;
     margin: 8px 0 0 0;
-
-    > .tag {
-      width: auto;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: rgb(1, 186, 138);
-      padding: 0 8px;
-      font-size: 14px;
-      list-style: none;
-      border-radius: 15px;
-      margin: 0 8px 8px 0;
-      background: rgb(242, 243, 244);
-
-      > .tag-close-icon {
-        display: block;
-        width: 16px;
-        height: 16px;
-        text-align: center;
-        font-size: 14px;
-        margin-left: 8px;
-        color: rgb(1, 186, 138);
-        border-radius: 50%;
-        background: #fff;
-        cursor: pointer;
-      }
-    }
   }
 
   > input {
@@ -56,7 +29,7 @@ const TagsInput = styled.div`
     font-size: 14px;
     padding: 4px 0 0 0;
     :focus {
-      outline: transparent;
+      //outline: transparent;
     }
   }
 
@@ -65,12 +38,52 @@ const TagsInput = styled.div`
   }
 `;
 
+const TagItem = styled.li<{ bgColor: string }>`
+  background-color: ${(props) => props.bgColor};
+  border: 1px solid #aaa;
+  display: flex;
+  align-items: center;
+  width: auto;
+  height: 32px;
+  justify-content: center;
+  color: rgb(1, 186, 138);
+  padding: 0 8px;
+  font-size: 14px;
+  list-style: none;
+  border-radius: 15px;
+  margin: 0 8px 8px 0;
+`;
+
+const TagContent = styled.span<{ textColor: string; color: string }>`
+  background-color: ${({ color }) => color};
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.5rem;
+  color: ${({ textColor }) => textColor};
+  margin-right: 0.5rem;
+  text-shadow: 0.1px 0.1px 0 #000, -0.1px -0.1px 0 #000, 0.1px -0.1px 0 #000,
+    -0.1px 0.1px 0 #000;
+`;
+
+export const TagCloseIcon = styled.span`
+  display: block;
+  width: 16px;
+  height: 16px;
+  text-align: center;
+  font-size: 14px;
+  margin-left: 8px;
+  color: rgb(1, 186, 138);
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+`;
+
 const DropdownContainer = styled.div`
   position: absolute;
   z-index: 1000;
   background-color: white;
   width: 100%;
-  max-height: 160px; // 약 5개 항목의 높이
+  max-height: 270px; // 약 5개 항목의 높이
+  max-width: 380px;
   overflow-y: auto; // 스크롤 활성화
 `;
 
@@ -129,11 +142,24 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
     if (!selectedTags.includes(tag)) {
       setSelectedTags([...selectedTags, tag]);
     }
-    setShowDropdown(false);
+    // setShowDropdown(false);
   };
 
   const removeTag = (tagToRemove: Tag) => {
     setSelectedTags(selectedTags.filter((tag) => tag !== tagToRemove));
+  };
+
+  const getContrastColor = (hex: string) => {
+    // HEX 코드에서 RGB 값을 추출
+    const r = parseInt(hex.substr(1, 2), 16);
+    const g = parseInt(hex.substr(3, 2), 16);
+    const b = parseInt(hex.substr(5, 2), 16);
+
+    // 밝기 계산 공식
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+
+    // 밝기가 128보다 크면 검은색, 그렇지 않으면 흰색 반환
+    return brightness > 200 ? '#000' : '#FFF';
   };
 
   return (
@@ -141,12 +167,16 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
       <TagsInput>
         <ul id="tags">
           {selectedTags.map((tag, index) => (
-            <li className="tag" key={index}>
-              <span>{tag.content}</span>
-              <span className="tag-close-icon" onClick={() => removeTag(tag)}>
-                &times;
-              </span>
-            </li>
+            <TagItem key={index} bgColor={tag.colorHex}>
+              <TagContent
+                key={tag.content}
+                color={tag.colorHex}
+                textColor={getContrastColor(tag.colorHex)}
+              >
+                {tag.content}
+              </TagContent>
+              <TagCloseIcon onClick={() => removeTag(tag)}>&times;</TagCloseIcon>
+            </TagItem>
           ))}
         </ul>
         <input
@@ -154,6 +184,7 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
           type="text"
           onChange={handleInputChange}
           onFocus={onFocus}
+          onBlur={() => setShowDropdown(false)}
           placeholder="Search and select tags"
         />
       </TagsInput>
@@ -162,10 +193,27 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
           {filteredTags.map((tag, index) => (
             <div
               key={index}
-              style={{ padding: '10px', cursor: 'pointer' }}
-              onClick={() => selectTag(tag)}
+              style={{
+                width: '100%',
+                padding: '5px',
+                cursor: 'pointer',
+                border: '1px solid #AAA',
+              }}
+              onClick={() => {
+                selectTag(tag);
+                // setShowDropdown(false); // 태그 선택 후 드롭다운 닫기
+              }}
+              onMouseDown={(e) => e.preventDefault()}
             >
-              {tag.content}
+              <TagItem key={index} bgColor={tag.colorHex}>
+                <TagContent
+                  key={tag.content}
+                  color={tag.colorHex}
+                  textColor={getContrastColor(tag.colorHex)}
+                >
+                  {tag.content}
+                </TagContent>
+              </TagItem>
             </div>
           ))}
         </DropdownContainer>
