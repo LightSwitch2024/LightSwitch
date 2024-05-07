@@ -1,4 +1,10 @@
+import TextField from '@mui/material/TextField';
 import styled from 'styled-components';
+
+export const LayOut = styled.div`
+  // justify-content: center;
+  padding: 7rem 0 2rem 0;
+`;
 
 export const ModalBackground = styled.div`
   display: flex;
@@ -38,7 +44,7 @@ export const DetailLayout = styled.div`
 
 export const ModalInputForm = styled.div`
   color: #fff;
-  width: 60%;
+  width: 70%;
   height: 90%;
   background-color: #fff;
 
@@ -49,9 +55,8 @@ export const ModalInputForm = styled.div`
   font-weight: 800;
 
   display: flex;
-  padding: 1.25rem;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.9375rem;
   flex-shrink: 0;
 `;
@@ -67,17 +72,16 @@ export const FlagTitleAndTagsLayer = styled.div`
 
 export const FlagTitleInputContainer = styled.div`
   display: flex;
+  flex-direction: column;
   height: 6.0625rem;
   background-color: #bdbdbd;
 
-  padding: 0rem 0.625rem;
-  align-items: center;
+  padding: 1rem 0.625rem 0.625rem 0;
   gap: 0.625rem;
   flex-shrink: 0;
   align-self: stretch;
 
   border-radius: 0.625rem;
-  border: 1px solid #000;
   background: #fff;
 `;
 
@@ -121,26 +125,27 @@ export const WarnText = styled.div`
 
 export const FlagTagsInputContainer = styled.div`
   display: flex;
-  padding: 0.5rem 0.625rem;
-  align-items: center;
   gap: 0.625rem;
-  flex: 1 0 0;
   align-self: stretch;
 `;
 
 export const FlagTagsInputLabel = styled.div`
   display: flex;
-  align-items: center;
+  margin: 2rem 0 2rem 0;
   gap: 0.3125rem;
+  & > svg {
+    width: 2rem;
+    fill: #000;
+  }
 `;
 
-export const LabelTextContainer = styled.div`
+export const LabelTitleContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 0.625rem;
 `;
 
-export const LabelText = styled.div`
+export const TitleText = styled.div`
   color: #000;
   font-family: Pretendard;
   font-size: 3.125rem;
@@ -149,25 +154,51 @@ export const LabelText = styled.div`
   line-height: normal;
 `;
 
+export const LabelText = styled.div`
+  color: #000;
+  font-family: Pretendard;
+  font-size: 2rem;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
+`;
+
+export const LabelTextContainer = styled.div`
+  display: flex;
+  align-item: center;
+  gap: 0.625rem;
+`;
+
 export const FlagDescriptionLabel = styled.div`
   display: flex;
-  padding: 0.5rem 0.625rem;
-  align-items: center;
+  align-item: center;
   gap: 0.625rem;
-  flex: 1 0 0;
-  align-self: stretch;
 `;
 
 export const FlagDescriptionContainer = styled.div`
   display: flex;
-  align-items: center;
-  gap: 0.3125rem;
 `;
 
 export const FlagDescriptionIconContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 0.625rem;
+
+  & > svg {
+    width: 2rem;
+    fill: #000;
+  }
+`;
+
+export const TagIconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+
+  & > svg {
+    width: 2rem;
+    fill: #000;
+  }
 `;
 
 export const FlagDescriptionTextContainer = styled.div`
@@ -178,6 +209,7 @@ export const FlagDescriptionTextContainer = styled.div`
 
 export const FlagDescriptionTextArea = styled.textarea<{ $flag: boolean }>`
   display: flex;
+  width: 50rem;
   height: 10.3125rem;
   padding: 0.625rem;
   align-items: flex-start;
@@ -206,7 +238,7 @@ export const FlagDescriptionTextArea = styled.textarea<{ $flag: boolean }>`
 
 export const FlagTypeLayer = styled.div`
   display: flex;
-  padding: 0.5rem 0.625rem;
+  padding: 0.5rem 0 0.625rem 0;
   align-items: center;
   gap: 1.25rem;
   flex: 1 0 0;
@@ -223,6 +255,10 @@ export const FlagTypeIconContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 0.625rem;
+  & > svg {
+    width: 2rem;
+    fill: #000;
+  }
 `;
 
 export const FlagTypeLabelTextContainer = styled.div`
@@ -304,6 +340,10 @@ export const FlagVariationIconContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 0.625rem;
+  & > svg {
+    width: 2rem;
+    fill: #000;
+  }
 `;
 
 export const FlagVariationLabelTextContainer = styled.div`
@@ -463,4 +503,28 @@ export const FlagTypeContentContainerUnchecked = styled.div`
   align-self: stretch;
 
   border-radius: 0.625rem;
+`;
+
+export const CustomTextField = styled(TextField)<{ $flag: boolean }>`
+  & .MuiInputBase-input::placeholder {
+    font-size: 1.8rem; // 플레이스홀더의 글씨 크기
+  }
+  & .MuiInputBase-input {
+    height: 50px;
+    font-weight: 600; // 입력 필드의 글씨 굵기
+    line-height: 50px; // 입력 필드의 라인 높이
+    border-radius: 10px;
+    font-size: 1.8rem;
+    color: #545454;
+  }
+  & .MuiOutlinedInput-root {
+    border-radius: 15px; // 입력 필드 전체의 테두리 반경 조정
+    display: flex;
+  }
+  ${(props) =>
+    props.$flag &&
+    `
+    background-color: #f2f2f2;
+    pointer-events: none;
+  `}
 `;

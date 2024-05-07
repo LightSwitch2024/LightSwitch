@@ -1,10 +1,13 @@
-import Bookmark from '@assets/bookmark.svg?react';
-import CallSplit from '@assets/call-split.svg?react';
-import Description from '@assets/description.svg?react';
+import BlackFlag from '@assets/blackFlag.svg?react';
+import Bookmark from '@assets/bookmark1.svg?react';
+import CallSplit from '@assets/call-split1.svg?react';
+import Description from '@assets/description1.svg?react';
 import Edit from '@assets/edit.svg?react';
 import Loop from '@assets/loop.svg?react';
 import OutlinedFlagBig from '@assets/outlined-flag-big.svg?react';
 import * as S from '@components/createModal/indexStyle';
+import InputAdornment from '@mui/material/InputAdornment';
+import TextField from '@mui/material/TextField';
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -583,7 +586,46 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
 
   const renderTotalForm = () => {
     return (
-      <>
+      <S.LayOut>
+        <S.LabelTitleContainer>
+          <S.TitleText>새 플래그 생성하기</S.TitleText>
+        </S.LabelTitleContainer>
+        <S.FlagTitleInputContainer>
+          <S.LabelTextContainer>
+            <S.FlagDescriptionIconContainer>
+              <BlackFlag />
+            </S.FlagDescriptionIconContainer>
+            <S.LabelText>플래그 이름</S.LabelText>
+          </S.LabelTextContainer>
+          <S.CustomTextField
+            placeholder="ex. 사진 크기 ..."
+            variant="outlined"
+            value={title}
+            onChange={handleTitleChange}
+            onBlur={checkDuplicatedTitle}
+            $flag={isDetailMode()}
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <OutlinedFlagBig />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </S.FlagTitleInputContainer>
+        {isDuplicatedTitle && <S.WarnText>중복된 플래그 이름이 존재합니다.</S.WarnText>}
+        <S.FlagTagsInputContainer>
+          <S.FlagTagsInputLabel>
+            <S.LabelTextContainer>
+              <S.TagIconContainer>
+                <Bookmark />
+              </S.TagIconContainer>
+              <S.LabelText>태그</S.LabelText>
+            </S.LabelTextContainer>
+          </S.FlagTagsInputLabel>
+        </S.FlagTagsInputContainer>
+        {/* 
         <S.FlagTitleAndTagsLayer>
           <S.FlagTitleInputContainer>
             <S.FlagTitleIconContainer>
@@ -603,9 +645,9 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
               <Bookmark />
               <S.LabelTextContainer>
                 <S.LabelText>태그</S.LabelText>
-              </S.LabelTextContainer>
+              </S.LabelTextContainer> */}
 
-              {/* 
+        {/* 
                 <div>
                   <input
                     type="description"
@@ -659,19 +701,15 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
                   </div>
                 </div> 
                 */}
-            </S.FlagTagsInputLabel>
+        {/* </S.FlagTagsInputLabel>
           </S.FlagTagsInputContainer>
-        </S.FlagTitleAndTagsLayer>
-        <S.FlagDescriptionLabel>
-          <S.FlagDescriptionContainer>
-            <S.FlagDescriptionIconContainer>
-              <Description />
-            </S.FlagDescriptionIconContainer>
-            <S.FlagDescriptionTextContainer>
-              <S.LabelText>설명</S.LabelText>
-            </S.FlagDescriptionTextContainer>
-          </S.FlagDescriptionContainer>
-        </S.FlagDescriptionLabel>
+        </S.FlagTitleAndTagsLayer> */}
+        <S.FlagDescriptionTextContainer>
+          <S.FlagDescriptionIconContainer>
+            <Description />
+          </S.FlagDescriptionIconContainer>
+          <S.LabelText>설명</S.LabelText>
+        </S.FlagDescriptionTextContainer>
         <S.FlagDescriptionTextArea
           placeholder="설명"
           value={description}
@@ -681,14 +719,20 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
           $flag={isDetailMode()}
         />
         <S.FlagTypeLayer>
-          <S.FlagTypeLabel>
+          {/* <S.FlagTypeLabel>
             <S.FlagTypeIconContainer>
               <CallSplit />
             </S.FlagTypeIconContainer>
             <S.FlagTypeLabelTextContainer>
               <S.LabelText>변수 타입</S.LabelText>
             </S.FlagTypeLabelTextContainer>
-          </S.FlagTypeLabel>
+          </S.FlagTypeLabel> */}
+          <S.FlagDescriptionTextContainer>
+            <S.FlagDescriptionIconContainer>
+              <CallSplit />
+            </S.FlagDescriptionIconContainer>
+            <S.LabelText>변수 타입</S.LabelText>
+          </S.FlagDescriptionTextContainer>
           <S.FlagTypeContainer onClick={onClickTypeEdit} $flag={isDetailMode()}>
             <S.FlagTypeContentContainer>
               <S.FlagTypeTextContainer>
@@ -792,7 +836,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
             </S.ConfirmButton>
           ) : null}
         </S.ButtonLayer>
-      </>
+      </S.LayOut>
     );
   };
 
