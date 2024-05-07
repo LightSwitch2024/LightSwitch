@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +29,7 @@ class LoginViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _loginResponse = MutableStateFlow<LoginResponse?>(null)
-    val loginState: StateFlow<LoginResponse?> = _loginResponse
+    val loginResponse: StateFlow<LoginResponse?> = _loginResponse
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
@@ -53,6 +54,7 @@ class LoginViewModel @Inject constructor(
 
     fun logout() {
         viewModelScope.launch {
+            _loginResponse.value = null
             LightSwitchApplication.getInstance().getDataStore().removeLoginData()
         }
     }

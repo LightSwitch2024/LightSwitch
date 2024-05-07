@@ -28,6 +28,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.StateFlow
 import kr.lightswitch.ui.flag.FlagScreen
 import kr.lightswitch.ui.flag.FlagViewModel
 import kr.lightswitch.ui.theme.pretendard
@@ -38,10 +40,10 @@ import kr.lightswitch.ui.login.LoginViewModel
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Navigation(modifier: Modifier = Modifier) {
+fun Navigation(isLogin: StateFlow<Boolean>, isLoginFetchFlag: StateFlow<Boolean>) {
     val navController = rememberNavController()
     val (navTitleState, setNavTitleState) = remember {
-        mutableStateOf("로그인")
+        mutableStateOf("")
     }
 
     navController.addOnDestinationChangedListener { // 라우팅 발생 시 마다 호출되도록
@@ -56,6 +58,11 @@ fun Navigation(modifier: Modifier = Modifier) {
                 Timber.d("flags")
                 setNavTitleState("플래그 관리")
             }
+
+            NavScreen.Main.route -> {
+                Timber.d("Main")
+                setNavTitleState("")
+            }
         }
     }
 
@@ -69,12 +76,25 @@ fun Navigation(modifier: Modifier = Modifier) {
         })
     }) {
         Column(modifier = Modifier.padding(it)) {
-            NavHost(navController = navController, startDestination = NavScreen.Login.route) {
+            NavHost(navController = navController, startDestination = NavScreen.Main.route) {
+                composable(
+                    route = NavScreen.Main.route,
+                ) {
+                    val mainViewModel: MainViewModel = hiltViewModel()
+                    MainScreen(
+                        mainViewModel = mainViewModel,
+                        navController = navController
+                    )
+                }
+
                 composable(
                     route = NavScreen.Login.route,
                 ) { backStackEntry ->
                     val loginViewModel: LoginViewModel = hiltViewModel()
-                    LoginScreen(loginViewModel = loginViewModel, navController = navController)
+                    LoginScreen(
+                        loginViewModel = loginViewModel,
+                        navController = navController,
+                    )
                 }
                 composable(
                     route = NavScreen.Flags.route,
@@ -116,4 +136,6 @@ sealed class NavScreen(val route: String) {
     object Login : NavScreen("Login")
 
     object Flags : NavScreen("Flags")
+
+    object Main : NavScreen("Main")
 }
