@@ -6,6 +6,7 @@ import Edit from '@assets/edit.svg?react';
 import Loop from '@assets/loop.svg?react';
 import OutlinedFlagBig from '@assets/outlined-flag-big.svg?react';
 import * as S from '@components/updateModal/indexStyle';
+import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 
 import { FlagVariationDivisionLine } from '../createModal/indexStyle';
@@ -397,13 +398,13 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
 
     console.log(editedFlagInfo);
 
-    updateFlag(
+    updateFlag<FlagDetailItem>(
       props.flagDetail?.flagId,
       editedFlagInfo,
-      (data) => {
+      (data: FlagDetailItem) => {
         console.log(data);
       },
-      (err) => {
+      (err: AxiosError) => {
         console.log(err);
       },
     );
@@ -414,13 +415,13 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
 
     console.log(editedVariationInfo);
 
-    updateVariations(
+    updateVariations<FlagDetailItem>(
       props.flagDetail?.flagId,
       editedVariationInfo,
-      (data) => {
+      (data: FlagDetailItem) => {
         console.log(data);
       },
-      (err) => {
+      (err: AxiosError) => {
         console.log(err);
       },
     );
@@ -429,13 +430,13 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
   const onClickSaveKeywordInfo = () => {
     // 수정된게 없으면 return
 
-    updateKeywords(
+    updateKeywords<FlagDetailItem>(
       props.flagDetail?.flagId,
       editedKeywordInfo,
-      (data) => {
+      (data: FlagDetailItem) => {
         console.log(data);
       },
-      (err) => {
+      (err: AxiosError) => {
         console.log(err);
       },
     );
