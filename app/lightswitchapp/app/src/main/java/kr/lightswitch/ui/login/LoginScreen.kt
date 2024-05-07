@@ -33,14 +33,14 @@ import timber.log.Timber
 @Composable
 fun LoginScreen(
     loginViewModel: LoginViewModel,
-    navController: NavController,
 ) {
 
     val loginResponse = loginViewModel.loginResponse.collectAsStateWithLifecycle().value
 
     LaunchedEffect(loginResponse) {
         if(loginResponse != null) {
-            navController.navigate(NavScreen.Flags.route)
+//            navController.popBackStack()
+//            navController.navigate(NavScreen.Flags.route)
         }
     }
 
@@ -94,7 +94,7 @@ fun LoginPage(loginViewModel: LoginViewModel) {
 
         Button(
             onClick = {
-                loginViewModel.login(emailState.value, passwordState.value)
+                loginViewModel.handleLogin(emailState.value, passwordState.value)
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF00C9EA),
