@@ -5,18 +5,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import kr.lightswitch.ui.login.LoginPage
+import kr.lightswitch.ui.login.LoginViewModel
 
 @Composable
-fun MainScreen(mainViewModel: MainViewModel,
-               onBtnClick: () -> Unit,
-               onLoginBtnClick: () -> Unit) {
-    Column (modifier = Modifier.fillMaxSize()){
-        Button(onClick = onBtnClick) {
-            Text(text = "테스트 버튼 입니다. Flag Screen으로 이동합니다.")
-        }
-        Button(onClick = onLoginBtnClick) {
-            Text(text = "테스트 버튼2 입니다. Login Screen으로 이동합니다.")
-        }
-    }
+fun MainScreen(
+) {
+
 }

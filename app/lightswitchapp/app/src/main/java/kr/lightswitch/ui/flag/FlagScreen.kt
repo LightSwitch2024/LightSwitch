@@ -23,6 +23,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -76,8 +77,8 @@ fun FlagScreen(
 
     fun goLogin() {
         loginViewModel.logout()
-        navController.popBackStack()
-        navController.navigate(NavScreen.Login.route)
+//        navController.popBackStack()
+//        navController.navigate(NavScreen.Login.route)
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -99,7 +100,12 @@ fun ErrorPage(error: Throwable) {
 
 @Composable
 fun LoadingPage() {
-    Text("로딩 페이지 표시")
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)

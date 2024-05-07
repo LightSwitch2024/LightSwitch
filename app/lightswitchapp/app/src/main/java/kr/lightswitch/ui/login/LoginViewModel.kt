@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,18 +20,19 @@ import kotlinx.coroutines.withContext
 import kr.lightswitch.LightSwitchApplication
 import kr.lightswitch.model.response.LoginResponse
 import kr.lightswitch.network.LightSwitchRepository
+import kr.lightswitch.ui.MainViewModel
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val lightSwitchRepository: LightSwitchRepository,
-) : ViewModel() {
+) : MainViewModel() {
 
     private val _loginResponse = MutableStateFlow<LoginResponse?>(null)
-    val loginState: StateFlow<LoginResponse?> = _loginResponse
+    val loginResponse: StateFlow<LoginResponse?> = _loginResponse
 
-    fun login(email: String, password: String) {
+    fun handleLogin(email: String, password: String) {
         viewModelScope.launch {
             lightSwitchRepository.login(
                 email = email,
@@ -46,14 +48,13 @@ class LoginViewModel @Inject constructor(
                 }
             ).collect {
                 _loginResponse.value = it.data
-                LightSwitchApplication.getInstance().getDataStore().saveLoginData(it.data)
+                super.login(it.data)
             }
         }
     }
 
-    fun logout() {
-        viewModelScope.launch {
-            LightSwitchApplication.getInstance().getDataStore().removeLoginData()
-        }
+    override fun logout() {
+        _loginResponse.value = null
+        super.logout()
     }
 }
