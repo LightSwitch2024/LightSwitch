@@ -121,12 +121,20 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
   };
 
   const handleChangeDefaultValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value;
+    if (editedVariationInfo.type === 'BOOLEAN') {
+      value = e.target.value.toUpperCase();
+    } else if (
+      editedVariationInfo.type === 'INTEGER' &&
+      isNaN(Number(e.target.value.at(-1)))
+    ) {
+      value = e.target.value.slice(0, -1);
+    }
+
     setEditedVariationInfo({
       ...editedVariationInfo,
-      defaultValue: e.target.value,
+      defaultValue: value,
     });
-
-    console.log(editedVariationInfo.defaultValue);
   };
 
   const handleChangeDefaultPortion = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -149,11 +157,21 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
 
   const handleChangeVariationValue =
     (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      let value = e.target.value;
+      if (editedVariationInfo.type === 'BOOLEAN') {
+        value = e.target.value.toUpperCase();
+      } else if (
+        editedVariationInfo.type === 'INTEGER' &&
+        isNaN(Number(e.target.value.at(-1)))
+      ) {
+        value = e.target.value.slice(0, -1);
+      }
+
       const newVariations = editedVariationInfo.variations.map((variation, i) => {
         if (i === index) {
           return {
             ...variation,
-            value: e.target.value,
+            value: value,
           };
         }
         return variation;
@@ -211,6 +229,15 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
 
       console.log(editedVariationInfo.variations);
     };
+
+  const handleChangeType = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setEditedVariationInfo({
+      ...editedVariationInfo,
+      type: e.target.value,
+    });
+
+    console.log(editedVariationInfo.type);
+  };
 
   const handleChangeKeywordDescription =
     (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -433,14 +460,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
 
   // 저장하기 & 취소하기 버튼 클릭 이벤트 (axios 함수 호출)
   const onClickSaveFlagInfo = () => {
-    // 수정된게 없으면 return
-    if (
-      editedFlagInfo.title === props.flagDetail.title &&
-      editedFlagInfo.description === props.flagDetail.description
-    ) {
-      return;
-    }
-
     // 유효성 검사
     setIsDuplicatedTitle(false);
     setIsInvalidBooleanVariation(false);
@@ -466,15 +485,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
   };
 
   const onClickSaveVariationInfo = () => {
-    // 수정된게 없으면 return
-    if (
-      editedVariationInfo.defaultValue === props.flagDetail.defaultValue &&
-      editedVariationInfo.defaultPortion === props.flagDetail.defaultPortion &&
-      editedVariationInfo.defaultDescription === props.flagDetail.defaultDescription
-    ) {
-      return;
-    }
-
     // 유효성 검사
     setIsDuplicatedTitle(false);
     setIsInvalidBooleanVariation(false);
@@ -523,6 +533,10 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       }
     });
 
+    if (isBlankData) return;
+    if (isWrongType) return;
+    if (isInvalidBooleanVariation) return;
+
     updateVariations<FlagDetailItem>(
       props.flagDetail?.flagId,
       editedVariationInfo,
@@ -541,11 +555,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
   };
 
   const onClickSaveKeywordInfo = () => {
-    // 수정된게 없으면 return
-    if (editedKeywordInfo.keywords === props.flagDetail.keywords) {
-      return;
-    }
-
     // 유효성 검사
     // variation type이 BOOLEAN일 경우 value는 TRUE, FALSE만 유효
     setIsDuplicatedTitle(false);
@@ -768,7 +777,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       return (
         <>
           <div>
-            <select value={editedVariationInfo.type}>
+            <select value={editedVariationInfo.type} onChange={handleChangeType}>
               <option value={'BOOLEAN'}>boolean</option>
               <option value={'INTEGER'}>Integer</option>
               <option value={'STRING'}>String</option>
