@@ -97,6 +97,10 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
 
   const [selectedTab, setSelectedTab] = useState<number>(0);
   const [isDuplicatedTitle, setIsDuplicatedTitle] = useState<boolean>(false);
+  const [isInvalidBooleanVariation, setIsInvalidBooleanVariation] =
+    useState<boolean>(false);
+  const [isBlankData, setIsBlankData] = useState<boolean>(false);
+  const [isWrongType, setIsWrongType] = useState<boolean>(false);
 
   const handelChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEditedflagInfo({
@@ -165,6 +169,11 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
 
   const handleChangeVariaionPortion =
     (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      // 맨 앞에 0이 들어가면 0을 제거
+      if (e.target.value[0] === '0') {
+        e.target.value = e.target.value.slice(1);
+      }
+
       const newVariations = editedVariationInfo.variations.map((variation, i) => {
         if (i === index) {
           return {
@@ -311,11 +320,36 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
 
   const addVariation = () => {
     // 빈 variation 추가
+
+    // type이 BOOLEAN일 경우 value는 true, false로 고정
+    if (
+      editedVariationInfo.type === 'BOOLEAN' &&
+      editedVariationInfo.variations.length >= 1
+    ) {
+      setIsInvalidBooleanVariation(true);
+      return;
+    } else {
+      setIsInvalidBooleanVariation(false);
+    }
+
+    if (editedVariationInfo.type === 'BOOLEAN') {
+      setEditedVariationInfo({
+        ...editedVariationInfo,
+        variations: editedVariationInfo.variations.concat({
+          value: editedVariationInfo.defaultValue === 'TRUE' ? 'FALSE' : 'TRUE',
+          portion: 0,
+          description: '',
+        }),
+      });
+
+      return;
+    }
+
     setEditedVariationInfo({
       ...editedVariationInfo,
       variations: editedVariationInfo.variations.concat({
         value: '',
-        portion: 0,
+        portion: '',
         description: '',
       }),
     });
@@ -400,14 +434,30 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
   // 저장하기 & 취소하기 버튼 클릭 이벤트 (axios 함수 호출)
   const onClickSaveFlagInfo = () => {
     // 수정된게 없으면 return
+    if (
+      editedFlagInfo.title === props.flagDetail.title &&
+      editedFlagInfo.description === props.flagDetail.description
+    ) {
+      return;
+    }
 
-    console.log(editedFlagInfo);
+    // 유효성 검사
+    setIsDuplicatedTitle(false);
+    setIsInvalidBooleanVariation(false);
+    setIsBlankData(false);
+    if (editedFlagInfo.title === '' || editedFlagInfo.description === '') {
+      setIsBlankData(true);
+      return;
+    }
 
     updateFlag<FlagDetailItem>(
       props.flagDetail?.flagId,
       editedFlagInfo,
       (data: FlagDetailItem) => {
         console.log(data);
+        // 수정된 flagDetail 업데이트
+        props.setFlagDetail(data);
+        setIsBlankData(false);
       },
       (err: AxiosError) => {
         console.log(err);
@@ -417,14 +467,72 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
 
   const onClickSaveVariationInfo = () => {
     // 수정된게 없으면 return
+    if (
+      editedVariationInfo.defaultValue === props.flagDetail.defaultValue &&
+      editedVariationInfo.defaultPortion === props.flagDetail.defaultPortion &&
+      editedVariationInfo.defaultDescription === props.flagDetail.defaultDescription
+    ) {
+      return;
+    }
 
-    console.log(editedVariationInfo);
+    // 유효성 검사
+    setIsDuplicatedTitle(false);
+    setIsInvalidBooleanVariation(false);
+    setIsBlankData(false);
+    if (editedVariationInfo.type === 'BOOLEAN') {
+      let isValid = true;
+
+      if (
+        editedVariationInfo.defaultValue !== 'TRUE' &&
+        editedVariationInfo.defaultValue !== 'FALSE'
+      ) {
+        isValid = false;
+      }
+
+      editedVariationInfo.variations.map((variation) => {
+        // BOOLEAN 타입은 TRUE, FALSE만 유효
+        if (variation.value !== 'TRUE' && variation.value !== 'FALSE') {
+          isValid = false;
+        }
+
+        // BOOLEAN 타입은 둘 다 TRUE이거나 둘 다 FALSE면 안됨
+        if (variation.value === editedVariationInfo.defaultValue) {
+          isValid = false;
+        }
+      });
+
+      if (!isValid) {
+        setIsInvalidBooleanVariation(true);
+        return;
+      }
+    }
+
+    if (editedVariationInfo.type === 'INTEGER') {
+      editedVariationInfo.variations.map((variation) => {
+        if (isNaN(Number(variation.value))) {
+          setIsWrongType(true);
+          return;
+        }
+      });
+    }
+
+    editedVariationInfo.variations.map((variation) => {
+      if (variation.value === '' || variation.portion === '') {
+        setIsBlankData(true);
+        return;
+      }
+    });
 
     updateVariations<FlagDetailItem>(
       props.flagDetail?.flagId,
       editedVariationInfo,
       (data: FlagDetailItem) => {
         console.log(data);
+        // 수정된 flagDetail 업데이트
+        props.setFlagDetail(data);
+        setIsInvalidBooleanVariation(false);
+        setIsWrongType(false);
+        setIsBlankData(false);
       },
       (err: AxiosError) => {
         console.log(err);
@@ -434,12 +542,47 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
 
   const onClickSaveKeywordInfo = () => {
     // 수정된게 없으면 return
+    if (editedKeywordInfo.keywords === props.flagDetail.keywords) {
+      return;
+    }
+
+    // 유효성 검사
+    // variation type이 BOOLEAN일 경우 value는 TRUE, FALSE만 유효
+    setIsDuplicatedTitle(false);
+    setIsInvalidBooleanVariation(false);
+    setIsBlankData(false);
+    editedKeywordInfo.keywords.map((keyword) => {
+      if (keyword.value === '') {
+        setIsBlankData(true);
+        return;
+      }
+
+      if (editedVariationInfo.type === 'BOOLEAN') {
+        if (keyword.value !== 'TRUE' && keyword.value !== 'FALSE') {
+          setIsInvalidBooleanVariation(true);
+          return;
+        }
+      }
+
+      if (editedVariationInfo.type === 'INTEGER') {
+        if (isNaN(Number(keyword.value))) {
+          setIsWrongType(true);
+          return;
+        }
+      }
+    });
 
     updateKeywords<FlagDetailItem>(
       props.flagDetail?.flagId,
       editedKeywordInfo,
       (data: FlagDetailItem) => {
         console.log(data);
+        // 수정된 flagDetail 업데이트
+        props.setFlagDetail(data);
+        // 경고 문구 초기화
+        setIsBlankData(false);
+        setIsDuplicatedTitle(false);
+        setIsInvalidBooleanVariation(false);
       },
       (err: AxiosError) => {
         console.log(err);
@@ -463,11 +606,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
 
     if (confirm) {
       // editedFlagInfo 초기화
-      setEditedflagInfo({
-        title: props.flagDetail.title,
-        tags: props.flagDetail.tags,
-        description: props.flagDetail.description,
-      });
+      initEditedData();
       props.closeUpdateModal();
     }
   };
@@ -489,13 +628,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
 
     if (confirm) {
       // editedVariationInfo 초기화
-      setEditedVariationInfo({
-        type: props.flagDetail.type,
-        defaultValue: props.flagDetail.defaultValue,
-        defaultPortion: props.flagDetail.defaultPortion,
-        defaultDescription: props.flagDetail.defaultDescription,
-        variations: props.flagDetail.variations,
-      });
+      initEditedData();
       props.closeUpdateModal();
     }
   };
@@ -513,39 +646,40 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
 
     if (confirm) {
       // editedKeywordInfo 초기화
-      setEditedKeywordInfo({
-        keywords: props.flagDetail.keywords,
-      });
+      initEditedData();
       props.closeUpdateModal();
     }
   };
 
   // 탭 이동함수 & 초기화
   const onClickTab = (select: number) => {
-    if (selectedTab === 0) {
-      setEditedflagInfo({
-        title: props.flagDetail.title,
-        tags: props.flagDetail.tags,
-        description: props.flagDetail.description,
-      });
-    }
-    if (selectedTab === 1) {
-      setEditedVariationInfo({
-        type: props.flagDetail.type,
-        defaultValue: props.flagDetail.defaultValue,
-        defaultPortion: props.flagDetail.defaultPortion,
-        defaultDescription: props.flagDetail.defaultDescription,
-        variations: props.flagDetail.variations,
-      });
-    }
-
-    if (selectedTab === 2) {
-      setEditedKeywordInfo({
-        keywords: props.flagDetail.keywords,
-      });
-    }
-
+    initEditedData();
     setSelectedTab(select);
+  };
+
+  const initEditedData = () => {
+    setEditedflagInfo({
+      title: props.flagDetail.title,
+      tags: props.flagDetail.tags,
+      description: props.flagDetail.description,
+    });
+
+    setEditedVariationInfo({
+      type: props.flagDetail.type,
+      defaultValue: props.flagDetail.defaultValue,
+      defaultPortion: props.flagDetail.defaultPortion,
+      defaultDescription: props.flagDetail.defaultDescription,
+      variations: props.flagDetail.variations,
+    });
+
+    setEditedKeywordInfo({
+      keywords: props.flagDetail.keywords,
+    });
+
+    // 초기화 하면서 경구 문구도 초기화
+    setIsDuplicatedTitle(false);
+    setIsInvalidBooleanVariation(false);
+    setIsBlankData(false);
   };
 
   // validation check
@@ -624,6 +758,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
           />
           <button onClick={onClickCancelFlagInfo}>취소하기</button>
           <button onClick={onClickSaveFlagInfo}>저장하기</button>
+          {isBlankData && <S.WarnText>필수 값이 비어있습니다.</S.WarnText>}
         </S.FlagEditForm>
       );
     }
@@ -682,6 +817,11 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
             <div>
               <button onClick={onClickCancelVariationInfo}>취소하기</button>
               <button onClick={onClickSaveVariationInfo}>저장하기</button>
+              {isInvalidBooleanVariation && (
+                <S.WarnText>BOOLEAN 타입은 TRUE 와 FALSE 값만 유효합니다.</S.WarnText>
+              )}
+              {isWrongType && <S.WarnText>INTEGER 타입은 숫자만 유효합니다.</S.WarnText>}
+              {isBlankData && <S.WarnText>필수 값이 비어있습니다.</S.WarnText>}
             </div>
           </div>
         </>
@@ -735,6 +875,11 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
             <div>
               <button onClick={onClickCancelKeywordInfo}>취소하기</button>
               <button onClick={onClickSaveKeywordInfo}>저장하기</button>
+              {isInvalidBooleanVariation && (
+                <S.WarnText>BOOLEAN 타입은 TRUE 와 FALSE 값만 유효합니다.</S.WarnText>
+              )}
+              {isWrongType && <S.WarnText>INTEGER 타입은 숫자만 유효합니다.</S.WarnText>}
+              {isBlankData && <S.WarnText>필수 값이 비어있습니다.</S.WarnText>}
             </div>
           </div>
         </>
