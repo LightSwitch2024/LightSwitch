@@ -1,6 +1,6 @@
 import { getFlagList, getTagList } from '@api/main/mainAxios';
 import { Tag } from '@pages/main/tag';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import TagHandle from '@/assets/handle.svg?react';
@@ -57,6 +57,7 @@ const TagItem = styled.li<{ bgColor: string }>`
   font-size: 14px;
   list-style: none;
   border-radius: 15px;
+  cursor: pointer;
 `;
 
 const TagContent = styled.span<{ textColor: string; color: string }>`
@@ -187,6 +188,10 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
     mainColor: '',
     accentColor: '',
   });
+  const [filteredTags, setFilteredTags] = useState<Array<Tag>>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [showAddNewTagContainer, setShowAddNewTagContainer] = useState(true);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     getTagList(
@@ -199,13 +204,30 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
     );
   }, []);
 
-  const [filteredTags, setFilteredTags] = useState<Array<Tag>>([]);
-  const [showDropdown, setShowDropdown] = useState(false);
-
   useEffect(() => {
     // 컴포넌트 마운트 시 모든 태그를 초기 필터링 태그로 설정
     setFilteredTags(allTags.filter((tag) => !selectedTags.includes(tag)));
   }, [selectedTags, allTags]); // selectedTags 변경 시 업데이트
+
+  useEffect(() => {
+    const existingTag = allTags.some(
+      (tag) => tag.content.toLowerCase() === inputText.toLowerCase(),
+    );
+    setShowAddNewTagContainer(!existingTag && inputText !== ''); // 태그가 존재하지 않고 입력 필드가 비어있지 않을 때만 true
+  }, [inputText, allTags]);
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, []);
+
+  const handleOutsideClick = (event: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setShowDropdown(false);
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputText = e.target.value;
@@ -232,6 +254,7 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
   const selectTag = (tag: Tag) => {
     if (!selectedTags.includes(tag)) {
       setSelectedTags([...selectedTags, tag]);
+      setInputText('');
     }
   };
 
@@ -266,8 +289,32 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
     }
   };
 
-  const handleColorSelect = (mainColor: string, accentColor: string) => {
+  const handleColorSelect = (
+    event: { stopPropagation: () => void },
+    mainColor: string,
+    accentColor: string,
+  ) => {
+    event.stopPropagation(); // 이벤트 버블링 중지
     setSelectedColors({ mainColor, accentColor });
+  };
+
+  const addNewTag = () => {
+    if (
+      inputText &&
+      !allTags.some((tag) => tag.content.toLowerCase() === inputText.toLowerCase())
+    ) {
+      if (selectedColors.mainColor) {
+        // 색상이 선택되었는지 확인
+        const newTag = {
+          content: inputText,
+          colorHex: selectedColors.mainColor,
+        };
+        setTagList([...allTags, newTag]);
+        setSelectedTags([...selectedTags, newTag]);
+        setInputText(''); // 입력 필드 초기화
+        setSelectedColors({ mainColor: '', accentColor: '' }); // 색상 선택 초기화
+      }
+    }
   };
 
   return (
@@ -291,22 +338,24 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
         <input
           className="tag-input"
           type="text"
+          value={inputText}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           onFocus={onFocus}
-          onBlur={() => setShowDropdown(true)}
+          onBlur={() => {
+            if (!showDropdown) setShowDropdown(false); // 드롭다운이 활성화되어 있지 않을 때만 닫기
+          }}
           placeholder="태그 검색"
         />
       </TagsInput>
       {showDropdown && (
-        <DropdownContainer>
+        <DropdownContainer ref={dropdownRef}>
           <DropdownItemsBox>
             {filteredTags.map((tag, index) => (
               <DropdownItem
                 key={index}
                 onClick={() => {
                   selectTag(tag);
-                  // setShowDropdown(false); // 태그 선택 후 드롭다운 닫기
                 }}
                 onMouseDown={(e: { preventDefault: () => void }) => e.preventDefault()}
               >
@@ -324,10 +373,16 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
               </DropdownItem>
             ))}
           </DropdownItemsBox>
-          {allowCreation && (
+          {allowCreation && showAddNewTagContainer && (
             <AddNewTagContainer>
               <TagPreview>
-                <TagItem bgColor={selectedColors.mainColor}>
+                <TagItem
+                  bgColor={selectedColors.mainColor}
+                  onClick={(event: { stopPropagation: () => void }) => {
+                    event.stopPropagation();
+                    addNewTag(); // 태그 추가 함수 호출
+                  }}
+                >
                   <MySVG mainColor={selectedColors.mainColor} />
                   <TagContent
                     color={selectedColors.mainColor}
@@ -341,7 +396,10 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
                 {Object.entries(colorPairs).map(([mainColor, accentColor]) => (
                   <ColorButton
                     key={mainColor}
-                    onClick={() => handleColorSelect(mainColor, accentColor)}
+                    onClick={(event: { stopPropagation: () => void }) => {
+                      event.stopPropagation();
+                      handleColorSelect(event, mainColor, accentColor);
+                    }}
                   >
                     <MySVG mainColor={mainColor} />
                   </ColorButton>
