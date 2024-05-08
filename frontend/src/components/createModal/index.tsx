@@ -614,19 +614,19 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
             {isDuplicatedTitle && (
               <S.WarnText>중복된 플래그 이름이 존재합니다.</S.WarnText>
             )}
-              <S.FlagTagsInputContainer>
-                  <S.FlagTagsInputLabel>
-                      <Bookmark />
-                      <S.LabelTextContainer>
-                          <S.LabelText>태그</S.LabelText>
-                      </S.LabelTextContainer>
-                  </S.FlagTagsInputLabel>
-                  <TagsInputComponent
-                      selectedTags={selectedTags}
-                      setSelectedTags={setSelectedTags}
-                      allowCreation={true}
-                  />
-              </S.FlagTagsInputContainer>
+            <S.FlagTagsInputContainer>
+              <S.FlagTagsInputLabel>
+                <Bookmark />
+                <S.LabelTextContainer>
+                  <S.LabelText>태그</S.LabelText>
+                </S.LabelTextContainer>
+              </S.FlagTagsInputLabel>
+              <TagsInputComponent
+                selectedTags={selectedTags}
+                setSelectedTags={setSelectedTags}
+                allowCreation={true}
+              />
+            </S.FlagTagsInputContainer>
           </S.FlagTitleAndTagsLayer>
           <S.FlagDescriptionLayer>
             <S.FlagDescriptionLabel>
