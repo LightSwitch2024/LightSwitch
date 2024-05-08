@@ -65,8 +65,6 @@ const TagContent = styled.span<{ textColor: string; color: string }>`
   border-radius: 0.5rem;
   color: ${({ textColor }) => textColor};
   margin-right: 0.5rem;
-  text-shadow: 0.1px 0.1px 0 #000, -0.1px -0.1px 0 #000, 0.1px -0.1px 0 #000,
-    -0.1px 0.1px 0 #000;
 `;
 
 export const TagCloseIcon = styled.span`

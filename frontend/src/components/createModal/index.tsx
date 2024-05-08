@@ -5,6 +5,7 @@ import Edit from '@assets/edit.svg?react';
 import Loop from '@assets/loop.svg?react';
 import OutlinedFlagBig from '@assets/outlined-flag-big.svg?react';
 import * as S from '@components/createModal/indexStyle';
+import { TagsInputComponent } from '@pages/main/tagInput';
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -604,62 +605,11 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
               <S.LabelTextContainer>
                 <S.LabelText>태그</S.LabelText>
               </S.LabelTextContainer>
-
-              {/* 
-                <div>
-                  <input
-                    type="description"
-                    placeholder="태그 명"
-                    value={tagSearchKeyword}
-                    onChange={handleTagSearchKeywordChange}
-                    onBlur={updateTagListByKeyword}
-                  />
-                  <div>
-                    {tags.map((tag, idx) => (
-                      <div key={idx}>
-                        <input
-                          type="checkbox"
-                          value={tag.content}
-                          onChange={handleTagsChange}
-                          checked={selectedTags.some(
-                            (selectedTag) => selectedTag.content === tag.content,
-                          )}
-                        />
-                        <span
-                          style={{
-                            backgroundColor: tag.colorHex,
-                            padding: '0.2rem 0.5rem',
-                            borderRadius: '0.5rem',
-                            color: '#fff',
-                            marginRight: '0.5rem',
-                          }}
-                        >
-                          <label>{tag.content}</label>
-                        </span>
-                      </div>
-                    ))}
-
-                    <div>
-                      <span>선택된 태그 목록</span>
-                      {selectedTags.map((tag) => (
-                        <span
-                          key={tag.content}
-                          style={{
-                            backgroundColor: tag.colorHex,
-                            padding: '0.2rem 0.5rem',
-                            borderRadius: '0.5rem',
-                            color: '#000',
-                            marginRight: '0.5rem',
-                          }}
-                        >
-                          <span>{tag.content}</span>
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div> 
-                */}
             </S.FlagTagsInputLabel>
+            <TagsInputComponent
+              selectedTags={selectedTags}
+              setSelectedTags={setSelectedTags}
+            />
           </S.FlagTagsInputContainer>
         </S.FlagTitleAndTagsLayer>
         <S.FlagDescriptionLabel>
