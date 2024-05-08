@@ -494,6 +494,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     setIsDuplicatedTitle(false);
     setIsInvalidBooleanVariation(false);
     setIsBlankData(false);
+
     if (editedVariationInfo.type === 'BOOLEAN') {
       let isValid = true;
 
@@ -523,6 +524,11 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     }
 
     if (editedVariationInfo.type === 'INTEGER') {
+      if (isNaN(Number(editedVariationInfo.defaultValue))) {
+        setIsWrongType(true);
+        return;
+      }
+
       editedVariationInfo.variations.map((variation) => {
         if (isNaN(Number(variation.value))) {
           setIsWrongType(true);
@@ -559,34 +565,37 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     );
   };
 
-  const onClickSaveKeywordInfo = () => {
+  const onClickSaveKeywordInfo = async () => {
     // 유효성 검사
     // variation type이 BOOLEAN일 경우 value는 TRUE, FALSE만 유효
     setIsDuplicatedTitle(false);
     setIsInvalidBooleanVariation(false);
     setIsBlankData(false);
+
     editedKeywordInfo.keywords.map((keyword) => {
       if (keyword.value === '') {
         setIsBlankData(true);
-        return;
       }
 
       if (editedVariationInfo.type === 'BOOLEAN') {
+        // keyword.value 값이 TRUE, FALSE가 아닐 경우 경고
         if (keyword.value !== 'TRUE' && keyword.value !== 'FALSE') {
           setIsInvalidBooleanVariation(true);
-          return;
         }
       }
 
       if (editedVariationInfo.type === 'INTEGER') {
         if (isNaN(Number(keyword.value))) {
           setIsWrongType(true);
-          return;
         }
       }
     });
 
-    updateKeywords<FlagDetailItem>(
+    if (isBlankData) return;
+    if (isWrongType) return;
+    if (isInvalidBooleanVariation) return;
+
+    await updateKeywords<FlagDetailItem>(
       props.flagDetail?.flagId,
       editedKeywordInfo,
       (data: FlagDetailItem) => {
@@ -694,6 +703,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     setIsDuplicatedTitle(false);
     setIsInvalidBooleanVariation(false);
     setIsBlankData(false);
+    setIsWrongType(false);
   };
 
   // validation check
