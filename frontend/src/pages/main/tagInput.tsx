@@ -103,6 +103,7 @@ const DropdownItem = styled.div`
 interface TagsInputProps {
   selectedTags: Array<Tag>;
   setSelectedTags: React.Dispatch<React.SetStateAction<Array<Tag>>>;
+  allowCreation?: boolean;
 }
 
 interface ColorPairs {
@@ -140,8 +141,10 @@ export default MySVG;
 export const TagsInputComponent: React.FC<TagsInputProps> = ({
   selectedTags,
   setSelectedTags,
+  allowCreation = false,
 }) => {
   const [allTags, setTagList] = useState<Array<Tag>>([]);
+  const [inputText, setInputText] = useState<string>('');
 
   useEffect(() => {
     getTagList(
@@ -160,10 +163,11 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
   useEffect(() => {
     // 컴포넌트 마운트 시 모든 태그를 초기 필터링 태그로 설정
     setFilteredTags(allTags.filter((tag) => !selectedTags.includes(tag)));
-  }, [selectedTags]); // selectedTags 변경 시 업데이트
+  }, [selectedTags, allTags]); // selectedTags 변경 시 업데이트
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputText = e.target.value;
+    setInputText(inputText);
     if (inputText) {
       setFilteredTags(
         allTags.filter(
@@ -206,6 +210,20 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
     return brightness > 128 ? '#000' : '#FFF';
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (
+      e.key === 'Enter' &&
+      inputText &&
+      allowCreation &&
+      !allTags.find((tag) => tag.content.toLowerCase() === inputText.toLowerCase())
+    ) {
+      const newTag = { content: inputText, colorHex: '#CCCCCC' };
+      setTagList([...allTags, newTag]);
+      setSelectedTags([...selectedTags, newTag]);
+      setInputText('');
+    }
+  };
+
   return (
     <TagContainer>
       <TagsInput>
@@ -228,6 +246,7 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
           className="tag-input"
           type="text"
           onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
           onFocus={onFocus}
           onBlur={() => setShowDropdown(false)}
           placeholder="태그 검색"

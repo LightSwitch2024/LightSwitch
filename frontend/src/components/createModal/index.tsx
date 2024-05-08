@@ -624,6 +624,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
                   <TagsInputComponent
                       selectedTags={selectedTags}
                       setSelectedTags={setSelectedTags}
+                      allowCreation={true}
                   />
               </S.FlagTagsInputContainer>
           </S.FlagTitleAndTagsLayer>
