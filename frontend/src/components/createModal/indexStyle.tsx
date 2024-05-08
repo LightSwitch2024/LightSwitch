@@ -5,7 +5,7 @@ export const LayOut = styled.div`
   // justify-content: center;
   // align-items: center;
   flex-direction: column;
-  padding: 4rem 2rem 2rem 2rem;
+  padding: 4rem 3rem 2rem 3rem;
   gap: 2rem;
 `;
 
@@ -120,7 +120,7 @@ export const FlagTitleInput = styled.input<{ $flag: boolean }>`
   font-size: 20px;
   font-style: normal;
   color: #545454;
-  font-weight: 800;
+  font-weight: 600;
   line-height: normal;
 
   &:focus {
@@ -209,7 +209,7 @@ export const FlagDescriptionTextContainer = styled.div`
 export const FlagDescriptionTextArea = styled.textarea<{ $flag: boolean }>`
   display: flex;
   height: 10.3125rem;
-  padding: 0.625rem;
+  padding: 1.3rem;
   align-items: flex-start;
   gap: 0.625rem;
   flex-shrink: 0;
@@ -221,10 +221,15 @@ export const FlagDescriptionTextArea = styled.textarea<{ $flag: boolean }>`
 
   color: #000;
   font-family: Pretendard;
-  font-size: 1.25rem;
+  font-size: 20px;
   font-style: normal;
-  font-weight: 400;
+  color: #545454;
+  font-weight: 600;
   line-height: normal;
+
+  &::placeholder {
+    color: #d6d6d6;
+  }
 
   ${(props) =>
     props.$flag &&
@@ -381,10 +386,15 @@ export const FlagVariationInput = styled.input<{ $flag: boolean }>`
   border: 1px solid #000;
 
   font-family: Pretendard;
-  font-size: 1.5rem;
+  font-size: 20px;
   font-style: normal;
-  font-weight: 400;
+  color: #545454;
+  font-weight: 600;
   line-height: normal;
+
+  &::placeholder {
+    color: #d6d6d6;
+  }
 
   ${(props) =>
     props.$flag &&
@@ -413,7 +423,7 @@ export const FlagVariationDivisionLine = styled.div`
 
 export const ButtonLayer = styled.div`
   display: flex;
-  padding: 0.75rem 0rem;
+  padding: 0.1rem 0rem;
   justify-content: flex-end;
   align-items: center;
   gap: 0.8125rem;
@@ -422,6 +432,33 @@ export const ButtonLayer = styled.div`
 `;
 
 export const CancelButton = styled.button`
+  display: flex;
+  padding: 1.0625rem 1.5625rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.375rem;
+
+  border-radius: 0.625rem;
+  background: #f5f6f7;
+
+  color: rgba(0, 0, 0, 0.87);
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.25rem; /* 100% */
+
+  &:hover {
+    background: #e0e0e0;
+  }
+
+  &:active {
+    background: #f5f6f7;
+  }
+`;
+
+export const DeleteButton = styled.button`
   display: flex;
   padding: 1.0625rem 1.5625rem;
   justify-content: center;
@@ -533,7 +570,7 @@ export const ModalTitleText = styled.div`
 
 export const ModalTitleTextContainer = styled.div`
   display: flex;
-  padding: 0.325rem 0;
+  padding: 2rem 0;
   gap: 0.625rem;
 `;
 

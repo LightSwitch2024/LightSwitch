@@ -1,15 +1,17 @@
 import { updateFlag, updateKeywords, updateVariations } from '@api/update/updateAxios';
+import BlackFlag from '@assets/black-flag.svg?react';
 import Bookmark from '@assets/bookmark.svg?react';
 import CallSplit from '@assets/call-split.svg?react';
 import Description from '@assets/description.svg?react';
 import Edit from '@assets/edit.svg?react';
+import KeyWord from '@assets/keyword.svg?react';
 import Loop from '@assets/loop.svg?react';
 import OutlinedFlagBig from '@assets/outlined-flag-big.svg?react';
 import * as S from '@components/updateModal/indexStyle';
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 
-import { FlagVariationDivisionLine } from '../createModal/indexStyle';
+import { ButtonLayer, FlagVariationDivisionLine } from '../createModal/indexStyle';
 
 interface UpdateModalProps {
   closeUpdateModal: () => void;
@@ -70,6 +72,9 @@ interface KeywordInfo {
 }
 
 const UpdateModal: React.FC<UpdateModalProps> = (props) => {
+  // input box hover용
+  const [isFocused, setIsFocused] = useState<boolean>(false);
+
   // 이벤트 버블링 방지
   const stopPropagation = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
@@ -444,18 +449,73 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     );
   };
 
+  const handleCancle = () => {
+    // 취소 버튼 눌렀을 때 로직
+    alert('취소버튼누름!');
+    return null;
+  };
+
   const renderContentByTab = () => {
     // 플래그 수정 폼
     if (selectedTab === 0) {
       return (
         <S.FlagEditForm>
+          <S.Container>
+            <S.Layer>
+              <S.IconContainer>
+                <BlackFlag />
+              </S.IconContainer>
+              <S.TextContainer>
+                <S.LabelText>플래그 이름</S.LabelText>
+              </S.TextContainer>
+            </S.Layer>
+            <S.Input
+              value={editedFlagInfo.title}
+              onChange={handelChangeTitle}
+              $flag={isFocused}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+            />
+          </S.Container>
+          <S.TagContainer>
+            <S.Layer>
+              <S.IconContainer>
+                <Bookmark />
+              </S.IconContainer>
+              <S.TextContainer>
+                <S.LabelText>태그</S.LabelText>
+              </S.TextContainer>
+            </S.Layer>
+            {/* 여기에다가 태그 수정 로직 */}
+          </S.TagContainer>
+          <S.Container>
+            <S.Layer>
+              <S.IconContainer>
+                <Description />
+              </S.IconContainer>
+              <S.TextContainer>
+                <S.LabelText>설명</S.LabelText>
+              </S.TextContainer>
+            </S.Layer>
+            <S.TextArea
+              $flag={isFocused}
+              value={editedFlagInfo.description}
+              onChange={handleChangeDescription}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+            />
+          </S.Container>
+          {/* 
           <input type="text" value={editedFlagInfo.title} onChange={handelChangeTitle} />
           <textarea
             value={editedFlagInfo.description}
             onChange={handleChangeDescription}
-          />
-
-          <button onClick={onClickSaveFlagInfo}>저장하기</button>
+          /> */}
+          <S.BottomButtonLayer>
+            <S.CancelButton onClick={handleCancle}>취소하기</S.CancelButton>
+            <S.ConfirmButton onClick={onClickSaveFlagInfo}>저장하기</S.ConfirmButton>
+          </S.BottomButtonLayer>
+          {/* <button onClick={onClickSaveFlagInfo}>저장하기</button> */}
         </S.FlagEditForm>
       );
     }
@@ -465,53 +525,138 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       return (
         <>
           <div>
-            <select value={editedVariationInfo.type}>
-              <option value={'BOOLEAN'}>boolean</option>
-              <option value={'INTEGER'}>Integer</option>
-              <option value={'STRING'}>String</option>
-            </select>
-            <div>
-              <input
-                type="text"
-                value={editedVariationInfo.defaultValue}
-                onChange={handleChangeDefaultValue}
-              />
-              <input
-                type="number"
-                value={editedVariationInfo.defaultPortion}
-                onChange={handleChangeDefaultPortion}
-              />
-              <input
-                type="text"
-                value={editedVariationInfo.defaultDescription}
-                onChange={handleChangeDefaultDescription}
-              />
-            </div>
-            {editedVariationInfo.variations.map((variation, index) => (
-              <>
-                <div key={index}>
-                  <input
-                    type="text"
-                    value={variation.value}
-                    onChange={handleChangeVariationValue(index)}
-                  />
-                  <input
-                    type="number"
-                    value={variation.portion}
-                    onChange={handleChangeVariaionPortion(index)}
-                  />
-                  <input
-                    type="text"
-                    value={variation.description}
-                    onChange={handleChangeVariationDescription(index)}
-                  />
-                </div>
-                <button onClick={deleteVariation(index)}>변수 삭제</button>
-              </>
-            ))}
-            <button onClick={addVariation}>변수 추가</button>
-
-            <button onClick={onClickSaveVariationInfo}>저장하기</button>
+            <S.Container>
+              <S.Layer>
+                <S.IconContainer>
+                  <CallSplit />
+                </S.IconContainer>
+                <S.TextContainer>
+                  <S.LabelText>변수 타입</S.LabelText>
+                </S.TextContainer>
+              </S.Layer>
+              <select value={editedVariationInfo.type}>
+                <option value={'BOOLEAN'}>boolean</option>
+                <option value={'INTEGER'}>Integer</option>
+                <option value={'STRING'}>String</option>
+              </select>
+              <S.Layer>
+                <S.IconContainer>
+                  <Loop />
+                </S.IconContainer>
+                <S.TextContainer>
+                  <S.LabelText>변수</S.LabelText>
+                </S.TextContainer>
+              </S.Layer>
+              <div>
+                <S.VarVertical>
+                  <S.VarHorizon>
+                    <S.VarContainer>
+                      <S.VarTextContainer>
+                        <S.VarText>변수</S.VarText>
+                      </S.VarTextContainer>
+                      <S.Input
+                        type="text"
+                        value={editedVariationInfo.defaultValue}
+                        onChange={handleChangeDefaultValue}
+                        $flag={isFocused}
+                        onFocus={() => setIsFocused(true)}
+                        onBlur={() => setIsFocused(false)}
+                      />
+                    </S.VarContainer>
+                    <S.VarContainer>
+                      <S.VarTextContainer>
+                        <S.VarText>비율</S.VarText>
+                      </S.VarTextContainer>
+                      <S.Input
+                        type="number"
+                        value={editedVariationInfo.defaultPortion}
+                        onChange={handleChangeDefaultPortion}
+                        $flag={isFocused}
+                        onFocus={() => setIsFocused(true)}
+                        onBlur={() => setIsFocused(false)}
+                      />
+                    </S.VarContainer>
+                  </S.VarHorizon>
+                  <S.VarContainer>
+                    <S.VarTextContainer>
+                      <S.VarText>설명</S.VarText>
+                    </S.VarTextContainer>
+                    <S.Input
+                      type="text"
+                      value={editedVariationInfo.defaultDescription}
+                      onChange={handleChangeDefaultDescription}
+                      $flag={isFocused}
+                      onFocus={() => setIsFocused(true)}
+                      onBlur={() => setIsFocused(false)}
+                    />
+                  </S.VarContainer>
+                </S.VarVertical>
+                <S.Horizontal />
+              </div>
+              {editedVariationInfo.variations.map((variation, index) => (
+                <>
+                  <div key={index}>
+                    <S.VarVertical>
+                      <S.VarHorizon>
+                        <S.VarContainer>
+                          <S.VarTextContainer>
+                            <S.VarText>변수</S.VarText>
+                          </S.VarTextContainer>
+                          <S.Input
+                            type="text"
+                            value={variation.value}
+                            onChange={handleChangeVariationValue(index)}
+                            $flag={isFocused}
+                            onFocus={() => setIsFocused(true)}
+                            onBlur={() => setIsFocused(false)}
+                          />
+                        </S.VarContainer>
+                        <S.VarContainer>
+                          <S.VarTextContainer>
+                            <S.VarText>비율</S.VarText>
+                          </S.VarTextContainer>
+                          <S.Input
+                            type="number"
+                            value={variation.portion}
+                            onChange={handleChangeVariaionPortion(index)}
+                            $flag={isFocused}
+                            onFocus={() => setIsFocused(true)}
+                            onBlur={() => setIsFocused(false)}
+                          />
+                        </S.VarContainer>
+                      </S.VarHorizon>
+                      <S.VarContainer>
+                        <S.VarTextContainer>
+                          <S.VarText>설명</S.VarText>
+                        </S.VarTextContainer>
+                        <S.Input
+                          type="text"
+                          value={variation.description}
+                          onChange={handleChangeVariationDescription(index)}
+                          $flag={isFocused}
+                          onFocus={() => setIsFocused(true)}
+                          onBlur={() => setIsFocused(false)}
+                        />
+                      </S.VarContainer>
+                    </S.VarVertical>
+                  </div>
+                  <ButtonLayer>
+                    <S.DelButton onClick={deleteVariation(index)}>변수 삭제</S.DelButton>
+                  </ButtonLayer>
+                  <S.Horizontal />
+                </>
+              ))}
+              <S.ButtonLayer>
+                <S.AddButton onClick={addVariation}>변수 추가</S.AddButton>
+              </S.ButtonLayer>
+              <S.BottomButtonLayer>
+                <S.CancelButton onClick={handleCancle}>취소하기</S.CancelButton>
+                <S.ConfirmButton onClick={onClickSaveVariationInfo}>
+                  저장하기
+                </S.ConfirmButton>
+              </S.BottomButtonLayer>
+              {/* <button onClick={onClickSaveVariationInfo}>저장하기</button> */}
+            </S.Container>
           </div>
         </>
       );
@@ -522,46 +667,111 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       return (
         <>
           <div>
+            <S.Layer>
+              <S.IconContainer>
+                <KeyWord />
+              </S.IconContainer>
+              <S.TextContainer>
+                <S.LabelText>키워드</S.LabelText>
+              </S.TextContainer>
+            </S.Layer>
             {editedKeywordInfo.keywords.map((keyword, indexOfKeyword) => (
               <div key={indexOfKeyword}>
-                <input
-                  type="text"
-                  value={keyword.description}
-                  onChange={handleChangeKeywordDescription(indexOfKeyword)}
-                />
-                <input
-                  type="text"
-                  value={keyword.value}
-                  onChange={handleChangeKeywordValue(indexOfKeyword)}
-                />
+                <S.Boundary>
+                  <S.VarVertical>
+                    <S.VarContainer>
+                      <S.TextContainer>
+                        <S.VarText>설명</S.VarText>
+                      </S.TextContainer>
+                      <S.Input
+                        type="text"
+                        value={keyword.description}
+                        onChange={handleChangeKeywordDescription(indexOfKeyword)}
+                        $flag={isFocused}
+                        onFocus={() => setIsFocused(true)}
+                        onBlur={() => setIsFocused(false)}
+                      />
+                    </S.VarContainer>
+                    <S.VarContainer>
+                      <S.TextContainer>
+                        <S.VarText>값</S.VarText>
+                      </S.TextContainer>
+                      <S.Input
+                        type="text"
+                        value={keyword.value}
+                        onChange={handleChangeKeywordValue(indexOfKeyword)}
+                        $flag={isFocused}
+                        onFocus={() => setIsFocused(true)}
+                        onBlur={() => setIsFocused(false)}
+                      />
+                    </S.VarContainer>
+                  </S.VarVertical>
+                </S.Boundary>
                 {keyword.properties.map((property, indexOfProperty) => (
                   <div key={indexOfProperty}>
-                    property {indexOfProperty} ||| key :
-                    <input
-                      type="text"
-                      value={property.property}
-                      onChange={handleChangeProperty(indexOfKeyword, indexOfProperty)}
-                    />
-                    value :
-                    <input
-                      type="text"
-                      value={property.data}
-                      onChange={handleChangeData(indexOfKeyword, indexOfProperty)}
-                    />
-                    <button onClick={deleteProperty(indexOfKeyword, indexOfProperty)}>
-                      Property 삭제
-                    </button>
+                    <S.VarText>property {indexOfProperty} |||</S.VarText>
+                    <S.VarHorizon>
+                      <S.VarContainer>
+                        <S.TextContainer>
+                          <S.VarText>Key</S.VarText>
+                        </S.TextContainer>
+                        <S.Input
+                          type="text"
+                          value={property.property}
+                          onChange={handleChangeProperty(indexOfKeyword, indexOfProperty)}
+                          $flag={isFocused}
+                          onFocus={() => setIsFocused(true)}
+                          onBlur={() => setIsFocused(false)}
+                        />
+                      </S.VarContainer>
+                      <S.VarContainer>
+                        <S.TextContainer>
+                          <S.VarText>Value</S.VarText>
+                        </S.TextContainer>
+                        <S.Input
+                          type="text"
+                          value={property.data}
+                          onChange={handleChangeData(indexOfKeyword, indexOfProperty)}
+                          $flag={isFocused}
+                          onFocus={() => setIsFocused(true)}
+                          onBlur={() => setIsFocused(false)}
+                        />
+                      </S.VarContainer>
+                    </S.VarHorizon>
+                    <S.HorizonButtonLayer>
+                      <S.ButtonLayer>
+                        <S.DelButton
+                          onClick={deleteProperty(indexOfKeyword, indexOfProperty)}
+                        >
+                          Property 삭제
+                        </S.DelButton>
+                      </S.ButtonLayer>
+                    </S.HorizonButtonLayer>
+                    <S.Horizontal />
                   </div>
                 ))}
-                <button onClick={() => addProperty(indexOfKeyword)}>Property 추가</button>
-                <button onClick={() => deleteKeyword(indexOfKeyword)}>
-                  Keyword 삭제
-                </button>
+                <S.ButtonLayer>
+                  <S.AddButton onClick={() => addProperty(indexOfKeyword)}>
+                    Property 추가
+                  </S.AddButton>
+                </S.ButtonLayer>
+                <S.Horizontal />
+                <S.ButtonLayer>
+                  <S.DelButton onClick={() => deleteKeyword(indexOfKeyword)}>
+                    Keyword 삭제
+                  </S.DelButton>
+                </S.ButtonLayer>
               </div>
             ))}
-            <button onClick={addKeyword}>Keyword 추가</button>
+            <ButtonLayer>
+              <S.AddButton onClick={addKeyword}>Keyword 추가</S.AddButton>
+            </ButtonLayer>
+            <S.BottomButtonLayer>
+              <S.CancelButton onClick={handleCancle}>취소하기</S.CancelButton>
+              <S.ConfirmButton onClick={onClickSaveKeywordInfo}>저장하기</S.ConfirmButton>
+            </S.BottomButtonLayer>
 
-            <button onClick={onClickSaveKeywordInfo}>저장하기</button>
+            {/* <button onClick={onClickSaveKeywordInfo}>저장하기</button> */}
           </div>
         </>
       );
