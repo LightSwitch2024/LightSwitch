@@ -4,7 +4,7 @@ import typing
 from dataclasses import dataclass, field
 
 from lightswitch.lightswitch.exceptions import FeatureNotFoundError
-
+from .utils import get_hashed_percentage_for_object_ids
 
 # 데이터 모델 정의
 @dataclass
@@ -59,6 +59,32 @@ class Flag:
             return getattr(self, attribute)
         except AttributeError:
             raise FeatureNotFoundError(f"Attribute '{attribute}' 은 해당 플래그에 존재하지 않습니다.")
+
+    # 플래그의 키워드를 확인, 해당 유저가 타겟팅되어 있으면 그에 맞는 값을 반환, 아니면 플래그 기본값
+    def get_user_variation_by_keyword(self, user: LSUser) -> str:
+        flag_keywords=self.keywords
+        for keyword in flag_keywords:
+            for prop in keyword.get('properties', []):
+                if prop['property'] in user.property and prop['data'] in user.property[prop['property']]:
+                    return keyword.get('value')
+        return self.default_value
+
+    # 플래그의 context를 확인, 유저의 백분율 값을 계산하여 어디에 속하는지 확인
+    def get_user_variation_by_percentile(self, user: LSUser) -> str:
+        # 유저의 백분율값을 계산(유저 식별자와 플래그 식별자 함께 사용 : 플래그마다 다른 백분율값을 갖게 하기 위함)
+        user_percentile=get_hashed_percentage_for_object_ids(["user.user_id", "self.flag_id"])
+
+        start_percentage = 0  # 시작 percentile
+        for context in sorted(self.variations, key=lambda context: context.portion):
+            limit = start_percentage + context.portion
+            if start_percentage <= user_percentile < limit:
+                return context.value
+
+            start_percentage = limit
+
+        return self.default_value
+
+
 
     # SSE flag_data를 기반으로 인스턴스 생성
     @classmethod
