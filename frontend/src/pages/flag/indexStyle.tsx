@@ -59,6 +59,11 @@ export const FlagTitleIconContainer = styled.div`
   gap: 0.625rem;
 
   border-radius: 0.3125rem;
+
+  > svg {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
 `;
 
 export const FlagTitleInput = styled.input`
