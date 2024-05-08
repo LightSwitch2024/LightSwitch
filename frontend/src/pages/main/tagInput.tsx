@@ -20,6 +20,10 @@ const TagsInput = styled.div`
     flex-wrap: wrap;
     padding: 0;
     margin: 8px 0 0 0;
+    > li {
+      margin-right: 4px;
+      margin-bottom: 4px;
+    }
   }
 
   > input {
@@ -27,10 +31,6 @@ const TagsInput = styled.div`
     border: none;
     height: 46px;
     font-size: 14px;
-    padding: 4px 0 0 0;
-    :focus {
-      //outline: transparent;
-    }
   }
 
   &:focus-within {
@@ -38,12 +38,17 @@ const TagsInput = styled.div`
   }
 `;
 
+const TagContainer = styled.div`
+  position: relative;
+  width: 320px;
+`;
+
 const TagItem = styled.li<{ bgColor: string }>`
+  position: relative;
   background-color: ${(props) => props.bgColor};
   border: 1px solid #aaa;
   display: flex;
   align-items: center;
-  width: auto;
   height: 32px;
   justify-content: center;
   color: rgb(1, 186, 138);
@@ -51,12 +56,11 @@ const TagItem = styled.li<{ bgColor: string }>`
   font-size: 14px;
   list-style: none;
   border-radius: 15px;
-  margin: 0 8px 8px 0;
 `;
 
 const TagContent = styled.span<{ textColor: string; color: string }>`
   background-color: ${({ color }) => color};
-  padding: 0.2rem 0.5rem;
+  padding: 0.1rem 0.1rem;
   border-radius: 0.5rem;
   color: ${({ textColor }) => textColor};
   margin-right: 0.5rem;
@@ -82,16 +86,58 @@ const DropdownContainer = styled.div`
   z-index: 1000;
   background-color: white;
   width: 100%;
-  max-height: 270px; // 약 5개 항목의 높이
-  max-width: 380px;
+  max-height: 320px; // 약 5개 항목의 높이
   overflow-y: auto; // 스크롤 활성화
+`;
+
+const DropdownItem = styled.div`
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  padding: 5px;
+  cursor: pointer;
+  border: 1px solid #aaa;
+  width: 100%;
+  height: 32px;
 `;
 
 interface TagsInputProps {
   selectedTags: Array<Tag>;
   setSelectedTags: React.Dispatch<React.SetStateAction<Array<Tag>>>;
 }
-//getTagList
+
+interface ColorPairs {
+  [key: string]: string;
+}
+
+const colorPairs: ColorPairs = {
+  '#FAF0BE': '#AA952F',
+  '#FFB5B5': '#A92323',
+  '#C2FABE': '#21B217',
+  '#BEDDFA': '#266CB2',
+  '#8684F0': '#1815C6',
+  '#84DDF0': '#0C859E',
+  '#FABEF8': '#BC2969',
+  '#E27209': '#9A4D05',
+};
+
+const MySVG = ({ mainColor = '#AA952F' }) => {
+  const [accentColor, setAccentColor] = useState(colorPairs[mainColor]);
+
+  useEffect(() => {
+    setAccentColor(colorPairs[mainColor] || '#FFFFFF'); // 기본값 설정
+  }, [mainColor]);
+
+  return (
+    <svg width="30" height="30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="30" height="30" rx="10" fill={mainColor} />
+      <rect x="10" y="10" width="10" height="10" rx="10" fill={accentColor} />
+    </svg>
+  );
+};
+
+export default MySVG;
+
 export const TagsInputComponent: React.FC<TagsInputProps> = ({
   selectedTags,
   setSelectedTags,
@@ -159,15 +205,16 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
     const brightness = (r * 299 + g * 587 + b * 114) / 1000;
 
     // 밝기가 128보다 크면 검은색, 그렇지 않으면 흰색 반환
-    return brightness > 200 ? '#000' : '#FFF';
+    return brightness > 128 ? '#000' : '#FFF';
   };
 
   return (
-    <div>
+    <TagContainer>
       <TagsInput>
         <ul id="tags">
           {selectedTags.map((tag, index) => (
             <TagItem key={index} bgColor={tag.colorHex}>
+              <MySVG mainColor={tag.colorHex} />
               <TagContent
                 key={tag.content}
                 color={tag.colorHex}
@@ -184,28 +231,23 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
           type="text"
           onChange={handleInputChange}
           onFocus={onFocus}
-          onBlur={() => setShowDropdown(false)}
-          placeholder="Search and select tags"
+          onBlur={() => setShowDropdown(true)}
+          placeholder="태그 검색"
         />
       </TagsInput>
       {showDropdown && (
         <DropdownContainer>
           {filteredTags.map((tag, index) => (
-            <div
+            <DropdownItem
               key={index}
-              style={{
-                width: '100%',
-                padding: '5px',
-                cursor: 'pointer',
-                border: '1px solid #AAA',
-              }}
               onClick={() => {
                 selectTag(tag);
                 // setShowDropdown(false); // 태그 선택 후 드롭다운 닫기
               }}
-              onMouseDown={(e) => e.preventDefault()}
+              onMouseDown={(e: { preventDefault: () => void }) => e.preventDefault()}
             >
               <TagItem key={index} bgColor={tag.colorHex}>
+                <MySVG mainColor={tag.colorHex} />
                 <TagContent
                   key={tag.content}
                   color={tag.colorHex}
@@ -214,10 +256,10 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
                   {tag.content}
                 </TagContent>
               </TagItem>
-            </div>
+            </DropdownItem>
           ))}
         </DropdownContainer>
       )}
-    </div>
+    </TagContainer>
   );
 };
