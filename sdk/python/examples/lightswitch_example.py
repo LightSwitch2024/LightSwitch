@@ -47,9 +47,29 @@ identifier = "sumin@gmail.com"
 # 사용자 특성 저장
 #user = LSUser(user_id=123).set_property("name", "LEE").set_property("com", "Lunit")
 
-user_id = 123
+user_id = 1
 key = "name"
 value = "LEE"
 
 this_user = LSUser(user_id=user_id).set_property(key, value)
-print(this_user)
+
+# 이 환경의 전체 플래그 목록 가져오기
+flags = lightswitch.flags.get_all_flags()
+print("flags: ", flags)
+# 특정 플래그 활성화 여부 확인
+is_active = lightswitch.flags.is_feature_enabled("새로운 기능")
+# 특정 플래그에 접근하여 기본값 가져오기 - 해당 플래그가 활성화 되었을 때 기본으로 적용될 값
+new_flag_default_value = lightswitch.flags.get_feature_value_by_name("new_biomarker")
+# 개별 플래그에 접근하기
+admin_only_feature_flag = lightswitch.flags.get_flag_by_name("admin only data")
+# 개별 플래그의 keyword 가져오기
+print("keywords : ", admin_only_feature_flag.get_keywords())
+
+# 개별 플래그의 context 가져오기
+new_new_new_feature_flag = lightswitch.flags.get_flag_by_name("new_new_new_feature")
+contexts = new_new_new_feature_flag.get_contexts()
+print("contexts : ", contexts)
+index = 0
+for flag in flags:
+    index += 1
+    print(index, " : ", flag.get_attribute_value('variations'))

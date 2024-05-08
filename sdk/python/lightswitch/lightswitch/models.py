@@ -19,19 +19,19 @@ class LSUser:
 
 @dataclass
 class Property:
-    property_name: str
-    data: str
+    property_name: str  # "관리자 아이디"(식별자)
+    data: str  # 아이디 값 - ex) "3"
 
 
 @dataclass
 class Keyword:
     property_list: typing.List[Property]
+    description: str
     value: str
 
 
 @dataclass
 class Context:
-    order: int
     value: str
     portion: int
     description: str
@@ -43,18 +43,18 @@ class Flag:
     title: str
     description: str
     type: str
-    keywords: typing.List[typing.Dict[str, typing.Any]]  # 타겟 테스팅 조건 데이터
+    keywords: typing.List[Keyword]  # 타겟 테스팅 조건 데이터
     default_value: str
     default_value_portion: int
     default_value_description: str
-    variations: typing.List[typing.Dict[str, typing.Any]]  # 그룹 분배 테스트 조건 데이터
+    variations: typing.List[Context]  # 그룹 분배 테스트 조건 데이터
     maintainer_id: int
     created_at: str
     updated_at: str
     delete_at: str
     active: bool
 
-    def get_attribute_value(self, attribute):
+    def get_attribute_value(self, attribute: str):
         try:
             return getattr(self, attribute)
         except AttributeError:
@@ -82,6 +82,14 @@ class Flag:
             delete_at=flag_data["deleteAt"],
             active=flag_data["active"],
         )
+
+    # 해당 플래그의 keyword 가져오기
+    def get_keywords(self) -> typing.List[Keyword]:
+        return self.keywords
+
+    # 해당 플래그의 context 가져오기
+    def get_contexts(self) -> typing.List[Context]:
+        return self.variations
 
 
 @dataclass
@@ -121,22 +129,25 @@ class Flags:
     # event 타입에 따라 수행할 메서드
     def add_flag(self, new_flag: Flag):
         self.flags[new_flag.title] = new_flag
+        print('flag created.')
 
     def update_flag_value(self, flag_name: str, new_value: typing.Any):
         if flag_name in self.flags:
             self.flags[flag_name].default_value = new_value
+            print('flag updated.')
         else:
             raise FeatureNotFoundError(flag_name)
 
     def delete_flag_by_name(self, flag_name: str):
         if flag_name in self.flags:
             del self.flags[flag_name]
+            print('flag deleted.')
         else:
             raise FeatureNotFoundError(flag_name)
 
     def toggle_flag_activation(self, flag_name: str):
         if flag_name in self.flags:
             self.flags[flag_name].active = not self.flags[flag_name].active
-            print("스위치 토글")
+            print("flag toggled.")
         else:
             raise FeatureNotFoundError(flag_name)

@@ -1,7 +1,6 @@
 import warnings
 
 import requests
-import codecs
 import re
 import time
 
@@ -51,6 +50,7 @@ class CustomSSEClient(SSEClient):
 
         return msg
 
+
 class CustomEvent(Event):
     sse_line_pattern = re.compile('(?P<name>[^:]*):?( ?(?P<value>.*))?')
 
@@ -58,17 +58,16 @@ class CustomEvent(Event):
     def parse(cls, raw):
         """
         Given a possibly-multiline string representing an SSE message, parse it
-        and return a Event object.
+        and return an Event object.
         """
-        # 여기에 새로운 parse() 메서드의 구현을 작성합니다.
         msg = cls()
-        print("raw : ", raw)
+        # print("raw : ", raw)
         raw = raw.replace('\r\n', '')
         # test = codecs.decode(raw, 'unicode_escape')
         # print("test:", test)
         for line in raw.splitlines():
             line = line.encode('latin1').decode('utf-8')
-            print("test : ", line)
+            # print("test : ", line)
             m = cls.sse_line_pattern.match(line)
             if m is None:
                 # Malformed line.  Discard but warn.
@@ -93,8 +92,6 @@ class CustomEvent(Event):
                     else:
                         msg.data = value[1:-1]
 
-
-
             elif name == 'event':
                 msg.event = value
             elif name == 'id':
@@ -103,4 +100,3 @@ class CustomEvent(Event):
                 msg.retry = int(value)
 
         return msg
-

@@ -149,7 +149,7 @@ class Lightswitch:
             elif event_type == "SWITCH":
                 self.toggle_flag(new_flag_data['title'])
             else: # DELETE
-                self.delete_flag(new_flag_data['title'])
+                self.delete_flag(new_flag_data['flagTitle'])
 
         except json.JSONDecodeError as e:
             raise StreamDataError("new_stream_event로부터 유효한 json 데이터를 가져오는데 실패하였습니다.") from e
@@ -225,7 +225,7 @@ class Lightswitch:
             json_response: typing.List[typing.Mapping[str, JsonType]] = (
                 self._get_json_response(url=self.environment_flags_url, method="POST", body=data)['data']
             )
-            print("json res: ", json_response)
+            print("json res: ", json_response, "\n", "len: ", len(json_response))
             return Flags.flags_from_api(
                 flags_data=json_response
             )
