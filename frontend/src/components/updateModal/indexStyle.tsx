@@ -136,12 +136,18 @@ export const Layer = styled.div`
   padding: 0.325rem 0;
   gap: 0.625rem;
 `;
+export const KeywordHeadWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin: 1.3rem 0;
+  justify-content: space-between;
+`;
 
 export const IconContainer = styled.div`
   display: flex;
   gap: 0.625rem;
   > svg {
-    margin-top: 0.3rem;
+    margin-top: 1.2rem;
     width: 2.5rem;
     height: 2.5rem;
   }
@@ -149,26 +155,48 @@ export const IconContainer = styled.div`
 
 export const TextContainer = styled.div`
   display: flex;
+  flex-direction: row;
+  margin: 15px 0 2px 0;
   gap: 0.625rem;
+`;
+
+export const KeywordTextContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+  gap: 0.625rem;
+`;
+
+export const PropertyIndexTextContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 0.7rem;
 `;
 
 export const VarContainer = styled.div`
   display: flex;
+  width: 48%;
+  flex-direction: row;
+  gap: 0.125rem;
+`;
+export const VarDefinitionContainer = styled.div`
+  display: flex;
+  width: 100%;
   flex-direction: row;
   gap: 0.125rem;
 `;
 
 export const VarHorizon = styled.div`
   display: flex;
-  width: 100%;
+  // width: 100%;
   flex-direction: row;
-  gap: 0rem;
   justify-content: space-between;
 `;
 
 export const VarVertical = styled.div`
   display: flex;
   flex-direction: column;
+  margin: 1rem 0;
   gap: 0.625rem;
 `;
 
@@ -206,6 +234,27 @@ export const LabelText = styled.div`
   line-height: normal;
 `;
 
+export const KeywordText = styled.div`
+  color: #000;
+  font-family: Pretendard;
+  font-size: 2rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+`;
+
+export const PropertyIndexText = styled.div`
+  display: flex;
+  width: 20rem;
+  margin: 0.3rem 0;
+  color: #000;
+  font-family: Pretendard;
+  font-size: 1.5rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+
 export const VarText = styled.div`
   display: flex;
   width: 4rem;
@@ -218,10 +267,8 @@ export const VarText = styled.div`
 `;
 
 export const TextArea = styled.textarea<{ $flag: boolean }>`
-  padding: 8px;
-  width: 800px;
-  max-width: 800px;
-  min-width: 799px;
+  padding: 8px 0x;
+  width: 100%;
   height: 7rem;
   border-radius: 6px;
   border: 2px ${({ $flag }) => ($flag ? '1px solid #545454' : ' solid #d4d4d4')};
@@ -248,11 +295,10 @@ export const TextArea = styled.textarea<{ $flag: boolean }>`
 export const ButtonLayer = styled.div`
   display: flex;
   justify-content: flex-end;
-  align-items: center;
   gap: 0.8125rem;
   flex: 1 0 0;
   align-self: stretch;
-  padding-top: 0.25rem;
+  padding: 0.5rem 0 0.5rem 0;
 `;
 
 export const HorizonButtonLayer = styled.div`
@@ -361,6 +407,7 @@ export const AddButton = styled.button`
 export const DelButton = styled.button`
   display: flex;
   padding: 0.8rem 0.8rem;
+  margin-right: 0.3rem;
   justify-content: center;
   align-items: center;
   gap: 0.375rem;
@@ -390,12 +437,21 @@ export const Horizontal = styled.div`
   width: 100%;
   height: 1px;
   background-color: #000;
-  margin: 1rem 0;
+  margin: 1.4rem 0;
 `;
 
+export const BoldHorizontal = styled.div`
+  display: flex;
+  width: 100%;
+  height: 4px;
+  background-color: #000;
+  margin: 1.4rem 0;
+`;
+
+export const VarTextContainer = styled.div``;
+
 export const Boundary = styled.div`
-  border: 2px solid #d4d4d4;
+  border: 2px solid #545454;
   border-radius: 10px;
   padding: 1rem;
-  margin: ;
 `;

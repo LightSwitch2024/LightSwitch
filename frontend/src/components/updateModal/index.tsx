@@ -469,13 +469,15 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                 <S.LabelText>플래그 이름</S.LabelText>
               </S.TextContainer>
             </S.Layer>
-            <S.Input
-              value={editedFlagInfo.title}
-              onChange={handelChangeTitle}
-              $flag={isFocused}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
-            />
+            <S.Layer>
+              <S.Input
+                value={editedFlagInfo.title}
+                onChange={handelChangeTitle}
+                $flag={isFocused}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+              />
+            </S.Layer>
           </S.Container>
           <S.TagContainer>
             <S.Layer>
@@ -497,13 +499,15 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                 <S.LabelText>설명</S.LabelText>
               </S.TextContainer>
             </S.Layer>
-            <S.TextArea
-              $flag={isFocused}
-              value={editedFlagInfo.description}
-              onChange={handleChangeDescription}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
-            />
+            <S.Layer>
+              <S.TextArea
+                $flag={isFocused}
+                value={editedFlagInfo.description}
+                onChange={handleChangeDescription}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+              />
+            </S.Layer>
           </S.Container>
           {/* 
           <input type="text" value={editedFlagInfo.title} onChange={handelChangeTitle} />
@@ -677,9 +681,19 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
             </S.Layer>
             {editedKeywordInfo.keywords.map((keyword, indexOfKeyword) => (
               <div key={indexOfKeyword}>
+                <S.KeywordHeadWrapper>
+                  <S.KeywordTextContainer>
+                    <S.KeywordText>키워드{indexOfKeyword}</S.KeywordText>
+                  </S.KeywordTextContainer>
+                  <S.ButtonLayer>
+                    <S.DelButton onClick={() => deleteKeyword(indexOfKeyword)}>
+                      Keyword 삭제
+                    </S.DelButton>
+                  </S.ButtonLayer>
+                </S.KeywordHeadWrapper>
                 <S.Boundary>
                   <S.VarVertical>
-                    <S.VarContainer>
+                    <S.VarDefinitionContainer>
                       <S.TextContainer>
                         <S.VarText>설명</S.VarText>
                       </S.TextContainer>
@@ -691,8 +705,8 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
                       />
-                    </S.VarContainer>
-                    <S.VarContainer>
+                    </S.VarDefinitionContainer>
+                    <S.VarDefinitionContainer>
                       <S.TextContainer>
                         <S.VarText>값</S.VarText>
                       </S.TextContainer>
@@ -704,63 +718,65 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
                       />
-                    </S.VarContainer>
+                    </S.VarDefinitionContainer>
                   </S.VarVertical>
+                  <S.BoldHorizontal />
+                  {keyword.properties.map((property, indexOfProperty) => (
+                    <div key={indexOfProperty}>
+                      <S.HorizonButtonLayer>
+                        <S.PropertyIndexTextContainer>
+                          <S.PropertyIndexText>
+                            property index {indexOfProperty}
+                          </S.PropertyIndexText>
+                        </S.PropertyIndexTextContainer>
+                        <S.ButtonLayer>
+                          <S.DelButton
+                            onClick={deleteProperty(indexOfKeyword, indexOfProperty)}
+                          >
+                            Property 삭제
+                          </S.DelButton>
+                        </S.ButtonLayer>
+                      </S.HorizonButtonLayer>
+                      <S.VarHorizon>
+                        <S.VarContainer>
+                          <S.TextContainer>
+                            <S.VarText>Key</S.VarText>
+                          </S.TextContainer>
+                          <S.Input
+                            type="text"
+                            value={property.property}
+                            onChange={handleChangeProperty(
+                              indexOfKeyword,
+                              indexOfProperty,
+                            )}
+                            $flag={isFocused}
+                            onFocus={() => setIsFocused(true)}
+                            onBlur={() => setIsFocused(false)}
+                          />
+                        </S.VarContainer>
+                        <S.VarContainer>
+                          <S.TextContainer>
+                            <S.VarText>Value</S.VarText>
+                          </S.TextContainer>
+                          <S.Input
+                            type="text"
+                            value={property.data}
+                            onChange={handleChangeData(indexOfKeyword, indexOfProperty)}
+                            $flag={isFocused}
+                            onFocus={() => setIsFocused(true)}
+                            onBlur={() => setIsFocused(false)}
+                          />
+                        </S.VarContainer>
+                      </S.VarHorizon>
+                      <S.Horizontal />
+                    </div>
+                  ))}
+                  <S.ButtonLayer>
+                    <S.AddButton onClick={() => addProperty(indexOfKeyword)}>
+                      Property 추가
+                    </S.AddButton>
+                  </S.ButtonLayer>
                 </S.Boundary>
-                {keyword.properties.map((property, indexOfProperty) => (
-                  <div key={indexOfProperty}>
-                    <S.VarText>property {indexOfProperty} |||</S.VarText>
-                    <S.VarHorizon>
-                      <S.VarContainer>
-                        <S.TextContainer>
-                          <S.VarText>Key</S.VarText>
-                        </S.TextContainer>
-                        <S.Input
-                          type="text"
-                          value={property.property}
-                          onChange={handleChangeProperty(indexOfKeyword, indexOfProperty)}
-                          $flag={isFocused}
-                          onFocus={() => setIsFocused(true)}
-                          onBlur={() => setIsFocused(false)}
-                        />
-                      </S.VarContainer>
-                      <S.VarContainer>
-                        <S.TextContainer>
-                          <S.VarText>Value</S.VarText>
-                        </S.TextContainer>
-                        <S.Input
-                          type="text"
-                          value={property.data}
-                          onChange={handleChangeData(indexOfKeyword, indexOfProperty)}
-                          $flag={isFocused}
-                          onFocus={() => setIsFocused(true)}
-                          onBlur={() => setIsFocused(false)}
-                        />
-                      </S.VarContainer>
-                    </S.VarHorizon>
-                    <S.HorizonButtonLayer>
-                      <S.ButtonLayer>
-                        <S.DelButton
-                          onClick={deleteProperty(indexOfKeyword, indexOfProperty)}
-                        >
-                          Property 삭제
-                        </S.DelButton>
-                      </S.ButtonLayer>
-                    </S.HorizonButtonLayer>
-                    <S.Horizontal />
-                  </div>
-                ))}
-                <S.ButtonLayer>
-                  <S.AddButton onClick={() => addProperty(indexOfKeyword)}>
-                    Property 추가
-                  </S.AddButton>
-                </S.ButtonLayer>
-                <S.Horizontal />
-                <S.ButtonLayer>
-                  <S.DelButton onClick={() => deleteKeyword(indexOfKeyword)}>
-                    Keyword 삭제
-                  </S.DelButton>
-                </S.ButtonLayer>
               </div>
             ))}
             <ButtonLayer>
