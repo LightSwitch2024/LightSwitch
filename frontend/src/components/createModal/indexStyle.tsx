@@ -1,9 +1,12 @@
-import TextField from '@mui/material/TextField';
 import styled from 'styled-components';
 
 export const LayOut = styled.div`
+  display: flex;
   // justify-content: center;
-  padding: 7rem 0 2rem 0;
+  // align-items: center;
+  flex-direction: column;
+  padding: 4rem 2rem 2rem 2rem;
+  gap: 2rem;
 `;
 
 export const ModalBackground = styled.div`
@@ -43,6 +46,7 @@ export const DetailLayout = styled.div`
 `;
 
 export const ModalInputForm = styled.div`
+  display: flex;
   color: #fff;
   width: 70%;
   height: 90%;
@@ -55,8 +59,8 @@ export const ModalInputForm = styled.div`
   font-weight: 800;
 
   display: flex;
+  margin: 10rem;
   flex-direction: column;
-  align-items: center;
   gap: 0.9375rem;
   flex-shrink: 0;
 `;
@@ -64,25 +68,35 @@ export const ModalInputForm = styled.div`
 export const FlagTitleAndTagsLayer = styled.div`
   display: flex;
   width: 100%;
+  padding-top: 2rem;
   flex-direction: column;
-  align-items: center;
-  gap: 0.3125rem;
+  gap: 0.7rem;
   flex-shrink: 0;
 `;
 
-export const FlagTitleInputContainer = styled.div`
+export const FlagTitleInputContainer = styled.div<{ $flag: boolean }>`
   display: flex;
-  flex-direction: column;
-  height: 6.0625rem;
-  background-color: #bdbdbd;
-
-  padding: 1rem 0.625rem 0.625rem 0;
+  height: 2rem;
+  padding: 0.9375rem 0.75rem;
+  align-items: center;
   gap: 0.625rem;
-  flex-shrink: 0;
-  align-self: stretch;
+  flex: 1 0 0;
 
   border-radius: 0.625rem;
-  background: #fff;
+  border: 1px solid #000;
+
+  font-family: Pretendard;
+  font-size: 1.5rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+
+  ${(props) =>
+    props.$flag &&
+    `
+    background-color: #f2f2f2;
+    pointer-events: none;
+  `}
 `;
 
 export const FlagTitleIconContainer = styled.div`
@@ -94,18 +108,27 @@ export const FlagTitleIconContainer = styled.div`
 
   border-radius: 0.3125rem;
   background: #f5f6f7;
+  > svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
 `;
 
 export const FlagTitleInput = styled.input<{ $flag: boolean }>`
   border: none;
   font-family: Pretendard;
-  font-size: 50px;
+  font-size: 20px;
   font-style: normal;
+  color: #545454;
   font-weight: 800;
   line-height: normal;
 
   &:focus {
     outline: none;
+  }
+
+  &::placeholder {
+    color: #d6d6d6;
   }
 
   ${(props) =>
@@ -125,79 +148,55 @@ export const WarnText = styled.div`
 
 export const FlagTagsInputContainer = styled.div`
   display: flex;
+  padding: 0.5rem 0;
+  align-items: center;
   gap: 0.625rem;
+  flex: 1 0 0;
   align-self: stretch;
 `;
 
 export const FlagTagsInputLabel = styled.div`
   display: flex;
-  margin: 2rem 0 2rem 0;
-  gap: 0.3125rem;
-  & > svg {
-    width: 2rem;
-    fill: #000;
-  }
-`;
-
-export const LabelTitleContainer = styled.div`
-  display: flex;
   align-items: center;
   gap: 0.625rem;
 `;
 
-export const TitleText = styled.div`
-  color: #000;
-  font-family: Pretendard;
-  font-size: 3.125rem;
-  font-style: normal;
-  font-weight: 800;
-  line-height: normal;
+export const LabelTextContainer = styled.div`
+  display: flex;
+  gap: 0.625rem;
 `;
 
 export const LabelText = styled.div`
   color: #000;
   font-family: Pretendard;
-  font-size: 2rem;
+  font-size: 1.3rem;
   font-style: normal;
-  font-weight: 800;
+  font-weight: 600;
   line-height: normal;
-`;
-
-export const LabelTextContainer = styled.div`
-  display: flex;
-  align-item: center;
-  gap: 0.625rem;
 `;
 
 export const FlagDescriptionLabel = styled.div`
   display: flex;
-  align-item: center;
+  padding: 0.5rem 0;
+  align-items: center;
   gap: 0.625rem;
+  flex: 1 0 0;
+  align-self: stretch;
 `;
 
 export const FlagDescriptionContainer = styled.div`
   display: flex;
+  align-items: center;
+  gap: 0.625rem;
 `;
 
 export const FlagDescriptionIconContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 0.625rem;
-
-  & > svg {
-    width: 2rem;
-    fill: #000;
-  }
-`;
-
-export const TagIconContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-
-  & > svg {
-    width: 2rem;
-    fill: #000;
+  > svg {
+    width: 1.4rem;
+    height: 1.4rem;
   }
 `;
 
@@ -209,7 +208,6 @@ export const FlagDescriptionTextContainer = styled.div`
 
 export const FlagDescriptionTextArea = styled.textarea<{ $flag: boolean }>`
   display: flex;
-  width: 50rem;
   height: 10.3125rem;
   padding: 0.625rem;
   align-items: flex-start;
@@ -238,7 +236,7 @@ export const FlagDescriptionTextArea = styled.textarea<{ $flag: boolean }>`
 
 export const FlagTypeLayer = styled.div`
   display: flex;
-  padding: 0.5rem 0 0.625rem 0;
+  padding: 0.5rem 0;
   align-items: center;
   gap: 1.25rem;
   flex: 1 0 0;
@@ -248,16 +246,17 @@ export const FlagTypeLayer = styled.div`
 export const FlagTypeLabel = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.3125rem;
+  padding: 0.5rem 0;
+  gap: 0.625rem;
 `;
 
 export const FlagTypeIconContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 0.625rem;
-  & > svg {
-    width: 2rem;
-    fill: #000;
+  > svg {
+    width: 1.4rem;
+    height: 1.4rem;
   }
 `;
 
@@ -269,8 +268,8 @@ export const FlagTypeLabelTextContainer = styled.div`
 
 export const FlagTypeContainer = styled.div<{ $flag: boolean }>`
   display: flex;
-  width: 10.625rem;
-  height: 3.125rem;
+  width: 8.625rem;
+  height: 2.125rem;
   justify-content: center;
   align-items: center;
   gap: 1rem;
@@ -323,7 +322,7 @@ export const FlagTypeText = styled.div`
 
 export const FlagVariationLabel = styled.div`
   display: flex;
-  padding: 0.625rem;
+  // padding: 0.5rem 0;
   align-items: center;
   gap: 0.625rem;
   flex: 1 0 0;
@@ -333,16 +332,16 @@ export const FlagVariationLabel = styled.div`
 export const FlagVariationContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.3125rem;
+  gap: 0.625rem;
 `;
 
 export const FlagVariationIconContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 0.625rem;
-  & > svg {
-    width: 2rem;
-    fill: #000;
+  > svg {
+    width: 1.9rem;
+    height: 1.9rem;
   }
 `;
 
@@ -372,7 +371,7 @@ export const FlagVariationRowContainer = styled.div`
 export const FlagVariationInput = styled.input<{ $flag: boolean }>`
   display: flex;
   width: 100%;
-  height: 3.75rem;
+  height: 2rem;
   padding: 0.9375rem 0.75rem;
   align-items: center;
   gap: 0.625rem;
@@ -505,26 +504,66 @@ export const FlagTypeContentContainerUnchecked = styled.div`
   border-radius: 0.625rem;
 `;
 
-export const CustomTextField = styled(TextField)<{ $flag: boolean }>`
-  & .MuiInputBase-input::placeholder {
-    font-size: 1.8rem; // 플레이스홀더의 글씨 크기
+export const FlagDescriptionLayer = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3125rem;
+  flex-shrink: 0;
+`;
+
+export const FlagVariationLayer = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+`;
+
+export const ModalTitleText = styled.div`
+  color: #000;
+  font-family: Pretendard;
+  font-size: 2rem;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
+`;
+
+export const ModalTitleTextContainer = styled.div`
+  display: flex;
+  padding: 0.325rem 0;
+  gap: 0.625rem;
+`;
+
+export const FlagTitleContainer = styled.div`
+  display: flex;
+  padding: 0.325rem 0;
+  gap: 0.325rem;
+`;
+
+export const FlagTitleTextContainer = styled.div`
+  display: flex;
+  gap: 0.625rem;
+`;
+
+export const HeadFlagTitleIconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  > svg {
+    width: 1.4rem;
+    height: 1.4rem;
   }
-  & .MuiInputBase-input {
-    height: 50px;
-    font-weight: 600; // 입력 필드의 글씨 굵기
-    line-height: 50px; // 입력 필드의 라인 높이
-    border-radius: 10px;
-    font-size: 1.8rem;
-    color: #545454;
+`;
+
+export const FlagTagsIconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  > svg {
+    width: 1.4rem;
+    height: 1.4rem;
   }
-  & .MuiOutlinedInput-root {
-    border-radius: 15px; // 입력 필드 전체의 테두리 반경 조정
-    display: flex;
-  }
-  ${(props) =>
-    props.$flag &&
-    `
-    background-color: #f2f2f2;
-    pointer-events: none;
-  `}
 `;

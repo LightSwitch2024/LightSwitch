@@ -4,7 +4,10 @@ import com.lightswitch.core.common.dto.BaseResponse
 import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.dto.success
 import com.lightswitch.core.common.exception.BaseException
+import com.lightswitch.core.domain.flag.dto.req.FlagInfoRequestDto
 import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
+import com.lightswitch.core.domain.flag.dto.req.KeywordInfoRequestDto
+import com.lightswitch.core.domain.flag.dto.req.VariationInfoRequestDto
 import com.lightswitch.core.domain.flag.dto.res.FlagResponseDto
 import com.lightswitch.core.domain.flag.dto.res.FlagSummaryDto
 import com.lightswitch.core.domain.flag.dto.res.MainPageOverviewDto
@@ -65,6 +68,31 @@ class FlagController(
         @RequestBody flagRequestDto: FlagRequestDto
     ): BaseResponse<FlagResponseDto> {
         return success(flagService.updateFlag(flagId, flagRequestDto))
+    }
+
+    @PatchMapping("/flaginfo/{flagId}")
+    fun updateFlagInfo(
+        @PathVariable flagId: Long,
+        @RequestBody flagInfoRequestDto: FlagInfoRequestDto
+    ): BaseResponse<FlagResponseDto> {
+        return success(flagService.updateFlagInfo(flagId, flagInfoRequestDto))
+    }
+
+    @PatchMapping("/variationinfo/{flagId}")
+    fun updateVariationInfo(
+        @PathVariable flagId: Long,
+        @RequestBody variationInfoRequestDto: VariationInfoRequestDto
+    ): BaseResponse<FlagResponseDto> {
+        return success(flagService.updateVariationInfo(flagId, variationInfoRequestDto))
+    }
+
+    //    @RequestBody Map<String, List<String>> params
+    @PatchMapping("/keywordinfo/{flagId}")
+    fun updateKeywordInfo(
+        @PathVariable flagId: Long,
+        @RequestBody keywordInfoRequestDto: KeywordInfoRequestDto
+    ): BaseResponse<FlagResponseDto> {
+        return success(flagService.updateKeywordInfo(flagId, keywordInfoRequestDto))
     }
 
     @GetMapping("/overview")

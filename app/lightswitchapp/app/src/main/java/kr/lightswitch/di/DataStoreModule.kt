@@ -26,21 +26,14 @@ class DataStoreModule(private val context: Context) {
     suspend fun saveLoginData(
         loginResponse: LoginResponse,
     ) {
-
-        println(" ========================================== ")
-
         context.loginDataStore.edit { prefs ->
             prefs[PreferenceKeys.MEMBER_ID] = loginResponse.memberId
             prefs[PreferenceKeys.EMAIL] = loginResponse.email
             prefs[PreferenceKeys.FIRST_NAME] = loginResponse.firstName
             prefs[PreferenceKeys.LAST_NAME] = loginResponse.lastName
             prefs[PreferenceKeys.TEL_NUMBER] = loginResponse.telNumber
-        }
-
-        context.loginDataStore.edit { prefs ->
             prefs[PreferenceKeys.LOGIN_CHECK] = true
         }
-        println ("==========================================")
     }
 
     val isLogin: Flow<Boolean> = context.loginDataStore.data.map { prefs ->
@@ -50,6 +43,12 @@ class DataStoreModule(private val context: Context) {
     companion object {
         private const val LOGIN_DATASTORE = "login_datastore"
         private const val LOGIN_CHECK_DATASTORE = "login_check_datastore"
+    }
+
+    suspend fun removeLoginData() {
+        context.loginDataStore.edit { prefs ->
+            prefs.clear()
+        }
     }
 
 }
