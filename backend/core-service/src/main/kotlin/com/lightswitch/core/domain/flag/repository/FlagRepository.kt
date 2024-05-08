@@ -16,8 +16,8 @@ interface FlagRepository : JpaRepository<Flag, Long> {
 
     fun existsByTitleAndDeletedAtIsNull(title: String): Boolean
 
-    @Query("SELECT f FROM flag f JOIN FETCH f.keywords k WHERE k.deletedAt IS NULL AND f.flagId = :flagId")
-    fun findFlagWithActiveKeywords(flagId: Long): Flag?
+//    @Query("SELECT f FROM flag f JOIN FETCH f.keywords k WHERE k.deletedAt IS NULL AND f.flagId = :flagId")
+//    fun findFlagWithActiveKeywords(flagId: Long): Flag?
 
 //    @Query("SELECT f FROM flag f WHERE EXISTS (SELECT k FROM f.keywords k WHERE k.deletedAt IS NULL) AND f.flagId = :flagId")
 //    fun findFlagsWithNoDeletedKeywords(@Param("flagId") flagId: Long): Flag?
