@@ -3,6 +3,8 @@ import { Tag } from '@pages/main/tag';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
+import TagHandle from '@/assets/handle.svg?react';
+
 const TagsInput = styled.div`
   margin: 0 auto;
   display: flex;
@@ -12,7 +14,7 @@ const TagsInput = styled.div`
   max-width: 400px;
   min-width: 250px;
   padding: 0 8px;
-  border: 1px solid rgb(1, 186, 138);
+  border: 1px solid rgb(189, 189, 189);
   border-radius: 6px;
 
   > ul {
@@ -46,7 +48,6 @@ const TagContainer = styled.div`
 const TagItem = styled.li<{ bgColor: string }>`
   position: relative;
   background-color: ${(props) => props.bgColor};
-  border: 1px solid #aaa;
   display: flex;
   align-items: center;
   height: 32px;
@@ -84,9 +85,9 @@ export const TagCloseIcon = styled.span`
 const DropdownContainer = styled.div`
   position: absolute;
   z-index: 1000;
-  background-color: white;
+  background-color: rgb(245, 246, 247);
   width: 100%;
-  max-height: 320px; // 약 5개 항목의 높이
+  max-height: 290px; // 약 5개 항목의 높이
   overflow-y: auto; // 스크롤 활성화
 `;
 
@@ -96,8 +97,8 @@ const DropdownItem = styled.div`
   align-items: center;
   padding: 5px;
   cursor: pointer;
-  border: 1px solid #aaa;
-  width: 100%;
+  border: 1px solid #ffffff;
+  width: 95%;
   height: 32px;
 `;
 
@@ -188,7 +189,6 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
     if (!selectedTags.includes(tag)) {
       setSelectedTags([...selectedTags, tag]);
     }
-    // setShowDropdown(false);
   };
 
   const removeTag = (tagToRemove: Tag) => {
@@ -231,7 +231,7 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
           type="text"
           onChange={handleInputChange}
           onFocus={onFocus}
-          onBlur={() => setShowDropdown(true)}
+          onBlur={() => setShowDropdown(false)}
           placeholder="태그 검색"
         />
       </TagsInput>
@@ -246,6 +246,7 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
               }}
               onMouseDown={(e: { preventDefault: () => void }) => e.preventDefault()}
             >
+              <TagHandle />
               <TagItem key={index} bgColor={tag.colorHex}>
                 <MySVG mainColor={tag.colorHex} />
                 <TagContent
