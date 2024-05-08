@@ -114,7 +114,6 @@ export const ContentContainer = styled.div`
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 `;
 
-<<<<<<< HEAD
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -457,8 +456,6 @@ export const Boundary = styled.div`
   padding: 1rem;
 `;
 
-=======
->>>>>>> 86c0a20 ([Feat] : 추가 update modal 취소하기 버튼)
 export const WarnText = styled.div`
   font-family: Pretendard;
   font-size: 1.25rem;

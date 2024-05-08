@@ -469,10 +469,15 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     setIsDuplicatedTitle(false);
     setIsInvalidBooleanVariation(false);
     setIsBlankData(false);
+
+    let valid = true;
     if (editedFlagInfo.title === '' || editedFlagInfo.description === '') {
+      valid = false;
       setIsBlankData(true);
       return;
     }
+
+    if (!valid) return;
 
     updateFlag<FlagDetailItem>(
       props.flagDetail?.flagId,
@@ -495,29 +500,28 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     setIsInvalidBooleanVariation(false);
     setIsBlankData(false);
 
+    let valid = true;
     if (editedVariationInfo.type === 'BOOLEAN') {
-      let isValid = true;
-
       if (
         editedVariationInfo.defaultValue !== 'TRUE' &&
         editedVariationInfo.defaultValue !== 'FALSE'
       ) {
-        isValid = false;
+        valid = false;
       }
 
       editedVariationInfo.variations.map((variation) => {
         // BOOLEAN 타입은 TRUE, FALSE만 유효
         if (variation.value !== 'TRUE' && variation.value !== 'FALSE') {
-          isValid = false;
+          valid = false;
         }
 
         // BOOLEAN 타입은 둘 다 TRUE이거나 둘 다 FALSE면 안됨
         if (variation.value === editedVariationInfo.defaultValue) {
-          isValid = false;
+          valid = false;
         }
       });
 
-      if (!isValid) {
+      if (!valid) {
         setIsInvalidBooleanVariation(true);
         return;
       }
@@ -525,12 +529,14 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
 
     if (editedVariationInfo.type === 'INTEGER') {
       if (isNaN(Number(editedVariationInfo.defaultValue))) {
+        valid = false;
         setIsWrongType(true);
         return;
       }
 
       editedVariationInfo.variations.map((variation) => {
         if (isNaN(Number(variation.value))) {
+          valid = false;
           setIsWrongType(true);
           return;
         }
@@ -539,14 +545,13 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
 
     editedVariationInfo.variations.map((variation) => {
       if (variation.value === '' || variation.portion === '') {
+        valid = false;
         setIsBlankData(true);
         return;
       }
     });
 
-    if (isBlankData) return;
-    if (isWrongType) return;
-    if (isInvalidBooleanVariation) return;
+    if (!valid) return;
 
     updateVariations<FlagDetailItem>(
       props.flagDetail?.flagId,
@@ -565,37 +570,40 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     );
   };
 
-  const onClickSaveKeywordInfo = async () => {
+  const onClickSaveKeywordInfo = () => {
     // 유효성 검사
     // variation type이 BOOLEAN일 경우 value는 TRUE, FALSE만 유효
     setIsDuplicatedTitle(false);
     setIsInvalidBooleanVariation(false);
     setIsBlankData(false);
 
+    let valid = true;
+
     editedKeywordInfo.keywords.map((keyword) => {
       if (keyword.value === '') {
         setIsBlankData(true);
+        valid = false;
       }
 
       if (editedVariationInfo.type === 'BOOLEAN') {
         // keyword.value 값이 TRUE, FALSE가 아닐 경우 경고
         if (keyword.value !== 'TRUE' && keyword.value !== 'FALSE') {
           setIsInvalidBooleanVariation(true);
+          valid = false;
         }
       }
 
       if (editedVariationInfo.type === 'INTEGER') {
         if (isNaN(Number(keyword.value))) {
           setIsWrongType(true);
+          valid = false;
         }
       }
     });
 
-    if (isBlankData) return;
-    if (isWrongType) return;
-    if (isInvalidBooleanVariation) return;
+    if (!valid) return;
 
-    await updateKeywords<FlagDetailItem>(
+    updateKeywords<FlagDetailItem>(
       props.flagDetail?.flagId,
       editedKeywordInfo,
       (data: FlagDetailItem) => {
@@ -899,7 +907,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                 />
               </S.VarContainer>
             </S.VarVertical>
-            <S.Horizontal />\
+            <S.Horizontal />
           </div>
           {editedVariationInfo.variations.map((variation, index) => (
             <>
