@@ -99,6 +99,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   const [isInvalidIntegerVariation, setIsInvalidIntegerVariation] =
     useState<boolean>(false);
   const [flagMode, setFlagMode] = useState<string>(props.mode);
+  const [isBool, setIsBool] = useState<boolean>(false);
 
   const typeConfig = ['BOOLEAN', 'INTEGER', 'STRING', 'JSON'];
 
