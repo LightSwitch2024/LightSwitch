@@ -1,7 +1,9 @@
 import { getFlagList, getTagList } from '@api/main/mainAxios';
 import { Tag } from '@pages/main/tag';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+
+import TagHandle from '@/assets/handle.svg?react';
 
 const TagsInput = styled.div`
   margin: 0 auto;
@@ -12,7 +14,7 @@ const TagsInput = styled.div`
   max-width: 400px;
   min-width: 250px;
   padding: 0 8px;
-  border: 1px solid rgb(1, 186, 138);
+  border: 1px solid rgb(189, 189, 189);
   border-radius: 6px;
 
   > ul {
@@ -20,6 +22,10 @@ const TagsInput = styled.div`
     flex-wrap: wrap;
     padding: 0;
     margin: 8px 0 0 0;
+    > li {
+      margin-right: 4px;
+      margin-bottom: 4px;
+    }
   }
 
   > input {
@@ -27,10 +33,6 @@ const TagsInput = styled.div`
     border: none;
     height: 46px;
     font-size: 14px;
-    padding: 4px 0 0 0;
-    :focus {
-      //outline: transparent;
-    }
   }
 
   &:focus-within {
@@ -38,12 +40,16 @@ const TagsInput = styled.div`
   }
 `;
 
+const TagContainer = styled.div`
+  position: relative;
+  width: 320px;
+`;
+
 const TagItem = styled.li<{ bgColor: string }>`
+  position: relative;
   background-color: ${(props) => props.bgColor};
-  border: 1px solid #aaa;
   display: flex;
   align-items: center;
-  width: auto;
   height: 32px;
   justify-content: center;
   color: rgb(1, 186, 138);
@@ -51,17 +57,15 @@ const TagItem = styled.li<{ bgColor: string }>`
   font-size: 14px;
   list-style: none;
   border-radius: 15px;
-  margin: 0 8px 8px 0;
+  cursor: pointer;
 `;
 
 const TagContent = styled.span<{ textColor: string; color: string }>`
   background-color: ${({ color }) => color};
-  padding: 0.2rem 0.5rem;
+  padding: 0.1rem 0.1rem;
   border-radius: 0.5rem;
   color: ${({ textColor }) => textColor};
   margin-right: 0.5rem;
-  text-shadow: 0.1px 0.1px 0 #000, -0.1px -0.1px 0 #000, 0.1px -0.1px 0 #000,
-    -0.1px 0.1px 0 #000;
 `;
 
 export const TagCloseIcon = styled.span`
@@ -79,24 +83,115 @@ export const TagCloseIcon = styled.span`
 
 const DropdownContainer = styled.div`
   position: absolute;
-  z-index: 1000;
-  background-color: white;
+  display: flex;
+  flex-wrap: wrap;
   width: 100%;
-  max-height: 270px; // 약 5개 항목의 높이
-  max-width: 380px;
+`;
+
+const DropdownItemsBox = styled.div`
+  position: relative;
+  background-color: rgb(245, 246, 247);
+  width: 100%;
+  z-index: 1000;
+  max-height: 200px; // 약 5개 항목의 높이
   overflow-y: auto; // 스크롤 활성화
+`;
+
+const DropdownItem = styled.div`
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  padding: 5px;
+  cursor: pointer;
+  border: 1px solid #ffffff;
+  width: 95%;
+  height: 32px;
+`;
+
+const AddNewTagContainer = styled.div`
+  position: relative;
+  background: #dedfe0;
+  border-radius: 6px;
+  width: 100%;
+  z-index: 1001;
+`;
+
+const ColorPickerContainer = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  padding: 5px;
+`;
+
+const ColorButton = styled.div`
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+`;
+
+const TagPreview = styled.div`
+  display: flex;
+  align-items: start;
+  justify-content: start;
+  padding: 0.5rem 1rem;
+  margin-top: 10px;
 `;
 
 interface TagsInputProps {
   selectedTags: Array<Tag>;
   setSelectedTags: React.Dispatch<React.SetStateAction<Array<Tag>>>;
+  allowCreation?: boolean;
 }
-//getTagList
+
+interface ColorPairs {
+  [key: string]: string;
+}
+
+const colorPairs: ColorPairs = {
+  '#FAF0BE': '#AA952F',
+  '#FFB5B5': '#A92323',
+  '#C2FABE': '#21B217',
+  '#BEDDFA': '#266CB2',
+  '#8684F0': '#1815C6',
+  '#84DDF0': '#0C859E',
+  '#FABEF8': '#BC2969',
+  '#E27209': '#9A4D05',
+};
+
+const MySVG = ({ mainColor = '#AA952F' }) => {
+  const [accentColor, setAccentColor] = useState(colorPairs[mainColor]);
+
+  useEffect(() => {
+    setAccentColor(colorPairs[mainColor] || '#FFFFFF'); // 기본값 설정
+  }, [mainColor]);
+
+  return (
+    <svg width="30" height="30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="30" height="30" rx="10" fill={mainColor} />
+      <rect x="10" y="10" width="10" height="10" rx="10" fill={accentColor} />
+    </svg>
+  );
+};
+
+export default MySVG;
+
 export const TagsInputComponent: React.FC<TagsInputProps> = ({
   selectedTags,
   setSelectedTags,
+  allowCreation = false,
 }) => {
   const [allTags, setTagList] = useState<Array<Tag>>([]);
+  const [inputText, setInputText] = useState<string>('');
+  const [selectedColors, setSelectedColors] = useState({
+    mainColor: '',
+    accentColor: '',
+  });
+  const [filteredTags, setFilteredTags] = useState<Array<Tag>>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [showAddNewTagContainer, setShowAddNewTagContainer] = useState(true);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     getTagList(
@@ -109,16 +204,34 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
     );
   }, []);
 
-  const [filteredTags, setFilteredTags] = useState<Array<Tag>>([]);
-  const [showDropdown, setShowDropdown] = useState(false);
-
   useEffect(() => {
     // 컴포넌트 마운트 시 모든 태그를 초기 필터링 태그로 설정
     setFilteredTags(allTags.filter((tag) => !selectedTags.includes(tag)));
-  }, [selectedTags]); // selectedTags 변경 시 업데이트
+  }, [selectedTags, allTags]); // selectedTags 변경 시 업데이트
+
+  useEffect(() => {
+    const existingTag = allTags.some(
+      (tag) => tag.content.toLowerCase() === inputText.toLowerCase(),
+    );
+    setShowAddNewTagContainer(!existingTag && inputText !== ''); // 태그가 존재하지 않고 입력 필드가 비어있지 않을 때만 true
+  }, [inputText, allTags]);
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, []);
+
+  const handleOutsideClick = (event: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setShowDropdown(false);
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputText = e.target.value;
+    setInputText(inputText);
     if (inputText) {
       setFilteredTags(
         allTags.filter(
@@ -141,8 +254,8 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
   const selectTag = (tag: Tag) => {
     if (!selectedTags.includes(tag)) {
       setSelectedTags([...selectedTags, tag]);
+      setInputText('');
     }
-    // setShowDropdown(false);
   };
 
   const removeTag = (tagToRemove: Tag) => {
@@ -159,15 +272,58 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
     const brightness = (r * 299 + g * 587 + b * 114) / 1000;
 
     // 밝기가 128보다 크면 검은색, 그렇지 않으면 흰색 반환
-    return brightness > 200 ? '#000' : '#FFF';
+    return brightness > 128 ? '#000' : '#FFF';
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (
+      e.key === 'Enter' &&
+      inputText &&
+      allowCreation &&
+      !allTags.find((tag) => tag.content.toLowerCase() === inputText.toLowerCase())
+    ) {
+      const newTag = { content: inputText, colorHex: '#CCCCCC' };
+      setTagList([...allTags, newTag]);
+      setSelectedTags([...selectedTags, newTag]);
+      setInputText('');
+    }
+  };
+
+  const handleColorSelect = (
+    event: { stopPropagation: () => void },
+    mainColor: string,
+    accentColor: string,
+  ) => {
+    event.stopPropagation(); // 이벤트 버블링 중지
+    setSelectedColors({ mainColor, accentColor });
+  };
+
+  const addNewTag = () => {
+    if (
+      inputText &&
+      !allTags.some((tag) => tag.content.toLowerCase() === inputText.toLowerCase())
+    ) {
+      if (selectedColors.mainColor) {
+        // 색상이 선택되었는지 확인
+        const newTag = {
+          content: inputText,
+          colorHex: selectedColors.mainColor,
+        };
+        setTagList([...allTags, newTag]);
+        setSelectedTags([...selectedTags, newTag]);
+        setInputText(''); // 입력 필드 초기화
+        setSelectedColors({ mainColor: '', accentColor: '' }); // 색상 선택 초기화
+      }
+    }
   };
 
   return (
-    <div>
+    <TagContainer>
       <TagsInput>
         <ul id="tags">
           {selectedTags.map((tag, index) => (
             <TagItem key={index} bgColor={tag.colorHex}>
+              <MySVG mainColor={tag.colorHex} />
               <TagContent
                 key={tag.content}
                 color={tag.colorHex}
@@ -182,42 +338,77 @@ export const TagsInputComponent: React.FC<TagsInputProps> = ({
         <input
           className="tag-input"
           type="text"
+          value={inputText}
           onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
           onFocus={onFocus}
-          onBlur={() => setShowDropdown(false)}
-          placeholder="Search and select tags"
+          onBlur={() => {
+            if (!showDropdown) setShowDropdown(false); // 드롭다운이 활성화되어 있지 않을 때만 닫기
+          }}
+          placeholder="태그 검색"
         />
       </TagsInput>
       {showDropdown && (
-        <DropdownContainer>
-          {filteredTags.map((tag, index) => (
-            <div
-              key={index}
-              style={{
-                width: '100%',
-                padding: '5px',
-                cursor: 'pointer',
-                border: '1px solid #AAA',
-              }}
-              onClick={() => {
-                selectTag(tag);
-                // setShowDropdown(false); // 태그 선택 후 드롭다운 닫기
-              }}
-              onMouseDown={(e) => e.preventDefault()}
-            >
-              <TagItem key={index} bgColor={tag.colorHex}>
-                <TagContent
-                  key={tag.content}
-                  color={tag.colorHex}
-                  textColor={getContrastColor(tag.colorHex)}
+        <DropdownContainer ref={dropdownRef}>
+          <DropdownItemsBox>
+            {filteredTags.map((tag, index) => (
+              <DropdownItem
+                key={index}
+                onClick={() => {
+                  selectTag(tag);
+                }}
+                onMouseDown={(e: { preventDefault: () => void }) => e.preventDefault()}
+              >
+                <TagHandle />
+                <TagItem key={index} bgColor={tag.colorHex}>
+                  <MySVG mainColor={tag.colorHex} />
+                  <TagContent
+                    key={tag.content}
+                    color={tag.colorHex}
+                    textColor={getContrastColor(tag.colorHex)}
+                  >
+                    {tag.content}
+                  </TagContent>
+                </TagItem>
+              </DropdownItem>
+            ))}
+          </DropdownItemsBox>
+          {allowCreation && showAddNewTagContainer && (
+            <AddNewTagContainer>
+              <TagPreview>
+                <TagItem
+                  bgColor={selectedColors.mainColor}
+                  onClick={(event: { stopPropagation: () => void }) => {
+                    event.stopPropagation();
+                    addNewTag(); // 태그 추가 함수 호출
+                  }}
                 >
-                  {tag.content}
-                </TagContent>
-              </TagItem>
-            </div>
-          ))}
+                  <MySVG mainColor={selectedColors.mainColor} />
+                  <TagContent
+                    color={selectedColors.mainColor}
+                    textColor={getContrastColor(selectedColors.mainColor)}
+                  >
+                    {inputText || 'New Tag'}
+                  </TagContent>
+                </TagItem>
+              </TagPreview>
+              <ColorPickerContainer>
+                {Object.entries(colorPairs).map(([mainColor, accentColor]) => (
+                  <ColorButton
+                    key={mainColor}
+                    onClick={(event: { stopPropagation: () => void }) => {
+                      event.stopPropagation();
+                      handleColorSelect(event, mainColor, accentColor);
+                    }}
+                  >
+                    <MySVG mainColor={mainColor} />
+                  </ColorButton>
+                ))}
+              </ColorPickerContainer>
+            </AddNewTagContainer>
+          )}
         </DropdownContainer>
       )}
-    </div>
+    </TagContainer>
   );
 };
