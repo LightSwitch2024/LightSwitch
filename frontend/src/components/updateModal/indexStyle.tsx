@@ -122,6 +122,13 @@ export const Container = styled.div`
   gap: 0.525rem;
 `;
 
+export const WarnTextContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 0.5rem 0;
+  gap: 0.525rem;
+`;
+
 export const TagContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -132,10 +139,21 @@ export const TagContainer = styled.div`
 
 export const Layer = styled.div`
   display: flex;
+  width: 100%;
   flex-direction: row;
   padding: 0.325rem 0;
   gap: 0.625rem;
 `;
+
+export const WarnTextLayer = styled.div`
+  display: flex;
+  width: 100%
+  justify-content: flex-end;
+  flex-direction: column;
+  padding: 2px;
+  gap: 0.625rem;
+`;
+
 export const KeywordHeadWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -156,7 +174,7 @@ export const IconContainer = styled.div`
 export const TextContainer = styled.div`
   display: flex;
   flex-direction: row;
-  margin: 15px 0 2px 0;
+  margin: 10px 0 2px 0;
   gap: 0.625rem;
 `;
 
@@ -175,10 +193,20 @@ export const PropertyIndexTextContainer = styled.div`
 
 export const VarContainer = styled.div`
   display: flex;
+  justify-content: flex-end;
   width: 48%;
   flex-direction: row;
   gap: 0.125rem;
 `;
+
+export const VarDescriptionContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  flex-direction: row;
+  gap: 0.125rem;
+`;
+
 export const VarDefinitionContainer = styled.div`
   display: flex;
   width: 100%;
@@ -188,7 +216,7 @@ export const VarDefinitionContainer = styled.div`
 
 export const VarHorizon = styled.div`
   display: flex;
-  // width: 100%;
+  width: 100%;
   flex-direction: row;
   justify-content: space-between;
 `;
@@ -264,10 +292,11 @@ export const VarText = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  padding-top: 10px;
 `;
 
 export const TextArea = styled.textarea<{ $flag: boolean }>`
-  padding: 8px 0x;
+  padding: 8px;
   width: 100%;
   height: 7rem;
   border-radius: 6px;
@@ -324,6 +353,7 @@ export const BottomButtonLayer = styled.div`
 export const CancelButton = styled.button`
   display: flex;
   padding: 1.0625rem 1.5625rem;
+  margin-left: 
 
   justify-content: center;
   align-items: center;
@@ -458,7 +488,9 @@ export const Boundary = styled.div`
 
 export const WarnText = styled.div`
   font-family: Pretendard;
-  font-size: 1.25rem;
+  display: flex;
+  justify-content: flex-end;
+  font-size: 1rem;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
@@ -496,7 +528,9 @@ export const FlagTypeText = styled.div`
 
 export const FlagTypeContentContainerChecked = styled.div`
   display: flex;
-  padding: 0.6875rem 0.5rem;
+  width: 7rem;
+
+  padding: 0.9rem 0.5rem 0.6875rem 1.2rem;
   align-items: center;
   gap: 0.5rem;
   align-self: stretch;
@@ -524,4 +558,10 @@ export const FlagTypeContentContainer = styled.div`
   align-items: center;
   gap: 0.5rem;
   align-self: stretch;
+`;
+
+export const BTypeLayer = styled.div`
+  display: flex;
+  align-items: flex-start;
+  margin-top: 15px;
 `;

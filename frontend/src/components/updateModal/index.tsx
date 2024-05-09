@@ -75,10 +75,35 @@ interface KeywordInfo {
 
 const UpdateModal: React.FC<UpdateModalProps> = (props) => {
   // input box hover용
+  const [defaultValue, setDefaultValue] = useState<string>('');
   const [isFocused, setIsFocused] = useState<boolean>(false);
+  const [isTypeEdited, setIsTypeEdited] = useState<boolean>(false);
+  const [type, setType] = useState<string>(props.flagDetail?.type || 'BOOLEAN');
   const [variations, setVariations] = useState<Array<Variation>>(
     props.flagDetail?.variations || [{ value: 'FALSE', portion: '', description: '' }],
   );
+
+  const typeConfig = ['BOOLEAN', 'INTEGER', 'STRING', 'JSON'];
+
+  const handleEditeType = (typeItem: string) => () => {
+    setIsInvalidBooleanVariation(false);
+    setType(typeItem);
+    if (typeItem === 'BOOLEAN') {
+      setDefaultValue('TRUE');
+      setVariations([
+        {
+          value: 'FALSE',
+          portion: 0,
+          description: '',
+        },
+      ]);
+    } else {
+      setDefaultValue('');
+      setVariations([]);
+    }
+
+    setIsTypeEdited(false);
+  };
 
   // 이벤트 버블링 방지
   const stopPropagation = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -717,6 +742,14 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     setIsWrongType(false);
   };
 
+  /**
+   * 타입 수정 버튼 클릭 이벤트 핸들러
+   */
+  const onClickTypeEdit = (): void => {
+    setIsTypeEdited(true);
+    console.log('타입 수정 버튼 클릭');
+  };
+
   // validation check
   /**
    * 중복된 타이틀 체크
@@ -832,11 +865,15 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
               />
             </S.Layer>
           </S.Container>
-          <S.BottomButtonLayer>
-            <S.CancelButton onClick={onClickCancelFlagInfo}>취소하기</S.CancelButton>
-            <S.ConfirmButton onClick={onClickSaveFlagInfo}>저장하기</S.ConfirmButton>
-            {isBlankData && <S.WarnText>필수 값이 비어있습니다.</S.WarnText>}
-          </S.BottomButtonLayer>
+          <S.Container>
+            <S.BottomButtonLayer>
+              <S.CancelButton onClick={onClickCancelFlagInfo}>취소하기</S.CancelButton>
+              <S.ConfirmButton onClick={onClickSaveFlagInfo}>저장하기</S.ConfirmButton>
+            </S.BottomButtonLayer>
+            <S.WarnTextLayer>
+              {isBlankData && <S.WarnText>필수 값이 비어있습니다.</S.WarnText>}
+            </S.WarnTextLayer>
+          </S.Container>
         </S.FlagEditForm>
       );
     }
@@ -845,45 +882,58 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     if (selectedTab === 1) {
       return (
         <S.Container>
-          <S.Layer>
-            <S.IconContainer>
-              <CallSplit />
-            </S.IconContainer>
-            <S.TextContainer>
-              <S.LabelText>변수 타입</S.LabelText>
-            </S.TextContainer>
-          </S.Layer>
-          {/* 여기 변수 타입 선택 start */}
-          <S.FlagTypeContainer onClick={onClickTypeEdit} $flag={isDetailMode()}>
-            <S.FlagTypeContentContainer>
-              <S.FlagTypeTextContainer>
-                <S.FlagTypeText>{type}</S.FlagTypeText>
-              </S.FlagTypeTextContainer>
-            </S.FlagTypeContentContainer>
-          </S.FlagTypeContainer>
-          {isTypeEdited &&
-            typeConfig.map((typeItem, idx) =>
-              typeItem === type ? (
-                <S.FlagTypeContentContainerChecked
-                  key={idx}
-                  onClick={handleEditeType(typeItem)}
-                >
-                  <S.FlagTypeTextContainer>
-                    <S.FlagTypeText>{typeItem}</S.FlagTypeText>
-                  </S.FlagTypeTextContainer>
-                </S.FlagTypeContentContainerChecked>
-              ) : (
-                <S.FlagTypeContentContainerUnchecked
-                  key={idx}
-                  onClick={handleEditeType(typeItem)}
-                >
-                  <S.FlagTypeTextContainer>
-                    <S.FlagTypeText>{typeItem}</S.FlagTypeText>
-                  </S.FlagTypeTextContainer>
-                </S.FlagTypeContentContainerUnchecked>
-              ),
-            )}
-          {/* 여기 변수 타입 선택 end */}
+          <S.VarHorizon>
+            <S.Layer>
+              <S.IconContainer>
+                <CallSplit />
+              </S.IconContainer>
+              <S.TextContainer>
+                <S.LabelText>변수 타입</S.LabelText>
+              </S.TextContainer>
+            </S.Layer>
+            <S.Layer>
+              <S.BTypeLayer>
+                <S.FlagTypeContainer onClick={onClickTypeEdit}>
+                  <S.FlagTypeContentContainer>
+                    <S.FlagTypeTextContainer>
+                      <S.FlagTypeText>{type}</S.FlagTypeText>
+                    </S.FlagTypeTextContainer>
+                  </S.FlagTypeContentContainer>
+                </S.FlagTypeContainer>
+              </S.BTypeLayer>
+            </S.Layer>
+          </S.VarHorizon>
+          {/* type 선택 start */}
+          <S.VarHorizon>
+            {isTypeEdited &&
+              typeConfig.map((typeItem, idx) =>
+                typeItem === type ? (
+                  <S.FlagTypeContentContainerChecked
+                    key={idx}
+                    onClick={handleEditeType(typeItem)}
+                  >
+                    <S.FlagTypeTextContainer>
+                      <S.FlagTypeText>{typeItem}</S.FlagTypeText>
+                    </S.FlagTypeTextContainer>
+                  </S.FlagTypeContentContainerChecked>
+                ) : (
+                  <S.FlagTypeContentContainerUnchecked
+                    key={idx}
+                    onClick={handleEditeType(typeItem)}
+                  >
+                    <S.FlagTypeTextContainer>
+                      <S.FlagTypeText>{typeItem}</S.FlagTypeText>
+                    </S.FlagTypeTextContainer>
+                  </S.FlagTypeContentContainerUnchecked>
+                ),
+              )}
+          </S.VarHorizon>
+          {/* type 선택 end */}
+          {/* <select value={editedVariationInfo.type}>
+            <option value={'BOOLEAN'}>boolean</option>
+            <option value={'INTEGER'}>Integer</option>
+            <option value={'STRING'}>String</option>
+          </select> */}
           <S.Layer>
             <S.IconContainer>
               <Loop />
@@ -922,7 +972,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                   />
                 </S.VarContainer>
               </S.VarHorizon>
-              <S.VarContainer>
+              <S.VarDescriptionContainer>
                 <S.VarTextContainer>
                   <S.VarText>설명</S.VarText>
                 </S.VarTextContainer>
@@ -934,7 +984,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
                 />
-              </S.VarContainer>
+              </S.VarDescriptionContainer>
             </S.VarVertical>
             <S.Horizontal />
           </div>
@@ -970,7 +1020,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                       />
                     </S.VarContainer>
                   </S.VarHorizon>
-                  <S.VarContainer>
+                  <S.VarDescriptionContainer>
                     <S.VarTextContainer>
                       <S.VarText>설명</S.VarText>
                     </S.VarTextContainer>
@@ -982,7 +1032,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                       onFocus={() => setIsFocused(true)}
                       onBlur={() => setIsFocused(false)}
                     />
-                  </S.VarContainer>
+                  </S.VarDescriptionContainer>
                 </S.VarVertical>
               </div>
               <S.ButtonLayer>
@@ -1117,12 +1167,16 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
           <S.BottomButtonLayer>
             <S.CancelButton onClick={onClickCancelKeywordInfo}>취소하기</S.CancelButton>
             <S.ConfirmButton onClick={onClickSaveKeywordInfo}>저장하기</S.ConfirmButton>
-            {isInvalidBooleanVariation && (
-              <S.WarnText>BOOLEAN 타입은 TRUE 와 FALSE 값만 유효합니다.</S.WarnText>
-            )}
-            {isWrongType && <S.WarnText>INTEGER 타입은 숫자만 유효합니다.</S.WarnText>}
-            {isBlankData && <S.WarnText>필수 값이 비어있습니다.</S.WarnText>}
           </S.BottomButtonLayer>
+          <S.WarnTextContainer>
+            <S.WarnTextLayer>
+              {isInvalidBooleanVariation && (
+                <S.WarnText>BOOLEAN 타입은 TRUE 와 FALSE 값만 유효합니다.</S.WarnText>
+              )}
+              {isWrongType && <S.WarnText>INTEGER 타입은 숫자만 유효합니다.</S.WarnText>}
+              {isBlankData && <S.WarnText>필수 값이 비어있습니다.</S.WarnText>}
+            </S.WarnTextLayer>
+          </S.WarnTextContainer>
         </S.Container>
       );
     }
