@@ -13,8 +13,6 @@ import React, { useEffect, useState } from 'react';
 
 import { confirmDuplicateFlag } from '@/api/create/createAxios';
 
-import { FlagVariationDivisionLine } from '../createModal/indexStyle';
-
 interface UpdateModalProps {
   closeUpdateModal: () => void;
   flagDetail: FlagDetailItem;
@@ -531,14 +529,12 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       if (isNaN(Number(editedVariationInfo.defaultValue))) {
         valid = false;
         setIsWrongType(true);
-        return;
       }
 
       editedVariationInfo.variations.map((variation) => {
         if (isNaN(Number(variation.value))) {
           valid = false;
           setIsWrongType(true);
-          return;
         }
       });
     }
@@ -547,9 +543,13 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       if (variation.value === '' || variation.portion === '') {
         valid = false;
         setIsBlankData(true);
-        return;
       }
     });
+
+    if (editedVariationInfo.defaultValue === '') {
+      valid = false;
+      setIsBlankData(true);
+    }
 
     if (!valid) return;
 
@@ -738,6 +738,8 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
         console.log(err);
       },
     );
+
+    setIsFocused(false);
   };
 
   const calculateTotalPortion = (): number => {
@@ -791,7 +793,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                 onChange={handelChangeTitle}
                 $flag={isFocused}
                 onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
+                onBlur={checkDuplicatedTitle}
               />
             </S.Layer>
 
@@ -968,6 +970,11 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
           <S.BottomButtonLayer>
             <S.CancelButton onClick={onClickCancelVariationInfo}>취소하기</S.CancelButton>
             <S.ConfirmButton onClick={onClickSaveVariationInfo}>저장하기</S.ConfirmButton>
+            {isInvalidBooleanVariation && (
+              <S.WarnText>BOOLEAN 타입은 TRUE 와 FALSE 값만 유효합니다.</S.WarnText>
+            )}
+            {isWrongType && <S.WarnText>INTEGER 타입은 숫자만 유효합니다.</S.WarnText>}
+            {isBlankData && <S.WarnText>필수 값이 비어있습니다.</S.WarnText>}
           </S.BottomButtonLayer>
         </S.Container>
       );
