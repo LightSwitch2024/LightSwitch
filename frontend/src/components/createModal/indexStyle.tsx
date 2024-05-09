@@ -604,3 +604,8 @@ export const FlagTagsIconContainer = styled.div`
     height: 1.4rem;
   }
 `;
+
+export const BottomLayer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;

@@ -831,11 +831,17 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
               />
             </S.Layer>
           </S.Container>
-          <S.BottomButtonLayer>
-            <S.CancelButton onClick={onClickCancelFlagInfo}>취소하기</S.CancelButton>
-            <S.ConfirmButton onClick={onClickSaveFlagInfo}>저장하기</S.ConfirmButton>
-            {isBlankData && <S.WarnText>필수 값이 비어있습니다.</S.WarnText>}
-          </S.BottomButtonLayer>
+          <S.Container>
+            <S.BottomLayer>
+              <S.BottomButtonLayer>
+                <S.CancelButton onClick={onClickCancelFlagInfo}>취소하기</S.CancelButton>
+                <S.ConfirmButton onClick={onClickSaveFlagInfo}>저장하기</S.ConfirmButton>
+              </S.BottomButtonLayer>
+              <S.WarnTextWrapper>
+                {isBlankData && <S.WarnText>필수 값이 비어있습니다.</S.WarnText>}
+              </S.WarnTextWrapper>
+            </S.BottomLayer>
+          </S.Container>
         </S.FlagEditForm>
       );
     }
@@ -895,7 +901,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                   />
                 </S.VarContainer>
               </S.VarHorizon>
-              <S.VarContainer>
+              <S.VarDesContainer>
                 <S.VarTextContainer>
                   <S.VarText>설명</S.VarText>
                 </S.VarTextContainer>
@@ -907,7 +913,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
                 />
-              </S.VarContainer>
+              </S.VarDesContainer>
             </S.VarVertical>
             <S.Horizontal />
           </div>
@@ -943,7 +949,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                       />
                     </S.VarContainer>
                   </S.VarHorizon>
-                  <S.VarContainer>
+                  <S.VarDesContainer>
                     <S.VarTextContainer>
                       <S.VarText>설명</S.VarText>
                     </S.VarTextContainer>
@@ -955,7 +961,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                       onFocus={() => setIsFocused(true)}
                       onBlur={() => setIsFocused(false)}
                     />
-                  </S.VarContainer>
+                  </S.VarDesContainer>
                 </S.VarVertical>
               </div>
               <S.ButtonLayer>
@@ -970,12 +976,16 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
           <S.BottomButtonLayer>
             <S.CancelButton onClick={onClickCancelVariationInfo}>취소하기</S.CancelButton>
             <S.ConfirmButton onClick={onClickSaveVariationInfo}>저장하기</S.ConfirmButton>
-            {isInvalidBooleanVariation && (
-              <S.WarnText>BOOLEAN 타입은 TRUE 와 FALSE 값만 유효합니다.</S.WarnText>
-            )}
-            {isWrongType && <S.WarnText>INTEGER 타입은 숫자만 유효합니다.</S.WarnText>}
             {isBlankData && <S.WarnText>필수 값이 비어있습니다.</S.WarnText>}
           </S.BottomButtonLayer>
+          <S.BottomLayer>
+            <S.WarnTextWrapper>
+              {isInvalidBooleanVariation && (
+                <S.WarnText>BOOLEAN 타입은 TRUE 와 FALSE 값만 유효합니다.</S.WarnText>
+              )}
+              {isWrongType && <S.WarnText>INTEGER 타입은 숫자만 유효합니다.</S.WarnText>}
+            </S.WarnTextWrapper>
+          </S.BottomLayer>
         </S.Container>
       );
     }
@@ -1092,15 +1102,29 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
           <S.ButtonLayer>
             <S.AddButton onClick={addKeyword}>Keyword 추가</S.AddButton>
           </S.ButtonLayer>
-          <S.BottomButtonLayer>
-            <S.CancelButton onClick={onClickCancelKeywordInfo}>취소하기</S.CancelButton>
-            <S.ConfirmButton onClick={onClickSaveKeywordInfo}>저장하기</S.ConfirmButton>
-            {isInvalidBooleanVariation && (
-              <S.WarnText>BOOLEAN 타입은 TRUE 와 FALSE 값만 유효합니다.</S.WarnText>
-            )}
-            {isWrongType && <S.WarnText>INTEGER 타입은 숫자만 유효합니다.</S.WarnText>}
-            {isBlankData && <S.WarnText>필수 값이 비어있습니다.</S.WarnText>}
-          </S.BottomButtonLayer>
+          <S.BottomWrapper>
+            <S.BottomButtonLayer>
+              <S.CancelButton onClick={onClickCancelKeywordInfo}>취소하기</S.CancelButton>
+              <S.ConfirmButton onClick={onClickSaveKeywordInfo}>저장하기</S.ConfirmButton>
+            </S.BottomButtonLayer>
+            <S.WarnEndWrapper>
+              <S.BottomLayer>
+                <S.WarnTextWrapper>
+                  {isInvalidBooleanVariation && (
+                    <S.WarnText>BOOLEAN 타입은 TRUE 와 FALSE 값만 유효합니다.</S.WarnText>
+                  )}
+                </S.WarnTextWrapper>
+                <S.WarnTextWrapper>
+                  {isWrongType && (
+                    <S.WarnText>INTEGER 타입은 숫자만 유효합니다.</S.WarnText>
+                  )}
+                </S.WarnTextWrapper>
+                <S.WarnTextWrapper>
+                  {isBlankData && <S.WarnText>필수 값이 비어있습니다.</S.WarnText>}
+                </S.WarnTextWrapper>
+              </S.BottomLayer>
+            </S.WarnEndWrapper>
+          </S.BottomWrapper>
         </S.Container>
       );
     }

@@ -179,6 +179,14 @@ export const VarContainer = styled.div`
   flex-direction: row;
   gap: 0.125rem;
 `;
+
+export const VarDesContainer = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  gap: 0.125rem;
+`;
+
 export const VarDefinitionContainer = styled.div`
   display: flex;
   width: 100%;
@@ -209,6 +217,7 @@ export const Input = styled.input<{ $flag: boolean }>`
 
   font-size: 1.5rem;
   font-style: normal;
+  font-family: 'Pretendard-Regular';
   font-weight: 400;
   line-height: normal;
 
@@ -267,7 +276,7 @@ export const VarText = styled.div`
 `;
 
 export const TextArea = styled.textarea<{ $flag: boolean }>`
-  padding: 8px 0x;
+  padding: 8px 8px;
   width: 100%;
   height: 7rem;
   border-radius: 6px;
@@ -463,4 +472,26 @@ export const WarnText = styled.div`
   font-weight: 500;
   line-height: normal;
   color: #ff0000;
+`;
+
+export const WarnTextWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+export const WarnEndWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+export const BottomWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+`;
+
+export const BottomLayer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
 `;
