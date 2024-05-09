@@ -464,3 +464,64 @@ export const WarnText = styled.div`
   line-height: normal;
   color: #ff0000;
 `;
+
+export const FlagTypeContentContainerUnchecked = styled.div`
+  display: flex;
+  padding: 0.6875rem 0.5rem;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: stretch;
+
+  border-radius: 0.625rem;
+`;
+
+export const FlagTypeTextContainer = styled.div`
+  display: flex;
+  padding: 0.25rem 0rem;
+  align-items: center;
+  gap: 0.625rem;
+`;
+
+export const FlagTypeText = styled.div`
+  color: #1e3232;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 0.9375rem; /* 75% */
+  letter-spacing: 0.07813rem;
+  text-transform: uppercase;
+`;
+
+export const FlagTypeContentContainerChecked = styled.div`
+  display: flex;
+  padding: 0.6875rem 0.5rem;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: stretch;
+  background: #f5f6f7;
+
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 0.625rem;
+`;
+
+export const FlagTypeContainer = styled.div`
+  display: flex;
+  width: 8.625rem;
+  height: 2.125rem;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+
+  border-radius: 0.625rem;
+  background: #30c2e7;
+`;
+
+export const FlagTypeContentContainer = styled.div`
+  display: flex;
+  padding: 0.6875rem 0rem;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: stretch;
+`;

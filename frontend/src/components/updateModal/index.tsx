@@ -76,6 +76,9 @@ interface KeywordInfo {
 const UpdateModal: React.FC<UpdateModalProps> = (props) => {
   // input box hover용
   const [isFocused, setIsFocused] = useState<boolean>(false);
+  const [variations, setVariations] = useState<Array<Variation>>(
+    props.flagDetail?.variations || [{ value: 'FALSE', portion: '', description: '' }],
+  );
 
   // 이벤트 버블링 방지
   const stopPropagation = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -850,11 +853,37 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
               <S.LabelText>변수 타입</S.LabelText>
             </S.TextContainer>
           </S.Layer>
-          <select value={editedVariationInfo.type}>
-            <option value={'BOOLEAN'}>boolean</option>
-            <option value={'INTEGER'}>Integer</option>
-            <option value={'STRING'}>String</option>
-          </select>
+          {/* 여기 변수 타입 선택 start */}
+          <S.FlagTypeContainer onClick={onClickTypeEdit} $flag={isDetailMode()}>
+            <S.FlagTypeContentContainer>
+              <S.FlagTypeTextContainer>
+                <S.FlagTypeText>{type}</S.FlagTypeText>
+              </S.FlagTypeTextContainer>
+            </S.FlagTypeContentContainer>
+          </S.FlagTypeContainer>
+          {isTypeEdited &&
+            typeConfig.map((typeItem, idx) =>
+              typeItem === type ? (
+                <S.FlagTypeContentContainerChecked
+                  key={idx}
+                  onClick={handleEditeType(typeItem)}
+                >
+                  <S.FlagTypeTextContainer>
+                    <S.FlagTypeText>{typeItem}</S.FlagTypeText>
+                  </S.FlagTypeTextContainer>
+                </S.FlagTypeContentContainerChecked>
+              ) : (
+                <S.FlagTypeContentContainerUnchecked
+                  key={idx}
+                  onClick={handleEditeType(typeItem)}
+                >
+                  <S.FlagTypeTextContainer>
+                    <S.FlagTypeText>{typeItem}</S.FlagTypeText>
+                  </S.FlagTypeTextContainer>
+                </S.FlagTypeContentContainerUnchecked>
+              ),
+            )}
+          {/* 여기 변수 타입 선택 end */}
           <S.Layer>
             <S.IconContainer>
               <Loop />
