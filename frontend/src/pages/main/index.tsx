@@ -250,6 +250,7 @@ const index = () => {
                   <TagsInputComponent
                     selectedTags={selectedTags}
                     setSelectedTags={setSelectedTags}
+                    allowCreation={false}
                   />,
                   dropdownContainerRef.current,
                 )}
