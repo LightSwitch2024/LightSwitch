@@ -34,7 +34,9 @@ class MemberServiceTest(
 ) {
     @BeforeEach
     fun setUp() {
-        memberService.deleteAll()
+        memberRepository.findAllAByDeletedAtIsNull().map {
+            memberService.deleteUser(it.memberId!!)
+        }
     }
 
     @Test
@@ -53,7 +55,7 @@ class MemberServiceTest(
         )
         memberRepository.save(member)
 
-        val findMember: Member? = memberRepository.findByEmail("test@gmail.com")
+        val findMember: Member? = memberRepository.findByEmailAndDeletedAtIsNull("test@gmail.com")
         assertThat(findMember).isNotNull
 
         assertThat(member.memberId).isEqualTo(findMember!!.memberId)
@@ -109,7 +111,7 @@ class MemberServiceTest(
 
         val redisValue: String? = redisService.find("$signupCode:$email")
         assertThat(redisValue).isNotNull
-        val member: Member = memberService.signUp(
+        val memberResDto = memberService.signUp(
             SignupReqDto(
                 firstName = "동훈",
                 lastName = "김",
@@ -120,12 +122,12 @@ class MemberServiceTest(
             )
         )
 
-        val findMember: Member? = memberRepository.findByEmail(email)
+        val findMember: Member? = memberRepository.findByEmailAndDeletedAtIsNull(email)
         assertThat(findMember).isNotNull
 
-        assertThat(member.memberId).isEqualTo(findMember!!.memberId)
-        assertThat(member.email).isEqualTo(findMember.email)
-        assertThat(passwordService.matches("1234", member.password)).isTrue()
+        assertThat(memberResDto.memberId).isEqualTo(findMember!!.memberId)
+        assertThat(memberResDto.email).isEqualTo(findMember.email)
+        assertThat(passwordService.matches("1234", memberResDto.password)).isTrue()
     }
 
     @Test
@@ -161,22 +163,24 @@ class MemberServiceTest(
         assertThat(memberService.validatePassword("abcbabcb")).isFalse()
     }
 
+    @Test
+    fun `로그인 테스트`() {
+//        //given
+//        //유저저장
+//        val signUp = memberService.signUp()
+//
+//        //when
+//        val logIn = memberService.logIn()
+//
+//        //then
+////        assertThat
+    }
 
-//    @Test
-//    fun login() {
-//        val email: String = "huni19541@gmail.com"
-//
-//        val member: Boolean = memberService.logIn(email, "1234")
-//        assertThat(member).isTrue()
-//    }
-//
-//    @Test
-//    fun notOurMember() {
-//        // 회원가입한적 없는 멤버인경우 에러발생
-//    }
-//
-//    @Test
-//    fun notCorrectPassword() {
-//        // 비밀번호가 틀린 경우 에러발생
-//    }
+    @Test
+    fun modifyUserdata() {
+    }
+
+    @Test
+    fun modifyPassword() {
+    }
 }

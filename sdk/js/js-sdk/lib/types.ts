@@ -1,3 +1,8 @@
+export type LSMessageData = Flag | Title | Switch | string;
+export type LSFlagType = 'BOOLEAN' | 'STRING' | 'NUMBER';
+export type LSDefaultValueType = boolean | string | number;
+export type ErrorCallback = (error: any) => void;
+export type flagChangedCallback = (flags: Flag[]) => void;
 export enum LogLevel {
   DEBUG,
   INFO,
@@ -6,42 +11,78 @@ export enum LogLevel {
 }
 
 export interface Logger {
-  debug: (message: string) => void;
-  info: (message: string) => void;
-  warning: (message: string) => void;
-  error: (message: string) => void;
+  debug: (message: any) => void;
+  info: (message: any) => void;
+  warning: (message: any) => void;
+  error: (message: any) => void;
+}
+
+export interface userKey {
+  userKey: string;
 }
 
 export interface SdkConfig {
   sdkKey: string;
-  endpoint: string;
-  logLevel: LogLevel;
+  onFlagChanged: flagChangedCallback;
+  endpoint?: string;
+  logLevel?: LogLevel;
+  reconnectTime?: number;
+  onError?: ErrorCallback;
+}
+export interface ILSUser {
+  userId: null | string;
+  property: null | Map<string, string>;
+  getUserId: () => string;
 }
 
 export interface ILSClient {
   isInitialized: boolean;
 
   init: (config: SdkConfig) => void;
-  getFlags: () => void;
+  getFlag: (name: string, LSUser: ILSUser) => void;
   getAllFlags: () => void;
   destroy: () => void;
 }
 
-export interface Tag {
-  colorHex: string;
-  content: string;
+export interface ApiResponse<T> {
+  code: number;
+  message: string;
+  data: T;
+}
+
+export interface LSMessage {
+  userKey: string;
+  type: string;
+  data: LSMessageData;
+}
+
+export interface Title {
+  title: string;
+}
+
+export interface Switch {
+  flagId: number;
+  active: boolean;
 }
 
 export interface Flag {
+  flagId: number;
   title: string;
-  tags: Tag[];
   description: string;
-  type: 'BOOLEAN' | 'NUMBER' | 'STRING'; // "BOOLEAN", "NUMBER", "STRING" 중 하나여야 함
-  defaultValue: string;
-  defaultValuePortion: number;
-  defaultValueDescription: string;
-  variation: string;
-  variationPortion: number;
-  variationDescription: string;
-  userId: number;
+  type: LSFlagType;
+  defaultValue: LSDefaultValueType;
+  defaultValuePortion?: number;
+  defaultValueDescription?: string;
+  variations?: Variation[];
+  maintainerId: number;
+  createdAt: string;
+  updatedAt: string;
+  deleteAt: string | null;
+  active: boolean;
+}
+
+export interface Variation {
+  value: LSDefaultValueType;
+  portion: number;
+  description: string;
 }

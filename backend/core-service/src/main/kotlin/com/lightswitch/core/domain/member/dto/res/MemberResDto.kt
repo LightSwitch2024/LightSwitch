@@ -2,7 +2,8 @@ package com.lightswitch.core.domain.member.dto.res
 
 import jakarta.validation.constraints.NotBlank
 
-class MemberResDto (
+data class MemberResDto(
+    val memberId: Long,
     @field:NotBlank
     val email: String,
     @field:NotBlank

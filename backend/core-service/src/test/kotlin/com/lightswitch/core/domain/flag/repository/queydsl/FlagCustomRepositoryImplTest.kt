@@ -7,6 +7,8 @@ import com.lightswitch.core.domain.flag.repository.VariationRepository
 import com.lightswitch.core.domain.flag.repository.entity.Flag
 import com.lightswitch.core.domain.flag.repository.entity.Tag
 import com.lightswitch.core.domain.flag.service.FlagService
+import com.lightswitch.core.domain.member.entity.Member
+import com.lightswitch.core.domain.member.repository.MemberRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -25,9 +27,7 @@ class FlagCustomRepositoryImplTest(
     @Autowired
     private val tagRepository: TagRepository,
     @Autowired
-    private val variationRepository: VariationRepository,
-    @Autowired
-    private val flagService: FlagService
+    private val memberRepository: MemberRepository,
 ) {
 
     private var flag: Flag? = null
@@ -41,35 +41,44 @@ class FlagCustomRepositoryImplTest(
 
     @BeforeEach
     fun setUp() {
-        variationRepository.deleteAll()
-        flagService.deleteAllFlag()
-        tagRepository.deleteAll()
+
+        val savedMember = memberRepository.findByEmailAndDeletedAtIsNull("test@gmail.com") ?: let {
+            memberRepository.save(
+                Member(
+                    lastName = "test",
+                    firstName = "test",
+                    telNumber = "01012345678",
+                    email = "test@gmail.com",
+                    password = "test",
+                )
+            )
+        }
 
         flag = Flag(
             title = "test",
             description = "test test",
-            maintainerId = 1L,
+            maintainer = savedMember,
             type = FlagType.BOOLEAN,
         )
 
         flag2 = Flag(
             title = "test2",
             description = "test2 test2",
-            maintainerId = 2L,
+            maintainer = savedMember,
             type = FlagType.BOOLEAN,
         )
 
         flag3 = Flag(
             title = "test3",
             description = "test3 test3",
-            maintainerId = 3L,
+            maintainer = savedMember,
             type = FlagType.BOOLEAN,
         )
 
         flag4 = Flag(
             title = "test4",
             description = "test4 test4",
-            maintainerId = 4L,
+            maintainer = savedMember,
             type = FlagType.BOOLEAN,
         )
 

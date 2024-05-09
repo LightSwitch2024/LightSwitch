@@ -165,6 +165,7 @@ export const Title = styled.div`
 `;
 
 export const SdkkeyContentContainer = styled.div`
+  width: 100%;
   display: flex;
   padding: 0.625rem;
   align-items: center;
@@ -183,9 +184,32 @@ export const SdkKeyIconContainer = styled.div`
 `;
 
 export const SdkKeyTextContainer = styled.div`
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 0.625rem;
+`;
+
+export const NoExistSdkKeyText = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.3125rem;
+  align-items: center;
+  gap: 0.625rem;
+`;
+
+export const createSdkKeyButton = styled.button`
+  display: flex;
+  padding: 0.7rem 1rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.625rem;
+
+  border: none;
+  border-radius: 0.625rem;
+  background: #a8ca47;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 `;
 
 export const SdkKeyText = styled.div`

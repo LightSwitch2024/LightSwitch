@@ -1,4 +1,4 @@
-import { getFlagList, patchFlagActive } from '@api/main/mainAxios';
+import { getFlagList, getFlagListByKeyword, patchFlagActive } from '@api/main/mainAxios';
 import MoreIcon from '@assets/more-icon.svg?react';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
@@ -21,6 +21,7 @@ import {
   useTheme,
 } from '@mui/material';
 import * as S from '@pages/main/indexStyle';
+import { Tag } from '@pages/main/tag';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -38,6 +39,11 @@ interface TablePaginationActionsProps {
   page: number;
   rowsPerPage: number;
   onPageChange: (event: React.MouseEvent<HTMLButtonElement>, newPage: number) => void;
+}
+
+interface FlagTableProps {
+  flagKeyword: string;
+  tags: Array<Tag>;
 }
 
 /**
@@ -99,7 +105,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   );
 }
 
-const FlagTable = () => {
+const FlagTable = (props: FlagTableProps) => {
   const navigator = useNavigate();
 
   const [flagList, setFlagList] = useState<Array<FlagListItem>>([]);
@@ -278,6 +284,54 @@ const FlagTable = () => {
       },
     );
   };
+
+  /**
+   * 키워드 변경이 감지되면 플래그 리스트를 다시 불러옵니다.
+   * 변경이 2초 이내에 다시 발생하면 이전 요청은 취소됩니다.
+   */
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (props.flagKeyword === '') {
+        getFlagList(
+          (data: Array<FlagListItem>) => {
+            if (props.tags.length !== 0) {
+              const filteredData = data.filter((item) =>
+                item.tags.some((itemTag) =>
+                  props.tags.some((propTag) => propTag.content === itemTag.content),
+                ),
+              );
+              setFlagList(filteredData);
+            } else {
+              setFlagList(data);
+            }
+          },
+          (err) => {
+            console.log(err);
+          },
+        );
+      } else {
+        getFlagListByKeyword(
+          props.flagKeyword,
+          (data: Array<FlagListItem>) => {
+            if (props.tags.length !== 0) {
+              const filteredData = data.filter((item) =>
+                item.tags.some((itemTag) =>
+                  props.tags.some((propTag) => propTag.content === itemTag.content),
+                ),
+              );
+              setFlagList(filteredData);
+            } else {
+              setFlagList(data);
+            }
+          },
+          (err) => {
+            console.log(err);
+          },
+        );
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [props.flagKeyword, props.tags]);
 
   return (
     <>

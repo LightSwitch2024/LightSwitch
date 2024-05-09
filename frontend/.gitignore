@@ -4,3 +4,7 @@ dist
 dist-ssr
 *.local
 node_modules/*
+
+.env
+.env.production
+.env.development

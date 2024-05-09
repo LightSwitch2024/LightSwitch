@@ -1,15 +1,21 @@
 package com.lightswitch.core.domain.flag.service
 
 import com.lightswitch.core.domain.flag.common.enum.FlagType
+import com.lightswitch.core.domain.flag.dto.KeywordDto
+import com.lightswitch.core.domain.flag.dto.PropertyDto
 import com.lightswitch.core.domain.flag.dto.VariationDto
 import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
 import com.lightswitch.core.domain.flag.dto.req.TagRequestDto
-import com.lightswitch.core.domain.flag.repository.FlagRepository
-import com.lightswitch.core.domain.flag.repository.TagRepository
-import com.lightswitch.core.domain.flag.repository.VariationRepository
+import com.lightswitch.core.domain.flag.repository.*
+import com.lightswitch.core.domain.member.dto.req.SdkKeyReqDto
+import com.lightswitch.core.domain.member.entity.Member
+import com.lightswitch.core.domain.member.repository.MemberRepository
+import com.lightswitch.core.domain.member.service.MemberService
+import com.lightswitch.core.domain.member.service.SdkKeyService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -31,6 +37,51 @@ class FlagServiceTest {
     @Autowired
     private lateinit var variationRepository: VariationRepository
 
+    @Autowired
+    private lateinit var memberRepository: MemberRepository
+
+    @Autowired
+    private lateinit var memberService: MemberService
+
+    @Autowired
+    private lateinit var sdkKeyService: SdkKeyService
+
+    @Autowired
+    private lateinit var keywordRepository: KeywordRepository
+
+    @Autowired
+    private lateinit var propertyRepository: PropertyRepository
+
+    var memberId: Long = 0L
+
+    @BeforeEach
+    fun setUp() {
+
+        memberRepository.findAllAByDeletedAtIsNull().map {
+            memberService.deleteUser(it.memberId!!)
+        }
+
+        val savedMember = memberRepository.findByEmailAndDeletedAtIsNull("test@gmail.com") ?: let {
+            memberRepository.save(
+                Member(
+                    lastName = "test",
+                    firstName = "test",
+                    telNumber = "01012345678",
+                    email = "test@gmail.com",
+                    password = "test",
+                )
+            )
+        }
+
+        memberId = savedMember.memberId!!
+
+        val sdkKeyReqDto = SdkKeyReqDto(
+            email = savedMember.email
+        )
+
+        sdkKeyService.createSdkKey(sdkKeyReqDto).key
+    }
+
     @Test
     fun `flag 생성 test 1 _ 일반값 Boolean`() {
         // given
@@ -50,8 +101,8 @@ class FlagServiceTest {
             description = "test",
             type = FlagType.BOOLEAN,
             defaultValue = "TRUE",
-            defaultValuePortion = 100,
-            defaultValueDescription = "test",
+            defaultPortion = 100,
+            defaultDescription = "test",
             variations = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -59,7 +110,9 @@ class FlagServiceTest {
                     description = "test",
                 )
             ),
-            userId = 1L
+            memberId = memberId,
+            keywords = listOf(
+            ),
         )
 
         // when
@@ -96,8 +149,8 @@ class FlagServiceTest {
             description = "test",
             type = FlagType.STRING,
             defaultValue = "A",
-            defaultValuePortion = 100,
-            defaultValueDescription = "test",
+            defaultPortion = 100,
+            defaultDescription = "test",
             variations = listOf(
                 VariationDto(
                     value = "B",
@@ -105,7 +158,10 @@ class FlagServiceTest {
                     description = "test",
                 )
             ),
-            userId = 1L
+            memberId = memberId,
+
+            keywords = listOf(
+            ),
         )
 
         // when
@@ -142,8 +198,8 @@ class FlagServiceTest {
             description = "test",
             type = FlagType.INTEGER,
             defaultValue = "1",
-            defaultValuePortion = 100,
-            defaultValueDescription = "test",
+            defaultPortion = 100,
+            defaultDescription = "test",
             variations = listOf(
                 VariationDto(
                     value = "2",
@@ -151,7 +207,10 @@ class FlagServiceTest {
                     description = "test",
                 )
             ),
-            userId = 1L
+            memberId = memberId,
+
+            keywords = listOf(
+            ),
         )
 
         // when
@@ -188,8 +247,8 @@ class FlagServiceTest {
             description = "test",
             type = FlagType.INTEGER,
             defaultValue = "1",
-            defaultValuePortion = 100,
-            defaultValueDescription = "test",
+            defaultPortion = 100,
+            defaultDescription = "test",
             variations = listOf(
                 VariationDto(
                     value = "2",
@@ -197,7 +256,10 @@ class FlagServiceTest {
                     description = "test",
                 )
             ),
-            userId = 1L
+            memberId = memberId,
+
+            keywords = listOf(
+            ),
         )
         val flagResponseDto = flagService.createFlag(flagRequestDto)
 
@@ -228,8 +290,8 @@ class FlagServiceTest {
             description = "test",
             type = FlagType.BOOLEAN,
             defaultValue = "TRUE",
-            defaultValuePortion = 100,
-            defaultValueDescription = "test",
+            defaultPortion = 100,
+            defaultDescription = "test",
             variations = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -237,7 +299,10 @@ class FlagServiceTest {
                     description = "test",
                 )
             ),
-            userId = 1L
+            memberId = memberId,
+
+            keywords = listOf(
+            ),
         )
         flagService.createFlag(flagRequestDto)
 
@@ -277,8 +342,8 @@ class FlagServiceTest {
             description = "test",
             type = FlagType.BOOLEAN,
             defaultValue = "TRUE",
-            defaultValuePortion = 50,
-            defaultValueDescription = "true test",
+            defaultPortion = 50,
+            defaultDescription = "true test",
             variations = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -286,7 +351,10 @@ class FlagServiceTest {
                     description = "false test",
                 )
             ),
-            userId = 1L
+            memberId = memberId,
+
+            keywords = listOf(
+            ),
         )
         flagService.createFlag(flagRequestDto)
 
@@ -296,8 +364,8 @@ class FlagServiceTest {
             description = "test2",
             type = FlagType.INTEGER,
             defaultValue = "1",
-            defaultValuePortion = 80,
-            defaultValueDescription = "1 test",
+            defaultPortion = 80,
+            defaultDescription = "1 test",
             variations = listOf(
                 VariationDto(
                     value = "2",
@@ -310,7 +378,10 @@ class FlagServiceTest {
                     description = "3 test",
                 )
             ),
-            userId = 2L
+            memberId = memberId,
+
+            keywords = listOf(
+            ),
         )
         flagService.createFlag(flagRequestDto2)
 
@@ -319,22 +390,25 @@ class FlagServiceTest {
             tags = listOf(tag3, tag4),
             description = "test3",
             type = FlagType.INTEGER,
-            defaultValue = "A",
-            defaultValuePortion = 10,
-            defaultValueDescription = "A test",
+            defaultValue = "1",
+            defaultPortion = 10,
+            defaultDescription = "A test",
             variations = listOf(
                 VariationDto(
-                    value = "B",
+                    value = "10",
                     portion = 40,
                     description = "B test",
                 ),
                 VariationDto(
-                    value = "C",
+                    value = "100",
                     portion = 50,
                     description = "C test",
                 )
             ),
-            userId = 3L
+            memberId = memberId,
+
+            keywords = listOf(
+            ),
         )
         flagService.createFlag(flagRequestDto3)
 
@@ -382,8 +456,8 @@ class FlagServiceTest {
             description = "test",
             type = FlagType.INTEGER,
             defaultValue = "1",
-            defaultValuePortion = 50,
-            defaultValueDescription = "true test",
+            defaultPortion = 50,
+            defaultDescription = "true test",
             variations = listOf(
                 VariationDto(
                     value = "2",
@@ -401,7 +475,10 @@ class FlagServiceTest {
                     description = "false test",
                 ),
             ),
-            userId = 1L
+            memberId = memberId,
+
+            keywords = listOf(
+            ),
         )
         val createdFlag = flagService.createFlag(flagRequestDto)
 
@@ -425,8 +502,8 @@ class FlagServiceTest {
             description = "test",
             type = FlagType.BOOLEAN,
             defaultValue = "TRUE",
-            defaultValuePortion = 50,
-            defaultValueDescription = "true test",
+            defaultPortion = 50,
+            defaultDescription = "true test",
             variations = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -434,7 +511,10 @@ class FlagServiceTest {
                     description = "false test",
                 )
             ),
-            userId = 1L
+            memberId = memberId,
+
+            keywords = listOf(
+            ),
         )
         val flagId = flagService.createFlag(flagRequestDto).flagId
 
@@ -467,8 +547,8 @@ class FlagServiceTest {
             description = "test",
             type = FlagType.INTEGER,
             defaultValue = "1",
-            defaultValuePortion = 100,
-            defaultValueDescription = "test",
+            defaultPortion = 100,
+            defaultDescription = "test",
             variations = listOf(
                 VariationDto(
                     value = "2",
@@ -476,7 +556,10 @@ class FlagServiceTest {
                     description = "test",
                 )
             ),
-            userId = 1L
+            memberId = memberId,
+
+            keywords = listOf(
+            ),
         )
         val flagResponseDto = flagService.createFlag(flagRequestDto)
 
@@ -491,8 +574,8 @@ class FlagServiceTest {
                 ),
                 type = FlagType.STRING,
                 defaultValue = "A",
-                defaultValuePortion = 80,
-                defaultValueDescription = "updatedA",
+                defaultPortion = 80,
+                defaultDescription = "updatedA",
                 variations = listOf(
                     VariationDto(
                         value = "B",
@@ -505,6 +588,8 @@ class FlagServiceTest {
                         description = "updatedC",
                     )
                 ),
+                keywords = listOf(
+                ),
             )
         )
 
@@ -516,8 +601,8 @@ class FlagServiceTest {
         assertThat(updatedFlagResponseDto.tags[0].content).isEqualTo("updated")
         assertThat(updatedFlagResponseDto.type).isEqualTo(FlagType.STRING)
         assertThat(updatedFlagResponseDto.defaultValue).isEqualTo("A")
-        assertThat(updatedFlagResponseDto.defaultValuePortion).isEqualTo(80)
-        assertThat(updatedFlagResponseDto.defaultValueDescription).isEqualTo("updatedA")
+        assertThat(updatedFlagResponseDto.defaultPortion).isEqualTo(80)
+        assertThat(updatedFlagResponseDto.defaultDescription).isEqualTo("updatedA")
         assertThat(updatedFlagResponseDto.variations).hasSize(2)
         assertThat(updatedFlagResponseDto.variations.first().value).isEqualTo("B")
         assertThat(updatedFlagResponseDto.variations.first().portion).isEqualTo(10)
@@ -539,8 +624,8 @@ class FlagServiceTest {
             description = "test",
             type = FlagType.BOOLEAN,
             defaultValue = "TRUE",
-            defaultValuePortion = 50,
-            defaultValueDescription = "true test",
+            defaultPortion = 50,
+            defaultDescription = "true test",
             variations = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -548,7 +633,10 @@ class FlagServiceTest {
                     description = "false test",
                 )
             ),
-            userId = 1L
+            memberId = memberId,
+
+            keywords = listOf(
+            ),
         )
         val flagId = flagService.createFlag(flagRequestDto1).flagId
         flagService.switchFlag(flagId)
@@ -559,8 +647,8 @@ class FlagServiceTest {
             description = "test2",
             type = FlagType.BOOLEAN,
             defaultValue = "TRUE",
-            defaultValuePortion = 50,
-            defaultValueDescription = "true test",
+            defaultPortion = 50,
+            defaultDescription = "true test",
             variations = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -568,7 +656,10 @@ class FlagServiceTest {
                     description = "false test",
                 )
             ),
-            userId = 1L
+            memberId = memberId,
+
+            keywords = listOf(
+            ),
         )
         flagService.createFlag(flagRequestDto2)
 
@@ -578,6 +669,320 @@ class FlagServiceTest {
         // then
         assertThat(overview["totalFlags"]).isEqualTo(totalFlagList.size + 2)
         assertThat(overview["activeFlags"]).isEqualTo(activeFlagList.size + 1)
+    }
+
+    @Test
+    fun getFlagsSummaryByKeyword() {
+        // given
+        val tag1 = TagRequestDto(
+            colorHex = "#FFFFFF",
+            content = "test"
+        )
+
+        val tag2 = TagRequestDto(
+            colorHex = "#000000",
+            content = "test2"
+        )
+
+        val flagRequestDto = FlagRequestDto(
+            title = "test",
+            tags = listOf(tag1, tag2),
+            description = "test",
+            type = FlagType.BOOLEAN,
+            defaultValue = "TRUE",
+            defaultPortion = 100,
+            defaultDescription = "test",
+            variations = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test",
+                )
+            ),
+            memberId = memberId,
+            keywords = listOf(
+            ),
+        )
+        flagService.createFlag(flagRequestDto)
+
+        // when
+        val flagsSummaryByKeyword = flagService.getFlagsSummaryByKeyword("test")
+
+        // then
+        assertThat(flagsSummaryByKeyword).isNotEmpty
+    }
+
+    @Test
+    fun `Flag 생성 테스트 _ 키워드 프로퍼티 추가`() {
+        // given
+        val tag1 = TagRequestDto(
+            colorHex = "#FFFFFF",
+            content = "test"
+        )
+
+        val tag2 = TagRequestDto(
+            colorHex = "#000000",
+            content = "test2"
+        )
+
+        val flagRequestDto = FlagRequestDto(
+            title = "test",
+            tags = listOf(tag1, tag2),
+            description = "test",
+            type = FlagType.BOOLEAN,
+            defaultValue = "TRUE",
+            defaultPortion = 100,
+            defaultDescription = "test",
+            variations = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test",
+                )
+            ),
+            memberId = memberId,
+            keywords = listOf(
+                KeywordDto(
+                    properties = listOf(
+                        PropertyDto(
+                            property = "test",
+                            data = "test"
+                        ),
+                        PropertyDto(
+                            property = "test2",
+                            data = "test2"
+                        )
+                    ),
+                    description = "test",
+                    value = "test"
+                ),
+                KeywordDto(
+                    properties = listOf(
+                        PropertyDto(
+                            property = "test3",
+                            data = "test3"
+                        ),
+                        PropertyDto(
+                            property = "test4",
+                            data = "test4"
+                        )
+                    ),
+                    description = "test2",
+                    value = "test2"
+                )
+            ),
+        )
+
+        // when
+        val flagResponseDto = flagService.createFlag(flagRequestDto)
+
+        // then
+        assertThat(flagResponseDto.keywords).isNotEmpty
+        assertThat(flagResponseDto.keywords.first().properties).hasSize(2)
+        assertThat(flagResponseDto.keywords.first().properties.first().property).isEqualTo("test")
+        assertThat(flagResponseDto.keywords.first().properties.first().data).isEqualTo("test")
+        assertThat(flagResponseDto.keywords.first().properties.last().property).isEqualTo("test2")
+        assertThat(flagResponseDto.keywords.first().properties.last().data).isEqualTo("test2")
+        assertThat(flagResponseDto.keywords.last().properties).hasSize(2)
+        assertThat(flagResponseDto.keywords.last().properties.first().property).isEqualTo("test3")
+        assertThat(flagResponseDto.keywords.last().properties.first().data).isEqualTo("test3")
+        assertThat(flagResponseDto.keywords.last().properties.last().property).isEqualTo("test4")
+        assertThat(flagResponseDto.keywords.last().properties.last().data).isEqualTo("test4")
+    }
+
+    @Test
+    fun `Flag 수정 테스트 _ 키워드 프로퍼티 추가`() {
+        // given
+        val tag1 = TagRequestDto(
+            colorHex = "#FFFFFF",
+            content = "test"
+        )
+
+        val tag2 = TagRequestDto(
+            colorHex = "#000000",
+            content = "test2"
+        )
+
+        val flagRequestDto = FlagRequestDto(
+            title = "test",
+            tags = listOf(tag1, tag2),
+            description = "test",
+            type = FlagType.BOOLEAN,
+            defaultValue = "TRUE",
+            defaultPortion = 100,
+            defaultDescription = "test",
+            variations = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test",
+                )
+            ),
+            memberId = memberId,
+            keywords = listOf(
+                KeywordDto(
+                    properties = listOf(
+                        PropertyDto(
+                            property = "test",
+                            data = "test"
+                        ),
+                        PropertyDto(
+                            property = "test2",
+                            data = "test2"
+                        )
+                    ),
+                    description = "test",
+                    value = "test"
+                ),
+                KeywordDto(
+                    properties = listOf(
+                        PropertyDto(
+                            property = "test3",
+                            data = "test3"
+                        ),
+                        PropertyDto(
+                            property = "test4",
+                            data = "test4"
+                        )
+                    ),
+                    description = "test2",
+                    value = "test2"
+                )
+            ),
+        )
+
+        val flagResponseDto = flagService.createFlag(flagRequestDto)
+
+        // when
+        val updatedFlagResponseDto = flagService.updateFlag(
+            flagResponseDto.flagId, flagRequestDto.copy(
+                keywords = listOf(
+                    KeywordDto(
+                        properties = listOf(
+                            PropertyDto(
+                                property = "updated",
+                                data = "updated"
+                            ),
+                            PropertyDto(
+                                property = "updated2",
+                                data = "updated2"
+                            )
+                        ),
+                        description = "updated",
+                        value = "updated"
+                    ),
+                    KeywordDto(
+                        properties = listOf(
+                            PropertyDto(
+                                property = "updated3",
+                                data = "updated3"
+                            ),
+                            PropertyDto(
+                                property = "updated4",
+                                data = "updated4"
+                            )
+                        ),
+                        description = "updated2",
+                        value = "updated2"
+                    )
+                )
+            )
+        )
+
+        // then
+        assertThat(updatedFlagResponseDto.keywords).isNotEmpty
+        assertThat(updatedFlagResponseDto.keywords.first().properties).hasSize(2)
+        assertThat(updatedFlagResponseDto.keywords.first().properties.first().property).isEqualTo("updated")
+        assertThat(updatedFlagResponseDto.keywords.first().properties.first().data).isEqualTo("updated")
+        assertThat(updatedFlagResponseDto.keywords.first().properties.last().property).isEqualTo("updated2")
+        assertThat(updatedFlagResponseDto.keywords.first().properties.last().data).isEqualTo("updated2")
+        assertThat(updatedFlagResponseDto.keywords.last().properties).hasSize(2)
+        assertThat(updatedFlagResponseDto.keywords.last().properties.first().property).isEqualTo("updated3")
+        assertThat(updatedFlagResponseDto.keywords.last().properties.first().data).isEqualTo("updated3")
+        assertThat(updatedFlagResponseDto.keywords.last().properties.last().property).isEqualTo("updated4")
+        assertThat(updatedFlagResponseDto.keywords.last().properties.last().data).isEqualTo("updated4")
+    }
+
+    @Test
+    fun `Flag 삭제 테스트 _ 키워드 프로퍼티 추가`() {
+        // given
+        val tag1 = TagRequestDto(
+            colorHex = "#FFFFFF",
+            content = "test"
+        )
+
+        val tag2 = TagRequestDto(
+            colorHex = "#000000",
+            content = "test2"
+        )
+
+        val flagRequestDto = FlagRequestDto(
+            title = "test",
+            tags = listOf(tag1, tag2),
+            description = "test",
+            type = FlagType.BOOLEAN,
+            defaultValue = "TRUE",
+            defaultPortion = 100,
+            defaultDescription = "test",
+            variations = listOf(
+                VariationDto(
+                    value = "FALSE",
+                    portion = 0,
+                    description = "test",
+                )
+            ),
+            memberId = memberId,
+            keywords = listOf(
+                KeywordDto(
+                    properties = listOf(
+                        PropertyDto(
+                            property = "test",
+                            data = "test"
+                        ),
+                        PropertyDto(
+                            property = "test2",
+                            data = "test2"
+                        )
+                    ),
+                    description = "test",
+                    value = "test"
+                ),
+                KeywordDto(
+                    properties = listOf(
+                        PropertyDto(
+                            property = "test3",
+                            data = "test3"
+                        ),
+                        PropertyDto(
+                            property = "test4",
+                            data = "test4"
+                        )
+                    ),
+                    description = "test2",
+                    value = "test2"
+                )
+            ),
+        )
+
+        val flagResponseDto = flagService.createFlag(flagRequestDto)
+
+        // when
+        val deletedFlagId = flagService.deleteFlag(flagResponseDto.flagId)
+
+        // then
+        assertThat(deletedFlagId).isEqualTo(flagResponseDto.flagId)
+        assertThat(flagRepository.findById(deletedFlagId).get().deletedAt).isNotNull()
+        assertThat(flagRepository.findById(deletedFlagId).get().keywords).isEmpty()
+        keywordRepository.findByFlagFlagId(deletedFlagId).map {
+            assertThat(it.deletedAt).isNotNull()
+            assertThat(it.properties).isEmpty()
+            propertyRepository.findByKeywordKeywordId(it.keywordId!!).map {
+                assertThat(it.deletedAt).isNotNull()
+            }
+        }
+        variationRepository.findByFlagFlagId(deletedFlagId).map {
+            assertThat(it.deletedAt).isNotNull()
+        }
     }
 
 }

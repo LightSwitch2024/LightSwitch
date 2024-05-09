@@ -1,36 +1,37 @@
 import Tab from '@components/tab/index';
 import CreateFlag from '@pages/create/index';
 import * as S from '@routes/indexStyle';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 
+import SignUp from '@/components/signup/index';
 import FlagDetail from '@/pages/flag/index';
 import Main from '@/pages/main/index';
 import UserDetail from '@/pages/mypage/index';
-import SignUp from '@/pages/signup/index';
 import LogIn from '@/pages/user/login';
 
-// import ProtectedRoute from './protectedRoute';
+import ProtectedRoute from './protectedRoute';
 
-const Router = () => (
-  <div>
-    <Tab />
-    <S.Content>
-      <BrowserRouter>
+const Router = () => {
+  const location = useLocation();
+  const isLoginPage = location.pathname === '/login';
+
+  return (
+    <div>
+      {!isLoginPage && <Tab />}
+      <S.Content>
         <Routes>
-          {/* 메인화면 가기 전에 로그인 거치게끔하는 코드
+          {/* 메인화면 가기 전에 로그인 거치게끔하는 코드 */}
           <Route path="/" element={<ProtectedRoute />}>
             <Route path="/" element={<Main />} />
-          </Route> */}
-          <Route path="/" element={<Main />} />
-          <Route path="/signUp" element={<SignUp />} />
+          </Route>
+          <Route path="/login" element={<LogIn />} />
           <Route path="/create" element={<CreateFlag />} />
           <Route path="/flag/:flagId" element={<FlagDetail />} />
-          <Route path="/login" element={<LogIn />} />
           <Route path="/mypage" element={<UserDetail />} />
+          <Route path="/passwordfind" element={<UserDetail />} />
         </Routes>
-      </BrowserRouter>
-    </S.Content>
-  </div>
-);
-
+      </S.Content>
+    </div>
+  );
+};
 export default Router;

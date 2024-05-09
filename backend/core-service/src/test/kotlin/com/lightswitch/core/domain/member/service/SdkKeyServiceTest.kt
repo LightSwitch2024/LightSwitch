@@ -23,12 +23,14 @@ class SdkKeyServiceTest(
     @Autowired
     private val memberService: MemberService,
     @Autowired
-    private val memberRepository: MemberRepository
+    private val memberRepository: MemberRepository,
 ) {
 
     @BeforeEach
     fun setUp() {
-        memberService.deleteAll()
+        memberRepository.findAllAByDeletedAtIsNull().map {
+            memberService.deleteUser(it.memberId!!)
+        }
     }
 
     fun signup(): Member {
@@ -56,21 +58,23 @@ class SdkKeyServiceTest(
 
         val failEmail = "fail@gmail.com"
         Assertions.assertThatExceptionOfType(BaseException::class.java).isThrownBy {
-            memberRepository.findByEmail(failEmail) ?: throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
+            memberRepository.findByEmailAndDeletedAtIsNull(failEmail)
+                ?: throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
         }
 
 
         val successEmail = "huni19541@gmail.com"
-        val member = memberRepository.findByEmail(successEmail) ?: throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
+        val member = memberRepository.findByEmailAndDeletedAtIsNull(successEmail)
+            ?: throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
 
-        val existsSdkKey = sdkKeyRepository.findByMemberMemberId(member.memberId!!)
-        Assertions.assertThat(existsSdkKey).hasSize(0)
+        val existsSdkKey = sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(member.memberId!!)
+        Assertions.assertThat(existsSdkKey).isNull()
 
         val sdkKeyReqDto = SdkKeyReqDto(member.email)
         sdkKeyService.createSdkKey(sdkKeyReqDto)
 
-        val findSdkKey = sdkKeyRepository.findByMemberMemberId(member.memberId!!)
-        Assertions.assertThat(findSdkKey).hasSize(1)
+        val findSdkKey = sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(member.memberId!!)
+        Assertions.assertThat(findSdkKey).isNotNull()
     }
 
     /*
@@ -84,15 +88,17 @@ class SdkKeyServiceTest(
         signup()
         val failEmail = "fail@gmail.com"
         Assertions.assertThatExceptionOfType(BaseException::class.java).isThrownBy {
-            memberRepository.findByEmail(failEmail) ?: throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
+            memberRepository.findByEmailAndDeletedAtIsNull(failEmail)
+                ?: throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
         }
 
 
         val successEmail = "huni19541@gmail.com"
-        val member = memberRepository.findByEmail(successEmail) ?: throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
+        val member = memberRepository.findByEmailAndDeletedAtIsNull(successEmail)
+            ?: throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
 
-        val existsSdkKey = sdkKeyRepository.findByMemberMemberId(member.memberId!!)
-        Assertions.assertThat(existsSdkKey).hasSize(0)
+        val existsSdkKey = sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(member.memberId!!)
+        Assertions.assertThat(existsSdkKey).isNull()
 
         val sdkKeyReqDto = SdkKeyReqDto(member.email)
         sdkKeyService.createSdkKey(sdkKeyReqDto)

@@ -1,10 +1,10 @@
 import { Navigate, Outlet, useLocation } from 'react-router';
 import { useRecoilValue } from 'recoil';
 
-import { isLogInSelector } from '@/AuthAtom'; // AuthAtom 파일 경로에 맞게 수정
+import { isLoggedInState } from '@/global/AuthAtom'; // AuthAtom 파일 경로에 맞게 수정
 
 const ProtectedRoute = () => {
-  const isAuthenticated = useRecoilValue(isLogInSelector);
+  const isAuthenticated = useRecoilValue(isLoggedInState);
   const currentLocation = useLocation();
 
   return isAuthenticated ? ( // Recoil 선택기를 통해 인증 상태 확인

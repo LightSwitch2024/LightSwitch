@@ -1,9 +1,12 @@
 import LunitLogo from '@assets/LunitLogo.png';
-import { Grid } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { AuthAtom } from '@global/AuthAtom';
+import { Tag } from '@pages/main/tag';
+import { TagsInputComponent } from '@pages/main/tagInput';
+import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useRecoilValue } from 'recoil';
 
-import { getMainPageOverview } from '@/api/main/mainAxios';
+import { createSdkKey, getMainPageOverview } from '@/api/main/mainAxios';
 import CopyButton from '@/assets/content-copy.svg?react';
 import FilteringIcon from '@/assets/filtering.svg?react';
 import FilledFlag from '@/assets/flag.svg?react';
@@ -20,22 +23,37 @@ interface OverviewInfo {
   activeFlags: number;
 }
 
+interface SdkKeyResDto {
+  key: string;
+}
+
 const index = () => {
   const [sdkKey, setSdkKey] = useState<string>('');
   const [totalFlags, setTotalFlags] = useState<number>(0);
   const [activeFlags, setActiveFlags] = useState<number>(0);
   const [isModalOpened, setIsModalOpened] = useState(false);
+  const [flagKeyword, setFlagKeyword] = useState<string>('');
+  const [isDropdownOpened, setIsDropdownOpened] = useState(false);
+  const auth = useRecoilValue(AuthAtom);
+  const dropdownContainerRef = useRef(null);
+  const [selectedTags, setSelectedTags] = useState<Array<Tag>>([]);
+
+  useEffect(() => {
+    console.log('auth');
+    console.log(auth);
+  }, [auth]);
 
   /**
    * 화면 마운트 시 필요한 정보 가져오기
    */
   useEffect(() => {
-    //TODO : memberId를 어떻게 가져올지 고민해보기
-    const memberId = 1;
+    const memberId = auth.memberId;
     getMainPageOverview(
       memberId,
       (data: OverviewInfo) => {
-        setSdkKey(data.sdkKey);
+        console.log('data');
+        console.log(auth);
+        setSdkKey(data.sdkKey ? data.sdkKey : '');
         setTotalFlags(data.totalFlags);
         setActiveFlags(data.activeFlags);
       },
@@ -43,7 +61,12 @@ const index = () => {
         console.error(err);
       },
     );
-  }, []);
+  }, [auth]);
+
+  // sdk 발급 받으면 sdk component 갱신
+  useEffect(() => {
+    console.log(sdkKey);
+  }, [sdkKey]);
 
   const html = document.querySelector('html');
   const openCreateModal = () => {
@@ -59,10 +82,42 @@ const index = () => {
     }
   };
 
+  const openDropdown = () => {
+    setIsDropdownOpened(true);
+    if (isDropdownOpened) {
+      setIsDropdownOpened(false);
+    }
+  };
+  const handleFlagSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFlagKeyword(e.target.value);
+  };
+
+  const handleClickCreateSdkKeyButton = () => {
+    console.log('sdk key 발급');
+    console.log(auth.email);
+    createSdkKey<SdkKeyResDto>(
+      { email: auth.email },
+      (data: SdkKeyResDto) => {
+        console.log(data);
+        setSdkKey(data.key ? data.key : '');
+      },
+      (err) => {
+        console.error(err);
+      },
+    );
+  };
+
   return (
     <>
       {isModalOpened &&
-        createPortal(<CreateModal closeCreateModal={closeCreateModal} />, document.body)}
+        createPortal(
+          <CreateModal
+            closeCreateModal={closeCreateModal}
+            mode={'create'}
+            flagDetail={undefined}
+          />,
+          document.body,
+        )}
       <S.MainTitleComponent>
         <S.imageContainer>
           <S.imageLunitLogo path={LunitLogo} />
@@ -102,8 +157,18 @@ const index = () => {
               <SdkKey />
             </S.SdkKeyIconContainer>
             <S.SdkKeyTextContainer>
+              {sdkKey.length > 0 ? (
+                <S.SdkKeyText>{sdkKey}</S.SdkKeyText>
+              ) : (
+                <S.NoExistSdkKeyText>
+                  <S.SdkKeyText>SDK 키가 없습니다.</S.SdkKeyText>
+                  <S.createSdkKeyButton onClick={handleClickCreateSdkKeyButton}>
+                    <S.SdkKeyText>SDK 키 발급</S.SdkKeyText>
+                  </S.createSdkKeyButton>
+                </S.NoExistSdkKeyText>
+              )}
               {/* <S.SdkKeyText>{sdkKey}</S.SdkKeyText> */}
-              <S.SdkKeyText>asdfasdfasdfasdf-asdf-qwerqwer</S.SdkKeyText>
+              {/* <S.SdkKeyText>asdfasdfasdfasdf-asdf-qwerqwer</S.SdkKeyText> */}
             </S.SdkKeyTextContainer>
           </S.SdkkeyContentContainer>
         </S.SdkKeyComponent>
@@ -122,8 +187,8 @@ const index = () => {
                   <S.FlagCountTextSmall>총</S.FlagCountTextSmall>
                 </S.FlagCountTextSmallContainer>
                 <S.FlagCountTextBigContainer>
-                  {/* <S.FlagCountTextBig>{totalFlags}</S.FlagCountTextBig> */}
-                  <S.FlagCountTextBig>13</S.FlagCountTextBig>
+                  <S.FlagCountTextBig>{totalFlags}</S.FlagCountTextBig>
+                  {/* <S.FlagCountTextBig>13</S.FlagCountTextBig> */}
                 </S.FlagCountTextBigContainer>
                 <S.FlagCountTextSmallContainer>
                   <S.FlagCountTextSmall>개</S.FlagCountTextSmall>
@@ -140,8 +205,8 @@ const index = () => {
                   <S.FlagCountTextSmall>활성</S.FlagCountTextSmall>
                 </S.FlagCountTextSmallContainer>
                 <S.FlagCountTextBigContainer>
-                  {/* <S.FlagCountTextBig>{totalFlags}</S.FlagCountTextBig> */}
-                  <S.FlagCountTextBig>7</S.FlagCountTextBig>
+                  <S.FlagCountTextBig>{activeFlags}</S.FlagCountTextBig>
+                  {/* <S.FlagCountTextBig>7</S.FlagCountTextBig> */}
                 </S.FlagCountTextBigContainer>
                 <S.FlagCountTextSmallContainer>
                   <S.FlagCountTextSmall>개</S.FlagCountTextSmall>
@@ -164,22 +229,30 @@ const index = () => {
             <S.FlagNavTitleContainer>
               <S.Title>플래그</S.Title>
             </S.FlagNavTitleContainer>
-            <S.FlagNavSearchComponent>
+            <S.FlagNavSearchComponent ref={dropdownContainerRef}>
               <S.FlagNavSearchBoxContainer>
-                <S.FlagNavSearchInput placeholder="검색" />
+                <S.FlagNavSearchInput placeholder="검색" onChange={handleFlagSearch} />
                 <S.SearchIconContainer>
                   <SearchIcon />
                 </S.SearchIconContainer>
               </S.FlagNavSearchBoxContainer>
 
               <S.FlagNavFilteringContainer>
-                <S.FlagNavFilteringButton>
+                <S.FlagNavFilteringButton onClick={() => openDropdown()}>
                   <S.FlagNavFiltering>
                     <FilteringIcon />
                   </S.FlagNavFiltering>
                 </S.FlagNavFilteringButton>
-                {/* <S.FlagNavFilteringMenu></S.FlagNavFilteringMenu> */}
               </S.FlagNavFilteringContainer>
+              {isDropdownOpened &&
+                dropdownContainerRef.current &&
+                createPortal(
+                  <TagsInputComponent
+                    selectedTags={selectedTags}
+                    setSelectedTags={setSelectedTags}
+                  />,
+                  dropdownContainerRef.current,
+                )}
             </S.FlagNavSearchComponent>
           </S.FlagNavTitleContainer>
           <S.FlagNavCreateButtonContainer>
@@ -190,7 +263,7 @@ const index = () => {
         </S.TableNavContainer>
 
         <S.FlagTableContainer>
-          <FlagTable />
+          <FlagTable flagKeyword={flagKeyword} tags={selectedTags} />
         </S.FlagTableContainer>
       </S.FlagTableComponent>
     </>

@@ -1,21 +1,86 @@
+import com.vanniktech.maven.publish.SonatypeHost
+import com.vanniktech.maven.publish.JavaLibrary
+import com.vanniktech.maven.publish.JavadocJar
+
 plugins {
     id 'java'
+    id "com.vanniktech.maven.publish" version "0.28.0"
+    id 'signing'
 }
 
 group = 'com.lightswitch'
-version = '1.0-SNAPSHOT'
+version = '1.0.0'
 
 repositories {
     mavenCentral()
 }
 
+signing {
+    useGpgCmd()
+    sign publishing.publications
+}
+
+
+mavenPublishing {
+    configure(new JavaLibrary(new JavadocJar.Empty(), true))
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+
+//    signAllPublications()
+
+    coordinates("kr.lightswitch.www", "lightswitch", "1.0.0")
+
+    pom {
+        name = "lightswitch"
+        description = "lightswitch for lunit"
+        inceptionYear = "2024"
+        url = "www.lightswitch.kr"
+        licenses {
+            license {
+                name = "The Apache License, Version 2.0"
+                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+                distribution = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        }
+        developers {
+            developer {
+                id = "olrlobt"
+                name = "Seungheon Lee"
+                url = "https://github.com/olrlobt"
+            }
+        }
+        scm {
+            url = "https://github.com/olrlobt"
+            connection = "scm:git:git://github.com/olrlobt"
+            developerConnection = "scm:git:ssh://git@github.com/olrlobt"
+        }
+    }
+}
+
 dependencies {
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.25.3'
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.11.0'
     testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '5.11.0'
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+jar {
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    manifest {
+        attributes(
+                'Main-Class': 'com.example.MainClass'
+        )
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11) // Java 9 이상 버전
+    }
 }
 
 test {

@@ -1,6 +1,10 @@
 package com.lightswitch.core.domain.flag.service
 
+import com.lightswitch.core.common.dto.ResponseCode
+import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.domain.flag.common.enum.FlagType
+import com.lightswitch.core.domain.flag.dto.KeywordDto
+import com.lightswitch.core.domain.flag.dto.PropertyDto
 import com.lightswitch.core.domain.flag.dto.VariationDto
 import com.lightswitch.core.domain.flag.dto.req.FlagInitRequestDto
 import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
@@ -9,8 +13,10 @@ import com.lightswitch.core.domain.member.dto.req.SdkKeyReqDto
 import com.lightswitch.core.domain.member.entity.Member
 import com.lightswitch.core.domain.member.repository.MemberRepository
 import com.lightswitch.core.domain.member.repository.SdkKeyRepository
+import com.lightswitch.core.domain.member.service.MemberService
 import com.lightswitch.core.domain.member.service.SdkKeyService
 import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -30,19 +36,35 @@ class FlagSdkInitTest(
 
     @Autowired
     private val sdkKeyRepository: SdkKeyRepository,
+
+    @Autowired
+    private val memberService: MemberService
 ) {
 
-    fun signUpAndSdkKeyForTest(): String {
-        val member = Member(
-            firstName = "동훈",
-            lastName = "김",
-            telNumber = "01012345678",
-            email = "huni19541@gmail.com",
-            password = "1234"
-        )
-        memberRepository.save(member)
+    @BeforeEach
+    fun setUp() {
+        memberRepository.findAllAByDeletedAtIsNull().map {
+            memberService.deleteUser(it.memberId!!)
+        }
+    }
 
-        val sdkKeyReqDto = SdkKeyReqDto(member.email)
+    fun signUpAndSdkKeyForTest(): String {
+
+        val member = memberRepository.save(
+            Member(
+                lastName = "test",
+                firstName = "test",
+                telNumber = "01012345678",
+                email = "test@gmail.com",
+                password = "test",
+            )
+        )
+
+
+        val sdkKeyReqDto = SdkKeyReqDto(
+            email = member.email
+        )
+
         return sdkKeyService.createSdkKey(sdkKeyReqDto).key
     }
 
@@ -68,8 +90,8 @@ class FlagSdkInitTest(
             description = "test",
             type = FlagType.BOOLEAN,
             defaultValue = "TRUE",
-            defaultValuePortion = 100,
-            defaultValueDescription = "test",
+            defaultPortion = 100,
+            defaultDescription = "test",
             variations = listOf(
                 VariationDto(
                     value = "FALSE",
@@ -78,7 +100,24 @@ class FlagSdkInitTest(
 
                 )
             ),
-            userId = memberId!!
+            memberId = memberId!!,
+
+            keywords = listOf(
+                KeywordDto(
+                    properties = listOf(
+                        PropertyDto(
+                            property = "test",
+                            data = "test"
+                        ),
+                        PropertyDto(
+                            property = "test2",
+                            data = "test2"
+                        )
+                    ),
+                    description = "test",
+                    value = "test"
+                )
+            ),
         )
         flagService.createFlag(flagRequestDto)
 
@@ -88,8 +127,8 @@ class FlagSdkInitTest(
             description = "test2",
             type = FlagType.INTEGER,
             defaultValue = "1",
-            defaultValuePortion = 80,
-            defaultValueDescription = "1 test",
+            defaultPortion = 80,
+            defaultDescription = "1 test",
             variations = listOf(
                 VariationDto(
                     value = "2",
@@ -102,7 +141,38 @@ class FlagSdkInitTest(
                     description = "3 test"
                 )
             ),
-            userId = memberId
+            memberId = memberId,
+
+            keywords = listOf(
+                KeywordDto(
+                    properties = listOf(
+                        PropertyDto(
+                            property = "test",
+                            data = "test"
+                        ),
+                        PropertyDto(
+                            property = "test2",
+                            data = "test2"
+                        )
+                    ),
+                    description = "test",
+                    value = "test"
+                ),
+                KeywordDto(
+                    properties = listOf(
+                        PropertyDto(
+                            property = "test3",
+                            data = "test3"
+                        ),
+                        PropertyDto(
+                            property = "test4",
+                            data = "test4"
+                        )
+                    ),
+                    description = "test2",
+                    value = "test2"
+                )
+            ),
         )
         flagService.createFlag(flagRequestDto2)
 
@@ -110,10 +180,10 @@ class FlagSdkInitTest(
             title = "test3",
             tags = listOf(tag1),
             description = "test3",
-            type = FlagType.INTEGER,
+            type = FlagType.STRING,
             defaultValue = "A",
-            defaultValuePortion = 10,
-            defaultValueDescription = "A test",
+            defaultPortion = 10,
+            defaultDescription = "A test",
             variations = listOf(
                 VariationDto(
                     value = "B",
@@ -131,7 +201,9 @@ class FlagSdkInitTest(
                     description = "D test"
                 )
             ),
-            userId = memberId
+            memberId = memberId,
+
+            keywords = listOf(),
         )
         flagService.createFlag(flagRequestDto3)
 
@@ -142,7 +214,6 @@ class FlagSdkInitTest(
         val flagList = flagService.getAllFlagForInit(flagInitRequestDto)
 
         // then
-        println(flagList.toString())
         Assertions.assertThat(flagList).hasSize(3)
     }
 }

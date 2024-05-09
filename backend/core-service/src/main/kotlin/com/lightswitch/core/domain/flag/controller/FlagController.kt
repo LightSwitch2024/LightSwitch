@@ -4,7 +4,10 @@ import com.lightswitch.core.common.dto.BaseResponse
 import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.dto.success
 import com.lightswitch.core.common.exception.BaseException
+import com.lightswitch.core.domain.flag.dto.req.FlagInfoRequestDto
 import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
+import com.lightswitch.core.domain.flag.dto.req.KeywordInfoRequestDto
+import com.lightswitch.core.domain.flag.dto.req.VariationInfoRequestDto
 import com.lightswitch.core.domain.flag.dto.res.FlagResponseDto
 import com.lightswitch.core.domain.flag.dto.res.FlagSummaryDto
 import com.lightswitch.core.domain.flag.dto.res.MainPageOverviewDto
@@ -27,6 +30,11 @@ class FlagController(
     @PostMapping("")
     fun createFlag(@RequestBody flagRequestDto: FlagRequestDto): BaseResponse<FlagResponseDto> {
         return success(flagService.createFlag(flagRequestDto))
+    }
+
+    @GetMapping("/confirm/{title}")
+    fun confirmDuplicateTitle(@PathVariable title: String): BaseResponse<Boolean> {
+        return success(flagService.confirmDuplicateTitle(title))
     }
 
     @GetMapping("")
@@ -62,20 +70,56 @@ class FlagController(
         return success(flagService.updateFlag(flagId, flagRequestDto))
     }
 
+    @PatchMapping("/flaginfo/{flagId}")
+    fun updateFlagInfo(
+        @PathVariable flagId: Long,
+        @RequestBody flagInfoRequestDto: FlagInfoRequestDto
+    ): BaseResponse<FlagResponseDto> {
+        return success(flagService.updateFlagInfo(flagId, flagInfoRequestDto))
+    }
+
+    @PatchMapping("/variationinfo/{flagId}")
+    fun updateVariationInfo(
+        @PathVariable flagId: Long,
+        @RequestBody variationInfoRequestDto: VariationInfoRequestDto
+    ): BaseResponse<FlagResponseDto> {
+        return success(flagService.updateVariationInfo(flagId, variationInfoRequestDto))
+    }
+
+    //    @RequestBody Map<String, List<String>> params
+    @PatchMapping("/keywordinfo/{flagId}")
+    fun updateKeywordInfo(
+        @PathVariable flagId: Long,
+        @RequestBody keywordInfoRequestDto: KeywordInfoRequestDto
+    ): BaseResponse<FlagResponseDto> {
+        return success(flagService.updateKeywordInfo(flagId, keywordInfoRequestDto))
+    }
+
     @GetMapping("/overview")
-    fun getFlagOverview(@PathParam(value = "memberId") memberId: Long): MainPageOverviewDto {
+    fun getFlagOverview(@PathParam(value = "memberId") memberId: Long): BaseResponse<MainPageOverviewDto> {
         val flagCountForOverview = flagService.getFlagCountForOverview()
         val sdkKeyForOverview = sdkKeyService.getSdkKeyForOverview(memberId)
 
         val totalFlags = flagCountForOverview["totalFlags"] ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
         val activeFlags = flagCountForOverview["activeFlags"] ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
-        val sdkKey = sdkKeyForOverview["sdkKey"] ?: throw BaseException(ResponseCode.SDK_KEY_NOT_FOUND)
+        var sdkKey: String? = ""
+        if (sdkKeyForOverview["sdkKey"] != null) {
+            sdkKey = sdkKeyForOverview["sdkKey"]
+        } else {
+            sdkKey = ""
+        }
 
-        return MainPageOverviewDto(
-            totalFlags = totalFlags,
-            activeFlags = activeFlags,
-            sdkKey = sdkKey,
+        return success(
+            MainPageOverviewDto(
+                totalFlags = totalFlags,
+                activeFlags = activeFlags,
+                sdkKey = sdkKey!!,
+            )
         )
     }
 
+    @GetMapping("/keyword/{keyword}")
+    fun getFlagsSummaryByKeyword(@PathVariable keyword: String): BaseResponse<List<FlagSummaryDto>> {
+        return success(flagService.getFlagsSummaryByKeyword(keyword))
+    }
 }

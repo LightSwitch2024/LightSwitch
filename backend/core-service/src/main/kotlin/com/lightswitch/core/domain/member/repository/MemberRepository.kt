@@ -5,7 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface MemberRepository: JpaRepository<Member, Long> {
+interface MemberRepository : JpaRepository<Member, Long> {
+    fun findByEmailAndDeletedAtIsNull(email: String): Member?
 
-    fun findByEmail(email: String): Member?
+    fun findAllAByDeletedAtIsNull(): List<Member>
 }
