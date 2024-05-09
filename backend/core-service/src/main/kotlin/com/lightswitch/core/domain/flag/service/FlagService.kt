@@ -255,13 +255,17 @@ class FlagService(
             throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
         }
 
+//        flag 의 keywords의 deleted at 이 null 인 것만 남기기
+        // TODO : flag의 keywords의 deletedAt이 null인 것만 남기기 <- 이 과정을 서비스 로직으로 처리하는 것이 맞는지 확인 필요, 쿼리로 처리하는 것이 더 효율적인지 확인 필요
+        val keywordList = flag.keywords.filter { it.deletedAt == null }
+
         return FlagResponseDto(
             flagId = flag.flagId!!,
             title = flag.title,
             tags = tagList,
             description = flag.description,
             type = flag.type,
-            keywords = flag.keywords.map { k ->
+            keywords = keywordList.map { k ->
                 KeywordDto(
                     properties = k.properties.map { p ->
                         PropertyDto(
