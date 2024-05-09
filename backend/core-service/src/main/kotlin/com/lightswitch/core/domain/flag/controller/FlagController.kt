@@ -4,10 +4,7 @@ import com.lightswitch.core.common.dto.BaseResponse
 import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.dto.success
 import com.lightswitch.core.common.exception.BaseException
-import com.lightswitch.core.domain.flag.dto.req.FlagInfoRequestDto
-import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
-import com.lightswitch.core.domain.flag.dto.req.KeywordInfoRequestDto
-import com.lightswitch.core.domain.flag.dto.req.VariationInfoRequestDto
+import com.lightswitch.core.domain.flag.dto.req.*
 import com.lightswitch.core.domain.flag.dto.res.FlagResponseDto
 import com.lightswitch.core.domain.flag.dto.res.FlagSummaryDto
 import com.lightswitch.core.domain.flag.dto.res.MainPageOverviewDto
@@ -52,14 +49,26 @@ class FlagController(
         return success(flagService.filteredFlags(tags))
     }
 
-    @DeleteMapping("/{flagId}")
+    /**
+     * flagId에 해당하는 Flag의 variation과 keyword를 Soft Delete
+     */
+    @DeleteMapping("softdelete/{flagId}")
     fun deleteFlag(@PathVariable flagId: Long): BaseResponse<Long> {
         return success(flagService.deleteFlag(flagId))
     }
 
+    /**
+     * flagId에 해당하는 Flag의 variation과 keyword를 Hard Delete
+     * 현재 채택하고 있는 구현 방식입니다
+     */
+    @DeleteMapping("/{flagId}")
+    fun deleteFlagWithHardDelete(@PathVariable flagId: Long): BaseResponse<Long> {
+        return success(flagService.deleteFlagWithHardDelete(flagId))
+    }
+
     @PatchMapping("/{flagId}")
-    fun switchFlag(@PathVariable flagId: Long): BaseResponse<Long> {
-        return success(flagService.switchFlag(flagId))
+    fun switchFlag(@PathVariable flagId: Long, @RequestBody switchRequestDto: SwitchRequestDto): BaseResponse<Boolean> {
+        return success(flagService.switchFlag(flagId, switchRequestDto))
     }
 
     @PutMapping("/{flagId}")
@@ -78,7 +87,7 @@ class FlagController(
         return success(flagService.updateFlagInfo(flagId, flagInfoRequestDto))
     }
 
-    @PatchMapping("/variationinfo/{flagId}")
+    @PatchMapping("/variationinfo/soft/{flagId}")
     fun updateVariationInfo(
         @PathVariable flagId: Long,
         @RequestBody variationInfoRequestDto: VariationInfoRequestDto
@@ -86,13 +95,28 @@ class FlagController(
         return success(flagService.updateVariationInfo(flagId, variationInfoRequestDto))
     }
 
-    //    @RequestBody Map<String, List<String>> params
-    @PatchMapping("/keywordinfo/{flagId}")
+    @PatchMapping("/variationinfo/{flagId}")
+    fun updateVariationInfoWithHardDelete(
+        @PathVariable flagId: Long,
+        @RequestBody variationInfoRequestDto: VariationInfoRequestDto
+    ): BaseResponse<FlagResponseDto> {
+        return success(flagService.updateVariationInfoWithHardDelete(flagId, variationInfoRequestDto))
+    }
+
+    @PatchMapping("/keywordinfo/soft/{flagId}")
     fun updateKeywordInfo(
         @PathVariable flagId: Long,
         @RequestBody keywordInfoRequestDto: KeywordInfoRequestDto
     ): BaseResponse<FlagResponseDto> {
         return success(flagService.updateKeywordInfo(flagId, keywordInfoRequestDto))
+    }
+
+    @PatchMapping("/keywordinfo/{flagId}")
+    fun updateKeywordInfoWithHardDelete(
+        @PathVariable flagId: Long,
+        @RequestBody keywordInfoRequestDto: KeywordInfoRequestDto
+    ): BaseResponse<FlagResponseDto> {
+        return success(flagService.updateKeywordInfoWithHardDelete(flagId, keywordInfoRequestDto))
     }
 
     @GetMapping("/overview")
