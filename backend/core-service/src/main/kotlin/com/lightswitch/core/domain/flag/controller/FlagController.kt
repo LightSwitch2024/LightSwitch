@@ -4,10 +4,7 @@ import com.lightswitch.core.common.dto.BaseResponse
 import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.dto.success
 import com.lightswitch.core.common.exception.BaseException
-import com.lightswitch.core.domain.flag.dto.req.FlagInfoRequestDto
-import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
-import com.lightswitch.core.domain.flag.dto.req.KeywordInfoRequestDto
-import com.lightswitch.core.domain.flag.dto.req.VariationInfoRequestDto
+import com.lightswitch.core.domain.flag.dto.req.*
 import com.lightswitch.core.domain.flag.dto.res.FlagResponseDto
 import com.lightswitch.core.domain.flag.dto.res.FlagSummaryDto
 import com.lightswitch.core.domain.flag.dto.res.MainPageOverviewDto
@@ -70,8 +67,8 @@ class FlagController(
     }
 
     @PatchMapping("/{flagId}")
-    fun switchFlag(@PathVariable flagId: Long): BaseResponse<Long> {
-        return success(flagService.switchFlag(flagId))
+    fun switchFlag(@PathVariable flagId: Long, @RequestBody switchRequestDto: SwitchRequestDto): BaseResponse<Boolean> {
+        return success(flagService.switchFlag(flagId, switchRequestDto))
     }
 
     @PutMapping("/{flagId}")

@@ -411,9 +411,9 @@ class FlagService(
         return flag.flagId ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
     }
 
-    fun switchFlag(flagId: Long): Long {
+    fun switchFlag(flagId: Long, switchRequestDto: SwitchRequestDto): Boolean {
         val flag = flagRepository.findById(flagId).get()
-        flag.active = !flag.active
+        flag.active = !switchRequestDto.active
 
         val sdkKey =
             sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(flag.maintainer.memberId!!) ?: throw BaseException(
@@ -429,7 +429,7 @@ class FlagService(
             )
         )
 
-        return flagRepository.save(flag).flagId ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
+        return flagRepository.save(flag).active
     }
 
     /*
