@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+import json
 import typing
 from dataclasses import dataclass, field
 
-from lightswitch.lightswitch.exceptions import FeatureNotFoundError
+from .exceptions import FeatureNotFoundError
 from .utils import get_hashed_percentage_for_object_ids
 
 # 데이터 모델 정의
@@ -31,7 +32,7 @@ class Keyword:
 
 
 @dataclass
-class Context:
+class Context:  # variation과 동일
     value: str
     portion: int
     description: str
@@ -57,34 +58,51 @@ class Flag:
     def get_attribute_value(self, attribute: str):
         try:
             return getattr(self, attribute)
-        except AttributeError:
-            raise FeatureNotFoundError(f"Attribute '{attribute}' 은 해당 플래그에 존재하지 않습니다.")
+        except AttributeError as exc:
+            raise FeatureNotFoundError(f"Attribute '{attribute}' 은 해당 플래그에 존재하지 않습니다.") from exc
 
     # 플래그의 키워드를 확인, 해당 유저가 타겟팅되어 있으면 그에 맞는 값을 반환, 아니면 플래그 기본값
-    def get_user_variation_by_keyword(self, user: LSUser) -> str:
-        flag_keywords=self.keywords
+    def get_user_variation_by_keyword(self, user: LSUser) -> typing.Any:
+        flag_keywords = self.keywords
         for keyword in flag_keywords:
             for prop in keyword.get('properties', []):
                 if prop['property'] in user.property and prop['data'] in user.property[prop['property']]:
-                    return keyword.get('value')
-        return self.default_value
+                    value = self.convert_value(keyword.get('value'))
+                    return value
+        return False
 
     # 플래그의 context를 확인, 유저의 백분율 값을 계산하여 어디에 속하는지 확인
     def get_user_variation_by_percentile(self, user: LSUser) -> str:
         # 유저의 백분율값을 계산(유저 식별자와 플래그 식별자 함께 사용 : 플래그마다 다른 백분율값을 갖게 하기 위함)
-        user_percentile=get_hashed_percentage_for_object_ids(["user.user_id", "self.flag_id"])
+        user_percentile=get_hashed_percentage_for_object_ids([f"{user.user_id}", "self.flag_id"])
 
         start_percentage = 0  # 시작 percentile
-        for context in sorted(self.variations, key=lambda context: context.portion):
-            limit = start_percentage + context.portion
+        for context in sorted(self.variations, key=lambda context: context['portion']):
+            limit = start_percentage + context['portion']
             if start_percentage <= user_percentile < limit:
-                return context.value
+                value = self.convert_value(context['value'])
+                return value
 
             start_percentage = limit
 
         return self.default_value
 
-
+    def convert_value(self, value: str) -> typing.Any:  # 형변환 이후에 반환
+        """
+        value를 flag 타입에 따라 적절한 데이터 타입으로 변환하여 반환합니다.
+        """
+        if self.type == "BOOLEAN":
+            return bool(value)
+        if self.type == "INTEGER":
+            return int(value)
+        if self.type == "JSON":
+            try:
+                return json.loads(value)
+            except json.JSONDecodeError:  # 디코딩 에러 발생 시에는 그대로 반환
+                return value
+        if self.type == "STRING":
+            return str(value)
+        return value
 
     # SSE flag_data를 기반으로 인스턴스 생성
     @classmethod
@@ -147,9 +165,9 @@ class Flags:
 
     def get_flag_by_name(self, feature_name: str) -> Flag:
         try:
-            flag = self.flags[feature_name]  # 플래그 이름을 키 값으로 하여 플래그 객체를 저장하므로 키 값으로 찾아옴
-        except KeyError:
-            raise FeatureNotFoundError(feature_name)
+            flag = self.flags[feature_name]
+        except KeyError as exc:
+            raise FeatureNotFoundError(feature_name) from exc
         return flag
 
     # event 타입에 따라 수행할 메서드

@@ -1,14 +1,11 @@
-import json
 import logging
 import threading
 import typing
-from typing import Callable, Generator, Optional, Protocol, cast
+from typing import Callable, Optional, Protocol
 
 import requests
-import sseclient
 
 from .custom_sseclient import CustomSSEClient
-# from . import Lightswitch
 from .exceptions import StreamDataError
 
 logger = logging.getLogger(__name__)
@@ -23,7 +20,6 @@ class StreamManager(threading.Thread):
         self,
         *args: typing.Any,
         stream_url: str,
-        # lightswitch: Lightswitch,
         on_event: Callable[[str], None],
         request_timeout_seconds: Optional[int] = None,
         **kwargs: typing.Any
@@ -38,15 +34,8 @@ class StreamManager(threading.Thread):
     def run(self) -> None:
         while not self._stop_event.is_set():
             try:
-                # response = requests.get(self.stream_url, stream=True)
-                # print("res", response)
                 sse_client = CustomSSEClient(self.stream_url, headers={"Accept": "application/json, text/event-stream"}, timeout=None)
-                # sse_client = sseclient.SSEClient(
-                #     self.stream_url,
-                #     headers={"Accept": "application/json, text/event-stream"},
-                #     timeout=None
-                # )
-                # print("sse client 출력", sse_client)
+
                 for event in sse_client:
                     print("event 발생!", event, "여기까지 EVENT")
                     if hasattr(event, 'event'):
