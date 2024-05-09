@@ -10,6 +10,7 @@ import OutlinedFlagBig from '@assets/outlined-flag-big.svg?react';
 import * as S from '@components/updateModal/indexStyle';
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
+import { DefaultValue } from 'recoil';
 
 import { confirmDuplicateFlag } from '@/api/create/createAxios';
 
@@ -125,7 +126,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
   );
 
   const typeConfig = ['BOOLEAN', 'INTEGER', 'STRING', 'JSON'];
-
   const isDetailMode = (): boolean => {
     return flagMode === 'detail';
   };
@@ -154,18 +154,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     setDefaultDescription(e.target.value);
   };
 
-  const handleDefaultPortionChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    e.target.value = e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
-    const inputValue = e.target.value;
-    if (inputValue === '' || !isNaN(Number(inputValue))) {
-      setDefaultPortion(inputValue === '' ? '' : Number(inputValue));
-    }
-    // type 변경 생기면 null값으로 바꿈
-    if (isTypeChanged) {
-      setDefaultPortion('');
-    }
-  };
-
   const handleDefaultValueChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     if (type === 'BOOLEAN') {
       setDefaultValue(e.target.value.toUpperCase());
@@ -173,6 +161,14 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       setDefaultValue(e.target.value.slice(0, -1));
     } else {
       setDefaultValue(e.target.value);
+    }
+  };
+
+  const handleDefaultPortionChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    e.target.value = e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+    const inputValue = e.target.value;
+    if (inputValue === '' || !isNaN(Number(inputValue))) {
+      setDefaultPortion(inputValue === '' ? '' : Number(inputValue));
     }
   };
 
@@ -211,32 +207,26 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
    */
   const handleEditeType = (typeItem: string) => () => {
     //타입 변경시 value, portion, description 초기화
-    if (props.flagDetail?.type != typeItem) {
-      setDefaultValue('');
-      setDefaultPortion('');
-      setDefaultDescription('');
-      setVariation('');
+    if (type != typeItem) {
+      setType(typeItem);
+      if (typeItem === 'BOOLEAN') {
+        setDefaultValue('TRUE');
+        setDefaultPortion(100);
+        setDefaultDescription('');
+        setVariations([
+          {
+            value: 'FALSE',
+            portion: 0,
+            description: '',
+          },
+        ]);
+      } else {
+        setDefaultValue('');
+        setDefaultPortion('');
+        setDefaultDescription('');
+        setVariations([]);
+      }
     }
-    if (isDetailMode()) {
-      return;
-    }
-
-    setIsInvalidBooleanVariation(false);
-    setType(typeItem);
-    if (typeItem === 'BOOLEAN') {
-      setDefaultValue('TRUE');
-      setVariations([
-        {
-          value: 'FALSE',
-          portion: 0,
-          description: '',
-        },
-      ]);
-    } else {
-      setDefaultValue('');
-      setVariations([]);
-    }
-
     setIsTypeEdited(false);
   };
 
@@ -290,6 +280,14 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     });
 
     console.log(editedVariationInfo.defaultPortion);
+    // type 변경 생기면 null값으로 바꿈
+    if (isTypeChanged) {
+      setDefaultPortion('');
+      setEditedVariationInfo({
+        ...editedVariationInfo,
+        defaultPortion: Number(0),
+      });
+    }
   };
 
   const handleChangeDefaultDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1045,34 +1043,49 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
           </S.Layer>
           <S.FlagVariationContentLayer>
             <S.FlagVariationRowContainer>
-              <S.FlagVariationInput
-                type="text"
-                placeholder="값을 입력하세요"
-                value={defaultValue}
-                onChange={handleDefaultValueChange}
-                onBlur={checkFormatWithType}
-                $flag={isDetailMode()}
-              />
-              <S.FlagVariationInput
-                type="number"
-                placeholder="변수 비율"
-                value={defaultPortion}
-                onChange={handleDefaultPortionChange}
-                $flag={isDetailMode()}
-              />
+              <S.VarContainer>
+                <S.VarTextContainer>
+                  <S.VarText>변수</S.VarText>
+                </S.VarTextContainer>
+                <S.FlagVariationInput
+                  type="text"
+                  placeholder="값을 입력하세요"
+                  value={defaultValue}
+                  onChange={handleDefaultValueChange}
+                  onBlur={checkFormatWithType}
+                  $flag={isDetailMode()}
+                />
+              </S.VarContainer>
+              <S.VarContainer>
+                <S.VarTextContainer>
+                  <S.VarText>비율</S.VarText>
+                </S.VarTextContainer>
+                <S.FlagVariationInput
+                  type="number"
+                  placeholder="변수 비율"
+                  value={defaultPortion}
+                  onChange={handleDefaultPortionChange}
+                  $flag={isDetailMode()}
+                />
+              </S.VarContainer>
             </S.FlagVariationRowContainer>
             <S.FlagVariationRowContainer>
-              <S.FlagVariationInput
-                type="text"
-                placeholder="설명"
-                value={defaultDescription}
-                onChange={handleDefaultDescriptionChange}
-                $flag={isDetailMode()}
-              />
+              <S.VarDesContainer>
+                <S.VarTextContainer>
+                  <S.VarDesText>설명</S.VarDesText>
+                </S.VarTextContainer>
+                <S.FlagVariationInput
+                  type="text"
+                  placeholder="설명"
+                  value={defaultDescription}
+                  onChange={handleDefaultDescriptionChange}
+                  $flag={isDetailMode()}
+                />
+              </S.VarDesContainer>
             </S.FlagVariationRowContainer>
           </S.FlagVariationContentLayer>
           <div>
-            <S.VarVertical>
+            {/* <S.VarVertical>
               <S.VarHorizon>
                 <S.VarContainer>
                   <S.VarTextContainer>
@@ -1114,14 +1127,14 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                   onBlur={() => setIsFocused(false)}
                 />
               </S.VarDesContainer>
-            </S.VarVertical>
+            </S.VarVertical> */}
             <S.Horizontal />
           </div>
           {editedVariationInfo.variations.map((variation, index) => (
             <>
               <div key={index}>
-                <S.VarVertical>
-                  <S.VarHorizon>
+                <S.FlagVariationContentLayer>
+                  <S.FlagVariationRowContainer>
                     <S.VarContainer>
                       <S.VarTextContainer>
                         <S.VarText>변수</S.VarText>
@@ -1129,7 +1142,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                       <S.FlagVariationInput
                         type="text"
                         value={variation.value}
-                        onChange={handleChangeDefaultValue}
+                        onChange={handleDefaultValueChange}
                         $flag={isFocused}
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
@@ -1139,30 +1152,32 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                       <S.VarTextContainer>
                         <S.VarText>비율</S.VarText>
                       </S.VarTextContainer>
-                      <S.Input
+                      <S.FlagVariationInput
                         type="number"
                         value={variation.portion}
-                        onChange={handleChangeDefaultPortion}
+                        onChange={handleDefaultPortionChange}
                         $flag={isFocused}
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
                       />
                     </S.VarContainer>
-                  </S.VarHorizon>
-                  <S.VarDesContainer>
-                    <S.VarTextContainer>
-                      <S.VarText>설명</S.VarText>
-                    </S.VarTextContainer>
-                    <S.Input
-                      type="text"
-                      value={variation.description}
-                      onChange={handleDefaultDescriptionChange}
-                      $flag={isFocused}
-                      onFocus={() => setIsFocused(true)}
-                      onBlur={() => setIsFocused(false)}
-                    />
-                  </S.VarDesContainer>
-                </S.VarVertical>
+                  </S.FlagVariationRowContainer>
+                  <S.FlagVariationRowContainer>
+                    <S.VarDesContainer>
+                      <S.VarTextContainer>
+                        <S.VarText>설명</S.VarText>
+                      </S.VarTextContainer>
+                      <S.FlagVariationInput
+                        type="text"
+                        value={variation.description}
+                        onChange={handleDefaultDescriptionChange}
+                        $flag={isFocused}
+                        onFocus={() => setIsFocused(true)}
+                        onBlur={() => setIsFocused(false)}
+                      />
+                    </S.VarDesContainer>
+                  </S.FlagVariationRowContainer>
+                </S.FlagVariationContentLayer>
               </div>
               <S.ButtonLayer>
                 <S.DelButton onClick={deleteVariation(index)}>변수 삭제</S.DelButton>

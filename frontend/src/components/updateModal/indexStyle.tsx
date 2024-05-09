@@ -184,7 +184,7 @@ export const VarDesContainer = styled.div`
   display: flex;
   width: 100%;
   flex-direction: row;
-  gap: 0.125rem;
+  gap: 0.5rem;
 `;
 
 export const VarDefinitionContainer = styled.div`
@@ -268,6 +268,20 @@ export const VarText = styled.div`
   display: flex;
   width: 4rem;
   color: #000;
+  margin-top: 20px;
+  font-family: Pretendard;
+  font-size: 1.5rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+
+export const VarDesText = styled.div`
+  display: flex;
+  width: 4rem;
+  color: #000;
+  margin-top: 20px;
+  margin-left: 5px;
   font-family: Pretendard;
   font-size: 1.5rem;
   font-style: normal;
@@ -568,10 +582,9 @@ export const FlagVariationContentLayer = styled.div`
 export const FlagVariationRowContainer = styled.div`
   display: flex;
   width: 100%;
-  padding: 0rem 0.625rem;
   justify-content: center;
   align-items: center;
-  gap: 3.125rem;
+  gap: 3rem;
 `;
 
 export const FlagVariationInput = styled.input<{ $flag: boolean }>`
