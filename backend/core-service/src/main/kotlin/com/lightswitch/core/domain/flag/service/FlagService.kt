@@ -213,7 +213,7 @@ class FlagService(
     }
 
     fun getAllFlag(): List<FlagSummaryDto> {
-        val flagList = flagRepository.findByDeletedAtIsNull()
+        val flagList = flagRepository.findByDeletedAtIsNullOrderByCreatedAt()
         return flagList.map { flag ->
             FlagSummaryDto(
                 flagId = flag.flagId!!,
