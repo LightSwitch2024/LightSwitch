@@ -7,6 +7,7 @@ import SignUp from '@/components/signup/index';
 import FlagDetail from '@/pages/flag/index';
 import Main from '@/pages/main/index';
 import UserDetail from '@/pages/mypage/index';
+import CreateOrg from '@/pages/organization/index';
 import LogIn from '@/pages/user/login';
 
 import ProtectedRoute from './protectedRoute';
@@ -29,6 +30,7 @@ const Router = () => {
           <Route path="/flag/:flagId" element={<FlagDetail />} />
           <Route path="/mypage" element={<UserDetail />} />
           <Route path="/passwordfind" element={<UserDetail />} />
+          <Route path="/createorg" element={<CreateOrg />} />
         </Routes>
       </S.Content>
     </div>

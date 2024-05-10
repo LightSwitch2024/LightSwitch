@@ -25,6 +25,7 @@ export const SignUpContainer = styled.div<ModalProps>`
 `;
 
 export const SignUpInput = styled.input`
+  width: 100%;
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
   border: 1px solid #ddd;
@@ -50,6 +51,7 @@ export const SignUpWarnText = styled.div`
 
 export const SignUpInputBox = styled.div`
   display: flex;
+  width: 100%;
   flex-direction: column;
   justify-content: center;
   gap: 0.5rem;
