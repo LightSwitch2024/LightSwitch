@@ -238,7 +238,7 @@ class LSClient implements ILSClient {
     return this.flags;
   }
 
-  public addSseListener(): void {
+  private addSseListener(): void {
     this.eventSource?.addEventListener('sse', (event: MessageEvent) => {
       if (event.data === 'SSE connected') {
         return;
