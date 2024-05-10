@@ -1,7 +1,6 @@
 import hashlib
 import typing
 
-from lightswitch.lightswitch.stream_manager import StreamEvent
 
 
 def get_hashed_percentage_for_object_ids(
@@ -18,6 +17,7 @@ def get_hashed_percentage_for_object_ids(
     """
 
     to_hash = ",".join(str(id_) for id_ in list(object_ids) * iterations)
+    print("to_hash : ", to_hash)
     hashed_value = hashlib.md5(to_hash.encode("utf-8"))
     hashed_value_as_int = int(hashed_value.hexdigest(), base=16)
     value = ((hashed_value_as_int % 9999) / 9998) * 100
@@ -33,9 +33,18 @@ def get_hashed_percentage_for_object_ids(
     return value
 
 
-def handle_event(event: StreamEvent) -> None:
-    print(f"Received event: {event.event}, {event.data}")
 
 
-print(get_hashed_percentage_for_object_ids(["123"]))
-print(get_hashed_percentage_for_object_ids(["121"]))
+print(get_hashed_percentage_for_object_ids(["123", "new_feature"]))
+print(get_hashed_percentage_for_object_ids(["123", "new_feature2"]))
+
+print(get_hashed_percentage_for_object_ids(["1", "AFlag"]))  # 93.99879975995199
+print(get_hashed_percentage_for_object_ids(['1', 'AFlag'], 2))  # 18.52370474094819
+print(get_hashed_percentage_for_object_ids(['2', 'AFlag'], 1))  # 65.5631126225245
+print(get_hashed_percentage_for_object_ids(['2', 'BFlag'], 1))  # 38.817763552710545
+print(get_hashed_percentage_for_object_ids(['3', 'AFlag'], 1))  # 89.22784556911381
+print(get_hashed_percentage_for_object_ids(['3', 'AFlag'], 2))  # 16.093218643728747
+print(get_hashed_percentage_for_object_ids(['1', 'BFlag'], 1))  # 39.9379875975195
+print(get_hashed_percentage_for_object_ids(['2', 'CFlag'], 1))  # 26.585317063412685
+print(get_hashed_percentage_for_object_ids(['3', 'CFlag'], 2))  # 56.34126825365073
+print(get_hashed_percentage_for_object_ids(['4', 'ABCFlag'], 5))  # 5.171034206841369

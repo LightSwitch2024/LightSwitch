@@ -7,7 +7,7 @@ from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 from .models import Flags, Flag, LSUser
 from .stream_manager import StreamManager, StreamEvent
-from .exceptions import StreamDataError, InvalidJsonResponseError
+from .exceptions import StreamDataError, LSServerError, LSTypeCastError
 
 
 DEFAULT_API_URL = 'http://localhost:8000/api/v1/'
@@ -27,7 +27,15 @@ class Lightswitch:
     """
     lightswitch http API와 통신하는 interface를 제공
     """
+    _instance = None
     flags: typing.Optional[Flags] = None
+    environment_key: typing.Optional[str] = None
+
+    @classmethod
+    def get_instance(cls, **kwargs):  # 싱글톤 인스턴스를 반환
+        if cls._instance is None:
+            cls._instance = cls(**kwargs)
+        return cls._instance
 
     # 초기화할 때
     # 1.모든 플래그를 가져와서 저장
@@ -35,7 +43,6 @@ class Lightswitch:
     # 3.subscribe/userkey 로 sse 연결
     def __init__(
         self,
-        environment_key: typing.Optional[str]= None,
         api_url: typing.Optional[str] = None,
         sse_realtime_api_url: typing.Optional[str] = None,
         request_timeout_seconds: typing.Optional[int] = None,
@@ -44,11 +51,7 @@ class Lightswitch:
         proxies: typing.Optional[typing.Dict[str, str]] = None,
     ) -> None:
 
-        self._environment: typing.Optional[typing.Any] = None
         self.update_frequency_seconds = update_frequency_seconds
-
-        if not environment_key:
-            raise ValueError("환경 키가 필요합니다.")
 
         self.session = requests.Session()
         self.session.proxies.update(proxies or {})
@@ -74,14 +77,13 @@ class Lightswitch:
         self.user_key = None
         self.stream_manager = None
 
-        # 모든 플래그 가져오기 -> self.flags에 값 할당
+    def init(self, environment_key: str) -> None:
+        self.environment_key = environment_key
         self._initialize_environment(environment_key)
-        # userkey 받아오기
         self.user_key = self._get_user_key(environment_key)
-        # 받아온 userkey로 SSE 구독하기
         self.initialize_sse_stream_manager(self.user_key)
 
-    def initialize_sse_stream_manager(self, user_key):
+    def initialize_sse_stream_manager(self, user_key: str):
         self.stream_manager = StreamManager(
             stream_url=self.sse_realtime_api_url + "/" + user_key,
             on_event=self.handle_event,
@@ -106,7 +108,11 @@ class Lightswitch:
             data = response.json()
             user_key = data['data']['userKey']
             return user_key
-        raise requests.exceptions.HTTPError(f"userKey를 받아오는 데 실패했습니다. 상태 코드: {response.status_code}")
+        raise LSServerError(
+            f"LightSwitch 서버와 통신에 실패했습니다. "
+            f"userKey를 받아오는 데 실패했습니다. "
+            f"Response status code: {response.status_code}"
+        )
 
     def _initialize_environment(self, environment_key: typing.Optional[str]) -> None:
         Lightswitch.flags = self._get_all_environment_flags_from_api(environment_key)
@@ -140,12 +146,14 @@ class Lightswitch:
                 self.update_flag(title, new_flag)
 
             elif event_type == "SWITCH":
-                self.toggle_flag(new_flag_data['title'])
-            else: # DELETE
-                self.delete_flag(new_flag_data['flagTitle'])
+                self.toggle_flag(new_flag_data)
+            else:  # DELETE
+                self.delete_flag(new_flag_data['title'])
 
         except json.JSONDecodeError as e:
-            raise StreamDataError("new_stream_event로부터 유효한 json 데이터를 가져오는데 실패하였습니다.") from e
+            raise StreamDataError(
+                "new_stream_event로부터 유효한 json 데이터를 가져오는데 실패하였습니다."
+            ) from e
 
     def add_flag(self, new_flag: Flag):
         if self.flags is None:
@@ -159,8 +167,8 @@ class Lightswitch:
     def delete_flag(self, title):
         self.flags.delete_flag_by_name(title)
 
-    def toggle_flag(self, title):  # 플래그 활성화 상태 변경
-        self.flags.toggle_flag_activation(title)
+    def toggle_flag(self, new_flag):  # 플래그 활성화 상태 변경
+        self.flags.toggle_flag_activation(new_flag)
 
     # 해당 환경의 플래그 데이터 모두 가져오기
     def _get_all_environment_flags_from_api(self, environment_key) -> Flags:
@@ -176,33 +184,36 @@ class Lightswitch:
             )
         except json.JSONDecodeError as e:
             # logging.error(f"API 요청 중 에러 발생: {e}")
-            raise InvalidJsonResponseError("응답 데이터가 유효한 JSON 타입이 아닙니다.") from e
+            raise LSServerError(
+                "LightSwitch 서버와 통신에 실패했습니다."
+                "응답 데이터가 유효한 JSON 타입이 아닙니다."
+            ) from e
 
     # 플래그 이름과 유저 모델 받아서 해당 유저의 플래그 변량 반환
-    def get_flag(self, flag_title: str, user: LSUser) -> typing.Any:
+    def get_flag(self, flag_title: str, user: LSUser, default_value: typing.Any) -> typing.Any:
         flag = self.flags.get_flag_by_name(flag_title)
         value_if_is_targeted = flag.get_user_variation_by_keyword(user)
         if not value_if_is_targeted:  # 키워드에 해당하지 않으면
             return flag.get_user_variation_by_percentile(user)
         return value_if_is_targeted
 
-    def get_boolean_flag(self, flag_title: str, user: LSUser) -> bool:
+    def get_boolean_flag(self, flag_title: str, user: LSUser, default_value: bool) -> bool:
         flag = self.flags.get_flag_by_name(flag_title)
         if flag.type != "BOOLEAN":
-            raise TypeError(f"Flag '{flag_title}'의 데이터 타입이 BOOLEAN이 아닙니다.")
-        return self.get_flag(flag_title, user)
+            raise LSTypeCastError(flag_title, "BOOLEAN")
+        return self.get_flag(flag_title, user, default_value)
 
-    def get_number_flag(self, flag_title: str, user: LSUser) -> int:
+    def get_number_flag(self, flag_title: str, user: LSUser, default_value: int) -> int:
         flag = self.flags.get_flag_by_name(flag_title)
         if flag.type != "INTEGER":
-            raise TypeError(f"Flag '{flag_title}'의 데이터 타입이 INTEGER가 아닙니다.")
-        return self.get_flag(flag_title, user)
+            raise LSTypeCastError(flag_title, "INTEGER")
+        return self.get_flag(flag_title, user, default_value)
 
-    def get_string_flag(self, flag_title: str, user: LSUser) -> str:
+    def get_string_flag(self, flag_title: str, user: LSUser, default_value: str) -> str:
         flag = self.flags.get_flag_by_name(flag_title)
         if flag.type != "STRING":
-            raise TypeError(f"Flag '{flag_title}'의 데이터 타입이 STRING이 아닙니다.")
-        return self.get_flag(flag_title, user)
+            raise LSTypeCastError(flag_title, "STRING")
+        return self.get_flag(flag_title, user, default_value)
 
     def _get_json_response(
         self,
@@ -227,12 +238,17 @@ class Lightswitch:
                     timeout=self.request_timeout_seconds
                 )
             if response.status_code != 200:
-                raise InvalidJsonResponseError(
-                    "유효하지 않은 request 입니다. Response status code: %d" % response.status_code
+                raise LSServerError(
+                    "LightSwitch 서버와 통신에 실패했습니다."
+                    "유효하지 않은 request 입니다." 
+                    f"Response status code: {response.status_code}"
                 )
             return response.json()
         except (requests.ConnectionError, json.JSONDecodeError) as e:
-            raise InvalidJsonResponseError("Lightswitch API로부터 유효한 response를 받지 못하였습니다.") from e
+            raise LSServerError(
+                "LightSwitch 서버와 통신에 실패했습니다."
+                "Lightswitch API로부터 유효한 response를 받지 못하였습니다."
+            ) from e
 
     def destroy(self):
         """
@@ -246,7 +262,6 @@ class Lightswitch:
         self.flags = None
 
         # 그 외 모든 정보 초기화
-        self._environment = None
         self.user_key = None
 
         # 세션 종료

@@ -20,7 +20,7 @@ class StreamManager(threading.Thread):
         self,
         *args: typing.Any,
         stream_url: str,
-        on_event: Callable[[str], None],
+        on_event: Callable[[StreamEvent], None],
         request_timeout_seconds: Optional[int] = None,
         **kwargs: typing.Any
     ) -> None:
@@ -37,7 +37,7 @@ class StreamManager(threading.Thread):
                 sse_client = CustomSSEClient(self.stream_url, headers={"Accept": "application/json, text/event-stream"}, timeout=None)
 
                 for event in sse_client:
-                    print("event 발생!", event, "여기까지 EVENT")
+                    # print("event 발생!", event, "여기까지 EVENT")
                     if hasattr(event, 'event'):
                         print(f"Event: {event.event}")
                     if hasattr(event, 'data'):
@@ -45,7 +45,7 @@ class StreamManager(threading.Thread):
                     if hasattr(event, 'type'):
                         print(f"Type: {event.type}")
                     if event.data.strip():  # data 내용이 있는 경우에만
-                        print("이벤트 발생")
+                        # print("이벤트 발생")
                         if event.data != 'SSE connected':
                             self.on_event(event)  # process_stream_event_update() 호출
 

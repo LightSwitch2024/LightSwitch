@@ -1,6 +1,5 @@
 import sys
 import os
-import json
 from lightswitch.lightswitch import Lightswitch
 from lightswitch.lightswitch.models import LSUser
 
@@ -14,10 +13,14 @@ sys.path.append(os.path.join(parent_dir, 'lightswitch'))
 
 # sdk 초기화 : Lightswitch 클래스의 인스턴스를 생성하여 사용
 # 해당 환경의 플래그 데이터 전부 가져오기 - 최초에 DB의 데이터를 모두 가져오고, 그런 다음 SSE 연결
-lightswitch = Lightswitch(
-    environment_key="826f68c4ec11422bb89e6511774bd62a"
-)
-
+lightswitch = Lightswitch.get_instance()  # 인스턴스 생성
+env_key = "826f68c4ec11422bb89e6511774bd62a"
+lightswitch.init(environment_key=env_key)  # 연결
+lightswitch_instance = Lightswitch.get_instance()
+a = lightswitch_instance.environment_key
+b = lightswitch.environment_key
+print("두 스위치 인스턴스를 통해 접근한 클래스 변수 값은 동일한가요? : ", a == b)
+print("두 스위치 인스턴스는 동일한가요? : ", lightswitch == lightswitch_instance)
 print("특정 플래그 활성화 여부 확인: ", lightswitch.flags.is_feature_enabled("new_biomarker"))
 
 
@@ -29,10 +32,17 @@ identifier = "sumin@gmail.com"
 
 user_id = 1
 key = "memberId"
-value = "2"
+value = "1"
+
+key2 = "memberId"
+value2 = "12"
+
 
 this_user = LSUser(user_id=user_id).set_property(key, value)
+another_user = LSUser(user_id=100).set_property(key2, value2)
+other_user = LSUser(user_id=101)
 print(this_user)
+print(another_user)
 
 # 이 환경의 전체 플래그 목록 가져오기
 flags = lightswitch.flags.get_all_flags()
@@ -68,15 +78,20 @@ user_variation_by_percentile = new_new_new_feature_flag.get_user_variation_by_pe
 
 print("test 시작 ----------------------------------------------------------")
 # get_flag test
-this_user_value = lightswitch.get_flag("admin only data", this_user)
+this_user_value = lightswitch.get_flag("admin only data", this_user, 0)
 print("get_flag test(True) : ", this_user_value)
-this_user_value2 = lightswitch.get_flag("new_feature", this_user)
+this_user_value2 = lightswitch.get_flag("new_feature", this_user, 0)
 print("get_flag test2 : ", this_user_value2)
 print()
 # get_boolean_test
-this_user_bool_value = lightswitch.get_boolean_flag("admin only data", this_user)
+this_user_bool_value = lightswitch.get_boolean_flag("admin only data", this_user, False)
 print("get_boolean_test1 : ", this_user_bool_value)
-this_user_bool_value2 = lightswitch.get_boolean_flag("new_feature", this_user)
+# this_user_bool_value2 = lightswitch.get_boolean_flag("new_feature", this_user)
+print()
 # print("get_boolean_test2(int 플래그입니다) :  ", this_user_bool_value2)
-
-
+this_user_int_value = lightswitch.get_number_flag("ab test", this_user, 0)
+another_user_int_value = lightswitch.get_number_flag("ab test", another_user, 0)
+other_user_int_value = lightswitch.get_number_flag("ab test", other_user, 0)
+print("get_number_test1(this) : ", this_user_int_value)
+print("get_number_test2(another) : ", another_user_int_value)
+print("get_number_test3(other) : ", other_user_int_value)

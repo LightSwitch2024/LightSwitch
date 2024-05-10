@@ -4,13 +4,13 @@ import json
 import typing
 from dataclasses import dataclass, field
 
-from .exceptions import FeatureNotFoundError
+from .exceptions import LSFlagNotFoundError
 from .utils import get_hashed_percentage_for_object_ids
 
 # 데이터 모델 정의
 @dataclass
 class LSUser:
-    user_id: int
+    user_id: str
     property: typing.Dict[str, str] = field(default_factory=dict)
 
     def set_property(self, key: str, value: str) -> 'LSUser':
@@ -59,17 +59,26 @@ class Flag:
         try:
             return getattr(self, attribute)
         except AttributeError as exc:
-            raise FeatureNotFoundError(f"Attribute '{attribute}' 은 해당 플래그에 존재하지 않습니다.") from exc
+            raise AttributeError(f"Attribute '{attribute}' 은 해당 플래그에 존재하지 않습니다.") from exc
 
     # 플래그의 키워드를 확인, 해당 유저가 타겟팅되어 있으면 그에 맞는 값을 반환, 아니면 플래그 기본값
     def get_user_variation_by_keyword(self, user: LSUser) -> typing.Any:
         flag_keywords = self.keywords
-        for keyword in flag_keywords:
-            for prop in keyword.get('properties', []):
-                if prop['property'] in user.property and prop['data'] in user.property[prop['property']]:
-                    value = self.convert_value(keyword.get('value'))
-                    return value
-        return False
+        for keyword in flag_keywords:  # keyword는 OR
+            is_targeted = True
+            for prop in keyword.get('properties', []):  # prop은 AND -> 모든 prop 조건에 해당하는지 확인
+                user_has_the_key = prop['property'] in user.property  # 유저 속성에 키워드의 키가 존재하는지 여부
+                if user_has_the_key and prop['data'] == user.property[prop['property']]:
+                    continue
+                else:
+                    is_targeted = False
+                    break
+            # prop의 모든 조건을 만족하는 경우
+            if is_targeted:
+                value = self.convert_value(keyword.get('value'))  # 처음 만족하는 조건의 값을 반환
+                return value
+
+
 
     # 플래그의 context를 확인, 유저의 백분율 값을 계산하여 어디에 속하는지 확인
     def get_user_variation_by_percentile(self, user: LSUser) -> str:
@@ -167,7 +176,7 @@ class Flags:
         try:
             flag = self.flags[feature_name]
         except KeyError as exc:
-            raise FeatureNotFoundError(feature_name) from exc
+            raise LSFlagNotFoundError(feature_name) from exc
         return flag
 
     # event 타입에 따라 수행할 메서드
@@ -189,9 +198,11 @@ class Flags:
         else:
             raise FeatureNotFoundError(flag_name)
 
-    def toggle_flag_activation(self, flag_name: str):
-        if flag_name in self.flags:
-            self.flags[flag_name].active = not self.flags[flag_name].active
+    def toggle_flag_activation(self, new_flag: typing.Dict[str, typing.Any]):
+        flag_title = new_flag["title"]
+        flag_is_active = new_flag["active"]
+        if flag_title in self.flags:
+            self.flags[flag_title].active = flag_is_active
             print("flag toggled.")
         else:
-            raise FeatureNotFoundError(flag_name)
+            raise FeatureNotFoundError(flag_title)
