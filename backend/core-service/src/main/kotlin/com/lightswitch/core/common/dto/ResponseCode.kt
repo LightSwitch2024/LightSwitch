@@ -26,4 +26,9 @@ enum class ResponseCode(
 
     // 4000 Authentication Exception
     INVALID_PASSWORD(4000, "비밀번호가 올바르지 않습니다."),
+
+    // 5000 Organization Exception
+    ORGANIZATION_ALREADY_EXISTS(5000, "이미 등록된 Organization이 존재합니다."),
+    INVALID_ORGANIZATION_KEY(5001, "Organization이 sdk key가 다릅니다"),
+    ORGANIZATION_NOT_FOUND(5002, "해당하는 Organization이 없습니다."),
 }

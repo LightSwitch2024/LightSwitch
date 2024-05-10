@@ -47,9 +47,7 @@ const index = () => {
    * 화면 마운트 시 필요한 정보 가져오기
    */
   useEffect(() => {
-    const memberId = auth.memberId;
     getMainPageOverview(
-      memberId,
       (data: OverviewInfo) => {
         console.log('data');
         console.log(auth);
