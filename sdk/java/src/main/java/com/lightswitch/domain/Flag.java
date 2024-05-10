@@ -53,7 +53,7 @@ public class Flag {
 	}
 
 	private String calValue(LSUser LSUser) {
-		if(!keywords.isEmpty() && LSUser.hasProperty()){
+		if (!keywords.isEmpty() && LSUser.hasProperty()) {
 			for (Keyword keyword : keywords) {
 				if (keyword.getProperties().stream()
 					.allMatch(property -> LSUser.getProperty(property.getProperty()).equals(property.getData()))) {
@@ -76,7 +76,7 @@ public class Flag {
 	}
 
 	private String calValue(int userId) {
-		double percentage = HashUtil.getHashedPercentage(String.valueOf(userId), 1);
+		double percentage = HashUtil.getHashedPercentage(List.of(String.valueOf(userId), title), 1);
 
 		for (Variation variation : variations) {
 			percentage -= variation.getPortion();
