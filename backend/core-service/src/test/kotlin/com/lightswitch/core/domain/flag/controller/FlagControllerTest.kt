@@ -17,7 +17,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDateTime
@@ -42,7 +45,9 @@ class FlagControllerTest(
     fun `플래그 생성 테스트 _ createFlag`() {
         // given
         val flagReqDtoString =
-            "{\"title\":\"테스트 플래그\",\"description\":\"테스트 플래그 설명\",\"tags\":[],\"type\":\"STRING\",\"keywords\":[],\"defaultValue\":\"A\",\"defaultPortion\":50,\"defaultDescription\":\"TEST\",\"variations\":[],\"memberId\":188}"
+            "{\"title\":\"테스트 플래그\",\"description\":\"테스트 플래그 설명\",\"tags\":[],\"type\":\"STRING\"," +
+                    "\"keywords\":[],\"defaultValue\":\"A\",\"defaultPortion\":50,\"defaultDescription\":\"TEST\"," +
+                    "\"variations\":[],\"memberId\":188}"
         val flagReqDtoEntity = FlagRequestDto(
             title = "테스트 플래그",
             description = "테스트 플래그 설명",
@@ -420,7 +425,8 @@ class FlagControllerTest(
     fun `플래그 변수 정보 수정 _ updateVariationInfoWithHardDelete`() {
         // given
         val variationInfoReqDtoString =
-            "{\"type\":\"STRING\",\"defaultValue\":\"A\",\"defaultPortion\":50,\"defaultDescription\":\"TEST\",\"variations\":[{\"value\":\"B\",\"portion\":50,\"description\":\"TEST\"}]}"
+            "{\"type\":\"STRING\",\"defaultValue\":\"A\",\"defaultPortion\":50,\"defaultDescription\":\"TEST\"," +
+                    "\"variations\":[{\"value\":\"B\",\"portion\":50,\"description\":\"TEST\"}]}"
         val variationInfoReqDtoEntity = VariationInfoRequestDto(
             type = FlagType.STRING,
             defaultValue = "A",
@@ -483,7 +489,8 @@ class FlagControllerTest(
     fun `플래그 키워드 정보 수정 _ updateKeywordInfoWithHardDelete`() {
         // given
         val keywordInfoReqDtoString =
-            "{\"keywords\":[{\"value\":\"keyword1\",\"description\":\"\",\"properties\":[]},{\"value\":\"keyword2\",\"description\":\"\",\"properties\":[]}]}"
+            "{\"keywords\":[{\"value\":\"keyword1\",\"description\":\"\",\"properties\":[]},{\"value\":\"keyword2\"," +
+                    "\"description\":\"\",\"properties\":[]}]}"
         val keywordInfoReqDtoEntity = KeywordInfoRequestDto(
             keywords = listOf(
                 KeywordDto(
