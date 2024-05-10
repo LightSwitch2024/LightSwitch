@@ -14,6 +14,7 @@ import com.lightswitch.core.domain.flag.repository.queydsl.FlagCustomRepository
 import com.lightswitch.core.domain.member.entity.SdkKey
 import com.lightswitch.core.domain.member.repository.MemberRepository
 import com.lightswitch.core.domain.member.repository.SdkKeyRepository
+import com.lightswitch.core.domain.organization.service.OrganizationService
 import com.lightswitch.core.domain.sse.dto.SseDto
 import com.lightswitch.core.domain.sse.service.SseService
 import org.springframework.beans.factory.annotation.Autowired
@@ -50,6 +51,9 @@ class FlagService(
 
     @Autowired
     private val propertyRepository: PropertyRepository,
+
+    @Autowired
+    private val organizationService: OrganizationService
 ) {
 
     @Transactional
@@ -152,37 +156,6 @@ class FlagService(
             JSON -> TODO()
         }
 
-        // keyword, property 저장
-//        val savedKeywordList = mutableListOf<Keyword>()
-//        val keywordList = flagRequestDto.keywords
-//        for (keyword in keywordList) {
-//            val savedPropertyList = mutableListOf<Property>()
-//
-//            val savedKeyword = keywordRepository.save(
-//                Keyword(
-//                    flag = savedFlag,
-//                    description = keyword.description,
-//                    value = keyword.value,
-//                )
-//            )
-//            savedKeywordList.add(savedKeyword)
-//
-//            for (property in keyword.properties) {
-//                val savedProperty = propertyRepository.save(
-//                    Property(
-//                        keyword = savedKeyword,
-//                        property = property.property,
-//                        data = property.data,
-//                    )
-//                )
-//                savedPropertyList.add(savedProperty)
-//            }
-//
-//            savedKeyword.properties.addAll(savedPropertyList)
-//            keywordRepository.save(savedKeyword)
-//        }
-//        savedFlag.keywords.addAll(savedKeywordList)
-
         val flagInitResponseDto = FlagInitResponseDto(
             flagId = savedFlag.flagId!!,
             title = savedFlag.title,
@@ -211,13 +184,8 @@ class FlagService(
             active = savedFlag.active,
         )
 
-        // SSE 데이터 전송
-        val sdkKey = sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(member.memberId!!) ?: throw BaseException(
-            ResponseCode.SDK_KEY_NOT_FOUND
-        )
-
-        val userKey = sseService.hash(sdkKey.key)
-        sseService.sendData(SseDto(userKey, SseDto.SseType.CREATE, flagInitResponseDto))
+        val sdkKey = organizationService.getSdkKey()
+        sseService.sendDataToEveryone(SseDto(sdkKey, SseDto.SseType.CREATE, flagInitResponseDto))
 
         return this.getFlag(savedFlag.flagId!!)
     }
@@ -377,7 +345,7 @@ class FlagService(
 
         val userKey = sseService.hash(sdkKey.key)
 
-        sseService.sendData(
+        sseService.sendDataToEveryone(
             SseDto(
                 userKey,
                 SseDto.SseType.DELETE,
@@ -542,20 +510,12 @@ class FlagService(
             active = flag.active,
         )
 
-        val sdkKey =
-            sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(flag.maintainer.memberId!!) ?: throw BaseException(
-                ResponseCode.SDK_KEY_NOT_FOUND
-            )
-
-        val userKey = sseService.hash(sdkKey.key)
-        sseService.sendData(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
+        val sdkKey = organizationService.getSdkKey()
+        sseService.sendData(SseDto(sdkKey, SseDto.SseType.UPDATE, flagInitResponseDto))
 
         return this.getFlag(flag.flagId!!)
     }
 
-    /**
-     * TODO sse 전송 메서드 분리
-     */
     @Transactional
     fun updateFlagInfo(flagId: Long, flagInfoRequestDto: FlagInfoRequestDto): FlagResponseDto {
         val flag = flagRepository.findById(flagId).get()
@@ -598,13 +558,8 @@ class FlagService(
             active = flag.active,
         )
 
-        val sdkKey =
-            sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(flag.maintainer.memberId!!) ?: throw BaseException(
-                ResponseCode.SDK_KEY_NOT_FOUND
-            )
-
-        val userKey = sseService.hash(sdkKey.key)
-        sseService.sendData(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
+        val sdkKey = organizationService.getSdkKey()
+        sseService.sendData(SseDto(sdkKey, SseDto.SseType.UPDATE, flagInitResponseDto))
 
         return this.getFlag(flag.flagId!!)
     }
@@ -667,13 +622,8 @@ class FlagService(
             active = flag.active,
         )
 
-        val sdkKey =
-            sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(flag.maintainer.memberId!!) ?: throw BaseException(
-                ResponseCode.SDK_KEY_NOT_FOUND
-            )
-
-        val userKey = sseService.hash(sdkKey.key)
-        sseService.sendData(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
+        val sdkKey = organizationService.getSdkKey()
+        sseService.sendData(SseDto(sdkKey, SseDto.SseType.UPDATE, flagInitResponseDto))
 
         return this.getFlag(flag.flagId!!)
     }
@@ -753,13 +703,9 @@ class FlagService(
             active = flag.active,
         )
 
-        val sdkKey =
-            sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(flag.maintainer.memberId!!) ?: throw BaseException(
-                ResponseCode.SDK_KEY_NOT_FOUND
-            )
 
-        val userKey = sseService.hash(sdkKey.key)
-        sseService.sendData(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
+        val sdkKey = organizationService.getSdkKey()
+        sseService.sendData(SseDto(sdkKey, SseDto.SseType.UPDATE, flagInitResponseDto))
 
         return this.getFlag(flag.flagId!!)
     }
