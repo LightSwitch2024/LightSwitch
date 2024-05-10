@@ -13,25 +13,27 @@ import java.util.Objects;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.lightswitch.domain.Config;
+import com.lightswitch.domain.dto.Config;
 import com.lightswitch.domain.Flag;
 import com.lightswitch.domain.Flags;
 import com.lightswitch.domain.LSUser;
 import com.lightswitch.domain.dto.BaseResponse;
 import com.lightswitch.domain.dto.FlagResponse;
 import com.lightswitch.domain.dto.SseResponse;
+import com.lightswitch.domain.dto.UserKeyRequest;
 import com.lightswitch.domain.dto.UserKeyResponse;
 import com.lightswitch.exception.FlagNotFoundException;
 import com.lightswitch.exception.FlagRuntimeException;
 import com.lightswitch.exception.FlagServerConnectException;
 import com.lightswitch.exception.FlagValueCastingException;
-import com.lightswitch.exception.InvalidSSEFormatException;
 import com.lightswitch.util.HttpConnector;
 
 public class LightSwitchImpl implements LightSwitch {
 
 	private HttpURLConnection connection;
 	private Thread thread;
+	private String hostUrl;
+	private String userKey;
 
 	private LightSwitchImpl() {
 	}
@@ -46,16 +48,20 @@ public class LightSwitchImpl implements LightSwitch {
 
 	@Override
 	public void init(String sdkKey, String serverUrl) throws FlagRuntimeException {
-		HttpURLConnection initConnection = setupPostConnection("sdk/init", sdkKey, serverUrl);
+		if (thread != null && thread.isAlive()) {
+			return;
+		}
+		destroy();
+
+		hostUrl = serverUrl;
+		HttpURLConnection initConnection = setupPostConnection("sdk/init", sdkKey);
 		getAllFlags(initConnection);
 
-		HttpURLConnection subscribeConnection = setupPostConnection("sse/subscribe", sdkKey, serverUrl);
-		String userKey = getUserKey(subscribeConnection);
-		System.out.println(userKey);
+		HttpURLConnection subscribeConnection = setupPostConnection("sse/subscribe", sdkKey);
+		userKey = getUserKey(subscribeConnection);
 
 		connection = setupGetConnection(serverUrl, "sse/subscribe/" + userKey);
-		thread = new Thread(this::connectToSse);
-		thread.start();
+		connectToSse();
 	}
 
 	private String getUserKey(HttpURLConnection subscribeConnection) throws FlagRuntimeException {
@@ -78,20 +84,20 @@ public class LightSwitchImpl implements LightSwitch {
 		Flags.addAllFlags(response.getData());
 	}
 
-	private HttpURLConnection setupPostConnection(String endpoint, String sdkKey, String serverUrl) throws
+	private HttpURLConnection setupPostConnection(String endpoint, String sdkKey) throws
 		FlagRuntimeException {
 		HttpConnector connector = new HttpConnector();
-		HttpURLConnection connection = connector.getConnect(serverUrl, endpoint, "POST", 0, false);
+		HttpURLConnection connection = connector.getConnect(hostUrl, endpoint, "POST", 0, false);
 		return writeSdkKey(connection, sdkKey);
 	}
 
-	private <T> T handleResponse(HttpURLConnection connection, Type responseType) throws InvalidSSEFormatException {
+	private <T> T handleResponse(HttpURLConnection connection, Type responseType) throws FlagServerConnectException {
 		Gson gson = new Gson();
 		String response = readResponse(connection);
 		return gson.fromJson(response, responseType);
 	}
 
-	private String readResponse(HttpURLConnection connection) throws InvalidSSEFormatException {
+	private String readResponse(HttpURLConnection connection) throws FlagServerConnectException {
 		try (BufferedReader reader = new BufferedReader(
 			new InputStreamReader(connection.getInputStream(), UTF_8))) {
 			StringBuilder response = new StringBuilder();
@@ -101,7 +107,7 @@ public class LightSwitchImpl implements LightSwitch {
 			}
 			return response.toString();
 		} catch (IOException e) {
-			throw new InvalidSSEFormatException("Failed To Read Response");
+			throw new FlagServerConnectException("Failed To Read Response");
 		}
 	}
 
@@ -111,7 +117,7 @@ public class LightSwitchImpl implements LightSwitch {
 	}
 
 	private HttpURLConnection writeSdkKey(HttpURLConnection connection, String sdkKey) throws
-		InvalidSSEFormatException {
+		FlagServerConnectException {
 		try (OutputStream os = connection.getOutputStream()) {
 			Gson gson = new Gson();
 			String json = gson.toJson(new Config(sdkKey));
@@ -119,51 +125,78 @@ public class LightSwitchImpl implements LightSwitch {
 			os.write(input, 0, input.length);
 			return connection;
 		} catch (IOException e) {
-			throw new InvalidSSEFormatException("Failed To send SDK key");
+			throw new FlagServerConnectException("Failed To send SDK key");
 		}
 	}
 
-	private void connectToSse() throws InvalidSSEFormatException {
-		try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-			String inputLine;
-			StringBuilder dataBuffer = new StringBuilder();
+	private void connectToSse() throws FlagServerConnectException {
+		Runnable task = () -> {
+			try(BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+				String inputLine;
+				StringBuilder dataBuffer = new StringBuilder();
+				connection.setReadTimeout(3);
 
-			while (!Thread.interrupted() && Objects.nonNull((inputLine = in.readLine()))) {
-				if (inputLine.startsWith("data:")) {
-					dataBuffer.append(inputLine.substring(5));
-				} else if (inputLine.isEmpty()) {
-					String jsonData = dataBuffer.toString().trim();
-					System.out.println("Receive : " + jsonData);
-
-					int jsonStartIndex = jsonData.indexOf('{');
-					if (jsonStartIndex != -1) {
-
-						jsonData = jsonData.substring(jsonStartIndex); // JSON 시작 지점부터 문자열 자르기
-						Gson gson = new Gson();
-						SseResponse sseResponse = gson.fromJson(jsonData, SseResponse.class);
-						Flags.event(sseResponse);
-						dataBuffer = new StringBuilder();
+				while (!Thread.interrupted() && (inputLine = in.readLine()) != null) {
+					if (inputLine.startsWith("data:")) {
+						dataBuffer.append(inputLine.substring(5));
+					} else if (inputLine.isEmpty()) {
+						String jsonData = dataBuffer.toString().trim();
+						processJsonData(jsonData);
+						dataBuffer = new StringBuilder();  // 버퍼 초기화
 					}
 				}
+			} catch (IOException io) {
+				throw new FlagServerConnectException("Failed To Read Response");
 			}
-		} catch (IOException io) {
-			throw new InvalidSSEFormatException("Failed To Read Response");
+		};
+
+		thread = new Thread(task);
+		thread.start();
+	}
+
+	private void processJsonData(String jsonData) {
+		int jsonStartIndex = jsonData.indexOf('{');
+		if (jsonStartIndex != -1) {
+			jsonData = jsonData.substring(jsonStartIndex);
+			Gson gson = new Gson();
+			SseResponse sseResponse = gson.fromJson(jsonData, SseResponse.class);
+			Flags.event(sseResponse);
 		}
+		System.out.println("Received: " + jsonData);
 	}
 
 	@Override
 	public void destroy() {
+		if (thread != null) {
+			thread.interrupt();
+			thread = null;
+			setupDeleteConnection("sse/disconnect");
+		}
+		Flags.clear();
+	}
+
+	private void setupDeleteConnection(String endpoint) throws FlagServerConnectException {
 		try {
-			if (thread != null) {
-				thread.interrupt();
-				thread.join();
+			HttpConnector connector = new HttpConnector();
+			HttpURLConnection delete = connector.getConnect(hostUrl, endpoint, "DELETE", 0, false);
+			if (requestDisconnect(delete, userKey).getResponseCode() != HttpURLConnection.HTTP_OK) {
+				throw new FlagServerConnectException();
 			}
-			if (connection != null) {
-				connection.disconnect();
-			}
-			Flags.clear();
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
+		} catch (IOException e) {
+			throw new FlagServerConnectException();
+		}
+	}
+
+	private HttpURLConnection requestDisconnect(HttpURLConnection connection, String userKey) throws
+		FlagServerConnectException {
+		try (OutputStream os = connection.getOutputStream()) {
+			Gson gson = new Gson();
+			String json = gson.toJson(new UserKeyRequest(userKey));
+			byte[] input = json.getBytes(UTF_8);
+			os.write(input, 0, input.length);
+			return connection;
+		} catch (IOException e) {
+			throw new FlagServerConnectException("Failed To send SDK key");
 		}
 	}
 

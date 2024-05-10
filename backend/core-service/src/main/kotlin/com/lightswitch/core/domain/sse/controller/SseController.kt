@@ -2,6 +2,7 @@ package com.lightswitch.core.domain.sse.controller
 
 import com.lightswitch.core.common.dto.BaseResponse
 import com.lightswitch.core.common.dto.success
+import com.lightswitch.core.domain.flag.dto.req.UserKeyRequestDto
 import com.lightswitch.core.domain.sse.dto.SseDto
 import com.lightswitch.core.domain.sse.dto.req.SseRequestDto
 import com.lightswitch.core.domain.sse.dto.res.SseUserKeyResponseDto
@@ -9,6 +10,7 @@ import com.lightswitch.core.domain.sse.service.SseService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -40,5 +42,10 @@ class SseController(
     @PostMapping("/subscribe")
     fun createUserKey(@RequestBody sseRequestDto: SseRequestDto): BaseResponse<SseUserKeyResponseDto> {
         return success(sseService.createUserKey(sseRequestDto))
+    }
+
+    @DeleteMapping("/disconnect")
+    fun disconnect(@RequestBody userKeyRequestDto: UserKeyRequestDto) {
+        success(sseService.disconnect(userKeyRequestDto))
     }
 }

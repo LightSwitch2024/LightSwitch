@@ -1,5 +1,6 @@
 package com.lightswitch.core.domain.sse.service
 
+import com.lightswitch.core.domain.flag.dto.req.UserKeyRequestDto
 import com.lightswitch.core.domain.sse.dto.SseDto
 import com.lightswitch.core.domain.sse.dto.req.SseRequestDto
 import com.lightswitch.core.domain.sse.dto.res.SseUserKeyResponseDto
@@ -63,5 +64,14 @@ class SseService {
         val md = MessageDigest.getInstance("SHA-256")
         val digest = md.digest(bytes)
         return digest.fold("") { str, d -> str + "%02x".format(d) }
+    }
+
+    fun disconnect(userKey: UserKeyRequestDto) {
+        sendData(SseDto(
+                userKey.userKey,
+                SseDto.SseType.DELETE,
+                "disconnect"
+        ))
+        map.remove(userKey.userKey)
     }
 }
