@@ -13,11 +13,11 @@ import java.util.Objects;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.lightswitch.domain.dto.Config;
 import com.lightswitch.domain.Flag;
 import com.lightswitch.domain.Flags;
 import com.lightswitch.domain.LSUser;
 import com.lightswitch.domain.dto.BaseResponse;
+import com.lightswitch.domain.dto.Config;
 import com.lightswitch.domain.dto.FlagResponse;
 import com.lightswitch.domain.dto.SseResponse;
 import com.lightswitch.domain.dto.UserKeyRequest;
@@ -30,7 +30,6 @@ import com.lightswitch.util.HttpConnector;
 
 public class LightSwitchImpl implements LightSwitch {
 
-	private HttpURLConnection connection;
 	private Thread thread;
 	private String hostUrl;
 	private String userKey;
@@ -54,96 +53,80 @@ public class LightSwitchImpl implements LightSwitch {
 		destroy();
 
 		hostUrl = serverUrl;
-		HttpURLConnection initConnection = setupPostConnection("sdk/init", sdkKey);
+
+		HttpURLConnection initConnection = setupConnection("sdk/init", "POST", false);
+		sendData(initConnection, new Config(sdkKey));
 		getAllFlags(initConnection);
 
-		HttpURLConnection subscribeConnection = setupPostConnection("sse/subscribe", sdkKey);
+		HttpURLConnection subscribeConnection = setupConnection("sse/subscribe", "POST", false);
+		sendData(subscribeConnection, new Config(sdkKey));
 		userKey = getUserKey(subscribeConnection);
 
-		connection = setupGetConnection(serverUrl, "sse/subscribe/" + userKey);
-		connectToSse();
+		HttpURLConnection connection = setupConnection("sse/subscribe/" + userKey, "GET", true);
+		connectToSse(connection);
 	}
 
-	private String getUserKey(HttpURLConnection subscribeConnection) throws FlagRuntimeException {
-		Type responseType = new TypeToken<BaseResponse<UserKeyResponse>>() {
-		}.getType();
-		BaseResponse<UserKeyResponse> response = handleResponse(subscribeConnection, responseType);
-		if (response.getCode() != HttpURLConnection.HTTP_OK) {
-			throw new FlagServerConnectException("Failed To Connect Flag Server : Invalid SDK key");
-		}
-		return response.getData().getUserKey();
+	private HttpURLConnection setupConnection(String endpoint, String method, boolean isSSE) throws
+		FlagServerConnectException {
+		return new HttpConnector().getConnect(hostUrl, endpoint, method, 0, isSSE);
 	}
 
 	private void getAllFlags(HttpURLConnection initConnection) throws FlagRuntimeException {
 		Type responseType = new TypeToken<BaseResponse<List<FlagResponse>>>() {
 		}.getType();
-		BaseResponse<List<FlagResponse>> response = handleResponse(initConnection, responseType);
+		List<FlagResponse> flags = processConnectionResponse(initConnection, responseType);
+		Flags.addAllFlags(flags);
+	}
+
+	private String getUserKey(HttpURLConnection subscribeConnection) throws FlagRuntimeException {
+		Type responseType = new TypeToken<BaseResponse<UserKeyResponse>>() {
+		}.getType();
+		UserKeyResponse userKeyResponse = processConnectionResponse(subscribeConnection, responseType);
+		return userKeyResponse.getUserKey();
+	}
+
+	private <T> T processConnectionResponse(HttpURLConnection connection, Type responseType) throws
+		FlagRuntimeException {
+		BaseResponse<T> response = handleResponse(connection, responseType);
 		if (response.getCode() != HttpURLConnection.HTTP_OK) {
 			throw new FlagServerConnectException("Failed To Connect Flag Server : Invalid SDK key");
 		}
-		Flags.addAllFlags(response.getData());
-	}
-
-	private HttpURLConnection setupPostConnection(String endpoint, String sdkKey) throws
-		FlagRuntimeException {
-		HttpConnector connector = new HttpConnector();
-		HttpURLConnection connection = connector.getConnect(hostUrl, endpoint, "POST", 0, false);
-		return writeSdkKey(connection, sdkKey);
+		return response.getData();
 	}
 
 	private <T> T handleResponse(HttpURLConnection connection, Type responseType) throws FlagServerConnectException {
-		Gson gson = new Gson();
-		String response = readResponse(connection);
-		return gson.fromJson(response, responseType);
-	}
-
-	private String readResponse(HttpURLConnection connection) throws FlagServerConnectException {
-		try (BufferedReader reader = new BufferedReader(
-			new InputStreamReader(connection.getInputStream(), UTF_8))) {
-			StringBuilder response = new StringBuilder();
-			String line;
-			while (Objects.nonNull(line = reader.readLine())) {
-				response.append(line.trim());
-			}
-			return response.toString();
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), UTF_8))) {
+			String response = parsingResponse(reader);
+			return getJsonObject(response, responseType);
 		} catch (IOException e) {
 			throw new FlagServerConnectException("Failed To Read Response");
 		}
 	}
 
-	private HttpURLConnection setupGetConnection(String serverUrl, String endpoint) throws FlagServerConnectException {
-		HttpConnector connector = new HttpConnector();
-		return connector.getConnect(serverUrl, endpoint, "GET", 0, true);
+	private <T> T getJsonObject(String jsonData, Type responseType) {
+		return new Gson().fromJson(jsonData, responseType);
 	}
 
-	private HttpURLConnection writeSdkKey(HttpURLConnection connection, String sdkKey) throws
+	private int sendData(HttpURLConnection connection, Object body) throws
 		FlagServerConnectException {
 		try (OutputStream os = connection.getOutputStream()) {
-			Gson gson = new Gson();
-			String json = gson.toJson(new Config(sdkKey));
+			String json = new Gson().toJson(body);
 			byte[] input = json.getBytes(UTF_8);
 			os.write(input, 0, input.length);
-			return connection;
+			return connection.getResponseCode();
 		} catch (IOException e) {
 			throw new FlagServerConnectException("Failed To send SDK key");
 		}
 	}
 
-	private void connectToSse() throws FlagServerConnectException {
+	private void connectToSse(HttpURLConnection connection) throws FlagServerConnectException {
 		Runnable task = () -> {
-			try(BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-				String inputLine;
-				StringBuilder dataBuffer = new StringBuilder();
-				connection.setReadTimeout(3);
+			try (BufferedReader reader = new BufferedReader(
+				new InputStreamReader(connection.getInputStream(), UTF_8))) {
 
-				while (!Thread.interrupted() && (inputLine = in.readLine()) != null) {
-					if (inputLine.startsWith("data:")) {
-						dataBuffer.append(inputLine.substring(5));
-					} else if (inputLine.isEmpty()) {
-						String jsonData = dataBuffer.toString().trim();
-						processJsonData(jsonData);
-						dataBuffer = new StringBuilder();  // 버퍼 초기화
-					}
+				while (!Thread.interrupted()) {
+					String sseResponse = parsingResponse(reader);
+					processJsonData(sseResponse);
 				}
 			} catch (IOException io) {
 				throw new FlagServerConnectException("Failed To Read Response");
@@ -155,14 +138,33 @@ public class LightSwitchImpl implements LightSwitch {
 	}
 
 	private void processJsonData(String jsonData) {
-		int jsonStartIndex = jsonData.indexOf('{');
-		if (jsonStartIndex != -1) {
-			jsonData = jsonData.substring(jsonStartIndex);
-			Gson gson = new Gson();
-			SseResponse sseResponse = gson.fromJson(jsonData, SseResponse.class);
-			Flags.event(sseResponse);
+		if (jsonData.isEmpty()) {
+			return;
 		}
-		System.out.println("Received: " + jsonData);
+		SseResponse sseResponse = getJsonObject(jsonData, SseResponse.class);
+		Flags.event(sseResponse);
+	}
+
+	private String parsingResponse(BufferedReader reader) throws IOException {
+		StringBuilder response = new StringBuilder();
+		String inputLine;
+		while (Objects.nonNull(inputLine = reader.readLine())) {
+			if (inputLine.startsWith("event:")) {
+				if (inputLine.substring(6).contains("disconnect")) {
+					break;
+				}
+			} else if (inputLine.startsWith("data:")) {
+				inputLine = inputLine.substring(5);
+				if (inputLine.contains("SSE connected")) {
+					break;
+				}
+				response.append(inputLine);
+			} else {
+				response.append(inputLine.trim());
+				break;
+			}
+		}
+		return response.toString();
 	}
 
 	@Override
@@ -170,34 +172,12 @@ public class LightSwitchImpl implements LightSwitch {
 		if (thread != null) {
 			thread.interrupt();
 			thread = null;
-			setupDeleteConnection("sse/disconnect");
+			HttpURLConnection disconnectConnection = setupConnection("sse/disconnect", "DELETE", false);
+			if (sendData(disconnectConnection, new UserKeyRequest(userKey)) != HttpURLConnection.HTTP_OK) {
+				throw new FlagServerConnectException("SDK 서버에 연결할 수 없습니다.");
+			}
 		}
 		Flags.clear();
-	}
-
-	private void setupDeleteConnection(String endpoint) throws FlagServerConnectException {
-		try {
-			HttpConnector connector = new HttpConnector();
-			HttpURLConnection delete = connector.getConnect(hostUrl, endpoint, "DELETE", 0, false);
-			if (requestDisconnect(delete, userKey).getResponseCode() != HttpURLConnection.HTTP_OK) {
-				throw new FlagServerConnectException();
-			}
-		} catch (IOException e) {
-			throw new FlagServerConnectException();
-		}
-	}
-
-	private HttpURLConnection requestDisconnect(HttpURLConnection connection, String userKey) throws
-		FlagServerConnectException {
-		try (OutputStream os = connection.getOutputStream()) {
-			Gson gson = new Gson();
-			String json = gson.toJson(new UserKeyRequest(userKey));
-			byte[] input = json.getBytes(UTF_8);
-			os.write(input, 0, input.length);
-			return connection;
-		} catch (IOException e) {
-			throw new FlagServerConnectException("Failed To send SDK key");
-		}
 	}
 
 	@Override

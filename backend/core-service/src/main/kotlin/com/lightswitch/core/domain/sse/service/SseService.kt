@@ -67,11 +67,14 @@ class SseService {
     }
 
     fun disconnect(userKey: UserKeyRequestDto) {
-        sendData(SseDto(
-                userKey.userKey,
-                SseDto.SseType.DELETE,
-                "disconnect"
-        ))
+
+        val emitter: SseEmitter? = map[userKey.userKey]
+
+        emitter?.let {
+            val event = SseEmitter.event()
+                    .name("disconnect")
+            emitter.send(event)
+        }
         map.remove(userKey.userKey)
     }
 }
