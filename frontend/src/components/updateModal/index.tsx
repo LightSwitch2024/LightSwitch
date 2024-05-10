@@ -90,10 +90,18 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
   const [editedVariationInfo, setEditedVariationInfo] = useState<VariationInfo>({
     type: props.flagDetail?.type || '',
     defaultValue: props.flagDetail?.defaultValue || '',
-    defaultPortion: props.flagDetail?.defaultPortion || 0,
+    defaultPortion: props.flagDetail?.defaultPortion,
     defaultDescription: props.flagDetail?.defaultDescription || '',
     variations: props.flagDetail?.variations || [],
   });
+
+  // const [editedVariationInfo, setDefault] = useState<VariationInfo>({
+  //   type: props.flagDetail?.type,
+  //   defaultValue: props.flagDetail?.defaultValue,
+  //   defaultPortion: props.flagDetail?.defaultPortion,
+  //   defaultDescription: props.flagDetail?.defaultDescription || '',
+  //   variations: props.flagDetail?.variations || [],
+  // });
 
   const [editedKeywordInfo, setEditedKeywordInfo] = useState<KeywordInfo>({
     keywords: props.flagDetail?.keywords || [],
@@ -106,14 +114,19 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
   const [isBlankData, setIsBlankData] = useState<boolean>(false);
   const [isWrongType, setIsWrongType] = useState<boolean>(false);
   const [type, setType] = useState<string>(props.flagDetail?.type || 'BOOLEAN');
-  const [defaultValue, setDefaultValue] = useState<string>(
-    props.flagDetail?.defaultValue || 'TRUE',
-  );
-  const [variation, setVariation] = useState<string>('');
+
   const [variations, setVariations] = useState<Array<Variation>>(
     props.flagDetail?.variations || [{ value: 'FALSE', portion: '', description: '' }],
   );
   const [isTypeEdited, setIsTypeEdited] = useState<boolean>(false);
+
+  // default 값 =====================================================================
+  const [defaultValue, setDefaultValue] = useState<string>(
+    props.flagDetail?.defaultValue || 'TRUE',
+  );
+  const [defaultPortion, setDefaultPortion] = useState<number | ''>(
+    props.flagDetail?.defaultPortion || 100,
+  );
   const [defaultDescription, setDefaultDescription] = useState<string>(
     props.flagDetail?.defaultDescription || '',
   );
@@ -121,9 +134,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     useState<boolean>(false);
 
   const [flagMode, setFlagMode] = useState<string>('');
-  const [defaultPortion, setDefaultPortion] = useState<number | ''>(
-    props.flagDetail?.defaultPortion || 100,
-  );
 
   const typeConfig = ['BOOLEAN', 'INTEGER', 'STRING', 'JSON'];
   const isDetailMode = (): boolean => {
@@ -206,28 +216,38 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
    * @returns
    */
   const handleEditeType = (typeItem: string) => () => {
-    //타입 변경시 value, portion, description 초기화
-    if (type != typeItem) {
+    // Check if the type has change.
+
+    if (type !== typeItem) {
       setType(typeItem);
+      const newDefaultValue = typeItem === 'BOOLEAN' ? 'TRUE' : '';
+      const newDefaultDescription = '';
+
+      // Also update individual state items to match the form's expectation
+      setDefaultValue(newDefaultValue);
+      setDefaultDescription(newDefaultDescription);
+      // Set variations based on the new type
+      let newVariations: {
+        value: string;
+        portion: number;
+        description: string;
+      }[] = [];
+
       if (typeItem === 'BOOLEAN') {
-        setDefaultValue('TRUE');
+        // For BOOLEAN type, add two default variations
         setDefaultPortion(100);
-        setDefaultDescription('');
-        setVariations([
-          {
-            value: 'FALSE',
-            portion: 0,
-            description: '',
-          },
-        ]);
+        newVariations = [{ value: 'FALSE', portion: 0, description: '' }];
       } else {
-        setDefaultValue('');
-        setDefaultPortion('');
-        setDefaultDescription('');
-        setVariations([]);
+        newVariations = [];
       }
+      setEditedVariationInfo({
+        type: typeItem,
+        defaultValue: newDefaultValue,
+        defaultPortion: 100,
+        defaultDescription: newDefaultDescription,
+        variations: newVariations,
+      });
     }
-    setIsTypeEdited(false);
   };
 
   /**
@@ -282,7 +302,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     console.log(editedVariationInfo.defaultPortion);
     // type 변경 생기면 null값으로 바꿈
     if (isTypeChanged) {
-      setDefaultPortion('');
+      setDefaultPortion(100);
       setEditedVariationInfo({
         ...editedVariationInfo,
         defaultPortion: Number(0),
@@ -929,11 +949,10 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
               </S.TextContainer>
             </S.Layer>
             <S.Layer>
-              <S.Input
+              <S.FlagVariationInput
                 value={editedFlagInfo.title}
                 onChange={handelChangeTitle}
                 $flag={isFocused}
-                onFocus={() => setIsFocused(true)}
                 onBlur={checkDuplicatedTitle}
               />
             </S.Layer>
@@ -967,8 +986,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                 $flag={isFocused}
                 value={editedFlagInfo.description}
                 onChange={handleChangeDescription}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
               />
             </S.Layer>
           </S.Container>
@@ -1084,55 +1101,11 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
               </S.VarDesContainer>
             </S.FlagVariationRowContainer>
           </S.FlagVariationContentLayer>
-          <div>
-            {/* <S.VarVertical>
-              <S.VarHorizon>
-                <S.VarContainer>
-                  <S.VarTextContainer>
-                    <S.VarText>변수</S.VarText>
-                  </S.VarTextContainer>
-                  <S.Input
-                    type="text"
-                    value={editedVariationInfo.defaultValue}
-                    onChange={handleChangeDefaultValue}
-                    $flag={isFocused}
-                    onFocus={() => setIsFocused(true)}
-                    onBlur={() => setIsFocused(false)}
-                  />
-                </S.VarContainer>
-                <S.VarContainer>
-                  <S.VarTextContainer>
-                    <S.VarText>비율</S.VarText>
-                  </S.VarTextContainer>
-                  <S.Input
-                    type="number"
-                    value={editedVariationInfo.defaultPortion}
-                    onChange={handleChangeDefaultPortion}
-                    $flag={isFocused}
-                    onFocus={() => setIsFocused(true)}
-                    onBlur={() => setIsFocused(false)}
-                  />
-                </S.VarContainer>
-              </S.VarHorizon>
-              <S.VarDesContainer>
-                <S.VarTextContainer>
-                  <S.VarText>설명</S.VarText>
-                </S.VarTextContainer>
-                <S.Input
-                  type="text"
-                  value={editedVariationInfo.defaultDescription}
-                  onChange={handleChangeDefaultDescription}
-                  $flag={isFocused}
-                  onFocus={() => setIsFocused(true)}
-                  onBlur={() => setIsFocused(false)}
-                />
-              </S.VarDesContainer>
-            </S.VarVertical> */}
-            <S.Horizontal />
-          </div>
+
           {editedVariationInfo.variations.map((variation, index) => (
             <>
               <div key={index}>
+                <S.Horizontal></S.Horizontal>
                 <S.FlagVariationContentLayer>
                   <S.FlagVariationRowContainer>
                     <S.VarContainer>
@@ -1141,11 +1114,10 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                       </S.VarTextContainer>
                       <S.FlagVariationInput
                         type="text"
+                        placeholder="값을 입력하세요"
                         value={variation.value}
-                        onChange={handleDefaultValueChange}
+                        onChange={handleChangeVariationValue(index)}
                         $flag={isFocused}
-                        onFocus={() => setIsFocused(true)}
-                        onBlur={() => setIsFocused(false)}
                       />
                     </S.VarContainer>
                     <S.VarContainer>
@@ -1154,26 +1126,24 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                       </S.VarTextContainer>
                       <S.FlagVariationInput
                         type="number"
+                        placeholder="변수 비율"
                         value={variation.portion}
-                        onChange={handleDefaultPortionChange}
+                        onChange={handleChangeVariaionPortion(index)}
                         $flag={isFocused}
-                        onFocus={() => setIsFocused(true)}
-                        onBlur={() => setIsFocused(false)}
                       />
                     </S.VarContainer>
                   </S.FlagVariationRowContainer>
                   <S.FlagVariationRowContainer>
                     <S.VarDesContainer>
                       <S.VarTextContainer>
-                        <S.VarText>설명</S.VarText>
+                        <S.VarDesText>설명</S.VarDesText>
                       </S.VarTextContainer>
                       <S.FlagVariationInput
                         type="text"
+                        placeholder="설명"
                         value={variation.description}
-                        onChange={handleDefaultDescriptionChange}
+                        onChange={handleChangeVariationDescription(index)}
                         $flag={isFocused}
-                        onFocus={() => setIsFocused(true)}
-                        onBlur={() => setIsFocused(false)}
                       />
                     </S.VarDesContainer>
                   </S.FlagVariationRowContainer>
@@ -1235,26 +1205,22 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                     <S.TextContainer>
                       <S.VarText>설명</S.VarText>
                     </S.TextContainer>
-                    <S.Input
+                    <S.FlagVariationInput
                       type="text"
                       value={keyword.description}
                       onChange={handleChangeKeywordDescription(indexOfKeyword)}
                       $flag={isFocused}
-                      onFocus={() => setIsFocused(true)}
-                      onBlur={() => setIsFocused(false)}
                     />
                   </S.VarDefinitionContainer>
                   <S.VarDefinitionContainer>
                     <S.TextContainer>
                       <S.VarText>값</S.VarText>
                     </S.TextContainer>
-                    <S.Input
+                    <S.FlagVariationInput
                       type="text"
                       value={keyword.value}
                       onChange={handleChangeKeywordValue(indexOfKeyword)}
                       $flag={isFocused}
-                      onFocus={() => setIsFocused(true)}
-                      onBlur={() => setIsFocused(false)}
                     />
                   </S.VarDefinitionContainer>
                 </S.VarVertical>
@@ -1280,26 +1246,22 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                         <S.TextContainer>
                           <S.VarText>Key</S.VarText>
                         </S.TextContainer>
-                        <S.Input
+                        <S.FlagVariationInput
                           type="text"
                           value={property.property}
                           onChange={handleChangeProperty(indexOfKeyword, indexOfProperty)}
                           $flag={isFocused}
-                          onFocus={() => setIsFocused(true)}
-                          onBlur={() => setIsFocused(false)}
                         />
                       </S.VarContainer>
                       <S.VarContainer>
                         <S.TextContainer>
                           <S.VarText>Value</S.VarText>
                         </S.TextContainer>
-                        <S.Input
+                        <S.FlagVariationInput
                           type="text"
                           value={property.data}
                           onChange={handleChangeData(indexOfKeyword, indexOfProperty)}
                           $flag={isFocused}
-                          onFocus={() => setIsFocused(true)}
-                          onBlur={() => setIsFocused(false)}
                         />
                       </S.VarContainer>
                     </S.VarHorizon>
