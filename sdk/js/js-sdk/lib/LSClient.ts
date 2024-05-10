@@ -204,26 +204,21 @@ class LSClient implements ILSClient {
   }
 
   private async getInitData(): Promise<void> {
-    try {
-      const response: ApiResponse<Flag[]> = await postRequest(INIT_REQUEST_PATH, {
-        sdkKey: this.sdkKey,
-      });
-      if (response.code == SDK_KEY_NOT_FOUND) {
-        throw new Error(response.message);
-      }
-      const newFlags: Flag[] = response.data;
-      newFlags.forEach((flag) => {
-        this.flags.set(flag.title, flag);
-      });
-
-      this.onFlagChanged?.();
-
-      logger.info(`receive init data : ${JSON.stringify(response)}`);
-    } catch (error) {
-      if (error instanceof Error) {
-        this.handleError(new LSServerError(error.message));
-      }
+    const response: ApiResponse<Flag[]> = await postRequest(INIT_REQUEST_PATH, {
+      sdkKey: this.sdkKey,
+    });
+    if (response.code == SDK_KEY_NOT_FOUND) {
+      this.handleError(new LSServerError(response.message));
     }
+    console.log(response);
+    const newFlags: Flag[] = response.data;
+    newFlags.forEach((flag) => {
+      this.flags.set(flag.title, flag);
+    });
+
+    this.onFlagChanged?.();
+
+    logger.info(`receive init data : ${JSON.stringify(response)}`);
   }
   private async getUserKey(): Promise<void> {
     try {
