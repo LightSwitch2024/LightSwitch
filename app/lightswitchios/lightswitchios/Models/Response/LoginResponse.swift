@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct LoginResponse: Codable {
-    let memberId: Int
+struct LoginResponse: Decodable {
+    let memberId: Int64
     let email: String
     let firstName: String
     let lastName: String

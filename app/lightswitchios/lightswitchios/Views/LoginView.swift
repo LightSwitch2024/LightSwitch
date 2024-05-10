@@ -18,7 +18,7 @@ struct LoginView: View {
             Image("LoginImg")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .padding(.horizontal, 16.0)
+                .padding([.top, .leading, .trailing], 16.0)
             
             TextField("Email", text: $email)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -39,20 +39,12 @@ struct LoginView: View {
                     .cornerRadius(8) // 버튼 모서리 둥글게 처리
             }
             .padding()
+            
+            Spacer()
         }
-        .padding()
-        
-        if(loginViewModel.isLoggedIn) {
-            Text("멤버 아이디: ${loginViewModel.loginResponse?.memberId}")
-                .padding()
-            Text("멤버 이름: ${loginViewModel.loginResponse?.lastName}${loginViewModel.loginResponse?.firstName}")
-                .padding()
-        }
-    
-        Spacer()
     }
 }
 
 #Preview {
-    LoginView(loginViewModel: LoginViewModel())
+    LoginView(loginViewModel: LoginViewModel(contentViewModel: ContentViewModel()))
 }

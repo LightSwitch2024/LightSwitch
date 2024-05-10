@@ -156,14 +156,13 @@ export const IconContainer = styled.div`
 export const TextContainer = styled.div`
   display: flex;
   flex-direction: row;
-  margin: 15px 0 2px 0;
+  margin: 2px 0 0.5rem 1rem;
   gap: 0.625rem;
 `;
 
 export const KeywordTextContainer = styled.div`
   display: flex;
   flex-direction: row;
-  margin-top: 10px;
   gap: 0.625rem;
 `;
 
@@ -184,7 +183,7 @@ export const VarDesContainer = styled.div`
   display: flex;
   width: 100%;
   flex-direction: row;
-  gap: 0.5rem;
+  // gap: 0.rem;
 `;
 
 export const VarDefinitionContainer = styled.div`

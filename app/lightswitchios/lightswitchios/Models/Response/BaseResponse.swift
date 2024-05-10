@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct BaseResponse<T: Codable>: Codable {
-    let code: Int
+struct BaseResponse<T: Decodable>: Decodable {
+    let code: Int32
     let message: String
     let data: T?
 }

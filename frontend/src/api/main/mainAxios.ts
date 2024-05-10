@@ -18,12 +18,11 @@ interface FlagActiveReqDto {
 }
 
 export async function getMainPageOverview<T>(
-  memberId: number,
   onSuccess: (data: T) => void,
   onFail: (err: AxiosError) => void,
 ): Promise<void> {
   axios
-    .get<BaseResponse<T>>(`/api/v1/flag/overview?memberId=${memberId}`)
+    .get<BaseResponse<T>>(`/api/v1/flag/overview`)
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
     .catch((err: AxiosError) => onFail(err));
 }

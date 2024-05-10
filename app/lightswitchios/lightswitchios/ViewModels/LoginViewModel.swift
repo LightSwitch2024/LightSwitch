@@ -6,34 +6,43 @@
 //
 
 import Foundation
+import Combine
 
 class LoginViewModel: ObservableObject {
-    @Published var isLoggedIn: Bool = false
+    @Published var contentViewModel: ContentViewModel
     @Published var loginResponse: LoginResponse? = nil
+    
+    var cancellables = Set<AnyCancellable>()
+    
+    private let loginService: LoginService
+    
+    init(contentViewModel: ContentViewModel) {
+        self.contentViewModel = contentViewModel
+        self.loginService = LoginService()
+    }
     
     func login(email: String, password: String) {
         let loginRequest = LoginRequest(email: email, password: password)
         
-        let template : HttpRequest = HttpRequest<LoginRequest, BaseResponse<LoginResponse>>()
-        template.request(method: .POST, path: "api/v1/member/login", parameters: loginRequest) { result in
-            switch result {
-            case .success(let response):
+        loginService.login(loginRequest: loginRequest)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print("Error: \(error.localizedDescription)")
+                }
+            }, receiveValue: { response in
                 DispatchQueue.main.async {
                     if let data = response.data {
-                        self.isLoggedIn = true
                         self.loginResponse = data
+                        self.contentViewModel.saveLoginResponse(loginResponse: data)
                         print("loginResponse: \(data)")
                     } else {
-                        self.isLoggedIn = false
                         print("로그인 실패")
                     }
                 }
-            case .failure(let error):
-                DispatchQueue.main.async {
-                    self.isLoggedIn = false
-                    print("Error: \(error.localizedDescription)")
-                }
-            }
-        }
+            })
+            .store(in: &cancellables)
     }
 }
