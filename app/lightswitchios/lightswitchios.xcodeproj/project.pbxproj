@@ -1,0 +1,671 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B51090BF2BEB32A60078EA1B /* lightswitchiosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51090BE2BEB32A60078EA1B /* lightswitchiosApp.swift */; };
+		B51090C32BEB32A80078EA1B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B51090C22BEB32A80078EA1B /* Assets.xcassets */; };
+		B51090C62BEB32A80078EA1B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B51090C52BEB32A80078EA1B /* Preview Assets.xcassets */; };
+		B51090D02BEB32A80078EA1B /* lightswitchiosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51090CF2BEB32A80078EA1B /* lightswitchiosTests.swift */; };
+		B51090DA2BEB32A80078EA1B /* lightswitchiosUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51090D92BEB32A80078EA1B /* lightswitchiosUITests.swift */; };
+		B51090DC2BEB32A80078EA1B /* lightswitchiosUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51090DB2BEB32A80078EA1B /* lightswitchiosUITestsLaunchTests.swift */; };
+		B51090ED2BEB3F4D0078EA1B /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51090EC2BEB3F4D0078EA1B /* LoginViewModel.swift */; };
+		B51090F12BEB409B0078EA1B /* LoginRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51090F02BEB409B0078EA1B /* LoginRequest.swift */; };
+		B51090F32BEB40A60078EA1B /* LoginResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51090F22BEB40A60078EA1B /* LoginResponse.swift */; };
+		B51090F52BEB40C70078EA1B /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51090F42BEB40C70078EA1B /* LoginView.swift */; };
+		B51090F72BEB40D80078EA1B /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51090F62BEB40D80078EA1B /* LoginViewController.swift */; };
+		B51090F92BEB50630078EA1B /* BaseResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51090F82BEB50630078EA1B /* BaseResponse.swift */; };
+		B5F817192BEB61FC004C9C7E /* HttpRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F817182BEB61FC004C9C7E /* HttpRequest.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B51090CC2BEB32A80078EA1B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B51090B32BEB32A60078EA1B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B51090BA2BEB32A60078EA1B;
+			remoteInfo = lightswitchios;
+		};
+		B51090D62BEB32A80078EA1B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B51090B32BEB32A60078EA1B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B51090BA2BEB32A60078EA1B;
+			remoteInfo = lightswitchios;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		B51090BB2BEB32A60078EA1B /* lightswitchios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = lightswitchios.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B51090BE2BEB32A60078EA1B /* lightswitchiosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = lightswitchiosApp.swift; sourceTree = "<group>"; };
+		B51090C22BEB32A80078EA1B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B51090C52BEB32A80078EA1B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		B51090CB2BEB32A80078EA1B /* lightswitchiosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = lightswitchiosTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B51090CF2BEB32A80078EA1B /* lightswitchiosTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = lightswitchiosTests.swift; sourceTree = "<group>"; };
+		B51090D52BEB32A80078EA1B /* lightswitchiosUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = lightswitchiosUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B51090D92BEB32A80078EA1B /* lightswitchiosUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = lightswitchiosUITests.swift; sourceTree = "<group>"; };
+		B51090DB2BEB32A80078EA1B /* lightswitchiosUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = lightswitchiosUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		B51090EC2BEB3F4D0078EA1B /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
+		B51090F02BEB409B0078EA1B /* LoginRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginRequest.swift; sourceTree = "<group>"; };
+		B51090F22BEB40A60078EA1B /* LoginResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginResponse.swift; sourceTree = "<group>"; };
+		B51090F42BEB40C70078EA1B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		B51090F62BEB40D80078EA1B /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		B51090F82BEB50630078EA1B /* BaseResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseResponse.swift; sourceTree = "<group>"; };
+		B5F817162BEB5C27004C9C7E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		B5F817182BEB61FC004C9C7E /* HttpRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpRequest.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B51090B82BEB32A60078EA1B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B51090C82BEB32A80078EA1B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B51090D22BEB32A80078EA1B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		B51090B22BEB32A60078EA1B = {
+			isa = PBXGroup;
+			children = (
+				B51090BD2BEB32A60078EA1B /* lightswitchios */,
+				B51090CE2BEB32A80078EA1B /* lightswitchiosTests */,
+				B51090D82BEB32A80078EA1B /* lightswitchiosUITests */,
+				B51090BC2BEB32A60078EA1B /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B51090BC2BEB32A60078EA1B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B51090BB2BEB32A60078EA1B /* lightswitchios.app */,
+				B51090CB2BEB32A80078EA1B /* lightswitchiosTests.xctest */,
+				B51090D52BEB32A80078EA1B /* lightswitchiosUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B51090BD2BEB32A60078EA1B /* lightswitchios */ = {
+			isa = PBXGroup;
+			children = (
+				B5F817172BEB61C9004C9C7E /* Networks */,
+				B5F817162BEB5C27004C9C7E /* Info.plist */,
+				B51090EB2BEB3F290078EA1B /* ViewModels */,
+				B51090EA2BEB3F200078EA1B /* Models */,
+				B51090E92BEB3F180078EA1B /* Views */,
+				B51090E82BEB3EF10078EA1B /* Controllers */,
+				B51090BE2BEB32A60078EA1B /* lightswitchiosApp.swift */,
+				B51090C22BEB32A80078EA1B /* Assets.xcassets */,
+				B51090C42BEB32A80078EA1B /* Preview Content */,
+			);
+			path = lightswitchios;
+			sourceTree = "<group>";
+		};
+		B51090C42BEB32A80078EA1B /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				B51090C52BEB32A80078EA1B /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		B51090CE2BEB32A80078EA1B /* lightswitchiosTests */ = {
+			isa = PBXGroup;
+			children = (
+				B51090CF2BEB32A80078EA1B /* lightswitchiosTests.swift */,
+			);
+			path = lightswitchiosTests;
+			sourceTree = "<group>";
+		};
+		B51090D82BEB32A80078EA1B /* lightswitchiosUITests */ = {
+			isa = PBXGroup;
+			children = (
+				B51090D92BEB32A80078EA1B /* lightswitchiosUITests.swift */,
+				B51090DB2BEB32A80078EA1B /* lightswitchiosUITestsLaunchTests.swift */,
+			);
+			path = lightswitchiosUITests;
+			sourceTree = "<group>";
+		};
+		B51090E82BEB3EF10078EA1B /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				B51090F62BEB40D80078EA1B /* LoginViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		B51090E92BEB3F180078EA1B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B51090F42BEB40C70078EA1B /* LoginView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		B51090EA2BEB3F200078EA1B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B51090EF2BEB407B0078EA1B /* Response */,
+				B51090EE2BEB3F930078EA1B /* Request */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		B51090EB2BEB3F290078EA1B /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				B51090EC2BEB3F4D0078EA1B /* LoginViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		B51090EE2BEB3F930078EA1B /* Request */ = {
+			isa = PBXGroup;
+			children = (
+				B51090F02BEB409B0078EA1B /* LoginRequest.swift */,
+			);
+			path = Request;
+			sourceTree = "<group>";
+		};
+		B51090EF2BEB407B0078EA1B /* Response */ = {
+			isa = PBXGroup;
+			children = (
+				B51090F22BEB40A60078EA1B /* LoginResponse.swift */,
+				B51090F82BEB50630078EA1B /* BaseResponse.swift */,
+			);
+			path = Response;
+			sourceTree = "<group>";
+		};
+		B5F817172BEB61C9004C9C7E /* Networks */ = {
+			isa = PBXGroup;
+			children = (
+				B5F817182BEB61FC004C9C7E /* HttpRequest.swift */,
+			);
+			path = Networks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B51090BA2BEB32A60078EA1B /* lightswitchios */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B51090DF2BEB32A80078EA1B /* Build configuration list for PBXNativeTarget "lightswitchios" */;
+			buildPhases = (
+				B51090B72BEB32A60078EA1B /* Sources */,
+				B51090B82BEB32A60078EA1B /* Frameworks */,
+				B51090B92BEB32A60078EA1B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = lightswitchios;
+			productName = lightswitchios;
+			productReference = B51090BB2BEB32A60078EA1B /* lightswitchios.app */;
+			productType = "com.apple.product-type.application";
+		};
+		B51090CA2BEB32A80078EA1B /* lightswitchiosTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B51090E22BEB32A80078EA1B /* Build configuration list for PBXNativeTarget "lightswitchiosTests" */;
+			buildPhases = (
+				B51090C72BEB32A80078EA1B /* Sources */,
+				B51090C82BEB32A80078EA1B /* Frameworks */,
+				B51090C92BEB32A80078EA1B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B51090CD2BEB32A80078EA1B /* PBXTargetDependency */,
+			);
+			name = lightswitchiosTests;
+			productName = lightswitchiosTests;
+			productReference = B51090CB2BEB32A80078EA1B /* lightswitchiosTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		B51090D42BEB32A80078EA1B /* lightswitchiosUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B51090E52BEB32A80078EA1B /* Build configuration list for PBXNativeTarget "lightswitchiosUITests" */;
+			buildPhases = (
+				B51090D12BEB32A80078EA1B /* Sources */,
+				B51090D22BEB32A80078EA1B /* Frameworks */,
+				B51090D32BEB32A80078EA1B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B51090D72BEB32A80078EA1B /* PBXTargetDependency */,
+			);
+			name = lightswitchiosUITests;
+			productName = lightswitchiosUITests;
+			productReference = B51090D52BEB32A80078EA1B /* lightswitchiosUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B51090B32BEB32A60078EA1B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1530;
+				LastUpgradeCheck = 1530;
+				TargetAttributes = {
+					B51090BA2BEB32A60078EA1B = {
+						CreatedOnToolsVersion = 15.3;
+					};
+					B51090CA2BEB32A80078EA1B = {
+						CreatedOnToolsVersion = 15.3;
+						TestTargetID = B51090BA2BEB32A60078EA1B;
+					};
+					B51090D42BEB32A80078EA1B = {
+						CreatedOnToolsVersion = 15.3;
+						TestTargetID = B51090BA2BEB32A60078EA1B;
+					};
+				};
+			};
+			buildConfigurationList = B51090B62BEB32A60078EA1B /* Build configuration list for PBXProject "lightswitchios" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = B51090B22BEB32A60078EA1B;
+			productRefGroup = B51090BC2BEB32A60078EA1B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B51090BA2BEB32A60078EA1B /* lightswitchios */,
+				B51090CA2BEB32A80078EA1B /* lightswitchiosTests */,
+				B51090D42BEB32A80078EA1B /* lightswitchiosUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B51090B92BEB32A60078EA1B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B51090C62BEB32A80078EA1B /* Preview Assets.xcassets in Resources */,
+				B51090C32BEB32A80078EA1B /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B51090C92BEB32A80078EA1B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B51090D32BEB32A80078EA1B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B51090B72BEB32A60078EA1B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B51090F72BEB40D80078EA1B /* LoginViewController.swift in Sources */,
+				B51090F52BEB40C70078EA1B /* LoginView.swift in Sources */,
+				B51090BF2BEB32A60078EA1B /* lightswitchiosApp.swift in Sources */,
+				B51090ED2BEB3F4D0078EA1B /* LoginViewModel.swift in Sources */,
+				B5F817192BEB61FC004C9C7E /* HttpRequest.swift in Sources */,
+				B51090F12BEB409B0078EA1B /* LoginRequest.swift in Sources */,
+				B51090F32BEB40A60078EA1B /* LoginResponse.swift in Sources */,
+				B51090F92BEB50630078EA1B /* BaseResponse.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B51090C72BEB32A80078EA1B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B51090D02BEB32A80078EA1B /* lightswitchiosTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B51090D12BEB32A80078EA1B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B51090DA2BEB32A80078EA1B /* lightswitchiosUITests.swift in Sources */,
+				B51090DC2BEB32A80078EA1B /* lightswitchiosUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B51090CD2BEB32A80078EA1B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B51090BA2BEB32A60078EA1B /* lightswitchios */;
+			targetProxy = B51090CC2BEB32A80078EA1B /* PBXContainerItemProxy */;
+		};
+		B51090D72BEB32A80078EA1B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B51090BA2BEB32A60078EA1B /* lightswitchios */;
+			targetProxy = B51090D62BEB32A80078EA1B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		B51090DD2BEB32A80078EA1B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		B51090DE2BEB32A80078EA1B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B51090E02BEB32A80078EA1B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"lightswitchios/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = lightswitchios/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.lightswitch.lightswitchios;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B51090E12BEB32A80078EA1B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"lightswitchios/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = lightswitchios/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.lightswitch.lightswitchios;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		B51090E32BEB32A80078EA1B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.lightswitch.lightswitchiosTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/lightswitchios.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/lightswitchios";
+			};
+			name = Debug;
+		};
+		B51090E42BEB32A80078EA1B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.lightswitch.lightswitchiosTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/lightswitchios.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/lightswitchios";
+			};
+			name = Release;
+		};
+		B51090E62BEB32A80078EA1B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.lightswitch.lightswitchiosUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = lightswitchios;
+			};
+			name = Debug;
+		};
+		B51090E72BEB32A80078EA1B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.lightswitch.lightswitchiosUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = lightswitchios;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B51090B62BEB32A60078EA1B /* Build configuration list for PBXProject "lightswitchios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B51090DD2BEB32A80078EA1B /* Debug */,
+				B51090DE2BEB32A80078EA1B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B51090DF2BEB32A80078EA1B /* Build configuration list for PBXNativeTarget "lightswitchios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B51090E02BEB32A80078EA1B /* Debug */,
+				B51090E12BEB32A80078EA1B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B51090E22BEB32A80078EA1B /* Build configuration list for PBXNativeTarget "lightswitchiosTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B51090E32BEB32A80078EA1B /* Debug */,
+				B51090E42BEB32A80078EA1B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B51090E52BEB32A80078EA1B /* Build configuration list for PBXNativeTarget "lightswitchiosUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B51090E62BEB32A80078EA1B /* Debug */,
+				B51090E72BEB32A80078EA1B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B51090B32BEB32A60078EA1B /* Project object */;
+}

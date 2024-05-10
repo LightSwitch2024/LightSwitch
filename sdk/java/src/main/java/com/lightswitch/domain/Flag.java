@@ -65,18 +65,14 @@ public class Flag {
 	}
 
 	private <T> T getValueWithType(String value) throws FlagValueCastingException {
-		try {
-			if (type.equals(FlagType.BOOLEAN)) {
-				return (T)Boolean.valueOf(value);
-			} else if (type.equals(FlagType.STRING)) {
-				return (T)String.valueOf(value);
-			} else if (type.equals(FlagType.INTEGER)) {
-				return (T)Integer.valueOf(value);
-			}
-			return null;
-		} catch (ClassCastException e) {
-			throw new FlagValueCastingException("Flag Value Type is Not " + type.toString());
+		if (type.equals(FlagType.BOOLEAN)) {
+			return (T)Boolean.valueOf(value);
+		} else if (type.equals(FlagType.STRING)) {
+			return (T)String.valueOf(value);
+		} else if (type.equals(FlagType.INTEGER)) {
+			return (T)Integer.valueOf(value);
 		}
+		return null;
 	}
 
 	private String calValue(int userId) {

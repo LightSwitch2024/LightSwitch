@@ -23,10 +23,4 @@ public class HashUtil {
 			throw new RuntimeException(e);
 		}
 	}
-
-	public static void main(String[] args) {
-		System.out.println(getHashedPercentage("123", 1));
-		System.out.println(getHashedPercentage("121", 1));
-
-	}
 }
