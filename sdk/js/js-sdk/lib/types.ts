@@ -36,8 +36,6 @@ export interface ILSUser {
 }
 
 export interface ILSClient {
-  isInitialized: boolean;
-
   init: (config: SdkConfig) => void;
   getFlag: <T>(name: string, LSUser: ILSUser, defaultVal: T) => T;
   getBooleanFlag: (name: string, LSUser: ILSUser, defaultVal: boolean) => boolean;

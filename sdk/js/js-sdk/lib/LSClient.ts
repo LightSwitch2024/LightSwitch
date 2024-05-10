@@ -41,7 +41,7 @@ const SSE_CONNECT_PATH = SERVER_URL + '/api/v1/sse/subscribe';
 
 class LSClient implements ILSClient {
   private static instance: LSClient | null = null;
-
+  public static isInitialized = false;
   private constructor() {}
 
   public static getInstance(): LSClient {
@@ -51,7 +51,6 @@ class LSClient implements ILSClient {
     return LSClient.instance;
   }
 
-  isInitialized = false;
   private sdkKey = '';
   private logLevel = LogLevel.DEBUG; // 로그 레벨
   // private lastUpdated = ''; // feature flag 데이터 갱신 날짜
@@ -62,6 +61,10 @@ class LSClient implements ILSClient {
   private userKey = '';
   private reconnectTime = 3000;
   public async init(config: SdkConfig): Promise<void> {
+    if (LSClient.instance != null && LSClient.isInitialized) {
+      logger.info('lightswitch is already initialized, skip init process');
+      return;
+    }
     const { sdkKey, onError, onFlagChanged, reconnectTime } = config;
 
     this.sdkKey = sdkKey;
@@ -86,8 +89,8 @@ class LSClient implements ILSClient {
 
     this.eventSource = this.getEventSource(this.userKey, this.reconnectTime);
     this.addSseListener();
-    this.isInitialized = true;
-    logger.info('success to initialize client sdk');
+    LSClient.isInitialized = true;
+    // logger.info('success to initialize client sdk');
   }
   private getVariationValue<T>(flag: Flag, LSUser: ILSUser): any {
     let percentage = getHashedPercentageForObjectIds([LSUser.getUserId(), flag.title], 1);
@@ -98,7 +101,7 @@ class LSClient implements ILSClient {
         percentage -= variation.portion;
         logger.info(`percentage : ${percentage}, portion : ${variation.portion}`);
         if (percentage < 0) {
-          logger.info(`value : ${variation.value}`);
+          // logger.info(`value : ${variation.value}`);
           return variation.value as T;
         }
       }
@@ -121,8 +124,6 @@ class LSClient implements ILSClient {
           const isEqual = compareObjectsAndMaps(keyword.properties, LSUser.properties);
           console.log(isEqual);
           if (isEqual) {
-            console.log(`value : ${keyword.value}`);
-            console.log(<T>keyword.value);
             if (flag.type == 'STRING') {
               return keyword.value as T;
             } else if (flag.type == 'BOOLEAN') {
@@ -165,8 +166,6 @@ class LSClient implements ILSClient {
   }
   public getIntegerFlag(name: string, LSUser: ILSUser, defaultVal: number): number {
     const integerFlag = this.getFlag<number>(name, LSUser, defaultVal);
-    console.log(typeof integerFlag);
-    console.log(typeof defaultVal);
     if (typeof integerFlag != 'number') {
       this.handleError(
         new LSTypeCastError(
@@ -210,7 +209,7 @@ class LSClient implements ILSClient {
     if (response.code == SDK_KEY_NOT_FOUND) {
       this.handleError(new LSServerError(response.message));
     }
-    console.log(response);
+
     const newFlags: Flag[] = response.data;
     newFlags.forEach((flag) => {
       this.flags.set(flag.title, flag);
@@ -218,7 +217,7 @@ class LSClient implements ILSClient {
 
     this.onFlagChanged?.();
 
-    logger.info(`receive init data : ${JSON.stringify(response)}`);
+    // logger.info(`receive init data : ${JSON.stringify(response)}`);
   }
   private async getUserKey(): Promise<void> {
     try {
@@ -227,7 +226,7 @@ class LSClient implements ILSClient {
         sdkKey: this.sdkKey,
       });
       this.userKey = response.data.userKey;
-      logger.info(`receive userKey data : ${JSON.stringify(response)}`);
+      // logger.info(`receive userKey data : ${JSON.stringify(response)}`);
     } catch (error) {
       if (error instanceof Error) {
         this.handleError(new LSServerError(error.message));
@@ -302,11 +301,11 @@ class LSClient implements ILSClient {
   }
 
   public destroy(): void {
-    if (!this.isInitialized) {
+    if (!LSClient.isInitialized) {
       throw new Error('LightSwitch is not initialized.');
     }
     this.eventSource?.close();
-    this.isInitialized = false;
+    LSClient.isInitialized = false;
     logger.debug('call destroy');
   }
 }

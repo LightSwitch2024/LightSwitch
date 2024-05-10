@@ -17,7 +17,6 @@ class LSUser implements ILSUser {
         this.properties.set(key, value);
       });
     }
-    console.log(this.properties);
   }
   public getUserId(): string {
     return this.userId;
