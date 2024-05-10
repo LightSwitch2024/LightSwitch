@@ -26,9 +26,9 @@ class SseController(
 ) {
 
     @Operation(summary = "SSE 연결", description = "SSE 연결")
-    @GetMapping(path = ["/subscribe/{userKey}"], produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
-    fun subscribe(@PathVariable(name = "userKey") userKey: String): SseEmitter {
-        return sseService.subscribe(userKey)
+    @GetMapping(path = ["/subscribe/{sdkKey}"], produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
+    fun subscribe(@PathVariable(name = "sdkKey") sdkKey: String): SseEmitter {
+        return sseService.subscribe(sdkKey)
     }
 
     @Operation(summary = "SSE 데이터 전송", description = "SSE 데이터 전송")
