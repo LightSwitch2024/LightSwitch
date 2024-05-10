@@ -12,7 +12,7 @@ import com.lightswitch.core.domain.flag.dto.res.FlagResponseDto
 import com.lightswitch.core.domain.flag.dto.res.FlagSummaryDto
 import com.lightswitch.core.domain.flag.dto.res.MainPageOverviewDto
 import com.lightswitch.core.domain.flag.service.FlagService
-import com.lightswitch.core.domain.member.service.SdkKeyService
+import com.lightswitch.core.domain.organization.service.OrganizationService
 import jakarta.websocket.server.PathParam
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -24,7 +24,7 @@ class FlagController(
     private var flagService: FlagService,
 
     @Autowired
-    private var sdkKeyService: SdkKeyService
+    private var organizationService: OrganizationService
 ) {
 
     @PostMapping("")
@@ -96,24 +96,18 @@ class FlagController(
     }
 
     @GetMapping("/overview")
-    fun getFlagOverview(@PathParam(value = "memberId") memberId: Long): BaseResponse<MainPageOverviewDto> {
+    fun getFlagOverview(): BaseResponse<MainPageOverviewDto> {
         val flagCountForOverview = flagService.getFlagCountForOverview()
-        val sdkKeyForOverview = sdkKeyService.getSdkKeyForOverview(memberId)
+        val sdkKey = organizationService.getSdkKey()
 
         val totalFlags = flagCountForOverview["totalFlags"] ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
         val activeFlags = flagCountForOverview["activeFlags"] ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
-        var sdkKey: String? = ""
-        if (sdkKeyForOverview["sdkKey"] != null) {
-            sdkKey = sdkKeyForOverview["sdkKey"]
-        } else {
-            sdkKey = ""
-        }
 
         return success(
             MainPageOverviewDto(
                 totalFlags = totalFlags,
                 activeFlags = activeFlags,
-                sdkKey = sdkKey!!,
+                sdkKey = sdkKey,
             )
         )
     }
