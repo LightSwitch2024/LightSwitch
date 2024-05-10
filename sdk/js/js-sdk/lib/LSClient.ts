@@ -74,13 +74,6 @@ class LSClient implements ILSClient {
       this.onError = onError;
     }
 
-    if (!sdkKey) {
-      throw new Error('Please specify a Light Switch sdk key');
-    }
-    if (!onFlagChanged) {
-      throw new Error('Please specify a Light Switch flagChangedListener');
-    }
-
     this.onFlagChanged = onFlagChanged;
 
     await this.getInitData();
@@ -91,17 +84,13 @@ class LSClient implements ILSClient {
 
     logger.debug('success to getUserKey, start connecting SSE');
 
-    if (!this.userKey) {
-      throw new Error('Failed to get data for sse connection');
-    }
-
     this.eventSource = this.getEventSource(this.userKey, this.reconnectTime);
     this.addSseListener();
     this.isInitialized = true;
     logger.info('success to initialize client sdk');
   }
   private getVariationValue<T>(flag: Flag, LSUser: ILSUser): any {
-    let percentage = getHashedPercentageForObjectIds([LSUser.getUserId()], 1);
+    let percentage = getHashedPercentageForObjectIds([LSUser.getUserId(), flag.title], 1);
     logger.info(percentage);
     if (flag.variations) {
       for (let i = 0; i < flag.variations.length; i++) {
@@ -119,11 +108,8 @@ class LSClient implements ILSClient {
   public getFlag<T>(name: string, LSUser: ILSUser): any {
     const flag = this.flags.get(name);
     if (!flag) {
-      this.onError?.(new Error('flag is not defined'));
+      this.onError?.(new LSFlagNotFoundError(`${name} 플래그가 존재하지 않습니다.`));
     }
-    // if (flag?.type !== ('BOOLEAN' || 'STRING' || 'INTEGER')) {
-    //   this.onError?.(new Error('not supported type'));
-    // }
 
     if (flag?.active) {
       if (flag.keywords.length > 0 && LSUser.properties?.size > 0) {
@@ -134,7 +120,7 @@ class LSClient implements ILSClient {
           console.log(isEqual);
           if (isEqual) {
             console.log(`value : ${keyword.value}`);
-            return keyword.value; // 이 부분에서 return을 사용하는 것은 함수 내부에서만 가능합니다.
+            return keyword.value;
           }
         }
       }
@@ -151,15 +137,37 @@ class LSClient implements ILSClient {
   }
 
   public getBooleanFlag(name: string, LSUser: ILSUser): boolean {
-    return this.getFlag<boolean>(name, LSUser);
+    const booleanFlag = this.getFlag<boolean>(name, LSUser);
+    if (booleanFlag.type !== 'BOOLEAN') {
+      this.onError?.(
+        new LSTypeCastError(
+          `${name} 플래그를 BOOLEAN 타입으로 캐스팅하는데 실패했습니다.`,
+        ),
+      );
+    }
+    return booleanFlag;
   }
   public getIntegerFlag(name: string, LSUser: ILSUser): number {
-    const data = this.getFlag<number>(name, LSUser);
-    console.log(data);
-    return data;
+    const integerFlag = this.getFlag<number>(name, LSUser);
+    if (integerFlag.type !== 'INTEGER') {
+      this.onError?.(
+        new LSTypeCastError(
+          `${name} 플래그를 INTEGER 타입으로 캐스팅하는데 실패했습니다.`,
+        ),
+      );
+    }
+    return integerFlag;
   }
   public getStringFlag(name: string, LSUser: ILSUser): string {
-    return this.getFlag<string>(name, LSUser);
+    const stringFlag = this.getFlag<string>(name, LSUser);
+    if (stringFlag.type !== 'STRING') {
+      this.onError?.(
+        new LSTypeCastError(
+          `${name} 플래그를 STRING 타입으로 캐스팅하는데 실패했습니다.`,
+        ),
+      );
+    }
+    return stringFlag;
   }
 
   private getEventSource(
@@ -194,7 +202,9 @@ class LSClient implements ILSClient {
 
       logger.info(`receive init data : ${JSON.stringify(response)}`);
     } catch (error) {
-      this.onError?.(error);
+      if (error instanceof Error) {
+        this.onError?.(new LSServerError(error.message));
+      }
     }
   }
   private async getUserKey(): Promise<void> {
@@ -203,13 +213,12 @@ class LSClient implements ILSClient {
       const response: ApiResponse<userKey> = await postRequest(`${SSE_CONNECT_PATH}`, {
         sdkKey: this.sdkKey,
       });
-      if (response.code == SDK_KEY_NOT_FOUND) {
-        throw new Error(response.message);
-      }
       this.userKey = response.data.userKey;
       logger.info(`receive userKey data : ${JSON.stringify(response)}`);
     } catch (error) {
-      this.onError?.(error);
+      if (error instanceof Error) {
+        this.onError?.(new LSServerError(error.message));
+      }
     }
   }
 
