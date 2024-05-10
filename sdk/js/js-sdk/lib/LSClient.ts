@@ -23,7 +23,7 @@ import {
 } from './utils';
 import ReconnectingEventSource from 'reconnecting-eventsource';
 import LSUser from './LSUser';
-
+import { LSFlagNotFoundError, LSServerError, LSTypeCastError } from './error';
 const IS_DEV = true;
 
 const logger = LSLogger(LogLevel.DEBUG);
@@ -105,10 +105,12 @@ class LSClient implements ILSClient {
     }
     return flag.defaultValue as T;
   }
-  public getFlag<T>(name: string, LSUser: ILSUser): any {
+
+  public getFlag<T>(name: string, LSUser: ILSUser, defaultVal: T): T {
     const flag = this.flags.get(name);
     if (!flag) {
-      this.onError?.(new LSFlagNotFoundError(`${name} 플래그가 존재하지 않습니다.`));
+      logger.warning(`${name} 플래그가 존재하지 않습니다. 기본값을 이용합니다.`);
+      return defaultVal;
     }
 
     if (flag?.active) {
@@ -120,7 +122,15 @@ class LSClient implements ILSClient {
           console.log(isEqual);
           if (isEqual) {
             console.log(`value : ${keyword.value}`);
-            return keyword.value;
+            console.log(<T>keyword.value);
+            if (flag.type == 'STRING') {
+              return keyword.value as T;
+            } else if (flag.type == 'BOOLEAN') {
+              if (keyword.value == 'TRUE') return true as T;
+              else return false as T;
+            } else if (flag.type == 'INTEGER') {
+              return parseInt(keyword.value) as T;
+            }
           }
         }
       }
@@ -135,11 +145,17 @@ class LSClient implements ILSClient {
       return flag?.defaultValue as T;
     }
   }
-
-  public getBooleanFlag(name: string, LSUser: ILSUser): boolean {
-    const booleanFlag = this.getFlag<boolean>(name, LSUser);
-    if (booleanFlag.type !== 'BOOLEAN') {
-      this.onError?.(
+  private handleError(error: Error) {
+    if (this.onError) {
+      this.onError(error);
+    } else {
+      throw error;
+    }
+  }
+  public getBooleanFlag(name: string, LSUser: ILSUser, defaultVal: boolean): boolean {
+    const booleanFlag = this.getFlag<boolean>(name, LSUser, defaultVal);
+    if (typeof booleanFlag != 'boolean') {
+      this.handleError(
         new LSTypeCastError(
           `${name} 플래그를 BOOLEAN 타입으로 캐스팅하는데 실패했습니다.`,
         ),
@@ -147,10 +163,12 @@ class LSClient implements ILSClient {
     }
     return booleanFlag;
   }
-  public getIntegerFlag(name: string, LSUser: ILSUser): number {
-    const integerFlag = this.getFlag<number>(name, LSUser);
-    if (integerFlag.type !== 'INTEGER') {
-      this.onError?.(
+  public getIntegerFlag(name: string, LSUser: ILSUser, defaultVal: number): number {
+    const integerFlag = this.getFlag<number>(name, LSUser, defaultVal);
+    console.log(typeof integerFlag);
+    console.log(typeof defaultVal);
+    if (typeof integerFlag != 'number') {
+      this.handleError(
         new LSTypeCastError(
           `${name} 플래그를 INTEGER 타입으로 캐스팅하는데 실패했습니다.`,
         ),
@@ -158,10 +176,10 @@ class LSClient implements ILSClient {
     }
     return integerFlag;
   }
-  public getStringFlag(name: string, LSUser: ILSUser): string {
-    const stringFlag = this.getFlag<string>(name, LSUser);
-    if (stringFlag.type !== 'STRING') {
-      this.onError?.(
+  public getStringFlag(name: string, LSUser: ILSUser, defaultVal: string): string {
+    const stringFlag = this.getFlag<string>(name, LSUser, defaultVal);
+    if (typeof stringFlag != 'string') {
+      this.handleError(
         new LSTypeCastError(
           `${name} 플래그를 STRING 타입으로 캐스팅하는데 실패했습니다.`,
         ),
@@ -203,7 +221,7 @@ class LSClient implements ILSClient {
       logger.info(`receive init data : ${JSON.stringify(response)}`);
     } catch (error) {
       if (error instanceof Error) {
-        this.onError?.(new LSServerError(error.message));
+        this.handleError(new LSServerError(error.message));
       }
     }
   }
@@ -217,7 +235,7 @@ class LSClient implements ILSClient {
       logger.info(`receive userKey data : ${JSON.stringify(response)}`);
     } catch (error) {
       if (error instanceof Error) {
-        this.onError?.(new LSServerError(error.message));
+        this.handleError(new LSServerError(error.message));
       }
     }
   }
@@ -286,18 +304,6 @@ class LSClient implements ILSClient {
     newFlag.active = sw.active;
     this.flags.set(sw.title, newFlag);
     logger.info(newFlag);
-  }
-
-  public onFlagError(cb: (error: any) => void): void {
-    if (!this.isInitialized) {
-      throw new Error('LightSwitch is not initialized.');
-    }
-    if (this.eventSource) {
-      this.eventSource.onerror = (err: any) => {
-        this.eventSource?.close();
-        cb(err);
-      };
-    }
   }
 
   public destroy(): void {

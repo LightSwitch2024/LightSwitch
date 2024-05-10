@@ -1,7 +1,7 @@
 export type LSMessageData = Flag | Title | Switch | string;
 export type LSFlagType = 'BOOLEAN' | 'STRING' | 'INTEGER';
 export type LSDefaultValueType = boolean | string | number;
-export type ErrorCallback = (error: any) => void;
+export type ErrorCallback = (error: Error) => void;
 export type flagChangedCallback = () => void;
 export enum LogLevel {
   DEBUG,
@@ -39,10 +39,10 @@ export interface ILSClient {
   isInitialized: boolean;
 
   init: (config: SdkConfig) => void;
-  getFlag: (name: string, LSUser: ILSUser) => void;
-  getBooleanFlag: (name: string, LSUser: ILSUser) => boolean;
-  getIntegerFlag: (name: string, LSUser: ILSUser) => number;
-  getStringFlag: (name: string, LSUser: ILSUser) => string;
+  getFlag: <T>(name: string, LSUser: ILSUser, defaultVal: T) => T;
+  getBooleanFlag: (name: string, LSUser: ILSUser, defaultVal: boolean) => boolean;
+  getIntegerFlag: (name: string, LSUser: ILSUser, defaultVal: number) => number;
+  getStringFlag: (name: string, LSUser: ILSUser, defaultVal: string) => string;
   getAllFlags: () => void;
   destroy: () => void;
 }

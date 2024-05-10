@@ -4,3 +4,5 @@ class LSFlagNotFoundError extends Error {
     this.name = 'LSFlagNotFoundError';
   }
 }
+
+export default LSFlagNotFoundError;

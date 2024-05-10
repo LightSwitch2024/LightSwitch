@@ -4,3 +4,5 @@ class LSTypeCastError extends Error {
     this.name = 'LSTypeCastError';
   }
 }
+
+export default LSTypeCastError;

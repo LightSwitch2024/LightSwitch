@@ -4,3 +4,5 @@ class LSServerError extends Error {
     this.name = 'LSServerError';
   }
 }
+
+export default LSServerError;
