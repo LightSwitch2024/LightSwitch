@@ -15,7 +15,6 @@ class Flag(
     var title: String,
     var description: String,
 
-    // Todo : Change to User
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     val maintainer: Member,
