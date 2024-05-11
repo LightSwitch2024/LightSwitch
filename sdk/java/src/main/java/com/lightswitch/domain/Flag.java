@@ -75,8 +75,8 @@ public class Flag {
 		return null;
 	}
 
-	private String calValue(int userId) {
-		double percentage = HashUtil.getHashedPercentage(List.of(String.valueOf(userId), title), 1);
+	private String calValue(String userId) {
+		double percentage = HashUtil.getHashedPercentage(List.of(userId, title), 1);
 
 		for (Variation variation : variations) {
 			percentage -= variation.getPortion();
