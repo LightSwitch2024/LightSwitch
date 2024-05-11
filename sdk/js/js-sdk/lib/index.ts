@@ -1,3 +1,5 @@
 import LSClient from './LSClient';
 import LSUser from './LSUser';
-export { LSClient, LSUser };
+
+import { LSFlagNotFoundError, LSServerError, LSTypeCastError } from './error';
+export { LSClient, LSUser, LSFlagNotFoundError, LSServerError, LSTypeCastError };

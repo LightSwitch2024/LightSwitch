@@ -1,5 +1,10 @@
 import { describe, expect } from '@jest/globals';
-import { getRequest, postRequest, getHashedPercentageForObjectIds } from '../lib/utils';
+import {
+  getRequest,
+  postRequest,
+  getHashedPercentageForObjectIds,
+  compareObjectsAndMaps,
+} from '../lib/utils';
 
 describe('getRequest', () => {
   it('should make a successful GET request', async () => {
@@ -63,5 +68,76 @@ describe('getHashedPercentageForObjectIds', () => {
     const result1 = getHashedPercentageForObjectIds(objectIds, iterations1);
     const result2 = getHashedPercentageForObjectIds(objectIds, iterations2);
     expect(result1).not.toEqual(result2);
+  });
+});
+
+describe('compareObjectsAndMaps', () => {
+  it('should return true when objects and maps have same key-value pairs', () => {
+    // Arrange
+    const obj = [
+      { property: 'key1', data: 'value1' },
+      { property: 'key2', data: 'value2' },
+    ];
+    const map = new Map<string, string>([
+      ['key1', 'value1'],
+      ['key2', 'value2'],
+    ]);
+
+    // Act
+    const result = compareObjectsAndMaps(obj, map);
+
+    // Assert
+    expect(result).toBe(true);
+  });
+
+  it('should return false when objects and maps have different key-value pairs', () => {
+    // Arrange
+    const obj = [
+      { property: 'key1', data: 'value1' },
+      { property: 'key2', data: 'value2' },
+    ];
+    const map = new Map<string, string>([
+      ['key1', 'value1'],
+      ['key3', 'value3'],
+    ]);
+
+    // Act
+    const result = compareObjectsAndMaps(obj, map);
+
+    // Assert
+    expect(result).toBe(false);
+  });
+
+  it('should return true when objects and maps have different key-value pairs (reverse order)', () => {
+    // Arrange
+    const obj = [
+      { property: 'key1', data: 'value1' },
+      { property: 'key2', data: 'value2' },
+    ];
+    const map = new Map<string, string>([
+      ['key2', 'value2'],
+      ['key1', 'value1'],
+    ]);
+
+    // Act
+    const result = compareObjectsAndMaps(obj, map);
+
+    // Assert
+    expect(result).toBe(true);
+  });
+
+  it('should return false when objects and maps have different key-value pairs (missing key)', () => {
+    // Arrange
+    const obj = [
+      { property: 'key1', data: 'value1' },
+      { property: 'key2', data: 'value2' },
+    ];
+    const map = new Map<string, string>([['key1', 'value1']]);
+
+    // Act
+    const result = compareObjectsAndMaps(obj, map);
+
+    // Assert
+    expect(result).toBe(false);
   });
 });

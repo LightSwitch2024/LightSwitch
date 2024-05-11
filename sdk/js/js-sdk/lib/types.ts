@@ -1,8 +1,8 @@
 export type LSMessageData = Flag | Title | Switch | string;
-export type LSFlagType = 'BOOLEAN' | 'STRING' | 'NUMBER';
+export type LSFlagType = 'BOOLEAN' | 'STRING' | 'INTEGER';
 export type LSDefaultValueType = boolean | string | number;
-export type ErrorCallback = (error: any) => void;
-export type flagChangedCallback = (flags: Flag[]) => void;
+export type ErrorCallback = (error: Error) => void;
+export type flagChangedCallback = () => void;
 export enum LogLevel {
   DEBUG,
   INFO,
@@ -31,15 +31,16 @@ export interface SdkConfig {
 }
 export interface ILSUser {
   userId: null | string;
-  property: null | Map<string, string>;
+  properties: Map<string, string>;
   getUserId: () => string;
 }
 
 export interface ILSClient {
-  isInitialized: boolean;
-
   init: (config: SdkConfig) => void;
-  getFlag: (name: string, LSUser: ILSUser) => void;
+  getFlag: <T>(name: string, LSUser: ILSUser, defaultVal: T) => T;
+  getBooleanFlag: (name: string, LSUser: ILSUser, defaultVal: boolean) => boolean;
+  getIntegerFlag: (name: string, LSUser: ILSUser, defaultVal: number) => number;
+  getStringFlag: (name: string, LSUser: ILSUser, defaultVal: string) => string;
   getAllFlags: () => void;
   destroy: () => void;
 }
@@ -61,15 +62,18 @@ export interface Title {
 }
 
 export interface Switch {
-  flagId: number;
+  title: string;
   active: boolean;
 }
+
+export type Flags = Map<string, Flag>;
 
 export interface Flag {
   flagId: number;
   title: string;
   description: string;
   type: LSFlagType;
+  keywords: Keyword[];
   defaultValue: LSDefaultValueType;
   defaultValuePortion?: number;
   defaultValueDescription?: string;
@@ -85,4 +89,14 @@ export interface Variation {
   value: LSDefaultValueType;
   portion: number;
   description: string;
+}
+
+export interface Keyword {
+  properties: Property[];
+  value: string;
+}
+
+export interface Property {
+  property: string;
+  data: string;
 }

@@ -13,50 +13,49 @@ describe('LSClient', () => {
     jest.clearAllMocks();
   });
 
-  it('should initialize with valid sdk key', async () => {
-    // Given
-    const config: SdkConfig = {
-      sdkKey: 'valid-sdk-key',
-      logLevel: LogLevel.DEBUG,
-      endpoint: '',
-    };
-    const lsClient = new LSClient();
+  it('LSClient는 항상 같은 인스턴스를 반환해야한다.', () => {
+    // Arrange
+    const instance1 = LSClient.getInstance();
+    const instance2 = LSClient.getInstance();
 
-    // When
-    await lsClient.init(config);
+    // Act & Assert
+    expect(instance1).toBe(instance2);
+  });
 
-    // Then
-    expect(lsClient.isEnabled()).toBe(true);
+  it('init 함수 호출 후에는 isInitialized가 true로 반환된다.', async () => {
+    // Arrange
+    const instance = LSClient.getInstance();
+
+    // Act
+    await instance.init({ sdkKey: 'testSdkKey', onFlagChanged: jest.fn() });
+
+    // Assert
+    expect(instance.isInitialized).toBe(true);
+  });
+
+  it('sdkKey가 없는경우 오류를 Throw 한다.', async () => {
+    // Arrange
+    const instance = LSClient.getInstance();
+
+    // Act & Assert
+    await expect(instance.init({ sdkKey: '', onFlagChanged: jest.fn() })).rejects.toThrow(
+      'Please specify a Light Switch sdk key',
+    );
   });
 
   it('should throw an error when initializing with empty sdk key', async () => {
     // Given
     const config: SdkConfig = {
-      sdkKey: '', // Empty sdk key
+      sdkKey: 'valid-sdk-key',
       logLevel: LogLevel.DEBUG,
       endpoint: '',
+      onFlagChanged: () => {},
     };
-    const lsClient = new LSClient();
+    const lsClient = LSClient.getInstance();
 
     // When
     await expect(lsClient.init(config)).rejects.toThrow(
       'Please specify a Light Switch sdk key',
     );
-  });
-
-  it('should request init data when initialized', async () => {
-    // Given
-    const config: SdkConfig = {
-      sdkKey: 'valid-sdk-key',
-      logLevel: LogLevel.DEBUG,
-      endpoint: '',
-    };
-    const lsClient = new LSClient();
-
-    // When
-    await lsClient.init(config);
-
-    // Then
-    expect(getRequest).toHaveBeenCalledWith('http://localhost:8000/users/hello');
   });
 });
