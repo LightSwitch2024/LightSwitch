@@ -181,36 +181,39 @@ public class LightSwitchImpl implements LightSwitch {
 	}
 
 	@Override
-	public <T> T getFlag(String key, LSUser LSUser) throws FlagRuntimeException {
-		//todo. 세 번째 인자 default 값 추가하기
-		Flag flag = Flags.getFlag(key).orElseThrow(() -> new FlagNotFoundException("Flag Not Found Exception"));
-		return flag.getValue(LSUser);
-	}
-
-	@Override
-	public Boolean getBooleanFlag(String key, LSUser LSUser) throws FlagRuntimeException {
+	public <T> T getFlag(String key, LSUser LSUser, Object defaultValue) throws FlagRuntimeException {
 		try {
-			return getFlag(key, LSUser);
-		} catch (ClassCastException e) {
-			throw new FlagValueCastingException("Flag Value Type is Not Boolean");
+			Flag flag = Flags.getFlag(key).orElseThrow(() -> new FlagNotFoundException("Flag Not Found Exception"));
+			return flag.getValue(LSUser);
+		} catch (FlagNotFoundException e) {
+			return (T)defaultValue;
 		}
 	}
 
 	@Override
-	public Integer getNumberFlag(String key, LSUser LSUser) throws FlagRuntimeException {
+	public Boolean getBooleanFlag(String key, LSUser LSUser, Boolean defaultValue) throws FlagRuntimeException {
 		try {
-			return getFlag(key, LSUser);
+			return getFlag(key, LSUser, defaultValue);
 		} catch (ClassCastException e) {
-			throw new FlagValueCastingException("Flag Value Type is Not Number");
+			return defaultValue;
 		}
 	}
 
 	@Override
-	public String getStringFlag(String key, LSUser LSUser) throws FlagRuntimeException {
+	public Integer getNumberFlag(String key, LSUser LSUser, Integer defaultValue) throws FlagRuntimeException {
 		try {
-			return getFlag(key, LSUser);
+			return getFlag(key, LSUser, defaultValue);
 		} catch (ClassCastException e) {
-			throw new FlagValueCastingException("Flag Value Type is Not String");
+			return defaultValue;
+		}
+	}
+
+	@Override
+	public String getStringFlag(String key, LSUser LSUser, String defaultValue) throws FlagRuntimeException {
+		try {
+			return getFlag(key, LSUser, defaultValue);
+		} catch (ClassCastException e) {
+			return defaultValue;
 		}
 	}
 }
