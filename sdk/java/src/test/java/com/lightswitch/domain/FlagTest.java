@@ -3,6 +3,8 @@ package com.lightswitch.domain;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -69,7 +71,7 @@ public class FlagTest {
 
 	@Test
 	void Flag는_Value_타입으로_반환() {
-		Flag booleanFlag = getFlagByType(FlagType.BOOLEAN,"true");
+		Flag booleanFlag = getFlagByType(FlagType.BOOLEAN, "true");
 		Flag numberFlag = getFlagByType(FlagType.INTEGER, "1");
 		Flag stringFlag = getFlagByType(FlagType.STRING, "string");
 
@@ -82,21 +84,99 @@ public class FlagTest {
 
 	@Test
 	void Flag는_Value_타입으로_반환_에러() {
-		Flag booleanFlag = getFlagByType(FlagType.BOOLEAN,"true");
+		Flag booleanFlag = getFlagByType(FlagType.BOOLEAN, "true");
 		Flag numberFlag = getFlagByType(FlagType.INTEGER, "1");
 		Flag stringFlag = getFlagByType(FlagType.STRING, "string");
 
 		assertThrows(ClassCastException.class, () -> {
 			Integer value = booleanFlag.getValue(getNoPropertyUser());
+		});
+		assertThrows(ClassCastException.class, () -> {
 			String value2 = booleanFlag.getValue(getNoPropertyUser());
 		});
 		assertThrows(ClassCastException.class, () -> {
 			Boolean value = numberFlag.getValue(getNoPropertyUser());
+		});
+		assertThrows(ClassCastException.class, () -> {
 			String value2 = numberFlag.getValue(getNoPropertyUser());
 		});
 		assertThrows(ClassCastException.class, () -> {
 			Boolean value = stringFlag.getValue(getNoPropertyUser());
+		});
+		assertThrows(ClassCastException.class, () -> {
 			Integer value2 = stringFlag.getValue(getNoPropertyUser());
+		});
+	}
+
+	@Test
+	void calValue_키워드에_따른_값_테스트() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+		//given
+		Flag keywordsFlag = getKeywordsFlag();
+		LSUser propertyUser = getPropertyUser();
+		LSUser noPropertyUser = getNoPropertyUser();
+
+		//when
+		Method calValue = Flag.class.getDeclaredMethod("calValue", LSUser.class);
+		calValue.setAccessible(true);
+		String propertyResult = (String)calValue.invoke(keywordsFlag, propertyUser);
+		String noPropertyResult = (String)calValue.invoke(keywordsFlag, noPropertyUser);
+
+		//then
+		assertThat(propertyResult).isEqualTo("true");
+		assertThat(noPropertyResult).isNotEqualTo("true");
+	}
+
+	@Test
+	void getValueWithType_테스트() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+		//given
+		Flag booleanFlag = getFlagByType(FlagType.BOOLEAN, "true");
+		Flag stringFlag = getFlagByType(FlagType.STRING, "string");
+		Flag integerFlag = getFlagByType(FlagType.INTEGER, "1");
+
+		//when
+		Method calValue = Flag.class.getDeclaredMethod("getValueWithType", String.class);
+		calValue.setAccessible(true);
+		Boolean booleanResult = (Boolean)calValue.invoke(booleanFlag, "true");
+		String stringResult = (String)calValue.invoke(stringFlag, "string");
+		Integer integerResult = (Integer)calValue.invoke(integerFlag, "1");
+
+		//then
+		assertNotNull(booleanResult);
+		assertNotNull(stringResult);
+		assertNotNull(integerResult);
+		assertThat(booleanResult).isEqualTo(true);
+		assertThat(stringResult).isEqualTo("string");
+		assertThat(integerResult).isEqualTo(1);
+	}
+
+	@Test
+	void getValueWithType_예외_테스트() throws NoSuchMethodException {
+		//given
+		Flag booleanFlag = getFlagByType(FlagType.BOOLEAN, "true");
+		Flag stringFlag = getFlagByType(FlagType.STRING, "string");
+		Flag integerFlag = getFlagByType(FlagType.INTEGER, "1");
+
+		//when
+		Method getValueWithType = Flag.class.getDeclaredMethod("getValueWithType", String.class);
+		getValueWithType.setAccessible(true);
+
+		assertThrows(ClassCastException.class, () -> {
+			Integer value = (Integer)getValueWithType.invoke(booleanFlag, "true");
+		});
+		assertThrows(ClassCastException.class, () -> {
+			String value2 = (String)getValueWithType.invoke(booleanFlag, "true");
+		});
+		assertThrows(ClassCastException.class, () -> {
+			Boolean value = (Boolean)getValueWithType.invoke(stringFlag, "string");
+		});
+		assertThrows(ClassCastException.class, () -> {
+			Integer value2 = (Integer)getValueWithType.invoke(stringFlag, "string");
+		});
+		assertThrows(ClassCastException.class, () -> {
+			Boolean value = (Boolean)getValueWithType.invoke(integerFlag, "1");
+		});
+		assertThrows(ClassCastException.class, () -> {
+			String value2 = (String)getValueWithType.invoke(integerFlag, "1");
 		});
 	}
 
@@ -116,8 +196,10 @@ public class FlagTest {
 			"", variations, 1, "2020-01-01", "2021-01-01", null, true);
 	}
 
-	private Flag getFlagByType(FlagType flagType ,String value) {
-		return new Flag(1, "Flag", "", flagType, keywords, value, 0,
+	private Flag getFlagByType(FlagType flagType, String value) {
+		variations = List.of(new Variation(0, "false", 0, "des1"));
+
+		return new Flag(1, "Flag", "", flagType, keywords, value, 100,
 			"", variations, 1, "2020-01-01", "2021-01-01", null, true);
 	}
 

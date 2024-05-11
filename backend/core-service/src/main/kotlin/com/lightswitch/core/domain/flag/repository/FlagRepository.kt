@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository
 interface FlagRepository : JpaRepository<Flag, Long> {
     fun findByDeletedAtIsNull(): List<Flag>
 
+    fun findByDeletedAtIsNullOrderByCreatedAt(): List<Flag>
+
     fun findByMaintainerMemberIdAndDeletedAtIsNull(maintainerId: Long): List<Flag>
 
     fun findByTitleContainingAndDeletedAtIsNull(title: String): List<Flag>
@@ -27,6 +29,6 @@ interface FlagRepository : JpaRepository<Flag, Long> {
                 "(EXISTS (SELECT k FROM f.keywords k WHERE k.flag = f AND k.deletedAt IS NULL) OR " +
                 "NOT EXISTS (SELECT k FROM f.keywords k WHERE k.flag = f))"
     )
-    fun findFlagsWithNoDeletedKeywords(@Param ("flagId") flagId: Long): Flag?
+    fun findFlagsWithNoDeletedKeywords(@Param("flagId") flagId: Long): Flag?
 
 }
