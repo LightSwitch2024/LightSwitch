@@ -22,10 +22,9 @@ import com.lightswitch.domain.dto.FlagResponse;
 import com.lightswitch.domain.dto.SseResponse;
 import com.lightswitch.domain.dto.UserKeyRequest;
 import com.lightswitch.domain.dto.UserKeyResponse;
-import com.lightswitch.exception.FlagNotFoundException;
-import com.lightswitch.exception.FlagRuntimeException;
-import com.lightswitch.exception.FlagServerConnectException;
-import com.lightswitch.exception.FlagValueCastingException;
+import com.lightswitch.exception.LSFlagRuntimeException;
+import com.lightswitch.exception.LSLSFlagNotFoundException;
+import com.lightswitch.exception.LSServerException;
 import com.lightswitch.util.HttpConnector;
 
 public class LightSwitchImpl implements LightSwitch {
@@ -46,7 +45,7 @@ public class LightSwitchImpl implements LightSwitch {
 	}
 
 	@Override
-	public void init(String sdkKey, String serverUrl) throws FlagRuntimeException {
+	public void init(String sdkKey, String serverUrl) throws LSFlagRuntimeException {
 		if (thread != null && thread.isAlive()) {
 			return;
 		}
@@ -67,18 +66,18 @@ public class LightSwitchImpl implements LightSwitch {
 	}
 
 	private HttpURLConnection setupConnection(String endpoint, String method, boolean isSSE) throws
-		FlagServerConnectException {
+		LSServerException {
 		return new HttpConnector().getConnect(hostUrl, endpoint, method, 0, isSSE);
 	}
 
-	private void getAllFlags(HttpURLConnection initConnection) throws FlagRuntimeException {
+	private void getAllFlags(HttpURLConnection initConnection) throws LSFlagRuntimeException {
 		Type responseType = new TypeToken<BaseResponse<List<FlagResponse>>>() {
 		}.getType();
 		List<FlagResponse> flags = processConnectionResponse(initConnection, responseType);
 		Flags.addAllFlags(flags);
 	}
 
-	private String getUserKey(HttpURLConnection subscribeConnection) throws FlagRuntimeException {
+	private String getUserKey(HttpURLConnection subscribeConnection) throws LSFlagRuntimeException {
 		Type responseType = new TypeToken<BaseResponse<UserKeyResponse>>() {
 		}.getType();
 		UserKeyResponse userKeyResponse = processConnectionResponse(subscribeConnection, responseType);
@@ -86,20 +85,20 @@ public class LightSwitchImpl implements LightSwitch {
 	}
 
 	private <T> T processConnectionResponse(HttpURLConnection connection, Type responseType) throws
-		FlagRuntimeException {
+		LSFlagRuntimeException {
 		BaseResponse<T> response = handleResponse(connection, responseType);
 		if (response.getCode() != HttpURLConnection.HTTP_OK) {
-			throw new FlagServerConnectException("Failed To Connect Flag Server : Invalid SDK key");
+			throw new LSServerException();
 		}
 		return response.getData();
 	}
 
-	private <T> T handleResponse(HttpURLConnection connection, Type responseType) throws FlagServerConnectException {
+	private <T> T handleResponse(HttpURLConnection connection, Type responseType) throws LSServerException {
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), UTF_8))) {
 			String response = parsingResponse(reader);
 			return getJsonObject(response, responseType);
 		} catch (IOException e) {
-			throw new FlagServerConnectException("Failed To Read Response");
+			throw new LSServerException();
 		}
 	}
 
@@ -108,18 +107,18 @@ public class LightSwitchImpl implements LightSwitch {
 	}
 
 	private int sendData(HttpURLConnection connection, Object body) throws
-		FlagServerConnectException {
+		LSServerException {
 		try (OutputStream os = connection.getOutputStream()) {
 			String json = new Gson().toJson(body);
 			byte[] input = json.getBytes(UTF_8);
 			os.write(input, 0, input.length);
 			return connection.getResponseCode();
 		} catch (IOException e) {
-			throw new FlagServerConnectException("Failed To send SDK key");
+			throw new LSServerException();
 		}
 	}
 
-	private void connectToSse(HttpURLConnection connection) throws FlagServerConnectException {
+	private void connectToSse(HttpURLConnection connection) throws LSServerException {
 		Runnable task = () -> {
 			try (BufferedReader reader = new BufferedReader(
 				new InputStreamReader(connection.getInputStream(), UTF_8))) {
@@ -129,7 +128,7 @@ public class LightSwitchImpl implements LightSwitch {
 					processJsonData(sseResponse);
 				}
 			} catch (IOException io) {
-				throw new FlagServerConnectException("Failed To Read Response");
+				throw new LSServerException();
 			}
 		};
 
@@ -174,24 +173,24 @@ public class LightSwitchImpl implements LightSwitch {
 			thread = null;
 			HttpURLConnection disconnectConnection = setupConnection("sse/disconnect", "DELETE", false);
 			if (sendData(disconnectConnection, new UserKeyRequest(userKey)) != HttpURLConnection.HTTP_OK) {
-				throw new FlagServerConnectException("SDK 서버에 연결할 수 없습니다.");
+				throw new LSServerException();
 			}
 		}
 		Flags.clear();
 	}
 
 	@Override
-	public <T> T getFlag(String key, LSUser LSUser, Object defaultValue) throws FlagRuntimeException {
+	public <T> T getFlag(String key, LSUser LSUser, Object defaultValue) throws LSFlagRuntimeException {
 		try {
-			Flag flag = Flags.getFlag(key).orElseThrow(() -> new FlagNotFoundException("Flag Not Found Exception"));
+			Flag flag = Flags.getFlag(key).orElseThrow(() -> new LSLSFlagNotFoundException(key));
 			return flag.getValue(LSUser);
-		} catch (FlagNotFoundException e) {
+		} catch (LSLSFlagNotFoundException e) {
 			return (T)defaultValue;
 		}
 	}
 
 	@Override
-	public Boolean getBooleanFlag(String key, LSUser LSUser, Boolean defaultValue) throws FlagRuntimeException {
+	public Boolean getBooleanFlag(String key, LSUser LSUser, Boolean defaultValue) throws LSFlagRuntimeException {
 		try {
 			return getFlag(key, LSUser, defaultValue);
 		} catch (ClassCastException e) {
@@ -200,7 +199,7 @@ public class LightSwitchImpl implements LightSwitch {
 	}
 
 	@Override
-	public Integer getNumberFlag(String key, LSUser LSUser, Integer defaultValue) throws FlagRuntimeException {
+	public Integer getNumberFlag(String key, LSUser LSUser, Integer defaultValue) throws LSFlagRuntimeException {
 		try {
 			return getFlag(key, LSUser, defaultValue);
 		} catch (ClassCastException e) {
@@ -209,7 +208,7 @@ public class LightSwitchImpl implements LightSwitch {
 	}
 
 	@Override
-	public String getStringFlag(String key, LSUser LSUser, String defaultValue) throws FlagRuntimeException {
+	public String getStringFlag(String key, LSUser LSUser, String defaultValue) throws LSFlagRuntimeException {
 		try {
 			return getFlag(key, LSUser, defaultValue);
 		} catch (ClassCastException e) {
