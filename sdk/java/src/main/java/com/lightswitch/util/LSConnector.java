@@ -28,26 +28,25 @@ public class LSConnector {
 
 	public HttpURLConnection setup(String endpoint, String method, boolean isSSE) throws
 		LSServerException {
-		return getConnection(hostUrl, endpoint, method, 0, isSSE);
-	}
-
-	private HttpURLConnection getConnection(String serverUrl, String endPoint, String httpMethod, int connectTime,
-		boolean isSSE) throws
-		LSServerException {
 		try {
-			URL url = new URL(serverUrl + API_PATH + endPoint);
-			HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-			conn.setDoOutput(true);
-			conn.setRequestMethod(httpMethod);
-			conn.setRequestProperty("Content-Type", "application/json");
-			conn.setReadTimeout(connectTime);
-			if (isSSE) {
-				conn.setRequestProperty("Accept", "text/event-stream");
-			}
-			return conn;
+			URL url = new URL(hostUrl + API_PATH + endpoint);
+			return getConnection(url, method, 0, isSSE);
 		} catch (IOException e) {
 			throw new LSServerException();
 		}
+	}
+
+	private HttpURLConnection getConnection(URL url, String httpMethod, int connectTime,
+		boolean isSSE) throws IOException {
+		HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+		conn.setDoOutput(true);
+		conn.setRequestMethod(httpMethod);
+		conn.setRequestProperty("Content-Type", "application/json");
+		conn.setReadTimeout(connectTime);
+		if (isSSE) {
+			conn.setRequestProperty("Accept", "text/event-stream");
+		}
+		return conn;
 	}
 
 	public int sendData(HttpURLConnection connection, Object body) throws
@@ -71,7 +70,7 @@ public class LSConnector {
 		return response.getData();
 	}
 
-	private  <T> T handleResponse(HttpURLConnection connection, Type responseType) throws LSServerException {
+	private <T> T handleResponse(HttpURLConnection connection, Type responseType) throws LSServerException {
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), UTF_8))) {
 			String response = parseResponse(reader);
 			return new Gson().fromJson(response, responseType);
