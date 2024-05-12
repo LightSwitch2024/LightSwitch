@@ -24,7 +24,7 @@ public class LightSwitchImpl implements LightSwitch, SseCallback {
 
 	private Thread thread;
 	private String userKey;
-	private LSConnector connector;
+	private static LSConnector connector;
 
 	private LightSwitchImpl() {
 	}
@@ -33,7 +33,8 @@ public class LightSwitchImpl implements LightSwitch, SseCallback {
 		private static final LightSwitchImpl INSTANCE = new LightSwitchImpl();
 	}
 
-	protected static LightSwitchImpl getInstance() {
+	protected static LightSwitchImpl getInstance(LSConnector connector) {
+		LightSwitchImpl.connector = connector;
 		return LightSwitchHolder.INSTANCE;
 	}
 
@@ -43,7 +44,7 @@ public class LightSwitchImpl implements LightSwitch, SseCallback {
 			return;
 		}
 		destroy();
-		connector = new LSConnector(serverUrl);
+		connector.setHostUrl(serverUrl);
 
 		HttpURLConnection initConn = connector.setup("sdk/init", "POST", false);
 		connector.sendData(initConn, new Config(sdkKey));
