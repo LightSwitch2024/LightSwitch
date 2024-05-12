@@ -1,6 +1,6 @@
 package com.lightswitch.domain;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.lang.reflect.Field;
@@ -39,7 +39,7 @@ class FlagsTest {
 		flagResponses.add(mockFlagResponse);
 		Flags.addAllFlags(flagResponses);
 
-		assertTrue(Flags.getFlag("Flag").isPresent());
+		assertThat(Flags.getFlag("Flag").isPresent()).isTrue();
 	}
 
 	@Test
@@ -47,7 +47,7 @@ class FlagsTest {
 		Flag flag = getFlag();
 		Flags.addFlag(flag);
 
-		assertEquals(flag, Flags.getFlag(flag.getTitle()).orElse(null));
+		assertThat(Flags.getFlag(flag.getTitle()).orElse(null)).isEqualTo(flag);
 	}
 
 	@Test
@@ -56,7 +56,8 @@ class FlagsTest {
 		Flags.addFlag(flag);
 		Flag flag2 = getFlag2();
 		Flags.addFlag(flag2);
-		assertNotEquals(flag, Flags.getFlag(flag2.getTitle()).orElse(null));
+
+		assertThat(Flags.getFlag(flag2.getTitle()).orElse(null)).isNotEqualTo(flag);
 	}
 
 	@Test
@@ -65,7 +66,7 @@ class FlagsTest {
 		Flags.addFlag(flag);
 		Flags.deleteFlag(flag.getTitle());
 
-		assertFalse(Flags.getFlag(flag.getTitle()).isPresent());
+		assertThat(Flags.getFlag(flag.getTitle()).isPresent()).isFalse();
 	}
 
 	@Test
@@ -73,7 +74,7 @@ class FlagsTest {
 		Flags.clear();
 		Flags.deleteFlag("없겠지");
 
-		assertFalse(Flags.getFlag("없겠지").isPresent());
+		assertThat(Flags.getFlag("없겠지").isPresent()).isFalse();
 	}
 
 	@Test
@@ -82,7 +83,7 @@ class FlagsTest {
 		Flags.addFlag(flag);
 		Flags.clear();
 
-		assertTrue(Flags.getFlag(flag.getTitle()).isEmpty());
+		assertThat(Flags.getFlag(flag.getTitle()).isEmpty()).isTrue();
 	}
 
 	@Test
@@ -91,19 +92,21 @@ class FlagsTest {
 		Flags.addFlag(getFlag());
 		Optional<Flag> flag = Flags.getFlag("Flag");
 
-		assertTrue(flag.isPresent());
+		assertThat(flag.isPresent()).isTrue();
+
 		Flags.clear();
 		Optional<Flag> flag2 = Flags.getFlag("Flag");
-		assertTrue(flag2.isEmpty());
+		assertThat(flag2).isEmpty();
 	}
 
 	@Test
 	void Flags_getFlag_예외_테스트() {
 		Flags.clear();
 		Optional<Flag> flag = Flags.getFlag("Flag2");
-		assertThrows(NoSuchElementException.class, () -> {
+
+		assertThatThrownBy(() -> {
 			Flag flag1 = flag.get();
-		});
+		}).isInstanceOf(NoSuchElementException.class);
 	}
 
 	@Test
@@ -123,7 +126,7 @@ class FlagsTest {
 
 		//then
 		Flag flag = Flags.getFlag("Flag").orElseThrow();
-		assertFalse(flag.isActive());
+		assertThat(flag.isActive()).isFalse();
 	}
 
 	@Test
@@ -145,16 +148,16 @@ class FlagsTest {
 
 		//when
 		calValue.invoke(Flags.class, create1);
-		assertNotNull(Flags.getFlag("Flag"));
+		assertThat(Flags.getFlag("Flag")).isNotNull();
 
 		calValue.invoke(Flags.class, update1);
-		assertNotNull(Flags.getFlag("Flag"));
+		assertThat(Flags.getFlag("Flag")).isNotNull();
 
 		calValue.invoke(Flags.class, switch1);
-		assertFalse(Flags.getFlag("Flag").get().isActive());
+		assertThat(Flags.getFlag("Flag").get().isActive()).isFalse();
 
 		calValue.invoke(Flags.class, delete1);
-		assertTrue(Flags.getFlag("Flag").isEmpty());
+		assertThat(Flags.getFlag("Flag")).isEmpty();
 	}
 
 	private SseResponse getSseResponse(SseType sseType) throws NoSuchFieldException, IllegalAccessException {
