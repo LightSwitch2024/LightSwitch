@@ -39,14 +39,16 @@ class LSConnectorTest {
 
 	@Test
 	void testSetup() {
-		LSConnector connector = new LSConnector("http://test.com");
+		LSConnector connector = LSConnector.getInstance();
+		connector.setHostUrl("http://test.com");
 		HttpURLConnection connection = connector.setup("testEndpoint", "GET", false);
 		assertThat(connection).isNotNull();
 	}
 
 	@Test
 	void getConnection_설정_테스트() throws Exception {
-		LSConnector connector = new LSConnector("http://test.com");
+		LSConnector connector = LSConnector.getInstance();
+		connector.setHostUrl("http://test.com");
 
 		when(mockURL.openConnection()).thenReturn(mockConnection);
 		Method getConnection = LSConnector.class.getDeclaredMethod("getConnection", URL.class, String.class, int.class,
@@ -65,7 +67,8 @@ class LSConnectorTest {
 
 	@Test
 	void getConnection_SSE설정_테스트() throws Exception {
-		LSConnector connector = new LSConnector("http://test.com");
+		LSConnector connector = LSConnector.getInstance();
+		connector.setHostUrl("http://test.com");
 
 		when(mockURL.openConnection()).thenReturn(mockConnection);
 		Method getConnection = LSConnector.class.getDeclaredMethod("getConnection", URL.class, String.class, int.class,
@@ -91,7 +94,8 @@ class LSConnectorTest {
 		when(mockConnection.getOutputStream()).thenReturn(mockOutput);
 
 		//when
-		LSConnector connector = new LSConnector("http://test.com");
+		LSConnector connector = LSConnector.getInstance();
+		connector.setHostUrl("http://test.com");
 		connector.sendData(mockConnection, new Object());
 
 		//then
@@ -102,7 +106,8 @@ class LSConnectorTest {
 	@Test
 	void sendData_전송실패_테스트() throws Exception {
 		//given
-		LSConnector connector = new LSConnector("http://test.com");
+		LSConnector connector = LSConnector.getInstance();
+		connector.setHostUrl("http://test.com");
 		when(mockConnection.getOutputStream()).thenReturn(mockOutputStream);
 
 		//when
@@ -117,7 +122,8 @@ class LSConnectorTest {
 
 	@Test
 	void getResponse_테스트() throws Exception {
-		LSConnector connector = new LSConnector("http://test.com");
+		LSConnector connector = LSConnector.getInstance();
+		connector.setHostUrl("http://test.com");
 
 		String jsonResponse = "{\"code\":200, \"message\":\"OK\", \"data\":\"Success\"}";
 		InputStream stream = new ByteArrayInputStream(jsonResponse.getBytes());
@@ -134,7 +140,8 @@ class LSConnectorTest {
 	void parseResponse_data_파싱_테스트() throws Exception {
 		String input = "event:sse\ndata:some data\n";
 		BufferedReader reader = new BufferedReader(new StringReader(input));
-		LSConnector connector = new LSConnector("http://test.com");
+		LSConnector connector = LSConnector.getInstance();
+		connector.setHostUrl("http://test.com");
 
 		Method parseResponse = LSConnector.class.getDeclaredMethod("parseResponse", BufferedReader.class);
 		parseResponse.setAccessible(true);
@@ -147,7 +154,8 @@ class LSConnectorTest {
 	void parseResponse_event_disconnect_파싱_테스트() throws Exception {
 		String input = "event:disconnect\ndata:some data\n";
 		BufferedReader reader = new BufferedReader(new StringReader(input));
-		LSConnector connector = new LSConnector("http://test.com");
+		LSConnector connector = LSConnector.getInstance();
+		connector.setHostUrl("http://test.com");
 
 		Method parseResponse = LSConnector.class.getDeclaredMethod("parseResponse", BufferedReader.class);
 		parseResponse.setAccessible(true);
@@ -160,7 +168,8 @@ class LSConnectorTest {
 	void parseResponse_SSE_connected_파싱_테스트() throws Exception {
 		String input = "event:sse\ndata:SSE connected\n";
 		BufferedReader reader = new BufferedReader(new StringReader(input));
-		LSConnector connector = new LSConnector("http://test.com");
+		LSConnector connector = LSConnector.getInstance();
+		connector.setHostUrl("http://test.com");
 
 		Method parseResponse = LSConnector.class.getDeclaredMethod("parseResponse", BufferedReader.class);
 		parseResponse.setAccessible(true);
@@ -171,7 +180,8 @@ class LSConnectorTest {
 
 	@Test
 	void handleResponse_테스트() throws Exception {
-		LSConnector connector = new LSConnector("http://test.com");
+		LSConnector connector = LSConnector.getInstance();
+		connector.setHostUrl("http://test.com");
 		when(mockConnection.getInputStream()).thenReturn(
 			new ByteArrayInputStream("{\"code\":\"123\",\"message\":\"mess\",\"data\":\"value\"}".getBytes()));
 
@@ -195,7 +205,8 @@ class LSConnectorTest {
 		InputStream stream = new ByteArrayInputStream(sseData.getBytes(StandardCharsets.UTF_8));
 		when(mockConnection.getInputStream()).thenReturn(stream);
 
-		LSConnector connector = new LSConnector("http://test.com");
+		LSConnector connector = LSConnector.getInstance();
+		connector.setHostUrl("http://test.com");
 		Runnable sseRunnable = connector.createSseRunnable(mockConnection, mockCallback);
 
 		Thread thread = new Thread(sseRunnable);
@@ -217,7 +228,8 @@ class LSConnectorTest {
 		InputStream stream = new ByteArrayInputStream(sseData.getBytes(StandardCharsets.UTF_8));
 		when(mockConnection.getInputStream()).thenReturn(stream);
 
-		LSConnector connector = new LSConnector("http://test.com");
+		LSConnector connector = LSConnector.getInstance();
+		connector.setHostUrl("http://test.com");
 		Runnable sseRunnable = connector.createSseRunnable(mockConnection, mockCallback);
 
 		Thread thread = new Thread(sseRunnable);

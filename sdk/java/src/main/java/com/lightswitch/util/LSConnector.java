@@ -22,7 +22,19 @@ public class LSConnector {
 
 	private String hostUrl;
 
-	public LSConnector(String hostUrl) {
+
+	private static class LightSwitchHolder {
+		private static final LSConnector INSTANCE = new LSConnector();
+	}
+
+	public static LSConnector getInstance() {
+		return LSConnector.LightSwitchHolder.INSTANCE;
+	}
+
+	private LSConnector() {
+	}
+
+	public void setHostUrl(String hostUrl) {
 		this.hostUrl = hostUrl;
 	}
 
@@ -115,4 +127,6 @@ public class LSConnector {
 			}
 		};
 	}
+
+
 }

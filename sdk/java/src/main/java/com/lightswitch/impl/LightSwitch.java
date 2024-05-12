@@ -1,6 +1,7 @@
 package com.lightswitch.impl;
 
 import com.lightswitch.domain.LSUser;
+import com.lightswitch.util.LSConnector;
 
 public interface LightSwitch {
 
@@ -17,6 +18,6 @@ public interface LightSwitch {
 	String getStringFlag(String key, LSUser LSUser, String defaultValue);
 
 	static LightSwitch getInstance() {
-		return LightSwitchImpl.getInstance();
+		return LightSwitchImpl.getInstance(LSConnector.getInstance());
 	}
 }
