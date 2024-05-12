@@ -1,7 +1,6 @@
 package com.lightswitch.domain;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,7 @@ class VariationTest {
 
 	@Test
 	void getPortion() {
-		assertNotNull(variation);
+		assertThat(variation).isNotNull();
 		assertThat(variation.getPortion()).isLessThanOrEqualTo (100);
 		assertThat(variation.getPortion()).isGreaterThanOrEqualTo(0);
 		assertThat(variation.getPortion()).isEqualTo(portion);
@@ -34,7 +33,7 @@ class VariationTest {
 
 	@Test
 	void getValue() {
-		assertNotNull(variation);
+		assertThat(variation).isNotNull();
 		assertThat(variation.getValue()).isEqualTo(value);
 	}
 }

@@ -1,7 +1,6 @@
 package com.lightswitch.domain;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -28,8 +27,8 @@ public class FlagTest {
 		Boolean booleanValue = noKeywordsFlag.getValue(getNoPropertyUser());
 		Boolean booleanValue2 = noKeywordsFlag.getValue(getPropertyUser());
 
-		assertFalse(booleanValue);
-		assertFalse(booleanValue2);
+		assertThat(booleanValue).isFalse();
+		assertThat(booleanValue2).isFalse();
 	}
 
 	@Test
@@ -40,9 +39,9 @@ public class FlagTest {
 		Boolean booleanValue2 = keywordsFlag.getValue(getPropertyUser());
 		Boolean booleanValue3 = keywordsFlag.getValue(getDifPropertyUser());
 
-		assertFalse(booleanValue);
-		assertTrue(booleanValue2);
-		assertFalse(booleanValue3);
+		assertThat(booleanValue).isFalse();
+		assertThat(booleanValue2).isTrue();
+		assertThat(booleanValue3).isFalse();
 	}
 
 	@Test
@@ -75,11 +74,11 @@ public class FlagTest {
 		Flag numberFlag = getFlagByType(FlagType.INTEGER, "1");
 		Flag stringFlag = getFlagByType(FlagType.STRING, "string");
 
-		Boolean booleanValue = booleanFlag.getValue(getNoPropertyUser());
-		Integer numberValue = numberFlag.getValue(getNoPropertyUser());
-		String stringValue = stringFlag.getValue(getNoPropertyUser());
-
-		assertDoesNotThrow(() -> new Exception());
+		assertThatCode(() -> {
+			Boolean booleanValue = booleanFlag.getValue(getNoPropertyUser());
+			Integer numberValue = numberFlag.getValue(getNoPropertyUser());
+			String stringValue = stringFlag.getValue(getNoPropertyUser());
+		}).doesNotThrowAnyException();
 	}
 
 	@Test
@@ -88,24 +87,26 @@ public class FlagTest {
 		Flag numberFlag = getFlagByType(FlagType.INTEGER, "1");
 		Flag stringFlag = getFlagByType(FlagType.STRING, "string");
 
-		assertThrows(ClassCastException.class, () -> {
+		assertThatThrownBy(() -> {
 			Integer value = booleanFlag.getValue(getNoPropertyUser());
-		});
-		assertThrows(ClassCastException.class, () -> {
+		}).isInstanceOf(ClassCastException.class);
+		assertThatThrownBy(() -> {
 			String value2 = booleanFlag.getValue(getNoPropertyUser());
-		});
-		assertThrows(ClassCastException.class, () -> {
+		}).isInstanceOf(ClassCastException.class);
+		assertThatThrownBy(() -> {
 			Boolean value = numberFlag.getValue(getNoPropertyUser());
-		});
-		assertThrows(ClassCastException.class, () -> {
+		}).isInstanceOf(ClassCastException.class);
+		assertThatThrownBy(() -> {
 			String value2 = numberFlag.getValue(getNoPropertyUser());
-		});
-		assertThrows(ClassCastException.class, () -> {
+
+		}).isInstanceOf(ClassCastException.class);
+		assertThatThrownBy(() -> {
 			Boolean value = stringFlag.getValue(getNoPropertyUser());
-		});
-		assertThrows(ClassCastException.class, () -> {
+
+		}).isInstanceOf(ClassCastException.class);
+		assertThatThrownBy(() -> {
 			Integer value2 = stringFlag.getValue(getNoPropertyUser());
-		});
+		}).isInstanceOf(ClassCastException.class);
 	}
 
 	@Test
@@ -141,9 +142,9 @@ public class FlagTest {
 		Integer integerResult = (Integer)calValue.invoke(integerFlag, "1");
 
 		//then
-		assertNotNull(booleanResult);
-		assertNotNull(stringResult);
-		assertNotNull(integerResult);
+		assertThat(booleanResult).isNotNull();
+		assertThat(stringResult).isNotNull();
+		assertThat(integerResult).isNotNull();
 		assertThat(booleanResult).isEqualTo(true);
 		assertThat(stringResult).isEqualTo("string");
 		assertThat(integerResult).isEqualTo(1);
@@ -160,24 +161,24 @@ public class FlagTest {
 		Method getValueWithType = Flag.class.getDeclaredMethod("getValueWithType", String.class);
 		getValueWithType.setAccessible(true);
 
-		assertThrows(ClassCastException.class, () -> {
+		assertThatThrownBy(() -> {
 			Integer value = (Integer)getValueWithType.invoke(booleanFlag, "true");
-		});
-		assertThrows(ClassCastException.class, () -> {
+		}).isInstanceOf(ClassCastException.class);
+		assertThatThrownBy(() -> {
 			String value2 = (String)getValueWithType.invoke(booleanFlag, "true");
-		});
-		assertThrows(ClassCastException.class, () -> {
+		}).isInstanceOf(ClassCastException.class);
+		assertThatThrownBy(() -> {
 			Boolean value = (Boolean)getValueWithType.invoke(stringFlag, "string");
-		});
-		assertThrows(ClassCastException.class, () -> {
+		}).isInstanceOf(ClassCastException.class);
+		assertThatThrownBy(() -> {
 			Integer value2 = (Integer)getValueWithType.invoke(stringFlag, "string");
-		});
-		assertThrows(ClassCastException.class, () -> {
+		}).isInstanceOf(ClassCastException.class);
+		assertThatThrownBy(() -> {
 			Boolean value = (Boolean)getValueWithType.invoke(integerFlag, "1");
-		});
-		assertThrows(ClassCastException.class, () -> {
+		}).isInstanceOf(ClassCastException.class);
+		assertThatThrownBy(() -> {
 			String value2 = (String)getValueWithType.invoke(integerFlag, "1");
-		});
+		}).isInstanceOf(ClassCastException.class);
 	}
 
 	private Flag getNoKeywordsFlag() {
