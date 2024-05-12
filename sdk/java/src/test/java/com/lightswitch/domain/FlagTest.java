@@ -204,19 +204,19 @@ public class FlagTest {
 	}
 
 	private LSUser getNoPropertyUser() {
-		return new LSUser.Builder(1)
+		return new LSUser.Builder("1")
 			.build();
 	}
 
 	private LSUser getPropertyUser() {
-		return new LSUser.Builder(1)
+		return new LSUser.Builder("1")
 			.property("이름", "이승")
 			.property("직급", "팀원")
 			.build();
 	}
 
 	private LSUser getDifPropertyUser() {
-		return new LSUser.Builder(1)
+		return new LSUser.Builder("1")
 			.property("이름", "팀원")
 			.property("직급", "이승")
 			.build();

@@ -3,7 +3,7 @@ package com.lightswitch.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.lightswitch.exception.FlagValueCastingException;
+import com.lightswitch.exception.LSTypeCastException;
 import com.lightswitch.util.HashUtil;
 
 public class Flag {
@@ -47,7 +47,7 @@ public class Flag {
 		return defaultValue;
 	}
 
-	public <T> T getValue(LSUser LSUser) throws FlagValueCastingException {
+	public <T> T getValue(LSUser LSUser) throws LSTypeCastException {
 		String value = isActive() ? calValue(LSUser) : defaultValue;
 		return getValueWithType(value);
 	}
@@ -64,7 +64,7 @@ public class Flag {
 		return calValue(LSUser.getUserId());
 	}
 
-	private <T> T getValueWithType(String value) throws FlagValueCastingException {
+	private <T> T getValueWithType(String value) throws LSTypeCastException {
 		if (type.equals(FlagType.BOOLEAN)) {
 			return (T)Boolean.valueOf(value);
 		} else if (type.equals(FlagType.STRING)) {
@@ -75,8 +75,8 @@ public class Flag {
 		return null;
 	}
 
-	private String calValue(int userId) {
-		double percentage = HashUtil.getHashedPercentage(List.of(String.valueOf(userId), title), 1);
+	private String calValue(String userId) {
+		double percentage = HashUtil.getHashedPercentage(List.of(userId, title), 1);
 
 		for (Variation variation : variations) {
 			percentage -= variation.getPortion();
