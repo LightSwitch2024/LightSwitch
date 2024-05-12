@@ -1,6 +1,5 @@
 export type LSMessageData = Flag | Title | Switch | string;
 export type LSFlagType = 'BOOLEAN' | 'STRING' | 'INTEGER';
-export type LSDefaultValueType = boolean | string | number;
 export type ErrorCallback = (error: Error) => void;
 export type flagChangedCallback = () => void;
 export enum LogLevel {
@@ -74,7 +73,7 @@ export interface Flag {
   description: string;
   type: LSFlagType;
   keywords: Keyword[];
-  defaultValue: LSDefaultValueType;
+  defaultValue: string;
   defaultValuePortion?: number;
   defaultValueDescription?: string;
   variations?: Variation[];
@@ -86,7 +85,7 @@ export interface Flag {
 }
 
 export interface Variation {
-  value: LSDefaultValueType;
+  value: string;
   portion: number;
   description: string;
 }
