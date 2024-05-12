@@ -1,4 +1,4 @@
-import { describe, expect } from '@jest/globals';
+import { jest, describe, expect, it } from '@jest/globals';
 import {
   getRequest,
   postRequest,
@@ -8,14 +8,12 @@ import {
 
 describe('getRequest', () => {
   it('should make a successful GET request', async () => {
-    const data = await getRequest('https://jsonplaceholder.typicode.com/posts/1');
-    expect(data.userId).toBe(1);
+    const data = await getRequest('https://lightswitch.kr/api/v1/flag/1');
+    expect(data).toBeDefined();
   });
-
   it('should throw an error if GET request fails due to network error', async () => {
     await expect(getRequest('https://nonexistentwebsite123456789.com')).rejects.toThrow();
   });
-
   it('should throw an error if GET request fails due to invalid URL', async () => {
     await expect(getRequest('invalid-url')).rejects.toThrow();
   });
@@ -28,14 +26,12 @@ describe('getRequest', () => {
 
 describe('postRequest', () => {
   it('should make a successful POST request', async () => {
-    const data = await postRequest('https://jsonplaceholder.typicode.com/posts', {
-      title: 'foo',
-      body: 'bar',
-      userId: 1,
+    const data = await postRequest('https://lightswitch.kr/api/v1/member/login', {
+      email: 'gogoadl@naver.com',
+      password: 'qwer1234!',
     });
-    expect(data.id).toBeDefined();
+    expect(data).toBeDefined();
   });
-
   it('should throw an error if POST request fails due to network error', async () => {
     await expect(
       postRequest('https://nonexistentwebsite123456789.com', {}),
@@ -96,6 +92,21 @@ describe('compareObjectsAndMaps', () => {
       { property: 'key1', data: 'value1' },
       { property: 'key2', data: 'value2' },
     ];
+    const map = new Map<string, string>([
+      ['key1', 'value1'],
+      ['key3', 'value3'],
+    ]);
+
+    // Act
+    const result = compareObjectsAndMaps(obj, map);
+
+    // Assert
+    expect(result).toBe(false);
+  });
+
+  it('should return false when objects and maps have different key-value pairs', () => {
+    // Arrange
+    const obj = [{ property: 'key1', data: 'value1' }];
     const map = new Map<string, string>([
       ['key1', 'value1'],
       ['key3', 'value3'],

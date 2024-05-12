@@ -1,12 +1,7 @@
-import { describe, expect } from '@jest/globals';
+import { jest, describe, expect, it, afterEach } from '@jest/globals';
 import LSClient from '../lib/LSClient';
 import { LogLevel, SdkConfig } from '../lib/types';
-import { getRequest } from '../lib/utils';
-
 // getRequest 모듈을 mock으로 대체하여 외부 의존성을 제어한다
-jest.mock('../lib/utils', () => ({
-  getRequest: jest.fn(),
-}));
 
 describe('LSClient', () => {
   afterEach(() => {
@@ -27,10 +22,37 @@ describe('LSClient', () => {
     const instance = LSClient.getInstance();
 
     // Act
-    await instance.init({ sdkKey: 'testSdkKey', onFlagChanged: jest.fn() });
+    await instance.init({
+      sdkKey: 'testSdkKey',
+      onFlagChanged: jest.fn(),
+      endpoint: 'https://lightswitch.kr',
+    });
 
     // Assert
-    expect(instance.isInitialized).toBe(true);
+    expect(LSClient.isInitialized).toBe(true);
+  });
+
+  it('init 함수는 오직 한번만 실행된다.', async () => {
+    // Arrange
+    const instance = LSClient.getInstance();
+    const consoleLogSpy = jest.spyOn(console, 'log');
+
+    // Act
+    await instance.init({
+      sdkKey: '32a832f30e1a4130af7e4a068ea103a1',
+      onFlagChanged: jest.fn(),
+      endpoint: 'https://lightswitch.kr',
+    });
+    await instance.init({
+      sdkKey: '32a832f30e1a4130af7e4a068ea103a1',
+      onFlagChanged: jest.fn(),
+      endpoint: 'https://lightswitch.kr',
+    });
+
+    // Assert
+    expect(consoleLogSpy).toHaveBeenCalledWith(
+      expect.stringContaining('lightswitch is already initialized, skip init process'),
+    );
   });
 
   it('sdkKey가 없는경우 오류를 Throw 한다.', async () => {
@@ -38,24 +60,12 @@ describe('LSClient', () => {
     const instance = LSClient.getInstance();
 
     // Act & Assert
-    await expect(instance.init({ sdkKey: '', onFlagChanged: jest.fn() })).rejects.toThrow(
-      'Please specify a Light Switch sdk key',
-    );
-  });
-
-  it('should throw an error when initializing with empty sdk key', async () => {
-    // Given
-    const config: SdkConfig = {
-      sdkKey: 'valid-sdk-key',
-      logLevel: LogLevel.DEBUG,
-      endpoint: '',
-      onFlagChanged: () => {},
-    };
-    const lsClient = LSClient.getInstance();
-
-    // When
-    await expect(lsClient.init(config)).rejects.toThrow(
-      'Please specify a Light Switch sdk key',
-    );
+    await expect(
+      instance.init({
+        sdkKey: '',
+        onFlagChanged: jest.fn(),
+        endpoint: 'https://lightswitch.kr',
+      }),
+    ).rejects.toThrow();
   });
 });

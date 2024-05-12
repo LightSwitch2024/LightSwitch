@@ -10,6 +10,8 @@ const StartScreen: React.FC = () => {
   const navigate = useNavigate();
   const lightswitch = LSClient.getInstance();
 
+  const [flag, setFlag] = useState<boolean | null>(null);
+
   useEffect(() => {
     const user = new LSUser("123", {
       name: "박현우",
@@ -18,28 +20,28 @@ const StartScreen: React.FC = () => {
     console.log("qweqweqwewqewqe");
     lightswitch
       .init({
-        sdkKey: "6e60b0602ae54faa8912cd8245acae7a",
+        sdkKey: "32a832f30e1a4130af7e4a068ea103a1",
         onFlagChanged: () => {},
+        endpoint: "https://lightswitch.kr",
         // onError: () => {},
       })
       .then(() => {
-        setFlag(lightswitch.getIntegerFlag("JS-Test", user, 100));
+        setFlag(lightswitch.getBooleanFlag("qwer", user, false));
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
-  const [flag, setFlag] = useState<number | null>(null);
 
   return (
     <T.Container>
       <T.Centering>
-        {flag == 100 || flag == null ? (
+        {flag == false || flag == null ? (
           <Text as="h1" variant="outlined" size="xl">
             POKEGAMES
           </Text>
         ) : (
-          flag == 200 && (
+          flag == true && (
             <Text as="h1" variant="outlined" size="xl">
               POKEGAMESSSSSSSSSSSSSSSSSSSS!!!!
             </Text>
