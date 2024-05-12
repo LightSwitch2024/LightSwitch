@@ -24,20 +24,14 @@ import {
 import ReconnectingEventSource from 'reconnecting-eventsource';
 import LSUser from './LSUser';
 import { LSFlagNotFoundError, LSServerError, LSTypeCastError } from './error';
-const IS_DEV = true;
 
 const logger = LSLogger(LogLevel.DEBUG);
-
-const SERVER_URL = IS_DEV ? 'http://localhost:8000' : 'https://lightswitch.kr';
 
 const FLAG_NOT_FOUND = 1000;
 const VARIATION_NOT_FOUND = 1001;
 const MEMBER_NOT_FOUND = 2000;
 const SDK_KEY_ALREADY_EXISTS = 3000;
 const SDK_KEY_NOT_FOUND = 3001;
-
-const INIT_REQUEST_PATH = SERVER_URL + '/api/v1/sdk/init';
-const SSE_CONNECT_PATH = SERVER_URL + '/api/v1/sse/subscribe';
 
 class LSClient implements ILSClient {
   private static instance: LSClient | null = null;
@@ -60,12 +54,17 @@ class LSClient implements ILSClient {
   private onFlagChanged: null | flagChangedCallback = null;
   private userKey = '';
   private reconnectTime = 3000;
+
+  SERVER_URL = 'http://localhost:8000';
+  INIT_REQUEST_PATH = this.SERVER_URL + '/api/v1/sdk/init';
+  SSE_CONNECT_PATH = this.SERVER_URL + '/api/v1/sse/subscribe';
+
   public async init(config: SdkConfig): Promise<void> {
     if (LSClient.instance != null && LSClient.isInitialized) {
       logger.info('lightswitch is already initialized, skip init process');
       return;
     }
-    const { sdkKey, onError, onFlagChanged, reconnectTime } = config;
+    const { sdkKey, onError, onFlagChanged, reconnectTime, endpoint } = config;
 
     this.sdkKey = sdkKey;
 
@@ -75,6 +74,12 @@ class LSClient implements ILSClient {
 
     if (onError) {
       this.onError = onError;
+    }
+
+    if (endpoint) {
+      this.SERVER_URL = endpoint;
+      this.INIT_REQUEST_PATH = this.SERVER_URL + '/api/v1/sdk/init';
+      this.SSE_CONNECT_PATH = this.SERVER_URL + '/api/v1/sse/subscribe';
     }
 
     this.onFlagChanged = onFlagChanged;
@@ -108,7 +113,16 @@ class LSClient implements ILSClient {
     }
     return flag.defaultValue as T;
   }
-
+  private getTypedValue<T>(flag: Flag, value: string) {
+    if (flag.type == 'STRING') {
+      return value as T;
+    } else if (flag.type == 'BOOLEAN') {
+      if (value == 'TRUE') return true as T;
+      else return false as T;
+    } else if (flag.type == 'INTEGER') {
+      return parseInt(value) as T;
+    }
+  }
   public getFlag<T>(name: string, LSUser: ILSUser, defaultVal: T): T {
     const flag = this.flags.get(name);
     if (!flag) {
@@ -116,36 +130,34 @@ class LSClient implements ILSClient {
       return defaultVal;
     }
 
-    if (flag?.active) {
+    if (!flag.active) {
+      logger.info(
+        `id : ${flag?.flagId} title : ${flag?.title} 플래그가 활성화 되어있지 않습니다. 기본값을 이용합니다.`,
+      );
+      return this.getTypedValue(flag, flag.defaultValue) as T;
+    } else {
       if (flag.keywords.length > 0 && LSUser.properties?.size > 0) {
-        logger.info('flag contains keyword and user properties, evaluate keyword value');
+        logger.info(
+          `id : ${flag?.flagId} title : ${flag.title} 플래그가 활성화 되어 있습니다. 키워드를 확인합니다.`,
+        );
         for (let i = 0; i < flag.keywords.length; i++) {
           const keyword = flag.keywords[i];
           const isEqual = compareObjectsAndMaps(keyword.properties, LSUser.properties);
-          console.log(isEqual);
           if (isEqual) {
-            if (flag.type == 'STRING') {
-              return keyword.value as T;
-            } else if (flag.type == 'BOOLEAN') {
-              if (keyword.value == 'TRUE') return true as T;
-              else return false as T;
-            } else if (flag.type == 'INTEGER') {
-              return parseInt(keyword.value) as T;
-            }
+            return this.getTypedValue(flag, keyword.value) as T;
+          } else {
+            logger.info(`키워드 대상이 아닙니다. portion을 계산합니다.`);
           }
         }
       }
       logger.info(
-        `id : ${flag?.flagId} title : ${flag.title} is activated, start evaluate portion`,
+        `id : ${flag?.flagId} title : ${flag.title} 플래그가 활성화 되어 있습니다. portion을 계산합니다.`,
       );
-      return this.getVariationValue<T>(flag, LSUser);
-    } else {
-      logger.info(
-        `id : ${flag?.flagId} title : ${flag?.title} is not activated, return defaultValue`,
-      );
-      return flag?.defaultValue as T;
+      const evaluatedValue = this.getVariationValue<T>(flag, LSUser);
+      return this.getTypedValue(flag, evaluatedValue) as T;
     }
   }
+
   private handleError(error: Error) {
     if (this.onError) {
       this.onError(error);
@@ -191,7 +203,7 @@ class LSClient implements ILSClient {
     userKey: string,
     reconnectTime: number,
   ): ReconnectingEventSource {
-    return new ReconnectingEventSource(SSE_CONNECT_PATH + '/' + userKey, {
+    return new ReconnectingEventSource(this.SSE_CONNECT_PATH + '/' + userKey, {
       // indicating if CORS should be set to include credentials, default `false`
       withCredentials: true,
       // the maximum time to wait before attempting to reconnect in ms, default `3000`
@@ -203,14 +215,14 @@ class LSClient implements ILSClient {
   }
 
   private async getInitData(): Promise<void> {
-    const response: ApiResponse<Flag[]> = await postRequest(INIT_REQUEST_PATH, {
+    const response: ApiResponse<Flag[]> = await postRequest(this.INIT_REQUEST_PATH, {
       sdkKey: this.sdkKey,
     });
-    if (response.code == SDK_KEY_NOT_FOUND) {
+    if (response?.code == SDK_KEY_NOT_FOUND) {
       this.handleError(new LSServerError(response.message));
     }
 
-    const newFlags: Flag[] = response.data;
+    const newFlags: Flag[] = response?.data;
     newFlags.forEach((flag) => {
       this.flags.set(flag.title, flag);
     });
@@ -222,9 +234,12 @@ class LSClient implements ILSClient {
   private async getUserKey(): Promise<void> {
     try {
       logger.info(this.sdkKey);
-      const response: ApiResponse<userKey> = await postRequest(`${SSE_CONNECT_PATH}`, {
-        sdkKey: this.sdkKey,
-      });
+      const response: ApiResponse<userKey> = await postRequest(
+        `${this.SSE_CONNECT_PATH}`,
+        {
+          sdkKey: this.sdkKey,
+        },
+      );
       this.userKey = response.data.userKey;
       // logger.info(`receive userKey data : ${JSON.stringify(response)}`);
     } catch (error) {
