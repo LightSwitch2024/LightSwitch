@@ -5,15 +5,17 @@ const logger = LSLogger(LogLevel.DEBUG);
 
 class LSUser implements ILSUser {
   userId: string = '';
-  property: null | Map<string, string> = null;
-  constructor(userId: string, property?: Map<string, string>) {
+  properties: Map<string, string> = new Map<string, string>();
+  constructor(userId: string, properties?: object) {
     if (!userId) {
       throw new Error('Please specify a userId');
     }
     this.userId = userId;
-
-    if (property) {
-      this.property = property;
+    if (properties) {
+      Object.entries(properties).forEach((entry) => {
+        const [key, value] = entry;
+        this.properties.set(key, value);
+      });
     }
   }
   public getUserId(): string {
