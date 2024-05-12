@@ -13,4 +13,8 @@ class Member(
     var telNumber: String,
     var email: String,
     var password: String,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organization_id", nullable = true)
+    var organization: Organization? = null,
 ) : BaseEntity()
