@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank
 
 data class OrgReqDto (
     @field:NotBlank
-    val memberId: Long,
+    val email: String,
     @field:NotBlank
     val orgName: String,
 )

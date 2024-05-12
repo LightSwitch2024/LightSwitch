@@ -140,7 +140,7 @@ class MemberService(
 
     // 첫 로그인 시, orgId가 null일 때, 추가로 받아 채움(이미존재하는회사:멤버로 추가, 존재하지않는회사: 신규생성 및 owner설정)
     fun fillOrg(orgReqDto: OrgReqDto): MemberResDto {
-        val orgMem = memberRepository.findByIdAndDeletedAtIsNull(orgReqDto.memberId) ?: throw BaseException(
+        val orgMem = memberRepository.findByEmailAndDeletedAtIsNull(orgReqDto.email) ?: throw BaseException(
             ResponseCode.MEMBER_NOT_FOUND
         )
 
