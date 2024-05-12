@@ -9,7 +9,5 @@ import org.springframework.stereotype.Repository
 interface MemberRepository : JpaRepository<Member, Long> {
     fun findByEmailAndDeletedAtIsNull(email: String): Member?
 
-    fun findByIdAndDeletedAtIsNull(memberId: Long): Member?
-
     fun findAllAByDeletedAtIsNull(): List<Member>
 }
