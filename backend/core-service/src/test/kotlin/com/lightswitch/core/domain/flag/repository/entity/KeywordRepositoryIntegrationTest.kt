@@ -5,39 +5,39 @@ import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.flag.repository.KeywordRepository
 import com.lightswitch.core.domain.member.entity.Member
 import com.lightswitch.core.domain.member.repository.MemberRepository
-import com.lightswitch.core.domain.member.service.MemberService
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 
-@Transactional
-@SpringBootTest
-class KeywordTest {
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ActiveProfiles("test")
+class KeywordRepositoryIntegrationTest(
+    @Autowired
+    val entityManager: TestEntityManager,
 
     @Autowired
-    private lateinit var keywordRepository: KeywordRepository
+    val keywordRepository: KeywordRepository,
 
     @Autowired
-    private lateinit var flagRepository: FlagRepository
+    val flagRepository: FlagRepository,
 
     @Autowired
-    private lateinit var memberRepository: MemberRepository
-
-    @Autowired
-    private lateinit var memberService: MemberService
+    val memberRepository: MemberRepository,
+) {
 
     var flag: Flag? = null
 
     @BeforeEach
+    @Transactional
     fun setUp() {
-        memberRepository.findAllAByDeletedAtIsNull().map {
-            memberService.deleteUser(it.memberId!!)
-        }
-
         val savedMember = memberRepository.save(
             Member(
                 lastName = "test",
@@ -60,18 +60,28 @@ class KeywordTest {
     }
 
     @Test
+    fun `keyword 테스트`() {
+        val findAll = keywordRepository.findAll()
+        findAll.map {
+            println(it.keywordId)
+        }
+    }
+
+    @Test
     fun `keyword 저장 테스트`() {
-        // given
+        // given + when
         val keyword1 = Keyword(
             flag = flag!!, description = "test", value = "test"
         )
 
         val keyword2 = Keyword(
-            flag = flag!!, description = "test2", value = "test2"
+            flag = flag!!, description = "test2", value = "test2",
         )
 
-        // when
-        val keywordList = keywordRepository.saveAll(listOf(keyword1, keyword2))
+        entityManager.persist(keyword1)
+        entityManager.persist(keyword2)
+        entityManager.flush()
+        val keywordList = keywordRepository.findAll()
 
         // then
         assertThat(keywordList).hasSize(2)
@@ -81,4 +91,21 @@ class KeywordTest {
         assertThat(keywordList.last().value).isEqualTo("test2")
     }
 
+    @Test
+    fun `keyword 삭제 테스트`() {
+        // given
+        val keyword = Keyword(
+            flag = flag!!, description = "test", value = "test"
+        )
+
+        entityManager.persist(keyword)
+        entityManager.flush()
+
+        // when
+        keywordRepository.deleteById(keyword.keywordId!!)
+        entityManager.flush()
+
+        // then
+        assertThat(keywordRepository.findAll()).isEmpty()
+    }
 }
