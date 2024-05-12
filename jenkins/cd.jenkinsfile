@@ -216,7 +216,6 @@ pipeline {
                         echo 'FE - Deploy to Nginx'
                         dir ('frontend'){
                             sh'''
-                                yarn build
                                 cp -r ./dist/. /var/www/html/.
                             '''
                         }
