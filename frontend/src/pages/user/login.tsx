@@ -40,6 +40,12 @@ const LogIn = () => {
     console.log('hello');
   }, [auth]);
 
+  useEffect(() => {
+    let vh = 0;
+    vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  }, [window.innerHeight]);
+
   const onClickLogIn = (): void => {
     logIn<MemberInfo>(
       {
