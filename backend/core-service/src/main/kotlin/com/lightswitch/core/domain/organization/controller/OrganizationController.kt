@@ -5,11 +5,7 @@ import com.lightswitch.core.common.dto.success
 import com.lightswitch.core.domain.organization.dto.req.CreateOrganizationRequestDto
 import com.lightswitch.core.domain.organization.dto.res.OrganizationResponseDto
 import com.lightswitch.core.domain.organization.service.OrganizationService
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/v1/organization")

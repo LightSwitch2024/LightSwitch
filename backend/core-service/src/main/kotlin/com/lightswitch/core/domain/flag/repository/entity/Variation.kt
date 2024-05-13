@@ -1,7 +1,6 @@
 package com.lightswitch.core.domain.flag.repository.entity
 
 import com.lightswitch.core.common.entity.BaseEntity
-import jakarta.annotation.Nullable
 import jakarta.persistence.*
 
 @Entity(name = "variation")
