@@ -393,6 +393,8 @@ class FlagService(
         variationRepository.deleteByFlagFlagId(flagId)
         keywordRepository.deleteByFlagFlagId(flagId)
 
+        flag.delete()
+
         val sdkKey =
             sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(flag.maintainer.memberId!!) ?: throw BaseException(
                 ResponseCode.SDK_KEY_NOT_FOUND
