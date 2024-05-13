@@ -5,8 +5,10 @@ import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.domain.flag.dto.KeywordDto
 import com.lightswitch.core.domain.flag.dto.PropertyDto
 import com.lightswitch.core.domain.flag.dto.VariationDto
+import com.lightswitch.core.domain.flag.dto.req.FlagInfoRequestDto
 import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
 import com.lightswitch.core.domain.flag.dto.req.SwitchRequestDto
+import com.lightswitch.core.domain.flag.dto.req.VariationInfoRequestDto
 import com.lightswitch.core.domain.flag.dto.res.FlagResponseDto
 import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.flag.repository.VariationRepository
@@ -39,15 +41,23 @@ class HistoryService(
     )
     fun createFlag(flagResponseDto: FlagResponseDto) {
 
-        val flagHistory: History
         val flag = flagRepository.findById(flagResponseDto.flagId).orElseThrow()
 
-        flagHistory = History(
+        val flagHistory = History(
             flag = flag,
             action = HistoryType.CREATE_FLAG,
             current = flagResponseDto.title
         )
         historyRepository.save(flagHistory)
+
+
+        val defaultValueHistory = History(
+            flag = flag,
+            action = HistoryType.CREATE_VARIATION,
+            current = flagResponseDto.defaultValue
+        )
+        historyRepository.save(defaultValueHistory)
+
 
         flagResponseDto.variations.forEach { variationDto: VariationDto ->
             val variationHistory = History(
@@ -140,10 +150,55 @@ class HistoryService(
                 History(
                     flag = flag,
                     action = HistoryType.UPDATE_VARIATION_PORTION,
+                    target = defaultVariation.value,
                     previous = defaultVariation.portion.toString(),
                     current = flagRequestDto.defaultPortion.toString()
                 )
             )
+        }
+
+        //variation
+        val variations = variationRepository.findByFlagAndDefaultFlagIsFalseAndDeletedAtIsNull(flag)
+
+        flagRequestDto.variations.forEach { variationDto ->
+            var matchedVariation = false
+            for (variation in variations) {
+                if (variation.variationId == variationDto.variationId) {
+                    matchedVariation = true
+                    if (variation.value != variationDto.value) {
+                        historyRepository.save(
+                            History(
+                                flag = flag,
+                                action = HistoryType.UPDATE_VARIATION_VALUE,
+                                previous = variation.value,
+                                current = variationDto.value
+                            )
+                        )
+                    }
+                    if (variation.portion != variationDto.portion) {
+                        historyRepository.save(
+                            History(
+                                flag = flag,
+                                action = HistoryType.UPDATE_VARIATION_PORTION,
+                                target = variation.value,
+                                previous = variation.portion.toString(),
+                                current = variationDto.portion.toString()
+                            )
+                        )
+                    }
+
+                }
+                break
+            }
+            if (!matchedVariation){
+                historyRepository.save(
+                    History(
+                        flag = flag,
+                        action = HistoryType.CREATE_VARIATION,
+                        current = variationDto.value
+                    )
+                )
+            }
         }
 
 
@@ -229,5 +284,103 @@ class HistoryService(
             }
         }
     }
+
+    @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.updateFlagInfo(..)) && args(flagId,flagInfoRequestDto)")
+    fun updateFlagInfo(proceedingJoinPoint: ProceedingJoinPoint, flagId: Long, flagInfoRequestDto: FlagInfoRequestDto): Any? {
+        val proceed = proceedingJoinPoint.proceed()
+        val flag = flagRepository.findById(flagId).orElseThrow()
+
+        if (flag.title != flagInfoRequestDto.title) {
+            historyRepository.save(
+                History(
+                    flag = flag,
+                    action = HistoryType.UPDATE_FLAG_TITLE,
+                    previous = flag.title,
+                    current = flagInfoRequestDto.title
+                )
+            )
+        }
+
+        return proceed
+    }
+
+    @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.updateVariationInfo(..)) && args(flagId,variationInfoRequestDto)")
+    fun updateVariationInfo(proceedingJoinPoint: ProceedingJoinPoint, flagId: Long, variationInfoRequestDto: VariationInfoRequestDto): Any? {
+        val proceed = proceedingJoinPoint.proceed()
+        val flag = flagRepository.findById(flagId).orElseThrow()
+
+        val defaultVariation =
+            variationRepository.findByFlagAndDefaultFlagIsTrueAndDeletedAtIsNull(flag)
+                ?: throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
+
+        if (defaultVariation.value != variationInfoRequestDto.defaultValue) {
+            historyRepository.save(
+                History(
+                    flag = flag,
+                    action = HistoryType.UPDATE_VARIATION_VALUE,
+                    previous = defaultVariation.value,
+                    current = variationInfoRequestDto.defaultValue
+                )
+            )
+        }
+
+        if (defaultVariation.portion != variationInfoRequestDto.defaultPortion) {
+            historyRepository.save(
+                History(
+                    flag = flag,
+                    action = HistoryType.UPDATE_VARIATION_PORTION,
+                    previous = defaultVariation.portion.toString(),
+                    current = variationInfoRequestDto.defaultPortion.toString()
+                )
+            )
+        }
+
+        //variation
+        val variations = variationRepository.findByFlagAndDefaultFlagIsFalseAndDeletedAtIsNull(flag)
+
+        variationInfoRequestDto.variations.forEach { variationDto ->
+            var matchedVariation = false
+            for (variation in variations) {
+                if (variation.variationId == variationDto.variationId) {
+                    matchedVariation = true
+                    if (variation.value != variationDto.value) {
+                        historyRepository.save(
+                            History(
+                                flag = flag,
+                                action = HistoryType.UPDATE_VARIATION_VALUE,
+                                previous = variation.value,
+                                current = variationDto.value
+                            )
+                        )
+                    }
+                    if (variation.portion != variationDto.portion) {
+                        historyRepository.save(
+                            History(
+                                flag = flag,
+                                action = HistoryType.UPDATE_VARIATION_PORTION,
+                                target = variation.value,
+                                previous = variation.portion.toString(),
+                                current = variationDto.portion.toString()
+                            )
+                        )
+                    }
+
+                }
+                break
+            }
+            if (!matchedVariation){
+                historyRepository.save(
+                    History(
+                        flag = flag,
+                        action = HistoryType.CREATE_VARIATION,
+                        current = variationDto.value
+                    )
+                )
+            }
+        }
+
+        return proceed
+    }
+
 
 }
