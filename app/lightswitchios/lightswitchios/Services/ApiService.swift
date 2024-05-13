@@ -18,7 +18,8 @@ enum HTTPMethod: String {
 
 struct APIService {
  
-    static let baseURL: URL = URL(string: "http://70.12.246.226:8000/")!
+//    static let baseURL: URL = URL(string: "http://70.12.246.226:8000/")!
+    static let baseURL: URL = URL(string: "https://lightswitch.kr/")!
     
     static func request<T: Decodable>(path: String, method: HTTPMethod, headers: [String: String] = [:]) -> AnyPublisher<T, Error> {
         let url = baseURL.appendingPathComponent(path)
