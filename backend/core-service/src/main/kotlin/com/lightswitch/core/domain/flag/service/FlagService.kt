@@ -3,6 +3,7 @@ package com.lightswitch.core.domain.flag.service
 import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.domain.flag.common.enum.FlagType.*
+import com.lightswitch.core.domain.flag.common.enum.HistoryType
 import com.lightswitch.core.domain.flag.dto.KeywordDto
 import com.lightswitch.core.domain.flag.dto.PropertyDto
 import com.lightswitch.core.domain.flag.dto.VariationDto
@@ -98,7 +99,7 @@ class FlagService(
 
     @Transactional
     fun createFlag(flagRequestDto: FlagRequestDto): FlagResponseDto {
-        // flag 저장
+        // flag 저장 & history 저장
         val member = memberRepository.findById(flagRequestDto.memberId)
             .orElseThrow { BaseException(ResponseCode.MEMBER_NOT_FOUND) }
 
@@ -108,6 +109,16 @@ class FlagService(
                 description = flagRequestDto.description,
                 type = flagRequestDto.type,
                 maintainer = member,
+            )
+        )
+        savedFlag.histories.add(
+            History(
+                historyId = null,
+                action = HistoryType.CREATE,
+                flag = savedFlag,
+                target = savedFlag.title,
+                current = savedFlag.title,
+                previous = "",
             )
         )
 
@@ -354,6 +365,18 @@ class FlagService(
         flag.keywords.clear()
         flag.delete()
 
+        // history 저장
+        flag.histories.add(
+            History(
+                historyId = null,
+                action = HistoryType.DELETE,
+                flag = flag,
+                target = flag.title,
+                current = flag.title,
+                previous = "",
+            )
+        )
+
         //flag에 연결된 variation 삭제
         variationRepository.findByFlagAndDeletedAtIsNull(flag).map {
             it.delete()
@@ -444,10 +467,35 @@ class FlagService(
     @Transactional
     fun updateFlag(flagId: Long, flagRequestDto: FlagRequestDto): FlagResponseDto {
         val flag = flagRepository.findById(flagId).get()
-        // flag 수정
+        // flag 수정 & history 저장
+        if (flag.title != flagRequestDto.title) {
+            flag.histories.add(
+                History(
+                    historyId = null,
+                    action = HistoryType.UPDATE_TITLE,
+                    flag = flag,
+                    target = flagRequestDto.title,
+                    current = flagRequestDto.title,
+                    previous = flag.title,
+                )
+            )
+        }
         flag.title = flagRequestDto.title
-        flag.description = flagRequestDto.description
+
+        if (flag.type != flagRequestDto.type) {
+            flag.histories.add(
+                History(
+                    historyId = null,
+                    action = HistoryType.UPDATE_TYPE,
+                    flag = flag,
+                    target = flag.title,
+                    current = flagRequestDto.type.toString(),
+                    previous = flag.type.toString(),
+                )
+            )
+        }
         flag.type = flagRequestDto.type
+        flag.description = flagRequestDto.description
 
         /*
         * Todo... tag 수정 확인
@@ -480,7 +528,34 @@ class FlagService(
             variationRepository.findByFlagAndDefaultFlagIsTrueAndDeletedAtIsNull(flag)
                 ?: throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
 
+        // variation value가 다르면 history 저장
+        if (defaultVariation.value != flagRequestDto.defaultValue) {
+            flag.histories.add(
+                History(
+                    historyId = null,
+                    action = HistoryType.UPDATE_VALUE,
+                    flag = flag,
+                    target = flag.title,
+                    current = flagRequestDto.defaultValue,
+                    previous = defaultVariation.value,
+                )
+            )
+        }
         defaultVariation.value = flagRequestDto.defaultValue
+
+        // variation portion가 다르면 history 저장
+        if (defaultVariation.portion != flagRequestDto.defaultPortion) {
+            flag.histories.add(
+                History(
+                    historyId = null,
+                    action = HistoryType.UPDATE_PORTION,
+                    flag = flag,
+                    target = defaultVariation.value,
+                    current = flagRequestDto.defaultPortion.toString(),
+                    previous = defaultVariation.portion.toString(),
+                )
+            )
+        }
         defaultVariation.portion = flagRequestDto.defaultPortion
         defaultVariation.description = flagRequestDto.defaultDescription
         variationRepository.save(defaultVariation)
@@ -489,6 +564,8 @@ class FlagService(
             it.delete()
         }
 
+
+        // TODO... variations 수정 history 저장
         flagRequestDto.variations.map {
             val updatedVariation = Variation(
                 flag = flag,
@@ -926,7 +1003,7 @@ class FlagService(
                 description = flag.description,
                 tags = flag.tags.map { TagResponseDto(it.colorHex, it.content) },
                 active = flag.active,
-                //Todo : User 기능 구현 후 maintainerName 변경
+
                 maintainerName = "${flag.maintainer.firstName} ${flag.maintainer.lastName}",
             )
         }
