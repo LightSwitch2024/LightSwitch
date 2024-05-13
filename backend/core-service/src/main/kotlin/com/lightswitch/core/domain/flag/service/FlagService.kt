@@ -3,7 +3,6 @@ package com.lightswitch.core.domain.flag.service
 import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.domain.flag.common.enum.FlagType.*
-import com.lightswitch.core.domain.history.repository.entity.HistoryType
 import com.lightswitch.core.domain.flag.dto.KeywordDto
 import com.lightswitch.core.domain.flag.dto.PropertyDto
 import com.lightswitch.core.domain.flag.dto.VariationDto
@@ -13,6 +12,7 @@ import com.lightswitch.core.domain.flag.repository.*
 import com.lightswitch.core.domain.flag.repository.entity.*
 import com.lightswitch.core.domain.flag.repository.queydsl.FlagCustomRepository
 import com.lightswitch.core.domain.history.repository.entity.History
+import com.lightswitch.core.domain.history.repository.entity.HistoryType
 import com.lightswitch.core.domain.member.entity.SdkKey
 import com.lightswitch.core.domain.member.repository.MemberRepository
 import com.lightswitch.core.domain.member.repository.SdkKeyRepository
@@ -110,16 +110,6 @@ class FlagService(
                 description = flagRequestDto.description,
                 type = flagRequestDto.type,
                 maintainer = member,
-            )
-        )
-        savedFlag.histories.add(
-            History(
-                historyId = null,
-                action = HistoryType.CREATE_FLAG,
-                flag = savedFlag,
-                target = savedFlag.title,
-                current = savedFlag.title,
-                previous = "",
             )
         )
 

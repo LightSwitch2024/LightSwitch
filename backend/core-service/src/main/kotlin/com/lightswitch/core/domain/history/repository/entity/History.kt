@@ -6,13 +6,13 @@ import jakarta.persistence.*
 
 @Entity
 class History(
-        @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val historyId: Long? = null,
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "flag_id", referencedColumnName = "flagId")
-        val flag: Flag,
-        val action: HistoryType,
-        val target: String? = null,
-        val previous: String? = null,
-        val current: String?,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val historyId: Long? = null,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "flag_id", referencedColumnName = "flagId")
+    val flag: Flag,
+    val action: HistoryType,
+    val target: String? = null,
+    val previous: String? = null,
+    val current: String?,
 ) : BaseEntity()

@@ -1,11 +1,9 @@
 package com.lightswitch.core.domain.flag.service
 
-import com.lightswitch.core.domain.flag.dto.req.TagRequestDto
 import com.lightswitch.core.domain.flag.dto.res.TagResponseDto
 import com.lightswitch.core.domain.flag.repository.TagRepository
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.GetMapping
 
 @Service
 @Transactional

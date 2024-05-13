@@ -72,7 +72,7 @@ class SseService {
 
         emitter?.let {
             val event = SseEmitter.event()
-                    .name("disconnect")
+                .name("disconnect")
             emitter.send(event)
         }
         map.remove(userKey.userKey)
