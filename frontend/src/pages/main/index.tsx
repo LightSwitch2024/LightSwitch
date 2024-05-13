@@ -276,7 +276,11 @@ const index = () => {
           </S.TableNavContainer>
 
           <S.FlagTableContainer>
-            <FlagTable flagKeyword={flagKeyword} tags={selectedTags} />
+            <FlagTable
+              flagKeyword={flagKeyword}
+              tags={selectedTags}
+              activeFlagChanged={(acvtiveFlags) => setActiveFlags(acvtiveFlags)}
+            />
           </S.FlagTableContainer>
         </S.FlagTableComponent>
       </S.ComponentContainer>

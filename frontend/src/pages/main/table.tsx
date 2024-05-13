@@ -44,6 +44,7 @@ interface TablePaginationActionsProps {
 interface FlagTableProps {
   flagKeyword: string;
   tags: Array<Tag>;
+  activeFlagChanged: (activeFlags: number) => void;
 }
 
 interface FlagActiveReqDto {
@@ -270,6 +271,9 @@ const FlagTable = (props: FlagTableProps) => {
       return flag;
     });
     setFlagList(newFlagList);
+
+    const activeFlags = newFlagList.filter((flag) => flag.active);
+    props.activeFlagChanged(activeFlags.length);
   }
 
   /**
