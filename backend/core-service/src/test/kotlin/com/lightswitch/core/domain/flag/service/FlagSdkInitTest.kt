@@ -1,7 +1,5 @@
 package com.lightswitch.core.domain.flag.service
 
-import com.lightswitch.core.common.dto.ResponseCode
-import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.domain.flag.common.enum.FlagType
 import com.lightswitch.core.domain.flag.dto.KeywordDto
 import com.lightswitch.core.domain.flag.dto.PropertyDto
