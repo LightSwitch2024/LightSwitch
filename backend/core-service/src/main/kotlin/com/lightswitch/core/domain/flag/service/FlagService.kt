@@ -3,7 +3,7 @@ package com.lightswitch.core.domain.flag.service
 import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.domain.flag.common.enum.FlagType.*
-import com.lightswitch.core.domain.flag.common.enum.HistoryType
+import com.lightswitch.core.domain.history.repository.entity.HistoryType
 import com.lightswitch.core.domain.flag.dto.KeywordDto
 import com.lightswitch.core.domain.flag.dto.PropertyDto
 import com.lightswitch.core.domain.flag.dto.VariationDto
@@ -12,6 +12,7 @@ import com.lightswitch.core.domain.flag.dto.res.*
 import com.lightswitch.core.domain.flag.repository.*
 import com.lightswitch.core.domain.flag.repository.entity.*
 import com.lightswitch.core.domain.flag.repository.queydsl.FlagCustomRepository
+import com.lightswitch.core.domain.history.repository.entity.History
 import com.lightswitch.core.domain.member.entity.SdkKey
 import com.lightswitch.core.domain.member.repository.MemberRepository
 import com.lightswitch.core.domain.member.repository.SdkKeyRepository
@@ -114,7 +115,7 @@ class FlagService(
         savedFlag.histories.add(
             History(
                 historyId = null,
-                action = HistoryType.CREATE,
+                action = HistoryType.CREATE_FLAG,
                 flag = savedFlag,
                 target = savedFlag.title,
                 current = savedFlag.title,
@@ -369,7 +370,7 @@ class FlagService(
         flag.histories.add(
             History(
                 historyId = null,
-                action = HistoryType.DELETE,
+                action = HistoryType.DELETE_FLAG,
                 flag = flag,
                 target = flag.title,
                 current = flag.title,
@@ -474,7 +475,7 @@ class FlagService(
             flag.histories.add(
                 History(
                     historyId = null,
-                    action = HistoryType.UPDATE_TITLE,
+                    action = HistoryType.UPDATE_FLAG_TITLE,
                     flag = flag,
                     target = flagRequestDto.title,
                     current = flagRequestDto.title,
@@ -488,7 +489,7 @@ class FlagService(
             flag.histories.add(
                 History(
                     historyId = null,
-                    action = HistoryType.UPDATE_TYPE,
+                    action = HistoryType.UPDATE_FLAG_TYPE,
                     flag = flag,
                     target = flag.title,
                     current = flagRequestDto.type.toString(),
@@ -535,7 +536,7 @@ class FlagService(
             flag.histories.add(
                 History(
                     historyId = null,
-                    action = HistoryType.UPDATE_VALUE,
+                    action = HistoryType.UPDATE_VARIATION_VALUE,
                     flag = flag,
                     target = flag.title,
                     current = flagRequestDto.defaultValue,
@@ -550,7 +551,7 @@ class FlagService(
             flag.histories.add(
                 History(
                     historyId = null,
-                    action = HistoryType.UPDATE_PORTION,
+                    action = HistoryType.UPDATE_VARIATION_PORTION,
                     flag = flag,
                     target = defaultVariation.value,
                     current = flagRequestDto.defaultPortion.toString(),

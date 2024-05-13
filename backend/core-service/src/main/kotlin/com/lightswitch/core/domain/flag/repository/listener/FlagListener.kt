@@ -1,11 +1,5 @@
 package com.lightswitch.core.domain.flag.repository.listener
 
-import com.lightswitch.core.domain.flag.common.enum.HistoryType
-import com.lightswitch.core.domain.flag.repository.entity.Flag
-import com.lightswitch.core.domain.flag.repository.entity.History
-import jakarta.persistence.PrePersist
-import jakarta.persistence.PreUpdate
-
 /**
  *  Update 모든 경우에 대해서 Listener를 반영하기 어려워서
  *  UPDATE_TITLE, UPDATE_TYPE, SWITCH에 대해서만 History를 FlagSerivce에 남기도록 하였습니다.

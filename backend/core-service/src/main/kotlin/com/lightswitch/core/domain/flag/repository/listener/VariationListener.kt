@@ -1,10 +1,5 @@
 package com.lightswitch.core.domain.flag.repository.listener
 
-import com.lightswitch.core.domain.flag.common.enum.HistoryType
-import com.lightswitch.core.domain.flag.repository.entity.History
-import com.lightswitch.core.domain.flag.repository.entity.Variation
-import jakarta.persistence.PrePersist
-
 /**
  * Entity Listener에서 Spring Data JPA Repository를 사용하려면 컨텍스트 관리 문제가 있습니다.
  * Entity Listener는 Spring의 빈 수명 주기에 포함되어 있지 않기 때문에 직접적으로 Spring 빈을 주입받을 수 없습니다.
