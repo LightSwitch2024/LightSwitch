@@ -4,13 +4,15 @@ import com.lightswitch.core.common.dto.BaseResponse
 import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.dto.success
 import com.lightswitch.core.common.exception.BaseException
-import com.lightswitch.core.domain.member.dto.req.SignupReqDto
 import com.lightswitch.core.domain.member.dto.req.PasswordUpdateReqDto
+import com.lightswitch.core.domain.member.dto.req.SdkKeyReqDto
 import com.lightswitch.core.domain.member.dto.req.LogInReqDto
 import com.lightswitch.core.domain.member.dto.req.MemberUpdateReqDto
-import com.lightswitch.core.domain.member.dto.req.SdkKeyReqDto
+import com.lightswitch.core.domain.member.dto.req.OrgReqDto
+import com.lightswitch.core.domain.member.dto.req.SignupReqDto
 import com.lightswitch.core.domain.member.dto.res.MemberResDto
 import com.lightswitch.core.domain.member.dto.res.MemberResponseDto
+import com.lightswitch.core.domain.member.dto.res.OrgResDto
 import com.lightswitch.core.domain.member.dto.res.SdkKeyResDto
 import com.lightswitch.core.domain.member.entity.Member
 import com.lightswitch.core.domain.member.service.MemberService
@@ -47,7 +49,19 @@ class MemberController(
     fun logIn(
         @RequestBody logInReqDto: LogInReqDto
     ): BaseResponse<MemberResDto> {
+        println("===============")
+        println(memberService.logIn(logInReqDto).memberId)
+        println("==========================")
+
         return success(memberService.logIn(logInReqDto))
+    }
+
+    // 유저 초기 로그인시, organization 입력
+    @PostMapping("/{memberId}/fillOrg")
+    fun fillOrg(
+        @RequestBody orgReqDto: OrgReqDto
+    ): BaseResponse<OrgResDto> {
+        return success(memberService.fillOrg(orgReqDto))
     }
 
     // 유저 정보 불러오기
@@ -71,8 +85,7 @@ class MemberController(
     fun updatePassword(
         @RequestBody pwData: PasswordUpdateReqDto
     ): BaseResponse<MemberResDto?> {
-        println("Controller")
-        println(pwData)
+
         return success(memberService.updatePassword(pwData))
     }
 

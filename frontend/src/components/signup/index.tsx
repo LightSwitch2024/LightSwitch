@@ -265,33 +265,35 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
               <S.SignUpText>비밀번호가 일치합니다.</S.SignUpText>
             ))}
         </S.SignUpInputBox>
-        <S.SendMailButton onClick={handleSendAuthCode}>
-          이메일 인증 키 받기
-        </S.SendMailButton>
-        <S.AuthConfirmWrapper>
-          <S.SignUpInput
-            type="text"
-            placeholder="인증 키"
-            style={{ width: '100%' }}
-            value={authCode}
-            onChange={handleAuthCode}
-            disabled={isAuth}
-          />
-          <S.ConfirmButton onClick={handleConfirmAuthCode} $isAuth={isAuth}>
-            확인
-          </S.ConfirmButton>
-        </S.AuthConfirmWrapper>
-        {isAuth ? (
-          <S.SignUpText>인증되었습니다.</S.SignUpText>
-        ) : (
-          <S.SignUpWarnText>인증이 필요합니다.</S.SignUpWarnText>
-        )}
-        <S.ButtonWrapper>
-          <S.CancleButton onClick={handleCancle}>취소</S.CancleButton>
-          <S.OKButton $signUpFlag={signUpFlag} onClick={handleSignUp}>
-            회원가입
-          </S.OKButton>
-        </S.ButtonWrapper>
+        <S.SignUpInputBox>
+          <S.SendMailButton onClick={handleSendAuthCode}>
+            이메일 인증 키 받기
+          </S.SendMailButton>
+          <S.AuthConfirmWrapper>
+            <S.SignUpInput
+              type="text"
+              placeholder="인증 키"
+              style={{ width: '100%' }}
+              value={authCode}
+              onChange={handleAuthCode}
+              disabled={isAuth}
+            />
+            <S.ConfirmButton onClick={handleConfirmAuthCode} $isAuth={isAuth}>
+              확인
+            </S.ConfirmButton>
+          </S.AuthConfirmWrapper>
+          {isAuth ? (
+            <S.SignUpText>인증되었습니다.</S.SignUpText>
+          ) : (
+            <S.SignUpWarnText>인증이 필요합니다.</S.SignUpWarnText>
+          )}
+          <S.ButtonWrapper>
+            <S.CancleButton onClick={handleCancle}>취소</S.CancleButton>
+            <S.OKButton $signUpFlag={signUpFlag} onClick={handleSignUp}>
+              회원가입
+            </S.OKButton>
+          </S.ButtonWrapper>
+        </S.SignUpInputBox>
       </S.SignUpContainer>
     </S.SignUpLayout>
   );

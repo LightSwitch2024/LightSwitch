@@ -9,6 +9,8 @@ interface MemberAtom {
   email: string;
   firstName: string;
   lastName: string;
+
+  organization: string;
 }
 
 export const AuthAtom = atom<MemberAtom>({
@@ -19,6 +21,7 @@ export const AuthAtom = atom<MemberAtom>({
     email: '',
     firstName: '',
     lastName: '',
+    organization: '',
   },
   effects_UNSTABLE: [persistAtom],
 });

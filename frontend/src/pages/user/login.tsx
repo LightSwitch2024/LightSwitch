@@ -13,6 +13,8 @@ interface MemberInfo {
   email: string;
   firstName: string;
   lastName: string;
+  telNumber: string;
+  organization: string | '';
 }
 
 const LogIn = () => {
@@ -37,28 +39,31 @@ const LogIn = () => {
 
   useEffect(() => {
     console.log(auth);
-    console.log('hello');
   }, [auth]);
 
   const onClickLogIn = (): void => {
+    console.log('Logging in with:', email, password);
     logIn<MemberInfo>(
       {
         email: email,
         password: password,
       },
       (data) => {
-        const memId = Number(data.memberId);
-        const memEmail = data.email;
-        const memFirstname = data.firstName;
-        const memLastname = data.lastName;
+        console.log(data);
+        const { memberId, email, firstName, lastName, telNumber, organization } = data;
         setAuth(() => ({
-          memberId: memId,
-          email: memEmail,
-          firstName: memFirstname,
-          lastName: memLastname,
+          memberId,
+          email,
+          firstName,
+          lastName,
           isAuthenticated: true,
+          organization: organization || '',
         }));
-        navigate('/');
+        if (organization == null) {
+          navigate('/fillOrg');
+        } else {
+          navigate('/');
+        }
       },
       (err) => {
         console.log(err);
