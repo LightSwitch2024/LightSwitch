@@ -5,10 +5,7 @@ import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.domain.flag.dto.KeywordDto
 import com.lightswitch.core.domain.flag.dto.PropertyDto
 import com.lightswitch.core.domain.flag.dto.VariationDto
-import com.lightswitch.core.domain.flag.dto.req.FlagInfoRequestDto
-import com.lightswitch.core.domain.flag.dto.req.FlagRequestDto
-import com.lightswitch.core.domain.flag.dto.req.SwitchRequestDto
-import com.lightswitch.core.domain.flag.dto.req.VariationInfoRequestDto
+import com.lightswitch.core.domain.flag.dto.req.*
 import com.lightswitch.core.domain.flag.dto.res.FlagResponseDto
 import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.flag.repository.VariationRepository
@@ -190,7 +187,7 @@ class HistoryService(
                 }
                 break
             }
-            if (!matchedVariation){
+            if (!matchedVariation) {
                 historyRepository.save(
                     History(
                         flag = flag,
@@ -286,7 +283,11 @@ class HistoryService(
     }
 
     @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.updateFlagInfo(..)) && args(flagId,flagInfoRequestDto)")
-    fun updateFlagInfo(proceedingJoinPoint: ProceedingJoinPoint, flagId: Long, flagInfoRequestDto: FlagInfoRequestDto): Any? {
+    fun updateFlagInfo(
+        proceedingJoinPoint: ProceedingJoinPoint,
+        flagId: Long,
+        flagInfoRequestDto: FlagInfoRequestDto
+    ): Any? {
         val proceed = proceedingJoinPoint.proceed()
         val flag = flagRepository.findById(flagId).orElseThrow()
 
@@ -305,7 +306,11 @@ class HistoryService(
     }
 
     @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.updateVariationInfo(..)) && args(flagId,variationInfoRequestDto)")
-    fun updateVariationInfo(proceedingJoinPoint: ProceedingJoinPoint, flagId: Long, variationInfoRequestDto: VariationInfoRequestDto): Any? {
+    fun updateVariationInfo(
+        proceedingJoinPoint: ProceedingJoinPoint,
+        flagId: Long,
+        variationInfoRequestDto: VariationInfoRequestDto
+    ): Any? {
         val proceed = proceedingJoinPoint.proceed()
         val flag = flagRepository.findById(flagId).orElseThrow()
 
@@ -368,7 +373,7 @@ class HistoryService(
                 }
                 break
             }
-            if (!matchedVariation){
+            if (!matchedVariation) {
                 historyRepository.save(
                     History(
                         flag = flag,
@@ -382,5 +387,93 @@ class HistoryService(
         return proceed
     }
 
+    @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.updateKeywordInfo(..)) && args(flagId,keywordInfoRequestDto)")
+    fun updateKeywordInfo(
+        proceedingJoinPoint: ProceedingJoinPoint,
+        flagId: Long,
+        keywordInfoRequestDto: KeywordInfoRequestDto
+    ): Any? {
+        val proceed = proceedingJoinPoint.proceed()
+        val flag = flagRepository.findById(flagId).orElseThrow()
 
+        // keyword & property
+        for (keywordDto in keywordInfoRequestDto.keywords) {
+            var matchedKeyword = false
+            for (keyword in flag.keywords) {
+                if (keyword.keywordId == keywordDto.keywordId) {
+                    matchedKeyword = true
+                    if (keyword.value != keywordDto.value) {
+                        historyRepository.save(
+                            History(
+                                flag = flag,
+                                action = HistoryType.UPDATE_KEYWORD,
+                                target = keywordDto.description,
+                                previous = keyword.value,
+                                current = keywordDto.value
+                            )
+                        )
+                    }
+                    checkProperty(keywordDto, keyword, flag)
+                    break
+                }
+            }
+            if (!matchedKeyword) {
+                historyRepository.save(
+                    History(
+                        flag = flag,
+                        action = HistoryType.CREATE_KEYWORD,
+                        target = keywordDto.description,
+                        current = keywordDto.value
+                    )
+                )
+            }
+        }
+
+        return proceed
+    }
+
+    @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.updateKeywordInfoWithHardDelete(..)) && args(flagId,keywordInfoRequestDto)")
+    fun updateKeywordInfoWithHardDelete(
+        proceedingJoinPoint: ProceedingJoinPoint,
+        flagId: Long,
+        keywordInfoRequestDto: KeywordInfoRequestDto
+    ): Any? {
+        val proceed = proceedingJoinPoint.proceed()
+        val flag = flagRepository.findById(flagId).orElseThrow()
+
+        // keyword & property
+        for (keywordDto in keywordInfoRequestDto.keywords) {
+            var matchedKeyword = false
+            for (keyword in flag.keywords) {
+                if (keyword.keywordId == keywordDto.keywordId) {
+                    matchedKeyword = true
+                    if (keyword.value != keywordDto.value) {
+                        historyRepository.save(
+                            History(
+                                flag = flag,
+                                action = HistoryType.UPDATE_KEYWORD,
+                                target = keywordDto.description,
+                                previous = keyword.value,
+                                current = keywordDto.value
+                            )
+                        )
+                    }
+                    checkProperty(keywordDto, keyword, flag)
+                    break
+                }
+            }
+            if (!matchedKeyword) {
+                historyRepository.save(
+                    History(
+                        flag = flag,
+                        action = HistoryType.CREATE_KEYWORD,
+                        target = keywordDto.description,
+                        current = keywordDto.value
+                    )
+                )
+            }
+        }
+
+        return proceed
+    }
 }
