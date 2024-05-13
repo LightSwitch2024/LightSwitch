@@ -100,7 +100,7 @@ class FlagService(
 
     @Transactional
     fun createFlag(flagRequestDto: FlagRequestDto): FlagResponseDto {
-        // flag 저장 & history 저장
+
         val member = memberRepository.findById(flagRequestDto.memberId)
             .orElseThrow { BaseException(ResponseCode.MEMBER_NOT_FOUND) }
 
@@ -460,33 +460,8 @@ class FlagService(
     @Transactional
     fun updateFlag(flagId: Long, flagRequestDto: FlagRequestDto): FlagResponseDto {
         val flag = flagRepository.findById(flagId).get()
-        // flag 수정 & history 저장
-        if (flag.title != flagRequestDto.title) {
-            flag.histories.add(
-                History(
-                    historyId = null,
-                    action = HistoryType.UPDATE_FLAG_TITLE,
-                    flag = flag,
-                    target = flagRequestDto.title,
-                    current = flagRequestDto.title,
-                    previous = flag.title,
-                )
-            )
-        }
-        flag.title = flagRequestDto.title
 
-        if (flag.type != flagRequestDto.type) {
-            flag.histories.add(
-                History(
-                    historyId = null,
-                    action = HistoryType.UPDATE_FLAG_TYPE,
-                    flag = flag,
-                    target = flag.title,
-                    current = flagRequestDto.type.toString(),
-                    previous = flag.type.toString(),
-                )
-            )
-        }
+        flag.title = flagRequestDto.title
         flag.type = flagRequestDto.type
         flag.description = flagRequestDto.description
 
@@ -521,34 +496,7 @@ class FlagService(
             variationRepository.findByFlagAndDefaultFlagIsTrueAndDeletedAtIsNull(flag)
                 ?: throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
 
-        // variation value가 다르면 history 저장
-        if (defaultVariation.value != flagRequestDto.defaultValue) {
-            flag.histories.add(
-                History(
-                    historyId = null,
-                    action = HistoryType.UPDATE_VARIATION_VALUE,
-                    flag = flag,
-                    target = flag.title,
-                    current = flagRequestDto.defaultValue,
-                    previous = defaultVariation.value,
-                )
-            )
-        }
         defaultVariation.value = flagRequestDto.defaultValue
-
-        // variation portion가 다르면 history 저장
-        if (defaultVariation.portion != flagRequestDto.defaultPortion) {
-            flag.histories.add(
-                History(
-                    historyId = null,
-                    action = HistoryType.UPDATE_VARIATION_PORTION,
-                    flag = flag,
-                    target = defaultVariation.value,
-                    current = flagRequestDto.defaultPortion.toString(),
-                    previous = defaultVariation.portion.toString(),
-                )
-            )
-        }
         defaultVariation.portion = flagRequestDto.defaultPortion
         defaultVariation.description = flagRequestDto.defaultDescription
         variationRepository.save(defaultVariation)
