@@ -19,13 +19,16 @@ import org.springframework.stereotype.Service
 @Aspect
 @Service
 class HistoryService(
-        @Autowired
-        private var historyRepository: HistoryRepository,
-        @Autowired
-        private var flagRepository: FlagRepository
+    @Autowired
+    private var historyRepository: HistoryRepository,
+    @Autowired
+    private var flagRepository: FlagRepository
 ) {
 
-    @AfterReturning(pointcut = "execution(* com.lightswitch.core.domain.flag.service.FlagService.createFlag(..))", returning = "flagResponseDto")
+    @AfterReturning(
+        pointcut = "execution(* com.lightswitch.core.domain.flag.service.FlagService.createFlag(..))",
+        returning = "flagResponseDto"
+    )
     fun createFlag(flagResponseDto: FlagResponseDto) {
 
         print("=== create history ===")
@@ -33,35 +36,35 @@ class HistoryService(
         val flag = flagRepository.findById(flagResponseDto.flagId).orElseThrow()
 
         flagHistory = History(
-                flag = flag,
-                action = HistoryType.CREATE_FLAG,
-                current = flagResponseDto.title
+            flag = flag,
+            action = HistoryType.CREATE_FLAG,
+            current = flagResponseDto.title
         )
         historyRepository.save(flagHistory)
 
         flagResponseDto.variations.forEach { variationDto: VariationDto ->
             val variationHistory = History(
-                    flag = flag,
-                    action = HistoryType.CREATE_VARIATION,
-                    current = variationDto.value
+                flag = flag,
+                action = HistoryType.CREATE_VARIATION,
+                current = variationDto.value
             )
             historyRepository.save(variationHistory)
         }
 
         flagResponseDto.keywords.forEach { keywordDto: KeywordDto ->
             val keywordHistory = History(
-                    flag = flag,
-                    action = HistoryType.CREATE_KEYWORD,
-                    current = keywordDto.description
+                flag = flag,
+                action = HistoryType.CREATE_KEYWORD,
+                current = keywordDto.description
             )
             historyRepository.save(keywordHistory)
 
             keywordDto.properties.forEach { propertyDto: PropertyDto ->
                 val propertyHistory = History(
-                        flag = flag,
-                        action = HistoryType.CREATE_PROPERTY,
-                        target = keywordDto.description,
-                        current = propertyDto.property
+                    flag = flag,
+                    action = HistoryType.CREATE_PROPERTY,
+                    target = keywordDto.description,
+                    current = propertyDto.property
                 )
                 historyRepository.save(propertyHistory)
             }
@@ -72,11 +75,15 @@ class HistoryService(
     fun switchFlag(proceedingJoinPoint: ProceedingJoinPoint, flagId: Long, switchRequestDto: SwitchRequestDto): Any? {
         val proceed = proceedingJoinPoint.proceed()
         val flag = flagRepository.findById(flagId).orElseThrow()
-        historyRepository.save(History(
+        historyRepository.save(
+            History(
                 flag = flag,
                 action = HistoryType.SWITCH_FLAG,
                 current = switchRequestDto.active.toString()
-        ))
+            )
+        )
         return proceed;
     }
+
+
 }

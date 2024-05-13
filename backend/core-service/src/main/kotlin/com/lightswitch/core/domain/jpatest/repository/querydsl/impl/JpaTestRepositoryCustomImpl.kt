@@ -4,7 +4,6 @@ import com.lightswitch.core.domain.jpatest.entity.JpaTest
 import com.lightswitch.core.domain.jpatest.entity.QJpaTest
 import com.lightswitch.core.domain.jpatest.repository.querydsl.JpaTestRepositoryCustom
 import com.querydsl.jpa.impl.JPAQueryFactory
-import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 
 @Service

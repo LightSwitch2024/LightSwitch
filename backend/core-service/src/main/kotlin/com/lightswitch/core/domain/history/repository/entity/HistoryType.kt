@@ -18,7 +18,8 @@ enum class HistoryType {
     // keyword
     CREATE_KEYWORD,
     UPDATE_KEYWORD,
-//    UPDATE_KEYWORD_PROPERTY,
+
+    //    UPDATE_KEYWORD_PROPERTY,
     DELETE_KEYWORD,
 
     // property
