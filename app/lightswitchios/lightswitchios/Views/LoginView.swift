@@ -15,6 +15,10 @@ struct LoginView: View {
     
     var body: some View {
         VStack (spacing: 16) {
+            Text("로그인")
+                .font(.title3)
+                .padding(.top, 16)
+            
             Image("LoginImg")
                 .resizable()
                 .aspectRatio(contentMode: .fit)

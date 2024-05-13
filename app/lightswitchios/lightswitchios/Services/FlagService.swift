@@ -16,9 +16,9 @@ struct FlagService {
         return APIService.request(path: path, method: HTTPMethod.GET)
     }
     
-    func switchFlag(flagId: Int32) -> AnyPublisher<BaseResponse<Int64>, Error> {
+    func switchFlag(flagId: Int32, switchRequest: SwitchRequest) -> AnyPublisher<BaseResponse<Int64>, Error> {
         let path: String = "api/v1/flag/\(flagId)"
         
-        return APIService.request(path: path, method: HTTPMethod.PATCH)
+        return APIService.request(path: path, method: HTTPMethod.PATCH, body: switchRequest)
     }
 }
