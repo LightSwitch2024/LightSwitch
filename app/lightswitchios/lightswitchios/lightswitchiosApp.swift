@@ -11,8 +11,6 @@ import SwiftUI
 struct lightswitchiosApp: App {
     var body: some Scene {
         WindowGroup {
-//            LoginView(loginViewModel: LoginViewModel())
-//            FlagView(flagViewModel: FlagViewModel())
             ContentView(contentViewModel: ContentViewModel())
         }
     }

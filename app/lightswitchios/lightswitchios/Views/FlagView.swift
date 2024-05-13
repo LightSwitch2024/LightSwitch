@@ -14,7 +14,8 @@ struct FlagView: View {
         VStack {
             if flagViewModel.isLoading {
                 FlagProgressView()
-            } else {
+            } 
+            else {
                 FlagContentView(flagViewModel: flagViewModel)
             }
         }
@@ -40,25 +41,29 @@ struct FlagContentView: View {
     var body: some View {
         VStack {
             Text("플래그 관리")
-                .font(.title)
+                .font(.title3)
+                .padding(.top, 16)
             
-            Button(action: {
-                flagViewModel.logout()
-            }) {
-                Text("로그아웃")
-                    .foregroundColor(.white) // 텍스트 색상 변경
-                    .padding() // 버튼 내부 패딩
-                    .frame(maxWidth: .infinity) // 버튼 폭을 최대로 늘림
-                    .background(Color.loginBtn) // 배경색 변경
-                    .cornerRadius(8) // 버튼 모서리 둥글게 처리
+            HStack {
+                Spacer()
+                
+                Button(action: {
+                    flagViewModel.logout()
+                }) {
+                    Text("로그아웃")
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.loginBtn)
+                        .cornerRadius(8)
+                }
+                .padding()
             }
-            .padding()
         }
         
         ScrollView {
             VStack (spacing: 16) {
                 ForEach(flagViewModel.flags, id: \.self) { flag in
-                    FlagCardView(flag: flag, flagViewModel: flagViewModel)
+                    FlagCardView(flag: flag, isOn: flag.active, flagViewModel: flagViewModel)
                 }
             }
             .padding()
@@ -68,75 +73,90 @@ struct FlagContentView: View {
 
 struct FlagCardView: View {
     var flag: Flag
+    @State var isOn: Bool
     @StateObject var flagViewModel: FlagViewModel
+    @State private var isTapped = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(flag.title)
-                    .font(.headline)
+            VStack() {
+                HStack {
+                    Text(flag.title)
+                        .font(.title2)
+                    
+                    Spacer()
+                    
+                    
+                    HStack {
+                        Image(systemName: "person.circle")
+                            .resizable()
+                            .frame(width: 25, height: 25)
+                            .mask(Circle())
+                            .padding(.leading, 8)
+                        
+                        Text(flag.maintainerName)
+                            .font(.body)
+                            .padding(.trailing, 8)
+                    }
+                    .padding(.vertical, 4)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.black, lineWidth: 1)
+                    )
+                }
                 
-                Spacer()
+                HStack {
+                    Text(flag.description)
+                        .font(.body)
+                        .lineLimit(isTapped ? nil : 1)
+                        .truncationMode(.tail)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
                 
-                Text(flag.maintainerName)
-                    .font(.body)
+                if !isTapped {
+                    HStack() {
+                        Spacer()
+                        
+                        ZStack {
+                            Circle() // 테두리를 그립니다.
+                                .stroke(isOn ? Color.loginBtn : .gray, lineWidth: 2)
+                                .frame(width: 23, height: 23) // 테두리의 크기를 조절합니다.
+                
+                            Circle() // 내부의 원을 그립니다.
+                                .fill(isOn ? Color.loginBtn : .gray) // 내부 원의 색상을 설정합니다.
+                                .frame(width: 15, height: 15) // 내부 원의 크기를 조절합니다.
+                        }
+                        
+                        Text(isOn ? "ON" : "OFF")
+                            .font(.body)
+                            .foregroundColor(isOn ? Color.loginBtn : .gray)
+                    }
+                }
             }
             
-            HStack {
-                Text(flag.description)
-                    .font(.body)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+            VStack() {
+                if isTapped {
+                    HStack() {
+                        Toggle(isOn: $isOn) {}
+                        .onChange(of: self.isOn) {
+                            flagViewModel.switchFlag(flagId: flag.flagId, active: !$0)
+                            isOn = $0
+                        }
+                        .toggleStyle(SwitchToggleStyle(tint: self.isOn ? Color.loginBtn : .red))
+                    }
+                }
             }
-            
-            HStack() {
-                Spacer()
-                
-                Image(systemName: flag.active ? "circle.fill" : "circle")
-                    .font(.title)
-                    .foregroundColor(flag.active ? .green : .red)
-                
-                Text(flag.active ? "ON" : "OFF")
-                    .font(.body)
+            .onTapGesture {
+                return
             }
-            
-            FlagToggleView(active: flag.active, flagId: flag.flagId, flagViewModel: flagViewModel)
         }
         .padding()
         .background(Color.white)
         .cornerRadius(8)
         .shadow(color: Color.gray.opacity(0.3), radius: 4, x: 0, y: 2)
-    }
-}
-
-struct FlagToggleView: View {
-    @Binding var active: Bool
-    var flagId: Int32
-    
-    @State private var offsetX: CGFloat = 0
-    private let threshold: CGFloat = 200 // 드래그 전환 임계값
-    @StateObject var flagViewModel: FlagViewModel
-
-    var body: some View {
-        VStack(alignment: .leading) {
-            Rectangle() // 비어있는 직사각형
-                .fill(active ? Color.green : Color.red) // 배경색 설정
-                .frame(height: 50) // 직사각형 크기 지정
+        .onTapGesture {
+            isTapped.toggle()
         }
-        .gesture(
-            DragGesture()
-                .onChanged { value in
-                    offsetX = value.translation.width // 드래그한 거리에 따라 offsetX 업데이트
-                }
-                .onEnded { value in
-                    if abs(offsetX) > threshold { // 드래그 거리가 임계값을 넘으면
-                        flagViewModel.switchFlag(flagId: flagId)
-                        active.toggle() // 상태 전환
-                    }
-                    withAnimation {
-                        offsetX = 0 // 드래그 종료 시 offsetX 초기화
-                    }
-                }
-        )
     }
 }
 
