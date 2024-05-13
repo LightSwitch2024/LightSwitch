@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const Layout = styled.div`
@@ -8,10 +7,10 @@ export const Layout = styled.div`
 
   flex-direction: row;
   justify-content: center;
-  gap: 20px;
+  gap: 10px;
 `;
 
-export const LogInLayout = styled.div`
+export const OrgLayout = styled.div`
   width: 560px;
   margin-top: 5rem;
   border: 2px solid gray;
@@ -20,7 +19,7 @@ export const LogInLayout = styled.div`
   height: auto;
 `;
 
-export const LogInContainer = styled.div`
+export const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -28,8 +27,8 @@ export const LogInContainer = styled.div`
   gap: 1rem;
 `;
 
-export const LogInInput = styled.input`
-  padding: 0.75rem 1rem;
+export const Input = styled.input`
+  padding: 1rem 1rem;
   border-radius: 0.5rem;
   border: 1px solid #ddd;
   font-size: 1.3rem;
@@ -38,52 +37,35 @@ export const LogInInput = styled.input`
   }
 `;
 
-export const LogInWarnText = styled.div`
+export const WarnText = styled.div`
   align-self: flex-end;
   font-size: 0.6rem;
   color: red;
   font-weight: 500;
 `;
 
-export const LogInInputBox = styled.div`
+export const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 0.5rem;
 `;
 
-export const LogInLinkBox = styled.div`
+export const LinkWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 0.5rem;
   margin: 0 0 3rem 0;
 `;
 
-export const SignUpText = styled.button`
+export const TitleText = styled.div`
   color: #000000;
-  text-decoration: underline;
   background: none;
   border: none;
   padding-left: 5px;
   margin: 0;
-  font-size: 16px;
-  cursor: pointer;
-`;
-
-export const PasswordText = styled(Link)`
-  color: #000000;
-  text-decoration: underline;
-  margin-right: 3px;
-  cursor: pointer;
-`;
-
-export const SignUpButton = styled.a`
-  width: 100%;
-  padding: 0.3rem 1rem;
-  border-radius: 0.5rem;
-  font-size: 1.4rem;
-  background-color: #1e3232;
-  color: #fff;
+  font-size: 30px;
+  font-weight: 800;
   cursor: pointer;
 `;
 
@@ -114,4 +96,12 @@ export const LogoWrapper = styled.div`
 
 export const Logo = styled.img`
   display: flex;
+`;
+
+export const TextBox = styled.div`
+  display: flex;
+  font-size: 1rem;
+  font-weight: 800;
+  margin: 2rem 0;
+  gap: 1rem;
 `;

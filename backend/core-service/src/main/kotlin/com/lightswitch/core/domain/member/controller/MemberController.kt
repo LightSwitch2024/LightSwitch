@@ -12,6 +12,7 @@ import com.lightswitch.core.domain.member.dto.req.OrgReqDto
 import com.lightswitch.core.domain.member.dto.req.SignupReqDto
 import com.lightswitch.core.domain.member.dto.res.MemberResDto
 import com.lightswitch.core.domain.member.dto.res.MemberResponseDto
+import com.lightswitch.core.domain.member.dto.res.OrgResDto
 import com.lightswitch.core.domain.member.dto.res.SdkKeyResDto
 import com.lightswitch.core.domain.member.entity.Member
 import com.lightswitch.core.domain.member.service.MemberService
@@ -48,6 +49,10 @@ class MemberController(
     fun logIn(
         @RequestBody logInReqDto: LogInReqDto
     ): BaseResponse<MemberResDto> {
+        println("===============")
+        println(memberService.logIn(logInReqDto).memberId)
+        println("==========================")
+
         return success(memberService.logIn(logInReqDto))
     }
 
@@ -55,7 +60,7 @@ class MemberController(
     @PostMapping("/{memberId}/fillOrg")
     fun fillOrg(
         @RequestBody orgReqDto: OrgReqDto
-    ): BaseResponse<MemberResDto> {
+    ): BaseResponse<OrgResDto> {
         return success(memberService.fillOrg(orgReqDto))
     }
 

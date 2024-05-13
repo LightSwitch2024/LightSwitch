@@ -14,6 +14,7 @@ import com.lightswitch.core.domain.member.dto.req.OrgReqDto
 import com.lightswitch.core.domain.member.dto.req.SignupReqDto
 import com.lightswitch.core.domain.member.dto.res.MemberResDto
 import com.lightswitch.core.domain.member.dto.res.MemberResponseDto
+import com.lightswitch.core.domain.member.dto.res.OrgResDto
 import com.lightswitch.core.domain.member.dto.res.SdkKeyResDto
 import com.lightswitch.core.domain.member.entity.Member
 import com.lightswitch.core.domain.member.entity.Organization
@@ -123,6 +124,7 @@ class MemberService(
                 ?: throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
         // 회원가입 후 로그인할 때 isCorrectPW 코드
         val isCorrectPW = passwordService.matches(logInReqDto.password, savedMember.password)
+        println(savedMember.memberId)
 
         return if (isCorrectPW) {
             MemberResDto(
@@ -139,7 +141,7 @@ class MemberService(
     }
 
     // 첫 로그인 시, orgId가 null일 때, 추가로 받아 채움(이미존재하는회사:멤버로 추가, 존재하지않는회사: 신규생성 및 owner설정)
-    fun fillOrg(orgReqDto: OrgReqDto): MemberResDto {
+    fun fillOrg(orgReqDto: OrgReqDto): OrgResDto {
         val orgMem = memberRepository.findByEmailAndDeletedAtIsNull(orgReqDto.email) ?: throw BaseException(
             ResponseCode.MEMBER_NOT_FOUND
         )
@@ -176,13 +178,8 @@ class MemberService(
             addOrgMem.organization = newOrg
         }
 
-        return MemberResDto(
-            memberId = orgMem.memberId!!,
-            email = orgMem.email,
-            firstName = orgMem.firstName,
-            lastName = orgMem.lastName,
-            telNumber = orgMem.telNumber,
-            organization = orgMem.organization?.name.toString(),
+        return OrgResDto(
+            organizationName = orgMem.organization?.name.toString(),
         )
     }
 
