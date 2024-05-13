@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LSUser {
-	private final int userId;
+	private final String userId;
 	private final Map<String, String> property;
 
 	private LSUser(Builder builder) {
@@ -12,7 +12,7 @@ public class LSUser {
 		this.property = builder.property;
 	}
 
-	public int getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
@@ -25,10 +25,10 @@ public class LSUser {
 	}
 
 	public static class Builder {
-		private final int userId;
+		private final String userId;
 		private final Map<String, String> property;
 
-		public Builder(int userId) {
+		public Builder(String userId) {
 			this.userId = userId;
 			this.property = new HashMap<>();
 		}
