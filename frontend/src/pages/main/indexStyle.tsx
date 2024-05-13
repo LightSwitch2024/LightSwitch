@@ -1,40 +1,51 @@
 import styled from 'styled-components';
 
+export const fullHeight = `calc(var(--vh, 1vh) * 100 - 40px)`;
+
+export const MainLayout = styled.div`
+  width: 100%;
+  height: ${fullHeight};
+  overflow: hidden;
+`;
+
+export const ComponentContainer = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  gap: calc(${fullHeight} * 0.05);
+`;
+
 export const MainTitleComponent = styled.div`
   display: flex;
-  height: 10rem;
-  padding-bottom: 0.9375rem;
+  flex-direction: row;
+  height: 12%;
   align-items: center;
   gap: 1.25rem;
-  align-self: stretch;
 `;
 
 export const OverviewComponent = styled.div`
   display: flex;
-  height: 11rem;
-  padding-bottom: 0.4375rem;
+  height: 23%;
   align-items: center;
   gap: 1.25rem;
   align-self: stretch;
 `;
 
 export const FlagTableComponent = styled.div`
-  // display: flex;
-  // height: 31.5625rem;
-  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  height: 55%;
   align-items: flex-start;
-  gap: 0.625rem;
   align-self: stretch;
+  gap: calc(${fullHeight} * 0.015);
 `;
 
 // MainTitleComponent 하위 컴포넌트 ========================
 
 export const imageContainer = styled.div`
-  display: flex;
-  width: 12rem;
-  align-items: center;
-  gap: 0.625rem;
-  align-self: stretch;
+  height: 100%;
+  width: calc(${fullHeight} * 0.12);
 
   border-radius: 0.625rem;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
@@ -43,7 +54,6 @@ export const imageContainer = styled.div`
 export const imageLunitLogo = styled.img<{ path: string }>`
   width: 100%;
   height: 100%;
-  flex-shrink: 0;
   border-radius: 0.625rem;
 
   background-image: url(${(props) => props.path});
@@ -56,8 +66,8 @@ export const imageLunitLogo = styled.img<{ path: string }>`
 export const LunitInfoContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.8rem;
+  height: 100%;
+  gap: calc(${fullHeight} * 0.03);
   flex: 1 0 0;
   align-self: stretch;
 `;
@@ -74,10 +84,10 @@ export const LunitTitleContainer = styled.div`
 export const LunitTitle = styled.div`
   color: #000;
   font-family: Pretendard;
-  font-size: 4.25rem;
+  font-size: calc(${fullHeight} * 0.06);
   font-style: normal;
   font-weight: 800;
-  line-height: normal;
+  line-height: calc(${fullHeight} * 0.06);
 `;
 
 export const LunitDescriptionContainer = styled.div`
@@ -126,17 +136,18 @@ export const InfoTextContiner = styled.div`
 export const InfoText = styled.div`
   color: #000;
   font-family: Pretendard;
-  font-size: 1.7rem;
+  font-size: calc(${fullHeight} * 0.025);
   font-style: normal;
   font-weight: 400;
-  line-height: normal;
+  line-height: calc(${fullHeight} * 0.025);
 `;
 
 // OverviewComponent 하위 컴포넌트 ========================
 
 export const SdkKeyComponent = styled.div`
   display: flex;
-  padding: 0.625rem 1.25rem 1.25rem 1.25rem;
+  width: 100%;
+  height: 100%;
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
@@ -150,26 +161,25 @@ export const SdkKeyComponent = styled.div`
 
 export const SdkKeyTitleContainer = styled.div`
   display: flex;
-  padding: 0.625rem;
+  padding: calc(${fullHeight} * 0.02);
   align-items: center;
-  gap: 1.875rem;
+  gap: calc(${fullHeight} * 0.015);
 `;
 
 export const Title = styled.div`
   color: #000;
   font-family: Pretendard;
-  font-size: 2.5rem;
+  font-size: calc(${fullHeight} * 0.04);
   font-style: normal;
   font-weight: 700;
-  line-height: normal;
+  line-height: calc(${fullHeight} * 0.04);
 `;
 
 export const SdkkeyContentContainer = styled.div`
   width: 100%;
   display: flex;
-  padding: 0.625rem;
-  align-items: center;
-  gap: 0.625rem;
+  padding: calc(${fullHeight} * 0.02);
+  gap: calc(${fullHeight} * 0.015);
 `;
 
 export const SdkKeyIconContainer = styled.div`
@@ -177,7 +187,6 @@ export const SdkKeyIconContainer = styled.div`
   padding: 0.3125rem;
   justify-content: center;
   align-items: center;
-  gap: 0.625rem;
 
   border-radius: 0.3125rem;
   background: #a8ca47;
@@ -187,16 +196,14 @@ export const SdkKeyTextContainer = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 0.625rem;
 `;
 
 export const NoExistSdkKeyText = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  padding: 0.3125rem;
   align-items: center;
-  gap: 0.625rem;
+  gap: calc(${fullHeight} * 0.015);
 `;
 
 export const createSdkKeyButton = styled.button`
@@ -215,15 +222,16 @@ export const createSdkKeyButton = styled.button`
 export const SdkKeyText = styled.div`
   color: #000;
   font-family: Pretendard;
-  font-size: 1.2rem;
+  font-size: calc(${fullHeight} * 0.02);
   font-style: normal;
   font-weight: 400;
-  line-height: normal;
+  line-height: calc(${fullHeight} * 0.02);
 `;
 
 export const FlagComponent = styled.div`
   display: flex;
-  padding: 0.625rem 1.25rem 1.25rem 1.25rem;
+  width: 100%;
+  height: 100%;
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
@@ -237,24 +245,19 @@ export const FlagComponent = styled.div`
 
 export const FlagTitleContainer = styled.div`
   display: flex;
-  padding: 0.3125rem 0rem;
+  padding: calc(${fullHeight} * 0.02);
   align-items: center;
-  gap: 0.625rem;
 `;
 
 export const FlagContentContainer = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  gap: 0.625rem;
+  padding: calc(${fullHeight} * 0.02);
+  gap: 2rem;
 `;
 
 export const FlagCountContainer = styled.div`
   display: flex;
-  padding: 0.3125rem;
-  justify-content: center;
-  align-items: center;
-  gap: 0.625rem;
+  gap: calc(${fullHeight} * 0.015);
 `;
 
 export const FlagCountIconContainer = styled.div`
@@ -262,7 +265,6 @@ export const FlagCountIconContainer = styled.div`
   padding: 0.3125rem;
   justify-content: center;
   align-items: center;
-  gap: 0.625rem;
 
   border-radius: 0.3125rem;
   background: #c4f3fa;
@@ -270,16 +272,16 @@ export const FlagCountIconContainer = styled.div`
 
 export const FlagCountTextContainer = styled.div`
   display: flex;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 0.625rem;
+  gap: 0.5rem;
 `;
 
 export const FlagCountTextSmallContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.625rem;
 `;
 
 export const FlagCountTextSmall = styled.div`
@@ -288,24 +290,29 @@ export const FlagCountTextSmall = styled.div`
   font-size: 1.2rem;
   font-style: normal;
   font-weight: 400;
-  line-height: normal;
+  line-height: 1.2rem;
+`;
+
+export const FlagCountTextBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.2rem;
 `;
 
 export const FlagCountTextBigContainer = styled.div`
   display: flex;
-  padding: 0rem 0.3125rem;
   flex-direction: column;
   align-items: center;
-  gap: 0.625rem;
 `;
 
 export const FlagCountTextBig = styled.div`
   color: #000;
   font-family: Pretenard;
-  font-size: 1.8rem;
+  font-size: 1.2rem;
   font-style: normal;
-  font-weight: 400;
-  line-height: normal;
+  font-weight: 700;
+  line-height: 1.2rem;
 `;
 
 export const HistoryComponent = styled.div`
@@ -334,15 +341,16 @@ export const HisotryTitleContainer = styled.div`
 export const TableNavContainer = styled.div`
   display: flex;
   flex-direction: row;
+  width: 100%;
+  height: calc(${fullHeight} * 0.06);
   justify-content: space-between;
-  align-items: flex-start;
-  flex: 1 0 0;
-  align-self: stretch;
+  align-items: center;
 `;
 
 export const FlagNavTitleContainer = styled.div`
   display: flex;
   align-items: center;
+  height: 100%;
   gap: 1.3rem;
 `;
 
@@ -354,20 +362,18 @@ export const FlagNavTitleContainer2 = styled.div`
 
 export const FlagNavSearchComponent = styled.div`
   display: flex;
-  padding-bottom: 0.4375rem;
   justify-content: space-between;
   align-items: center;
-
-  gap: 1.875rem;
-  flex: 1 0 0;
+  height: calc(${fullHeight} * 0.06);
+  gap: 1.25rem;
 `;
 
 export const FlagNavSearchBoxContainer = styled.div`
   display: flex;
-  padding: 0.4375rem 1.25rem;
+  padding: 0 1.25rem;
   justify-content: space-between;
   align-items: center;
-
+  height: 100%;
   border-radius: 0.625rem;
   border: 0.125rem solid #bdbdbd;
 `;
@@ -375,7 +381,6 @@ export const FlagNavSearchBoxContainer = styled.div`
 export const FlagNavSearchInput = styled.input`
   display: flex;
   flex: 1 0 0;
-  padding: 0.625rem;
   border: none;
   outline: none;
   background-color: transparent;
@@ -389,28 +394,22 @@ export const FlagNavSearchInput = styled.input`
 
 export const SearchIconContainer = styled.div`
   display: flex;
-  padding: 0.625rem;
   justify-content: center;
   align-items: center;
-  gap: 0.625rem;
 `;
 
 export const FlagNavFilteringContainer = styled.div`
   display: flex;
-  width: 4.375rem;
-  height: 4.375rem;
-  padding: 0.375rem;
+  width: calc(${fullHeight} * 0.06);
+  height: calc(${fullHeight} * 0.06);
   justify-content: center;
   align-items: center;
-  gap: 0.625rem;
 `;
 
 export const FlagNavFilteringButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0.625rem;
-  flex: 1 0 0;
   align-self: stretch;
 
   border-radius: 0.625rem;
@@ -421,26 +420,23 @@ export const FlagNavFilteringButton = styled.button`
 export const FlagNavFiltering = styled.div`
   display: flex;
   width: 2.25rem;
-  height: 2.25rem;
+  height: 100%;
   justify-content: center;
   align-items: center;
 `;
 
 export const FlagNavCreateButtonContainer = styled.div`
   display: flex;
-  padding: 0.4375rem 0rem;
+  height: 100%;
   justify-content: center;
   align-items: center;
-  gap: 1.875rem;
 `;
 
 export const FlagNavCreateButton = styled.button`
   display: flex;
-  height: 4.375rem;
   padding: 0.4375rem 1.3125rem;
   justify-content: center;
   align-items: center;
-  gap: 0.625rem;
 
   border-radius: 0.625rem;
   background: #031c5b;
@@ -450,15 +446,16 @@ export const FlagNavCreateButton = styled.button`
 export const ButtonText = styled.div`
   color: #fff;
   font-family: Pretendard;
-  font-size: 1.875rem;
+  font-size: calc(${fullHeight} * 0.04);
   font-style: normal;
   font-weight: 400;
-  line-height: normal;
+  line-height: calc(${fullHeight} * 0.04);
 `;
 
 export const FlagTableContainer = styled.div`
   display: flex;
   flex-direction: column;
+  height: calc(${fullHeight} * 0.49);
   align-items: flex-start;
   align-self: stretch;
 `;

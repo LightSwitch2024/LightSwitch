@@ -116,7 +116,7 @@ const FlagTable = (props: FlagTableProps) => {
   const [flagList, setFlagList] = useState<Array<FlagListItem>>([]);
 
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(4);
 
   /**
    * 페이지 네이션 변경 이벤트 핸들러
@@ -425,7 +425,7 @@ const FlagTable = (props: FlagTableProps) => {
           <TableFooter>
             <TableRow>
               <TablePagination
-                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                rowsPerPageOptions={[4, 8, 20, { label: 'All', value: -1 }]}
                 colSpan={3}
                 count={flagList.length}
                 rowsPerPage={rowsPerPage}

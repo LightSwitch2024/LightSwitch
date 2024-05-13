@@ -3,12 +3,13 @@ import styled from 'styled-components';
 
 export const Layout = styled.div`
   width: 100%;
-  height: calc(var(--vh, 1vh) * 100 - 60px);
+  height: calc(var(--vh, 1vh) * 100 - 40px);
   display: flex;
   margin-right: 10rem;
   flex-direction: row;
   justify-content: center;
   gap: 20px;
+  overflow: hidden;
 `;
 
 export const LogInLayout = styled.div`

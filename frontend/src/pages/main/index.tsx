@@ -66,6 +66,12 @@ const index = () => {
     console.log(sdkKey);
   }, [sdkKey]);
 
+  useEffect(() => {
+    let vh = 0;
+    vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  }, [window.innerHeight]);
+
   const html = document.querySelector('html');
   const openCreateModal = () => {
     setIsModalOpened(true);
@@ -106,7 +112,7 @@ const index = () => {
   };
 
   return (
-    <>
+    <S.MainLayout>
       {isModalOpened &&
         createPortal(
           <CreateModal
@@ -116,15 +122,16 @@ const index = () => {
           />,
           document.body,
         )}
-      <S.MainTitleComponent>
-        <S.imageContainer>
-          <S.imageLunitLogo path={LunitLogo} />
-        </S.imageContainer>
-        <S.LunitInfoContainer>
-          <S.LunitTitleContainer>
+      <S.ComponentContainer>
+        <S.MainTitleComponent>
+          <S.imageContainer>
+            <S.imageLunitLogo path={LunitLogo} />
+          </S.imageContainer>
+          <S.LunitInfoContainer>
+            {/* <S.LunitTitleContainer> */}
             <S.LunitTitle>Lunit</S.LunitTitle>
-          </S.LunitTitleContainer>
-          <S.DescriptionContainer>
+            {/* </S.LunitTitleContainer> */}
+            {/* <S.DescriptionContainer> */}
             {/* <S.SummaryInfoContinaer>
               <S.InfoTextContiner>
                 <S.InfoText>#Created Time : 2024.04.19</S.InfoText>
@@ -133,143 +140,151 @@ const index = () => {
                 <S.InfoText>#Total Member : 12</S.InfoText>
               </S.InfoTextContiner>
             </S.SummaryInfoContinaer> */}
-            <S.CatchPhraseContainer>
-              <S.InfoTextContiner>
-                <S.InfoText>
-                  인공지능 기술로 암을 정복합니다. 기술과 사람을 연결하여 생명을 구합니다.
-                </S.InfoText>
-              </S.InfoTextContiner>
-            </S.CatchPhraseContainer>
-          </S.DescriptionContainer>
-        </S.LunitInfoContainer>
-      </S.MainTitleComponent>
+            {/* <S.CatchPhraseContainer> */}
+            {/* <S.InfoTextContiner> */}
+            <S.InfoText>
+              인공지능 기술로 암을 정복합니다. 기술과 사람을 연결하여 생명을 구합니다.
+            </S.InfoText>
+            {/* </S.InfoTextContiner> */}
+            {/* </S.CatchPhraseContainer> */}
+            {/* </S.DescriptionContainer> */}
+          </S.LunitInfoContainer>
+        </S.MainTitleComponent>
 
-      <S.OverviewComponent>
-        <S.SdkKeyComponent>
-          <S.SdkKeyTitleContainer>
-            <S.Title>SDK 키</S.Title>
-            <CopyButton />
-          </S.SdkKeyTitleContainer>
-          <S.SdkkeyContentContainer>
-            <S.SdkKeyIconContainer>
-              <SdkKey />
-            </S.SdkKeyIconContainer>
-            <S.SdkKeyTextContainer>
-              {sdkKey.length > 0 ? (
-                <S.SdkKeyText>{sdkKey}</S.SdkKeyText>
-              ) : (
-                <S.NoExistSdkKeyText>
-                  <S.SdkKeyText>SDK 키가 없습니다.</S.SdkKeyText>
-                  <S.createSdkKeyButton onClick={handleClickCreateSdkKeyButton}>
-                    <S.SdkKeyText>SDK 키 발급</S.SdkKeyText>
-                  </S.createSdkKeyButton>
-                </S.NoExistSdkKeyText>
-              )}
-              {/* <S.SdkKeyText>{sdkKey}</S.SdkKeyText> */}
-              {/* <S.SdkKeyText>asdfasdfasdfasdf-asdf-qwerqwer</S.SdkKeyText> */}
-            </S.SdkKeyTextContainer>
-          </S.SdkkeyContentContainer>
-        </S.SdkKeyComponent>
-
-        <S.FlagComponent>
-          <S.FlagTitleContainer>
-            <S.Title>관리 플래그</S.Title>
-          </S.FlagTitleContainer>
-          <S.FlagContentContainer>
-            <S.FlagCountContainer>
-              <S.FlagCountIconContainer>
-                <OutlinedFlag />
-              </S.FlagCountIconContainer>
-              <S.FlagCountTextContainer>
-                <S.FlagCountTextSmallContainer>
-                  <S.FlagCountTextSmall>총</S.FlagCountTextSmall>
-                </S.FlagCountTextSmallContainer>
-                <S.FlagCountTextBigContainer>
-                  <S.FlagCountTextBig>{totalFlags}</S.FlagCountTextBig>
-                  {/* <S.FlagCountTextBig>13</S.FlagCountTextBig> */}
-                </S.FlagCountTextBigContainer>
-                <S.FlagCountTextSmallContainer>
-                  <S.FlagCountTextSmall>개</S.FlagCountTextSmall>
-                </S.FlagCountTextSmallContainer>
-              </S.FlagCountTextContainer>
-            </S.FlagCountContainer>
-
-            <S.FlagCountContainer>
-              <S.FlagCountIconContainer>
-                <FilledFlag />
-              </S.FlagCountIconContainer>
-              <S.FlagCountTextContainer>
-                <S.FlagCountTextSmallContainer>
-                  <S.FlagCountTextSmall>활성</S.FlagCountTextSmall>
-                </S.FlagCountTextSmallContainer>
-                <S.FlagCountTextBigContainer>
-                  <S.FlagCountTextBig>{activeFlags}</S.FlagCountTextBig>
-                  {/* <S.FlagCountTextBig>7</S.FlagCountTextBig> */}
-                </S.FlagCountTextBigContainer>
-                <S.FlagCountTextSmallContainer>
-                  <S.FlagCountTextSmall>개</S.FlagCountTextSmall>
-                </S.FlagCountTextSmallContainer>
-              </S.FlagCountTextContainer>
-            </S.FlagCountContainer>
-          </S.FlagContentContainer>
-        </S.FlagComponent>
-
-        <S.HistoryComponent>
-          <S.HisotryTitleContainer>
-            <S.Title>히스토리</S.Title>
-          </S.HisotryTitleContainer>
-        </S.HistoryComponent>
-      </S.OverviewComponent>
-
-      <S.FlagTableComponent>
-        <S.TableNavContainer>
-          <S.FlagNavTitleContainer>
-            <S.FlagNavTitleContainer>
-              <S.Title>플래그</S.Title>
-            </S.FlagNavTitleContainer>
-            <S.FlagNavSearchComponent ref={dropdownContainerRef}>
-              <S.FlagNavSearchBoxContainer>
-                <S.FlagNavSearchInput placeholder="검색" onChange={handleFlagSearch} />
-                <S.SearchIconContainer>
-                  <SearchIcon />
-                </S.SearchIconContainer>
-              </S.FlagNavSearchBoxContainer>
-
-              <S.FlagNavFilteringContainer>
-                <S.FlagNavFilteringButton onClick={() => openDropdown()}>
-                  <S.FlagNavFiltering>
-                    <FilteringIcon />
-                  </S.FlagNavFiltering>
-                </S.FlagNavFilteringButton>
-              </S.FlagNavFilteringContainer>
-              {isDropdownOpened &&
-                dropdownContainerRef.current &&
-                createPortal(
-                  <TagsInputComponent
-                    selectedTags={selectedTags}
-                    setSelectedTags={setSelectedTags}
-                    allowCreation={false}
-                  />,
-                  dropdownContainerRef.current,
+        <S.OverviewComponent>
+          <S.SdkKeyComponent>
+            <S.SdkKeyTitleContainer>
+              <S.Title>SDK 키</S.Title>
+              <CopyButton />
+            </S.SdkKeyTitleContainer>
+            <S.SdkkeyContentContainer>
+              <S.SdkKeyIconContainer>
+                <SdkKey />
+              </S.SdkKeyIconContainer>
+              <S.SdkKeyTextContainer>
+                {sdkKey.length > 0 ? (
+                  <S.SdkKeyText>{sdkKey}</S.SdkKeyText>
+                ) : (
+                  <S.NoExistSdkKeyText>
+                    <S.SdkKeyText>SDK 키가 없습니다.</S.SdkKeyText>
+                    <S.createSdkKeyButton onClick={handleClickCreateSdkKeyButton}>
+                      <S.SdkKeyText>SDK 키 발급</S.SdkKeyText>
+                    </S.createSdkKeyButton>
+                  </S.NoExistSdkKeyText>
                 )}
-            </S.FlagNavSearchComponent>
-          </S.FlagNavTitleContainer>
-          <S.FlagNavCreateButtonContainer>
-            <S.FlagNavCreateButton>
-              <S.ButtonText onClick={() => openCreateModal()}>플래그 만들기</S.ButtonText>
-            </S.FlagNavCreateButton>
-          </S.FlagNavCreateButtonContainer>
-        </S.TableNavContainer>
+                {/* <S.SdkKeyText>{sdkKey}</S.SdkKeyText> */}
+                {/* <S.SdkKeyText>asdfasdfasdfasdf-asdf-qwerqwer</S.SdkKeyText> */}
+              </S.SdkKeyTextContainer>
+            </S.SdkkeyContentContainer>
+          </S.SdkKeyComponent>
 
-        <S.FlagTableContainer>
-          <FlagTable
-            flagKeyword={flagKeyword}
-            tags={selectedTags}
-            activeFlagChanged={(acvtiveFlags) => setActiveFlags(acvtiveFlags)}
-          />
-        </S.FlagTableContainer>
-      </S.FlagTableComponent>
-    </>
+          <S.FlagComponent>
+            <S.FlagTitleContainer>
+              <S.Title>관리 플래그</S.Title>
+            </S.FlagTitleContainer>
+            <S.FlagContentContainer>
+              <S.FlagCountContainer>
+                <S.FlagCountIconContainer>
+                  <OutlinedFlag />
+                </S.FlagCountIconContainer>
+                <S.FlagCountTextContainer>
+                  <S.FlagCountTextSmallContainer>
+                    <S.FlagCountTextSmall>총</S.FlagCountTextSmall>
+                  </S.FlagCountTextSmallContainer>
+                  <S.FlagCountTextBox>
+                    <S.FlagCountTextBigContainer>
+                      <S.FlagCountTextBig>{totalFlags}</S.FlagCountTextBig>
+                      {/* <S.FlagCountTextBig>13</S.FlagCountTextBig> */}
+                    </S.FlagCountTextBigContainer>
+                    <S.FlagCountTextSmallContainer>
+                      <S.FlagCountTextSmall>개</S.FlagCountTextSmall>
+                    </S.FlagCountTextSmallContainer>
+                  </S.FlagCountTextBox>
+                </S.FlagCountTextContainer>
+              </S.FlagCountContainer>
+
+              <S.FlagCountContainer>
+                <S.FlagCountIconContainer>
+                  <FilledFlag />
+                </S.FlagCountIconContainer>
+                <S.FlagCountTextContainer>
+                  <S.FlagCountTextSmallContainer>
+                    <S.FlagCountTextSmall>활성</S.FlagCountTextSmall>
+                  </S.FlagCountTextSmallContainer>
+                  <S.FlagCountTextBox>
+                    <S.FlagCountTextBigContainer>
+                      <S.FlagCountTextBig>{activeFlags}</S.FlagCountTextBig>
+                      {/* <S.FlagCountTextBig>7</S.FlagCountTextBig> */}
+                    </S.FlagCountTextBigContainer>
+                    <S.FlagCountTextSmallContainer>
+                      <S.FlagCountTextSmall>개</S.FlagCountTextSmall>
+                    </S.FlagCountTextSmallContainer>
+                  </S.FlagCountTextBox>
+                </S.FlagCountTextContainer>
+              </S.FlagCountContainer>
+            </S.FlagContentContainer>
+          </S.FlagComponent>
+
+          <S.HistoryComponent>
+            <S.HisotryTitleContainer>
+              <S.Title>히스토리</S.Title>
+            </S.HisotryTitleContainer>
+          </S.HistoryComponent>
+        </S.OverviewComponent>
+
+        <S.FlagTableComponent>
+          <S.TableNavContainer>
+            <S.FlagNavTitleContainer>
+              <S.FlagNavTitleContainer>
+                <S.Title>플래그</S.Title>
+              </S.FlagNavTitleContainer>
+              <S.FlagNavSearchComponent ref={dropdownContainerRef}>
+                <S.FlagNavSearchBoxContainer>
+                  <S.FlagNavSearchInput placeholder="검색" onChange={handleFlagSearch} />
+                  <S.SearchIconContainer>
+                    <SearchIcon />
+                  </S.SearchIconContainer>
+                </S.FlagNavSearchBoxContainer>
+
+                <S.FlagNavFilteringContainer>
+                  <S.FlagNavFilteringButton onClick={() => openDropdown()}>
+                    <S.FlagNavFiltering>
+                      <FilteringIcon />
+                    </S.FlagNavFiltering>
+                  </S.FlagNavFilteringButton>
+                </S.FlagNavFilteringContainer>
+                {isDropdownOpened &&
+                  dropdownContainerRef.current &&
+                  createPortal(
+                    <TagsInputComponent
+                      selectedTags={selectedTags}
+                      setSelectedTags={setSelectedTags}
+                      allowCreation={false}
+                    />,
+                    dropdownContainerRef.current,
+                  )}
+              </S.FlagNavSearchComponent>
+            </S.FlagNavTitleContainer>
+
+            <S.FlagNavCreateButtonContainer>
+              <S.FlagNavCreateButton>
+                <S.ButtonText onClick={() => openCreateModal()}>
+                  플래그 만들기
+                </S.ButtonText>
+              </S.FlagNavCreateButton>
+            </S.FlagNavCreateButtonContainer>
+          </S.TableNavContainer>
+
+          <S.FlagTableContainer>
+            <FlagTable
+              flagKeyword={flagKeyword}
+              tags={selectedTags}
+              activeFlagChanged={(acvtiveFlags) => setActiveFlags(acvtiveFlags)}
+            />
+          </S.FlagTableContainer>
+        </S.FlagTableComponent>
+      </S.ComponentContainer>
+    </S.MainLayout>
   );
 };
 
