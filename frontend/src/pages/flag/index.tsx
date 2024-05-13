@@ -8,12 +8,14 @@ import ToggleOnIcon from '@assets/unfold-more.svg?react';
 import * as S from '@pages/flag/indexStyle';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useParams } from 'react-router-dom';
-
+import { useNavigate, useParams } from 'react-router-dom';
 import { deleteFlag, getFlagDetail, updateFlag } from '@/api/flagDetail/flagDetailAxios';
 import { getTagList, getTagListByKeyword } from '@/api/main/mainAxios';
 import CreateModal from '@/components/createModal';
 import UpdateModal from '@/components/updateModal';
+
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 interface Variation {
   value: string;
@@ -59,7 +61,8 @@ const FlagDetail = () => {
   const { flagId } = useParams<{ flagId: string }>();
   const [flagDetail, setFlagDetail] = useState<FlagDetailItem>({} as FlagDetailItem);
   const [isToggle, setIsToggle] = useState<boolean[]>([]);
-
+  const navigator = useNavigate();
+  const MySwal = withReactContent(Swal);
   /**
    * flagId를 통해 마운트 시 해당 flag의 상세 정보를 가져옴
    */
@@ -84,8 +87,36 @@ const FlagDetail = () => {
     setIsModalOpened(true);
   };
 
-  const deleteFlag = () => {
-    console.log('deleteFlag');
+  const onClickdeleteFlag = () => {
+    MySwal.fire({
+      title: '플래그를 삭제하시겠습니까?',
+      text: '다시 되돌릴 수 없습니다. 신중하세요.',
+      icon: 'warning',
+
+      showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+      confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
+      cancelButtonColor: '#d33', // cancel 버튼 색깔 지정
+      confirmButtonText: '확인', // confirm 버튼 텍스트 지정
+      cancelButtonText: '취소', // cancel 버튼 텍스트 지정
+
+      reverseButtons: true, // 버튼 순서 거꾸로
+    }).then((result) => {
+      if (result.isConfirmed) {
+        requestDeleteFlag();
+      }
+    });
+  };
+
+  const requestDeleteFlag = () => {
+    deleteFlag<Number>(
+      Number(flagId),
+      (data: Number) => {
+        navigator('/');
+      },
+      (error) => {
+        console.error(`플래그 삭제에 실패 했습니다. ${error}`);
+      },
+    );
   };
 
   const closeUpdateModal = () => {
@@ -343,7 +374,7 @@ const FlagDetail = () => {
             ))}
 
           <S.ButtonLayer>
-            <S.DeleteButton onClick={deleteFlag}>
+            <S.DeleteButton onClick={onClickdeleteFlag}>
               <S.DeleteButtonText>삭제하기</S.DeleteButtonText>
             </S.DeleteButton>
             <S.UpdateButton onClick={openUpdateModal}>
