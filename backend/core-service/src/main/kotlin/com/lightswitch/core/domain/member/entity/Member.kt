@@ -1,6 +1,7 @@
 package com.lightswitch.core.domain.member.entity
 
 import com.lightswitch.core.common.entity.BaseEntity
+import com.lightswitch.core.domain.organization.repository.entity.Organization
 import jakarta.persistence.*
 
 @Entity(name = "member")
@@ -14,7 +15,7 @@ class Member(
     var email: String,
     var password: String,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "organization_id", nullable = true)
-    var organization: Organization? = null,
+    @OneToOne(mappedBy = "owner", fetch = FetchType.LAZY)
+    var organization: Organization? = null
+
 ) : BaseEntity()

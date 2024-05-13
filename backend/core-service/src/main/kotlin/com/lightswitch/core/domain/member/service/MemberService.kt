@@ -4,8 +4,6 @@ import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.common.service.PasswordService
 import com.lightswitch.core.domain.flag.repository.FlagRepository
-import com.lightswitch.core.domain.flag.repository.entity.Flag
-import com.lightswitch.core.domain.flag.repository.entity.Tag
 import com.lightswitch.core.domain.flag.service.FlagService
 import com.lightswitch.core.domain.member.dto.req.PasswordUpdateReqDto
 import com.lightswitch.core.domain.member.dto.req.LogInReqDto
@@ -15,21 +13,18 @@ import com.lightswitch.core.domain.member.dto.req.SignupReqDto
 import com.lightswitch.core.domain.member.dto.res.MemberResDto
 import com.lightswitch.core.domain.member.dto.res.MemberResponseDto
 import com.lightswitch.core.domain.member.dto.res.OrgResDto
-import com.lightswitch.core.domain.member.dto.res.SdkKeyResDto
 import com.lightswitch.core.domain.member.entity.Member
-import com.lightswitch.core.domain.member.entity.Organization
 import com.lightswitch.core.domain.member.exception.MemberException
 import com.lightswitch.core.domain.member.repository.MemberRepository
-import com.lightswitch.core.domain.member.repository.OrganizationRepository
 import com.lightswitch.core.domain.member.repository.SdkKeyRepository
+import com.lightswitch.core.domain.organization.repository.OrganizationRepository
+import com.lightswitch.core.domain.organization.service.OrganizationService
 import com.lightswitch.core.domain.redis.service.RedisService
-import org.aspectj.weaver.ast.Or
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-import java.time.LocalDateTime
 
 @Transactional
 @Service
@@ -41,6 +36,7 @@ class MemberService(
     private val flagRepository: FlagRepository,
     private val flagService: FlagService,
     private val organizationRepository: OrganizationRepository,
+    private val organizationService: OrganizationService,
     @Value("\${spring.data.redis.code.signup}")
     val signupCode: String
 ) {
@@ -73,24 +69,28 @@ class MemberService(
             telNumber = phoneNumber,
             email = email,
             password = encodedPassword,
-            organization = null,
         )
 
         val savedMember = memberRepository.save(member)
         val sdkKey = sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(savedMember.memberId!!)
+        val organization = organizationRepository.findAll()
 
-        return MemberResponseDto(
-            memberId = savedMember.memberId!!,
-            firstName = savedMember.firstName,
-            lastName = savedMember.lastName,
-            telNumber = savedMember.telNumber,
-            email = savedMember.email,
-            password = savedMember.password,
-            sdkKey = sdkKey?.key ?: "",
-            createdAt = savedMember.createdAt.toString(),
-            updatedAt = savedMember.updatedAt.toString(),
-            deletedAt = savedMember.deletedAt?.toString() ?: "",
-        )
+        return if (organization.isNotEmpty()) {
+            throw BaseException(ResponseCode.ORGANIZATION_NOT_FOUND)
+        } else {
+            MemberResponseDto(
+                memberId = savedMember.memberId!!,
+                firstName = savedMember.firstName,
+                lastName = savedMember.lastName,
+                telNumber = savedMember.telNumber,
+                email = savedMember.email,
+                password = savedMember.password,
+                sdkKey = sdkKey?.key ?: "",
+                createdAt = savedMember.createdAt.toString(),
+                updatedAt = savedMember.updatedAt.toString(),
+                deletedAt = savedMember.deletedAt?.toString() ?: "",
+            )
+        }
     }
 
     fun validateHangle(name: String): Boolean {
@@ -124,7 +124,9 @@ class MemberService(
                 ?: throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
         // 회원가입 후 로그인할 때 isCorrectPW 코드
         val isCorrectPW = passwordService.matches(logInReqDto.password, savedMember.password)
-        println(savedMember.memberId)
+
+        // 회사 찾기
+        val savedOrg = organizationRepository.findAll()
 
         return if (isCorrectPW) {
             MemberResDto(
@@ -133,60 +135,23 @@ class MemberService(
                 firstName = savedMember.firstName,
                 lastName = savedMember.lastName,
                 telNumber = savedMember.telNumber,
-                organization = savedMember.organization?.name.toString(),
+                //회사가 1개 뿐일거라서 1번 회사 불러옴.
+                orgName = savedOrg.get(1).name,
             )
         } else {
             throw BaseException(ResponseCode.INVALID_PASSWORD)
         }
     }
 
-    // 첫 로그인 시, orgId가 null일 때, 추가로 받아 채움(이미존재하는회사:멤버로 추가, 존재하지않는회사: 신규생성 및 owner설정)
-    fun fillOrg(orgReqDto: OrgReqDto): OrgResDto {
-        val orgMem = memberRepository.findByEmailAndDeletedAtIsNull(orgReqDto.email) ?: throw BaseException(
-            ResponseCode.MEMBER_NOT_FOUND
-        )
 
-        val savedOrg = organizationRepository.findByNameAndDeletedAtIsNull(orgReqDto.orgName)
-
-        val addOrgMem: Member = Member(
-            memberId = orgMem.memberId!!,
-            email = orgMem.email,
-            firstName = orgMem.firstName,
-            lastName = orgMem.lastName,
-            telNumber = orgMem.telNumber,
-            password = orgMem.password,
-            organization = null,
-        )
-
-        // 기존에 org 가 존재했다면
-        if (savedOrg != null) {
-            // org members에 추가하고,
-            val savedMemberList = mutableListOf<Member>()
-            savedMemberList.add(orgMem)
-            savedOrg.members.addAll(savedMemberList)
-            // member 정보에 org 정보 추가
-            addOrgMem.organization = savedOrg
-        } else {
-            // 새로 만들어야할 org라면
-            val newOrg: Organization = Organization(
-                name = orgReqDto.orgName,
-                owner = orgMem
-            )
-            // org를 생성하고
-            organizationRepository.save(newOrg)
-            // member 정보에 org 추가
-            addOrgMem.organization = newOrg
-        }
-
-        return OrgResDto(
-            organizationName = orgMem.organization?.name.toString(),
-        )
-    }
 
     // 유저 정보 읽기
     fun getUser(email: String): MemberResDto {
         val savedMember =
             memberRepository.findByEmailAndDeletedAtIsNull(email) ?: throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
+
+        // 회사 찾기
+        val savedOrg = organizationRepository.findAll()
 
         return MemberResDto(
             memberId = savedMember.memberId!!,
@@ -194,7 +159,8 @@ class MemberService(
             firstName = savedMember.firstName,
             lastName = savedMember.lastName,
             telNumber = savedMember.telNumber,
-            organization = savedMember.organization?.name.toString(),
+            //회사가 1개 뿐일거라서 1번 회사 불러옴.
+            orgName = savedOrg.get(1).name,
         )
     }
 
@@ -209,12 +175,6 @@ class MemberService(
 
         flagRepository.findByMaintainerMemberIdAndDeletedAtIsNull(savedUser.memberId!!).map {
             flagService.deleteFlag(it.flagId!!)
-        }
-
-        savedUser.organization?.let {
-            organizationRepository.findByNameAndDeletedAtIsNull(it.name)?.members?.remove(
-                savedUser
-            )
         }
 
         return MemberResponseDto(
@@ -247,6 +207,9 @@ class MemberService(
             password = savedMember.password
         )
 
+        // 회사 찾기
+        val savedOrg = organizationRepository.findAll()
+
         memberRepository.save(updatedMember)
 
         return MemberResDto(
@@ -255,7 +218,8 @@ class MemberService(
             lastName = savedMember.lastName,
             telNumber = savedMember.telNumber,
             email = savedMember.email,
-            organization = savedMember.organization?.name.toString(),
+            //회사가 1개 뿐일거라서 1번 회사 불러옴.
+            orgName = savedOrg.get(1).name,
         )
     }
 
@@ -274,8 +238,10 @@ class MemberService(
             telNumber = savedMember.telNumber,
             email = savedMember.email,
             password = encodedPassword,
-//            updatedAt = LocalDateTime.now()
         )
+
+        // 회사 찾기
+        val savedOrg = organizationRepository.findAll()
 
         memberRepository.save(updatedMember)
 
@@ -285,7 +251,8 @@ class MemberService(
             lastName = savedMember.lastName,
             telNumber = savedMember.telNumber,
             email = savedMember.email,
-            organization = savedMember.organization?.name.toString(),
+            //회사가 1개 뿐일거라서 1번 회사 불러옴.
+            orgName = savedOrg.get(1).name,
         )
     }
 

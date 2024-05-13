@@ -12,5 +12,6 @@ data class MemberResDto(
     val lastName: String,
     @field:NotBlank
     val telNumber: String,
-    val organization: String,
+    @field:NotBlank
+    val orgName: String,
 )

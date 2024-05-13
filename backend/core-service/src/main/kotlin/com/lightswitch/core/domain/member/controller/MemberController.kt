@@ -49,19 +49,8 @@ class MemberController(
     fun logIn(
         @RequestBody logInReqDto: LogInReqDto
     ): BaseResponse<MemberResDto> {
-        println("===============")
-        println(memberService.logIn(logInReqDto).memberId)
-        println("==========================")
 
         return success(memberService.logIn(logInReqDto))
-    }
-
-    // 유저 초기 로그인시, organization 입력
-    @PostMapping("/{memberId}/fillOrg")
-    fun fillOrg(
-        @RequestBody orgReqDto: OrgReqDto
-    ): BaseResponse<OrgResDto> {
-        return success(memberService.fillOrg(orgReqDto))
     }
 
     // 유저 정보 불러오기
