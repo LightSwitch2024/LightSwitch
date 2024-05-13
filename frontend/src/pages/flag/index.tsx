@@ -67,9 +67,6 @@ const FlagDetail = () => {
    * flagId를 통해 마운트 시 해당 flag의 상세 정보를 가져옴
    */
   useEffect(() => {
-    const html = document.querySelector('html');
-    html?.classList.remove('scroll-locked');
-
     if (flagId === undefined || flagId === null) return;
 
     getFlagDetail<FlagDetailItem>(
