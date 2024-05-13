@@ -154,83 +154,19 @@ class HistoryService(
             )
         }
 
+        val variationInfoRequestDto = VariationInfoRequestDto(
+            type = flagRequestDto.type,
+            defaultValue = flagRequestDto.defaultValue,
+            defaultPortion = flagRequestDto.defaultPortion,
+            defaultDescription = flagRequestDto.description,
+            variations = flagRequestDto.variations
+        )
+
         //variation
-        val variations = variationRepository.findByFlagAndDefaultFlagIsFalseAndDeletedAtIsNull(flag)
+        checkVariation(flag, variationInfoRequestDto)
 
-        flagRequestDto.variations.forEach { variationDto ->
-            var matchedVariation = false
-            for (variation in variations) {
-                if (variation.variationId == variationDto.variationId) {
-                    matchedVariation = true
-                    if (variation.value != variationDto.value) {
-                        historyRepository.save(
-                            History(
-                                flag = flag,
-                                action = HistoryType.UPDATE_VARIATION_VALUE,
-                                previous = variation.value,
-                                current = variationDto.value
-                            )
-                        )
-                    }
-                    if (variation.portion != variationDto.portion) {
-                        historyRepository.save(
-                            History(
-                                flag = flag,
-                                action = HistoryType.UPDATE_VARIATION_PORTION,
-                                target = variation.value,
-                                previous = variation.portion.toString(),
-                                current = variationDto.portion.toString()
-                            )
-                        )
-                    }
-
-                }
-                break
-            }
-            if (!matchedVariation) {
-                historyRepository.save(
-                    History(
-                        flag = flag,
-                        action = HistoryType.CREATE_VARIATION,
-                        current = variationDto.value
-                    )
-                )
-            }
-        }
-
-
-        // keyword & property
-        for (keywordDto in flagRequestDto.keywords) {
-            var matchedKeyword = false
-            for (keyword in flag.keywords) {
-                if (keyword.keywordId == keywordDto.keywordId) {
-                    matchedKeyword = true
-                    if (keyword.value != keywordDto.value) {
-                        historyRepository.save(
-                            History(
-                                flag = flag,
-                                action = HistoryType.UPDATE_KEYWORD,
-                                target = keywordDto.description,
-                                previous = keyword.value,
-                                current = keywordDto.value
-                            )
-                        )
-                    }
-                    checkProperty(keywordDto, keyword, flag)
-                    break
-                }
-            }
-            if (!matchedKeyword) {
-                historyRepository.save(
-                    History(
-                        flag = flag,
-                        action = HistoryType.CREATE_KEYWORD,
-                        target = keywordDto.description,
-                        current = keywordDto.value
-                    )
-                )
-            }
-        }
+        val keywords = KeywordInfoRequestDto(flagRequestDto.keywords)
+        checkKeyword(keywords, flag)
 
         return proceed;
     }
@@ -314,6 +250,17 @@ class HistoryService(
         val proceed = proceedingJoinPoint.proceed()
         val flag = flagRepository.findById(flagId).orElseThrow()
 
+        checkDefaultVariation(flag, variationInfoRequestDto)
+        //variation
+        checkVariation(flag, variationInfoRequestDto)
+
+        return proceed
+    }
+
+    private fun checkDefaultVariation(
+        flag: Flag,
+        variationInfoRequestDto: VariationInfoRequestDto
+    ) {
         val defaultVariation =
             variationRepository.findByFlagAndDefaultFlagIsTrueAndDeletedAtIsNull(flag)
                 ?: throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
@@ -339,8 +286,12 @@ class HistoryService(
                 )
             )
         }
+    }
 
-        //variation
+    private fun checkVariation(
+        flag: Flag,
+        variationInfoRequestDto: VariationInfoRequestDto
+    ) {
         val variations = variationRepository.findByFlagAndDefaultFlagIsFalseAndDeletedAtIsNull(flag)
 
         variationInfoRequestDto.variations.forEach { variationDto ->
@@ -383,8 +334,6 @@ class HistoryService(
                 )
             }
         }
-
-        return proceed
     }
 
     @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.updateKeywordInfo(..)) && args(flagId,keywordInfoRequestDto)")
@@ -397,37 +346,7 @@ class HistoryService(
         val flag = flagRepository.findById(flagId).orElseThrow()
 
         // keyword & property
-        for (keywordDto in keywordInfoRequestDto.keywords) {
-            var matchedKeyword = false
-            for (keyword in flag.keywords) {
-                if (keyword.keywordId == keywordDto.keywordId) {
-                    matchedKeyword = true
-                    if (keyword.value != keywordDto.value) {
-                        historyRepository.save(
-                            History(
-                                flag = flag,
-                                action = HistoryType.UPDATE_KEYWORD,
-                                target = keywordDto.description,
-                                previous = keyword.value,
-                                current = keywordDto.value
-                            )
-                        )
-                    }
-                    checkProperty(keywordDto, keyword, flag)
-                    break
-                }
-            }
-            if (!matchedKeyword) {
-                historyRepository.save(
-                    History(
-                        flag = flag,
-                        action = HistoryType.CREATE_KEYWORD,
-                        target = keywordDto.description,
-                        current = keywordDto.value
-                    )
-                )
-            }
-        }
+        checkKeyword(keywordInfoRequestDto, flag)
 
         return proceed
     }
@@ -442,6 +361,15 @@ class HistoryService(
         val flag = flagRepository.findById(flagId).orElseThrow()
 
         // keyword & property
+        checkKeyword(keywordInfoRequestDto, flag)
+
+        return proceed
+    }
+
+    private fun checkKeyword(
+        keywordInfoRequestDto: KeywordInfoRequestDto,
+        flag: Flag
+    ) {
         for (keywordDto in keywordInfoRequestDto.keywords) {
             var matchedKeyword = false
             for (keyword in flag.keywords) {
@@ -473,7 +401,5 @@ class HistoryService(
                 )
             }
         }
-
-        return proceed
     }
 }
