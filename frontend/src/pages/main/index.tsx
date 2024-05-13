@@ -54,7 +54,6 @@ const index = () => {
         setSdkKey(data.sdkKey ? data.sdkKey : '');
         setTotalFlags(data.totalFlags);
         setActiveFlags(data.activeFlags);
-        setIsModalOpened(true);
       },
       (err) => {
         console.error(err);
