@@ -3,12 +3,15 @@ package com.lightswitch.core.domain.history.service
 import com.lightswitch.core.domain.flag.dto.KeywordDto
 import com.lightswitch.core.domain.flag.dto.PropertyDto
 import com.lightswitch.core.domain.flag.dto.VariationDto
+import com.lightswitch.core.domain.flag.dto.req.SwitchRequestDto
 import com.lightswitch.core.domain.flag.dto.res.FlagResponseDto
 import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.history.repository.HistoryRepository
 import com.lightswitch.core.domain.history.repository.entity.History
 import com.lightswitch.core.domain.history.repository.entity.HistoryType
+import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.AfterReturning
+import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -63,5 +66,17 @@ class HistoryService(
                 historyRepository.save(propertyHistory)
             }
         }
+    }
+
+    @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.switchFlag(..)) && args(flagId,switchRequestDto)")
+    fun switchFlag(proceedingJoinPoint: ProceedingJoinPoint, flagId: Long, switchRequestDto: SwitchRequestDto): Any? {
+        val proceed = proceedingJoinPoint.proceed()
+        val flag = flagRepository.findById(flagId).orElseThrow()
+        historyRepository.save(History(
+                flag = flag,
+                action = HistoryType.SWITCH_FLAG,
+                current = switchRequestDto.active.toString()
+        ))
+        return proceed;
     }
 }
