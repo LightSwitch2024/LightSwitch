@@ -184,6 +184,28 @@ class HistoryService(
                 )
             }
         }
+
+        preProperties.forEach { preProperty ->
+            var stillExists = false
+            for (property in properties) {
+                if (preProperty.propertyId == property.propertyId && property.deletedAt == null) {
+                    stillExists = true
+                    break
+                }
+            }
+            println(stillExists)
+            if (!stillExists) {
+                println(preProperty.propertyId)
+                historyRepository.save(
+                    History(
+                        flag = flag,
+                        action = HistoryType.DELETE_PROPERTY,
+                        previous = preProperty.property
+                    )
+                )
+            }
+        }
+
     }
 
     @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.updateFlagInfo(..)) && args(flagId,flagInfoRequestDto)")
@@ -246,7 +268,6 @@ class HistoryService(
         val proceed = proceedingJoinPoint.proceed()
         println("======= updateVariationInfoWithHardDelete =======")
         variations = variationRepository.findByFlagAndDeletedAtIsNull(flag)
-        println("======= ${preVariations} =======")
         checkVariation(flag, preVariations, variations)
         return proceed
     }
@@ -364,9 +385,6 @@ class HistoryService(
         for (keyword in keywords) {
             var matchedKeyword = false
             for (preKeyword in preKeywords) {
-                println("======== ${preKeyword.keywordId} / ${keyword.keywordId}")
-                println("======== ${preKeyword.keywordId} / ${keyword.keywordId}")
-                println("======== ${preKeyword.keywordId} / ${keyword.keywordId}")
                 if (preKeyword.keywordId == keyword.keywordId) {
                     matchedKeyword = true
                     if (preKeyword.value != keyword.value) {
@@ -391,6 +409,27 @@ class HistoryService(
                         action = HistoryType.CREATE_KEYWORD,
                         target = keyword.description,
                         current = keyword.value
+                    )
+                )
+            }
+        }
+
+        preKeywords.forEach { preKeyword ->
+            var stillExists = false
+            for (keyword in keywords) {
+                if (preKeyword.keywordId == keyword.keywordId && keyword.deletedAt == null) {
+                    stillExists = true
+                    break
+                }
+            }
+            println(stillExists)
+            if (!stillExists) {
+                println(preKeyword.keywordId)
+                historyRepository.save(
+                    History(
+                        flag = flag,
+                        action = HistoryType.DELETE_KEYWORD,
+                        previous = preKeyword.value
                     )
                 )
             }
