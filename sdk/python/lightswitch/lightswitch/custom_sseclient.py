@@ -61,28 +61,20 @@ class CustomEvent(Event):
         and return an Event object.
         """
         msg = cls()
-        # print("raw : ", raw)
         raw = raw.replace('\r\n', '')
-        # test = codecs.decode(raw, 'unicode_escape')
-        # print("test:", test)
         for line in raw.splitlines():
             line = line.encode('latin1').decode('utf-8')
-            # print("test : ", line)
             m = cls.sse_line_pattern.match(line)
             if m is None:
-                # Malformed line.  Discard but warn.
                 warnings.warn('Invalid SSE line: "%s"' % line, SyntaxWarning)
                 continue
 
             name = m.group('name')
             if name == '':
-                # line began with a ":", so is a comment.  Ignore
                 continue
             value = m.group('value')
 
             if name == 'data':
-                # If we already have some data, then join to it with a newline.
-                # Else this is it.
                 if msg.data:
                     msg.data = '%s\n%s' % (msg.data, value)
                 else:

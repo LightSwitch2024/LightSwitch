@@ -24,6 +24,7 @@ class LSTypeCastError(Exception):
         )
         super().__init__(self.message)
 
+
 class StreamDataError(Exception):
     """Exception raised when event data fails to provide valid JSON."""
     def __init__(self, message="Invalid stream event data."):

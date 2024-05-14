@@ -7,7 +7,7 @@ from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 from .models import Flags, Flag, LSUser
 from .stream_manager import StreamManager, StreamEvent
-from .exceptions import StreamDataError, LSServerError, LSTypeCastError
+from .exceptions import StreamDataError, LSServerError, LSTypeCastError, LSFlagNotFoundError
 
 
 DEFAULT_API_URL = 'http://localhost:8000/api/v1/'
@@ -32,15 +32,11 @@ class Lightswitch:
     environment_key: typing.Optional[str] = None
 
     @classmethod
-    def get_instance(cls, **kwargs):  # 싱글톤 인스턴스를 반환
+    def get_instance(cls, **kwargs):
         if cls._instance is None:
             cls._instance = cls(**kwargs)
         return cls._instance
 
-    # 초기화할 때
-    # 1.모든 플래그를 가져와서 저장
-    # 2.sdk 키로 subscribe post 해서 userkey 받고 : api/v1/sse/subscribe
-    # 3.subscribe/userkey 로 sse 연결
     def __init__(
         self,
         api_url: typing.Optional[str] = None,
@@ -66,13 +62,11 @@ class Lightswitch:
         self.request_timeout_seconds = request_timeout_seconds
         self.session.mount(self.api_url, HTTPAdapter(max_retries=retries))
 
-        # event 처리 함수
         self.handle_event = self.process_stream_event_update
 
-        # 필요 시 api_url 이외의 url 속성 할당
-        self.environment_url = f"{self.api_url}environment"
-        self.environment_flags_url = f"{self.api_url}sdk/init"  # 현재는 이 주소만 정의됨 - 현재 환경의 모든 플래그 가져오기
-        self.identity_flags_url = f"{self.api_url}identity"
+        # self.environment_url = f"{self.api_url}environment"
+        self.environment_flags_url = f"{self.api_url}sdk/init"
+        # self.identity_flags_url = f"{self.api_url}identity"
 
         self.user_key = None
         self.stream_manager = None
@@ -91,7 +85,6 @@ class Lightswitch:
         )
         self.stream_manager.start()
 
-    # sdk 키로 subscribe post 해서 userkey 받기
     def _get_user_key(self, environment_key):
         headers = {
             'Content-Type': 'application/json',
@@ -117,24 +110,14 @@ class Lightswitch:
     def _initialize_environment(self, environment_key: typing.Optional[str]) -> None:
         Lightswitch.flags = self._get_all_environment_flags_from_api(environment_key)
 
-    # 새로운 SSE event를 받았을 때 EventStreamManager 스레드에 의해 호출되는 메서드
-    # SSE 응답을 매개변수로 받아 이벤트 타입에 따라 플래그 목록을 동기화
-    '''
-    response 형식은 다음과 같음
-    {
-      "userKey": "string",
-      "type": "CREATE",
-      "data": {}
-    }
-    '''
     def process_stream_event_update(self, event: StreamEvent) -> None:
         try:
             new_stream_event = json.loads(event.data)
-            print("new_stream_event : ", new_stream_event)
-            event_type = new_stream_event.get('type')  # 예를 들어 CREATE
-            print("event-type : ", event_type)
+            # print("new_stream_event : ", new_stream_event)
+            event_type = new_stream_event.get('type')
+            # print("event-type : ", event_type)
             new_flag_data = new_stream_event['data']
-            print("new_flag_data : ", new_flag_data)
+            # print("new_flag_data : ", new_flag_data)
 
             if event_type == "CREATE":
                 new_flag = Flag.flag_from_api(new_flag_data)
@@ -147,7 +130,8 @@ class Lightswitch:
 
             elif event_type == "SWITCH":
                 self.toggle_flag(new_flag_data)
-            else:  # DELETE
+
+            else:
                 self.delete_flag(new_flag_data['title'])
 
         except json.JSONDecodeError as e:
@@ -158,7 +142,6 @@ class Lightswitch:
     def add_flag(self, new_flag: Flag):
         if self.flags is None:
             self.flags = Flags()
-        # flags에 플래그 추가
         self.flags.add_flag(new_flag)
 
     def update_flag(self, title, new_data):
@@ -170,7 +153,6 @@ class Lightswitch:
     def toggle_flag(self, new_flag):  # 플래그 활성화 상태 변경
         self.flags.toggle_flag_activation(new_flag)
 
-    # 해당 환경의 플래그 데이터 모두 가져오기
     def _get_all_environment_flags_from_api(self, environment_key) -> Flags:
         try:
             data = {
@@ -183,34 +165,48 @@ class Lightswitch:
                 flags_data=json_response
             )
         except json.JSONDecodeError as e:
-            # logging.error(f"API 요청 중 에러 발생: {e}")
             raise LSServerError(
                 "LightSwitch 서버와 통신에 실패했습니다."
                 "응답 데이터가 유효한 JSON 타입이 아닙니다."
             ) from e
 
-    # 플래그 이름과 유저 모델 받아서 해당 유저의 플래그 변량 반환
     def get_flag(self, flag_title: str, user: LSUser, default_value: typing.Any) -> typing.Any:
-        flag = self.flags.get_flag_by_name(flag_title)
+        try:
+            flag = self.flags.get_flag_by_name(flag_title)
+        except LSFlagNotFoundError:
+            return default_value
+
         value_if_is_targeted = flag.get_user_variation_by_keyword(user)
-        if not value_if_is_targeted:  # 키워드에 해당하지 않으면
+        if not value_if_is_targeted:
             return flag.get_user_variation_by_percentile(user)
         return value_if_is_targeted
 
     def get_boolean_flag(self, flag_title: str, user: LSUser, default_value: bool) -> bool:
-        flag = self.flags.get_flag_by_name(flag_title)
+        try:
+            flag = self.flags.get_flag_by_name(flag_title)
+        except LSFlagNotFoundError:
+            return default_value
+
         if flag.type != "BOOLEAN":
             raise LSTypeCastError(flag_title, "BOOLEAN")
         return self.get_flag(flag_title, user, default_value)
 
     def get_number_flag(self, flag_title: str, user: LSUser, default_value: int) -> int:
-        flag = self.flags.get_flag_by_name(flag_title)
+        try:
+            flag = self.flags.get_flag_by_name(flag_title)
+        except LSFlagNotFoundError:
+            return default_value
+
         if flag.type != "INTEGER":
             raise LSTypeCastError(flag_title, "INTEGER")
         return self.get_flag(flag_title, user, default_value)
 
     def get_string_flag(self, flag_title: str, user: LSUser, default_value: str) -> str:
-        flag = self.flags.get_flag_by_name(flag_title)
+        try:
+            flag = self.flags.get_flag_by_name(flag_title)
+        except LSFlagNotFoundError:
+            return default_value
+
         if flag.type != "STRING":
             raise LSTypeCastError(flag_title, "STRING")
         return self.get_flag(flag_title, user, default_value)
