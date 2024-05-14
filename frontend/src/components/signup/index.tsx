@@ -35,6 +35,7 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
   const [firstNameCheck, setFirstNameCheck] = useState<boolean>(false);
   const [lastName, setLastName] = useState<string>('');
   const [lastNameCheck, setLastNameCheck] = useState<boolean>(false);
+  const [orgName, setOrgName] = useState<string>('');
   const [telNumber, settelNumber] = useState<string>('');
   const [telNumberCheck, settelNumberCheck] = useState<boolean>(false);
   const [email, setEmail] = useState<string>('');
@@ -77,6 +78,10 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
   const handletelNumberChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     settelNumber(e.target.value);
     settelNumberCheck(validatetelNumber(e.target.value));
+  };
+
+  const handleorgNameChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setOrgName(e.target.value);
   };
 
   const validateEmail = (email: string): boolean => {
@@ -214,6 +219,14 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
           {firstName && lastName && (!firstNameCheck || !lastNameCheck) && (
             <S.SignUpWarnText>유효하지 않은 형식입니다.</S.SignUpWarnText>
           )}
+        </S.SignUpInputBox>
+        <S.SignUpInputBox>
+          <S.SignUpInput
+            type="text"
+            placeholder="회사명"
+            value={orgName}
+            onChange={handleorgNameChange}
+          />
         </S.SignUpInputBox>
         <S.SignUpInputBox>
           <S.SignUpInput

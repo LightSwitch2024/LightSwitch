@@ -16,8 +16,6 @@ class Member(
     var telNumber: String,
     var email: String,
     var password: String,
-
-    @OneToOne(mappedBy = "owner", fetch = FetchType.LAZY)
-    var organization: Organization? = null
+    var orgName: String,
 
 ) : BaseEntity()

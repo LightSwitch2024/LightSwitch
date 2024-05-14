@@ -8,8 +8,8 @@ import { AuthAtom } from '@/global/AuthAtom';
 import * as L from '@/pages/organization/indexStyle';
 
 interface OrgInfo {
-  email: string;
-  orgName: string;
+  name: string;
+  ownerId: number;
 }
 
 const FillOrg = () => {
@@ -27,17 +27,17 @@ const FillOrg = () => {
   }, [auth]);
 
   const onClickCreate = (): void => {
+    const ownerId = Number(auth.memberId);
     fillOrg<OrgInfo>(
-      auth.memberId,
       {
-        email: auth.email,
-        orgName: organization,
+        name: organization,
+        ownerId: ownerId,
       },
       (data) => {
-        const organizationName = data.orgName;
+        const orgName = data.name;
         setAuth((prev) => ({
           ...prev,
-          organizationName: organizationName,
+          orgName: orgName,
         }));
         navigate('/');
       },

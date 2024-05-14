@@ -40,8 +40,8 @@ interface SignUpData {
 }
 
 interface OrgData {
-  email: string;
-  orgName: string;
+  name: string;
+  ownerId: number;
 }
 
 interface sendAuthCodeData {
@@ -94,7 +94,9 @@ export async function logIn<T>(
   axios
     .post<BaseResponse<T>>('/api/v1/member/login', data)
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
-    .catch((err: AxiosError) => onFail(err));
+    .catch((err: AxiosError) => {
+      onFail(err);
+    });
 }
 
 export async function getUserDetail<T>(
@@ -156,13 +158,12 @@ export async function checkPassword<T>(
 }
 
 export async function fillOrg<T>(
-  memberId: number,
   data: OrgData,
   onSuccess: (data: T) => void,
   onFail: (err: AxiosError) => void,
 ): Promise<void> {
   axios
-    .post<BaseResponse<T>>(`/api/v1/member/${memberId}/fillOrg`, data)
+    .post<BaseResponse<T>>(`/api/v1/organization`, data)
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
     .catch((err: AxiosError) => onFail(err));
 }

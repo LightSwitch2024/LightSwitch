@@ -14,7 +14,7 @@ interface MemberInfo {
   firstName: string;
   lastName: string;
   telNumber: string;
-  organization: string | '';
+  orgName: string | '';
 }
 
 const LogIn = () => {
@@ -56,17 +56,18 @@ const LogIn = () => {
       },
       (data) => {
         console.log(data);
-        const { memberId, email, firstName, lastName, telNumber, organization } = data;
+        const { memberId, email, firstName, lastName, telNumber, orgName } = data;
         setAuth(() => ({
           memberId,
           email,
           firstName,
           lastName,
           isAuthenticated: true,
-          organization: organization || '',
+          orgName: orgName || '',
         }));
-        if (organization == null) {
-          navigate('/fillOrg');
+
+        if (orgName == 'False') {
+          navigate('/fillorg');
         } else {
           navigate('/');
         }
