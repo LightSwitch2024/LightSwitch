@@ -176,7 +176,7 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
       signUpData,
       () => {
         alert('회원가입이 완료되었습니다.');
-        navigator('/login');
+        navigator('/');
       },
       (err) => {
         console.log(err);
