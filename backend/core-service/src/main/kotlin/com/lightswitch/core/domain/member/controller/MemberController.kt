@@ -4,9 +4,14 @@ import com.lightswitch.core.common.dto.BaseResponse
 import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.dto.success
 import com.lightswitch.core.common.exception.BaseException
-import com.lightswitch.core.domain.member.dto.req.*
+import com.lightswitch.core.domain.member.dto.req.SignupReqDto
+import com.lightswitch.core.domain.member.dto.req.PasswordUpdateReqDto
+import com.lightswitch.core.domain.member.dto.req.LogInReqDto
+import com.lightswitch.core.domain.member.dto.req.MemberUpdateReqDto
+import com.lightswitch.core.domain.member.dto.req.SdkKeyReqDto
 import com.lightswitch.core.domain.member.dto.res.MemberResDto
 import com.lightswitch.core.domain.member.dto.res.MemberResponseDto
+import com.lightswitch.core.domain.member.dto.res.OrgResDto
 import com.lightswitch.core.domain.member.dto.res.SdkKeyResDto
 import com.lightswitch.core.domain.member.service.MemberService
 import com.lightswitch.core.domain.member.service.SdkKeyService
@@ -41,6 +46,7 @@ class MemberController(
     fun logIn(
         @RequestBody logInReqDto: LogInReqDto
     ): BaseResponse<MemberResDto> {
+
         return success(memberService.logIn(logInReqDto))
     }
 
@@ -65,8 +71,7 @@ class MemberController(
     fun updatePassword(
         @RequestBody pwData: PasswordUpdateReqDto
     ): BaseResponse<MemberResDto?> {
-        println("Controller")
-        println(pwData)
+
         return success(memberService.updatePassword(pwData))
     }
 

@@ -18,6 +18,7 @@ const index = () => {
       firstName: '',
       lastName: '',
       isAuthenticated: false,
+      orgName: '',
     }));
     navigate('/login');
   };

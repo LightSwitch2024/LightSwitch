@@ -2,6 +2,7 @@ package com.lightswitch.core.domain.organization.service
 
 import com.lightswitch.core.common.dto.ResponseCode
 import com.lightswitch.core.common.exception.BaseException
+import com.lightswitch.core.domain.member.entity.Member
 import com.lightswitch.core.domain.member.repository.MemberRepository
 import com.lightswitch.core.domain.member.service.SdkKeyService
 import com.lightswitch.core.domain.organization.dto.req.CreateOrganizationRequestDto
@@ -34,6 +35,19 @@ class OrganizationService(
                 name = createOrganizationRequestDto.name,
                 sdkKey = sdkKey,
                 owner = owner,
+            )
+        )
+
+        // 멤버 orgName 에 org저장.
+        memberRepository.save(
+            Member(
+                memberId = owner.memberId!!,
+                email = owner.email,
+                firstName = owner.firstName,
+                lastName = owner.lastName,
+                telNumber = owner.telNumber,
+                password = owner.password,
+                orgName = createOrganizationRequestDto.name,
             )
         )
 

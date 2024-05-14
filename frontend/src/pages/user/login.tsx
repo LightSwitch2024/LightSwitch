@@ -14,6 +14,8 @@ interface MemberInfo {
   email: string;
   firstName: string;
   lastName: string;
+  telNumber: string;
+  orgName: string | '';
 }
 
 const LogIn = () => {
@@ -38,7 +40,6 @@ const LogIn = () => {
 
   useEffect(() => {
     console.log(auth);
-    console.log('hello');
   }, [auth]);
 
   useEffect(() => {
@@ -48,24 +49,29 @@ const LogIn = () => {
   }, [window.innerHeight]);
 
   const onClickLogIn = (): void => {
+    console.log('Logging in with:', email, password);
     logIn<MemberInfo>(
       {
         email: email,
         password: password,
       },
       (data) => {
-        const memId = Number(data.memberId);
-        const memEmail = data.email;
-        const memFirstname = data.firstName;
-        const memLastname = data.lastName;
+        console.log(data);
+        const { memberId, email, firstName, lastName, telNumber, orgName } = data;
         setAuth(() => ({
-          memberId: memId,
-          email: memEmail,
-          firstName: memFirstname,
-          lastName: memLastname,
+          memberId,
+          email,
+          firstName,
+          lastName,
           isAuthenticated: true,
+          orgName: orgName || '',
         }));
-        navigate('/');
+
+        if (orgName == 'False') {
+          navigate('/fillorg');
+        } else {
+          navigate('/');
+        }
       },
       (err) => {
         console.log(err);
