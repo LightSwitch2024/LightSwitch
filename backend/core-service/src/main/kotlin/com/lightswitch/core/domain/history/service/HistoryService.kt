@@ -40,7 +40,8 @@ class HistoryService(
     )
     fun createFlag(flagResponseDto: FlagResponseDto) {
 
-        val flag = flagRepository.findById(flagResponseDto.flagId).orElseThrow()
+        val flagId = flagResponseDto.flagId
+        val flag = flagRepository.findById(flagId!!).orElseThrow()
 
         val flagHistory = History(
             flag = flag,
@@ -58,7 +59,7 @@ class HistoryService(
         historyRepository.save(defaultValueHistory)
 
 
-        flagResponseDto.variations.forEach { variationDto: VariationDto ->
+        flagResponseDto.variations?.forEach { variationDto: VariationDto ->
             val variationHistory = History(
                 flag = flag,
                 action = HistoryType.CREATE_VARIATION,
@@ -243,8 +244,7 @@ class HistoryService(
         val variations = variationRepository.findByFlagFlagId(flagId)
         val preVariations = variations.map { it.toPrevious() }
         val proceed = proceedingJoinPoint.proceed()
-        print("======= updateVariationInfoWithHardDelete =======")
-
+        println("======= updateVariationInfoWithHardDelete =======")
         checkVariation(flag, preVariations, variations)
         return proceed
     }
@@ -259,7 +259,6 @@ class HistoryService(
         variations.forEach { variation ->
             var matchedVariation = false
             for (preVariation in preVariations) {
-                print("${preVariation.variationId} / ${variation.variationId}")
                 if (preVariation.variationId == variation.variationId) {
                     matchedVariation = true
                     if (preVariation.value != variation.value) {
@@ -283,9 +282,8 @@ class HistoryService(
                             )
                         )
                     }
-
+                    break
                 }
-                break
             }
             if (!matchedVariation) {
                 historyRepository.save(
@@ -343,6 +341,9 @@ class HistoryService(
         for (keyword in keywords) {
             var matchedKeyword = false
             for (preKeyword in preKeywords) {
+                println("======== ${preKeyword.keywordId} / ${keyword.keywordId}")
+                println("======== ${preKeyword.keywordId} / ${keyword.keywordId}")
+                println("======== ${preKeyword.keywordId} / ${keyword.keywordId}")
                 if (preKeyword.keywordId == keyword.keywordId) {
                     matchedKeyword = true
                     if (preKeyword.value != keyword.value) {

@@ -10,9 +10,8 @@ class Property(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val propertyId: Long? = null,
 
-    val property: String,
-    val data: String,
-
+    var property: String,
+    var data: String,
 
     @JoinColumn(name = "keyword_id")
     @ManyToOne(fetch = FetchType.LAZY)

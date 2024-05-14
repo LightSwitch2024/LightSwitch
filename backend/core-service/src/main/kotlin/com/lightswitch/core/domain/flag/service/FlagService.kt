@@ -98,6 +98,29 @@ class FlagService(
         )
     }
 
+    fun buildSSEData(flagResponseDto: FlagResponseDto): FlagInitResponseDto {
+        val variations =
+            flagResponseDto.flagId?.let { variationRepository.findByFlagFlagId(it) }
+                ?: throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
+
+        val default = variations.first { variation: Variation -> variation.defaultFlag }
+
+        val copy = flagResponseDto.copy(
+            defaultValue = default.value,
+            defaultPortion = default.portion,
+            defaultDescription = default.description,
+            variations = variations.filter { !it.defaultFlag }.map {
+                VariationDto(
+                    variationId = it.variationId,
+                    value = it.value,
+                    portion = it.portion,
+                    description = it.description
+                )
+            }
+        )
+        return copy.toSseInitDto()
+    }
+
     @Transactional
     fun createFlag(flagRequestDto: FlagRequestDto): FlagResponseDto {
 
@@ -231,6 +254,7 @@ class FlagService(
     fun getFlag(flagId: Long): FlagResponseDto {
 //        val flag = flagRepository.findFlagWithActiveKeywords(flagId) ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
 //        val flag = flagRepository.findById(flagId).get()
+        println("========= getFlag2 ============")
         val flag =
             flagRepository.findFlagsWithNoDeletedKeywords(flagId) ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
         val defaultVariation =
@@ -701,40 +725,52 @@ class FlagService(
 
         val flag = flagRepository.findById(flagId).get()
         flag.type = variationInfoRequestDto.type
-        flagRepository.save(flag)
+//        flagRepository.save(flag)
 
-        val defaultVariation =
-            variationRepository.findByFlagAndDefaultFlagIsTrueAndDeletedAtIsNull(flag)
-                ?: throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
+        //default Variation
+        val defaultVariation = variationRepository.findByFlagAndDefaultFlagIsTrueAndDeletedAtIsNull(flag)
+            ?: throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
         defaultVariation.value = variationInfoRequestDto.defaultValue
         defaultVariation.portion = variationInfoRequestDto.defaultPortion
         defaultVariation.description = variationInfoRequestDto.defaultDescription
-        variationRepository.save(defaultVariation)
 
-        variationRepository.deleteByFlagFlagIdAndDefaultFlagIsFalse(flagId)
+        val existingVariations =
+            variationRepository.findByFlagAndDefaultFlagIsFalseAndDeletedAtIsNull(flag).toMutableList()
 
-        val variationList = mutableListOf<Variation>()
-        variationInfoRequestDto.variations.map {
-            val updatedVariation = Variation(
-                flag = flag,
-                description = it.description,
-                portion = it.portion,
-                value = it.value,
-            )
-            variationList.add(variationRepository.save(updatedVariation))
+        variationInfoRequestDto.variations.forEach { variationDto ->
+            var matchVariation = false;
+            for (variation in existingVariations) {
+                if (variationDto.variationId == variation.variationId) {
+                    matchVariation = true
+                    variation.value = variationDto.value
+                    variation.portion = variationDto.portion
+                    variation.description = variationDto.description
+                    existingVariations.remove(variation)
+                    break
+                }
+            }
+            if (!matchVariation) {
+                variationRepository.save(variationDto.toEntity(flag))
+            }
+        }
+        existingVariations.forEach { variation ->
+            variationRepository.delete(variation)
         }
 
-        // SSE 데이터 전송
-        val flagInitResponseDto = buildSSEData(flag)
+        return FlagResponseDto(flag)
+    }
+
+    fun sendSse(
+        flagResponseDto: FlagResponseDto
+    ) {
+        val flagInitResponseDto = buildSSEData(flagResponseDto)
         val sdkKey =
-            sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(flag.maintainer.memberId!!) ?: throw BaseException(
+            sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(flagInitResponseDto.maintainerId!!) ?: throw BaseException(
                 ResponseCode.SDK_KEY_NOT_FOUND
             )
 
         val userKey = sseService.hash(sdkKey.key)
         sseService.sendData(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
-
-        return this.getFlag(flag.flagId!!)
     }
 
     @Transactional
@@ -830,51 +866,90 @@ class FlagService(
         println("=================== updateKeywordInfoWithHardDelete")
 
         val flag = flagRepository.findById(flagId).get()
-
-        // keyword hard delete 후 다시 생성
-        keywordRepository.deleteByFlagFlagId(flagId)
+        val existingKeywords = mutableListOf<Keyword>()
+        existingKeywords.addAll(flag.keywords)
         flag.keywords.clear()
 
-        val updatedKeywordList = mutableListOf<Keyword>()
-        for (keyword in keywordInfoRequestDto.keywords) {
-            val updatedPropertyList = mutableListOf<Property>()
-
-            val savedKeyword = keywordRepository.save(
-                Keyword(
-                    flag = flag,
-                    description = keyword.description,
-                    value = keyword.value,
+        keywordInfoRequestDto.keywords.forEach { keywordDto: KeywordDto ->
+            var matchKeyword = false
+            for (keyword in existingKeywords) {
+                if (keyword.keywordId == keywordDto.keywordId) {
+                    matchKeyword = true
+                    keyword.description = keywordDto.description
+                    keyword.value = keywordDto.value
+                    checkProperty(keywordDto, keyword)
+                    existingKeywords.remove(keyword)
+                    flag.keywords.add(keyword)
+                    break
+                }
+            }
+            if (!matchKeyword) {
+                val newKeyword = Keyword(
+                    null,
+                    flag,
+                    mutableListOf(),
+                    keywordDto.description,
+                    keywordDto.value
                 )
-            )
-            updatedKeywordList.add(savedKeyword)
+                flag.keywords.add(newKeyword)
 
-            for (property in keyword.properties) {
-                val savedProperty = propertyRepository.save(
+                keywordDto.properties.forEach { propertyDto: PropertyDto ->
+                    propertyRepository.save(
+                        Property(
+                            null,
+                            propertyDto.property,
+                            propertyDto.data,
+                            newKeyword
+                        )
+                    )
+                }
+            }
+        }
+
+        existingKeywords.forEach { keyword ->
+            if (flag.keywords.contains(keyword).not()) {
+                keywordRepository.delete(keyword)
+            }
+        }
+        return FlagResponseDto(flag)
+    }
+
+    private fun checkProperty(
+        keywordDto: KeywordDto,
+        keyword: Keyword
+    ) {
+        val existingProperties = mutableListOf<Property>()
+        existingProperties.addAll(keyword.properties)
+        keyword.properties.clear()
+
+        keywordDto.properties.forEach { propertyDto ->
+            var matchProperty = false
+            for (property in existingProperties) {
+                if (property.propertyId == propertyDto.propertyId) {
+                    matchProperty = true
+                    property.property = propertyDto.property
+                    property.data = propertyDto.data
+                    existingProperties.remove(property)
+                    keyword.properties.add(property)
+                    break
+                }
+            }
+            if (!matchProperty) {
+                propertyRepository.save(
                     Property(
-                        keyword = savedKeyword,
-                        property = property.property,
-                        data = property.data,
+                        null,
+                        propertyDto.property,
+                        propertyDto.data,
+                        keyword
                     )
                 )
-                updatedPropertyList.add(savedProperty)
             }
-
-            savedKeyword.properties.addAll(updatedPropertyList)
-            keywordRepository.save(savedKeyword)
         }
-        flag.keywords.addAll(updatedKeywordList)
-
-        // SSE 데이터 전송
-        val flagInitResponseDto = buildSSEData(flag)
-        val sdkKey =
-            sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(flag.maintainer.memberId!!) ?: throw BaseException(
-                ResponseCode.SDK_KEY_NOT_FOUND
-            )
-
-        val userKey = sseService.hash(sdkKey.key)
-        sseService.sendData(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
-
-        return this.getFlag(flag.flagId!!)
+        existingProperties.forEach { property ->
+            if (keyword.properties.contains(property).not()) {
+                propertyRepository.delete(property)
+            }
+        }
     }
 
     fun getFlagCountForOverview(): Map<String, Int> {

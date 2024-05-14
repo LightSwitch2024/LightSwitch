@@ -16,10 +16,10 @@ Keyword(
     val flag: Flag,
 
     @OneToMany(mappedBy = "keyword", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-    val properties: MutableList<Property> = mutableListOf(),
+    var properties: MutableList<Property> = mutableListOf(),
 
-    val description: String,
-    val value: String,
+    var description: String,
+    var value: String,
 ) : BaseEntity() {
 
     fun toPrevious(): PreKeyword {
