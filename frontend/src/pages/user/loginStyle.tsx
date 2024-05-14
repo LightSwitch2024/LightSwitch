@@ -76,7 +76,7 @@ export const LogInInput = styled.input`
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
   border: 1px solid #ddd;
-  font-size: 1.3rem;
+  font-size: 1rem;
   &::placeholder {
     color: #bdbdbd;
   }
@@ -93,16 +93,16 @@ export const SignUpText = styled.button`
   text-decoration: underline;
   background: none;
   border: none;
-  padding-left: 5px;
-  margin: 0;
-  font-size: 16px;
+  font-size: 0.8rem;
   cursor: pointer;
 `;
 
 export const PasswordText = styled(Link)`
   color: #000000;
   text-decoration: underline;
-  margin-right: 3px;
+  background: none;
+  border: none;
+  font-size: 0.8rem;
   cursor: pointer;
 `;
 
@@ -121,7 +121,7 @@ export const OKButton = styled.button`
   padding: 0.3rem 1rem;
   border-radius: 0.5rem;
   border: 1px solid #ddd;
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   background-color: #00c9ea;
   color: #fff;
   cursor: pointer;
