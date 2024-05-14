@@ -725,17 +725,18 @@ class FlagService(
 
         val flag = flagRepository.findById(flagId).get()
         flag.type = variationInfoRequestDto.type
-//        flagRepository.save(flag)
 
-        //default Variation
-        val defaultVariation = variationRepository.findByFlagAndDefaultFlagIsTrueAndDeletedAtIsNull(flag)
-            ?: throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
-        defaultVariation.value = variationInfoRequestDto.defaultValue
-        defaultVariation.portion = variationInfoRequestDto.defaultPortion
-        defaultVariation.description = variationInfoRequestDto.defaultDescription
+        val variations = variationRepository.findByFlagFlagId(flagId)
+        val default = variations.first { it.defaultFlag }
+        default.value = variationInfoRequestDto.defaultValue
+        default.portion = variationInfoRequestDto.defaultPortion
+        default.description = variationInfoRequestDto.defaultDescription
 
-        val existingVariations =
-            variationRepository.findByFlagAndDefaultFlagIsFalseAndDeletedAtIsNull(flag).toMutableList()
+        val elseVariations = variations.filterNot { it.defaultFlag }.toMutableList()
+
+        val existingVariations = mutableListOf<Variation>()
+        existingVariations.addAll(elseVariations)
+        elseVariations.clear()
 
         variationInfoRequestDto.variations.forEach { variationDto ->
             var matchVariation = false;
@@ -746,6 +747,7 @@ class FlagService(
                     variation.portion = variationDto.portion
                     variation.description = variationDto.description
                     existingVariations.remove(variation)
+                    elseVariations.add(variation)
                     break
                 }
             }
@@ -754,7 +756,9 @@ class FlagService(
             }
         }
         existingVariations.forEach { variation ->
-            variationRepository.delete(variation)
+            if (elseVariations.contains(variation).not()) {
+                variationRepository.delete(variation)
+            }
         }
 
         return FlagResponseDto(flag)
