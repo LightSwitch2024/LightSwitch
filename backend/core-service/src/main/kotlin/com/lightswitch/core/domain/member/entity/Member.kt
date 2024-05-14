@@ -16,4 +16,6 @@ class Member(
     var telNumber: String,
     var email: String,
     var password: String,
+    var orgName: String,
+
 ) : BaseEntity()
