@@ -3,19 +3,22 @@ import Code from '@assets/code.svg?react';
 import Description from '@assets/description.svg?react';
 import FlagBig from '@assets/flag-big.svg?react';
 import Loop from '@assets/loop.svg?react';
+import QueryBuilder from '@assets/query-builder.svg?react';
+import Restore from '@assets/restore.svg?react';
 import ToggleOffIcon from '@assets/unfold_less.svg?react';
 import ToggleOnIcon from '@assets/unfold-more.svg?react';
 import * as S from '@pages/flag/indexStyle';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate, useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
 import { deleteFlag, getFlagDetail, updateFlag } from '@/api/flagDetail/flagDetailAxios';
 import { getTagList, getTagListByKeyword } from '@/api/main/mainAxios';
 import CreateModal from '@/components/createModal';
+import History from '@/components/history';
 import UpdateModal from '@/components/updateModal';
-
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
 
 interface Variation {
   value: string;
@@ -32,6 +35,34 @@ interface Keyword {
 interface Property {
   property: string;
   data: string;
+}
+
+interface history {
+  flagTitle: string;
+  target: string | null;
+  previous: string | null;
+  current: string | null;
+  action: historyType;
+  createdAt: string;
+}
+
+enum historyType {
+  CREATE_FLAG,
+  UPDATE_FLAG_TITLE,
+  UPDATE_FLAG_TYPE,
+  SWITCH_FLAG,
+  DELETE_FLAG,
+  CREATE_VARIATION,
+  UPDATE_VARIATION_VALUE,
+  UPDATE_VARIATION_PORTION,
+  DELETE_VARIATION,
+  CREATE_KEYWORD,
+  UPDATE_KEYWORD,
+  DELETE_KEYWORD,
+  CREATE_PROPERTY,
+  UPDATE_PROPERTY_KEY,
+  UPDATE_PROPERTY_VALUE,
+  DELETE_PROPERTY,
 }
 
 interface FlagDetailItem {
@@ -60,6 +91,7 @@ const FlagDetail = () => {
   const [isModalOpened, setIsModalOpened] = useState(false);
   const { flagId } = useParams<{ flagId: string }>();
   const [flagDetail, setFlagDetail] = useState<FlagDetailItem>({} as FlagDetailItem);
+  const [historyList, setHistoryList] = useState<history[]>([]);
   const [isToggle, setIsToggle] = useState<boolean[]>([]);
   const navigator = useNavigate();
   const MySwal = withReactContent(Swal);
@@ -75,6 +107,136 @@ const FlagDetail = () => {
         console.log(data);
         setFlagDetail(data);
         setIsToggle(new Array(data.keywords.length).fill(false));
+        setHistoryList([
+          {
+            action: historyType.CREATE_FLAG,
+            flagTitle: data.title,
+            target: null,
+            previous: null,
+            current: null,
+            createdAt: data.createdAt,
+          },
+          {
+            action: historyType.UPDATE_FLAG_TITLE,
+            flagTitle: data.title,
+            target: null,
+            previous: 'previous',
+            current: 'current',
+            createdAt: data.createdAt,
+          },
+          {
+            action: historyType.UPDATE_FLAG_TYPE,
+            flagTitle: data.title,
+            target: null,
+            previous: 'BOOLEAN',
+            current: 'STRING',
+            createdAt: '2021-09-01T00:00:00.000Z',
+          },
+          {
+            action: historyType.SWITCH_FLAG,
+            flagTitle: data.title,
+            target: null,
+            previous: null,
+            current: 'ON',
+            createdAt: '2024-04-01T00:00:00.000Z',
+          },
+          {
+            action: historyType.DELETE_FLAG,
+            flagTitle: data.title,
+            target: null,
+            previous: null,
+            current: null,
+            createdAt: '2024-03-01T00:00:00.000Z',
+          },
+          {
+            action: historyType.CREATE_VARIATION,
+            flagTitle: data.title,
+            target: null,
+            previous: null,
+            current: '1',
+            createdAt: '2024-03-01T00:00:00.000Z',
+          },
+          {
+            action: historyType.UPDATE_VARIATION_VALUE,
+            flagTitle: data.title,
+            target: null,
+            previous: '1',
+            current: '2',
+            createdAt: '2024-03-01T00:00:00.000Z',
+          },
+          {
+            action: historyType.UPDATE_VARIATION_PORTION,
+            flagTitle: data.title,
+            target: '1',
+            previous: '90',
+            current: '80',
+            createdAt: '2024-02-01T00:00:00.000Z',
+          },
+          {
+            action: historyType.DELETE_VARIATION,
+            flagTitle: data.title,
+            target: null,
+            previous: '1',
+            current: null,
+            createdAt: '2024-01-01T00:00:00.000Z',
+          },
+          {
+            action: historyType.CREATE_KEYWORD,
+            flagTitle: data.title,
+            target: null,
+            previous: null,
+            current: 'keyword 1',
+            createdAt: '2024-01-01T00:00:00.000Z',
+          },
+          {
+            action: historyType.UPDATE_KEYWORD,
+            flagTitle: data.title,
+            target: 'keyword 1',
+            previous: 'TRUE',
+            current: 'FALSE',
+            createdAt: '2023-12-01T00:00:00.000Z',
+          },
+          {
+            action: historyType.DELETE_KEYWORD,
+            flagTitle: data.title,
+            target: null,
+            previous: 'keyword 1',
+            current: null,
+            createdAt: '2023-11-01T00:00:00.000Z',
+          },
+          {
+            action: historyType.CREATE_PROPERTY,
+            flagTitle: data.title,
+            target: 'keyword 1',
+            previous: null,
+            current: 'property 1',
+            createdAt: '2023-10-01T00:00:00.000Z',
+          },
+          {
+            action: historyType.UPDATE_PROPERTY_KEY,
+            flagTitle: data.title,
+            target: 'keyword 1',
+            previous: 'property 1',
+            current: 'property 2',
+            createdAt: '2023-09-01T00:00:00.000Z',
+          },
+          {
+            action: historyType.UPDATE_PROPERTY_VALUE,
+            flagTitle: data.title,
+            target: '"keyword 1"의 속성 "property 2"',
+            previous: 'value 1',
+            current: 'value 2',
+            createdAt: '2023-08-01T00:00:00.000Z',
+          },
+          {
+            action: historyType.DELETE_PROPERTY,
+            flagTitle: data.title,
+            target: 'keyword 1',
+            previous: 'property 2',
+            current: null,
+            createdAt: '2023-07-01T00:00:00.000Z',
+          },
+        ]);
         // setupEditedFlag(data);
       },
       (err) => {
@@ -108,9 +270,9 @@ const FlagDetail = () => {
   };
 
   const requestDeleteFlag = () => {
-    deleteFlag<Number>(
+    deleteFlag<number>(
       Number(flagId),
-      (data: Number) => {
+      (data: number) => {
         navigator('/');
       },
       (error) => {
@@ -383,7 +545,39 @@ const FlagDetail = () => {
           </S.ButtonLayer>
         </S.FlagContainer>
 
-        <S.HistoryContainer></S.HistoryContainer>
+        <S.HistoryContainer>
+          <S.HistoryTitleContainer>
+            <Restore />
+            <S.HistoryTitleText>히스토리</S.HistoryTitleText>
+          </S.HistoryTitleContainer>
+
+          <S.HistoryListContainer>
+            {/* HistoryIconListContainer의 len과 HistoryContentTextContainer의 len은 반드시 일치 */}
+            <S.HistoryIconListContainer>
+              <S.Line />
+              {/* 절대위치로 iconContainer 뒤에 선 긋기 */}
+              {historyList.map((history, index) => {
+                return (
+                  <S.HistoryIconPadding key={index} $len={2.5}>
+                    <S.HistoryIconContainer $len={1.5}>
+                      <QueryBuilder />
+                    </S.HistoryIconContainer>
+                  </S.HistoryIconPadding>
+                );
+              })}
+            </S.HistoryIconListContainer>
+            <S.HistoryContentContainer>
+              {/* map */}
+              {historyList.map((history, index) => {
+                return (
+                  <S.HistoryContentTextContainer $len={2.5} key={index}>
+                    <History {...history} />
+                  </S.HistoryContentTextContainer>
+                );
+              })}
+            </S.HistoryContentContainer>
+          </S.HistoryListContainer>
+        </S.HistoryContainer>
       </S.MainContainer>
     </>
   );
