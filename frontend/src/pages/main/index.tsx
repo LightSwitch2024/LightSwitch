@@ -11,9 +11,11 @@ import CopyButton from '@/assets/content-copy.svg?react';
 import FilteringIcon from '@/assets/filtering.svg?react';
 import FilledFlag from '@/assets/flag.svg?react';
 import OutlinedFlag from '@/assets/outlined-flag.svg?react';
+import QueryBuilder from '@/assets/query-builder.svg?react';
 import SdkKey from '@/assets/sdk-key.svg?react';
 import SearchIcon from '@/assets/search.svg?react';
 import CreateModal from '@/components/createModal';
+import HistorySummary from '@/components/historySummary';
 import * as S from '@/pages/main/indexStyle';
 import FlagTable from '@/pages/main/table';
 
@@ -27,10 +29,48 @@ interface SdkKeyResDto {
   key: string;
 }
 
+interface history {
+  flagTitle: string;
+  target: string | null;
+  previous: string | null;
+  current: string | null;
+  action: historyType;
+  createdAt: string;
+}
+
+enum historyType {
+  // flag
+  CREATE_FLAG,
+  UPDATE_FLAG_TITLE,
+  UPDATE_FLAG_TYPE,
+  SWITCH_FLAG,
+  DELETE_FLAG,
+
+  // variation
+  CREATE_VARIATION,
+  UPDATE_VARIATION_VALUE,
+  UPDATE_VARIATION_PORTION,
+  DELETE_VARIATION,
+
+  // keyword
+  CREATE_KEYWORD,
+  UPDATE_KEYWORD,
+
+  // UPDATE_KEYWORD_PROPERTY,
+  DELETE_KEYWORD,
+
+  // property
+  CREATE_PROPERTY,
+  UPDATE_PROPERTY_KEY,
+  UPDATE_PROPERTY_VALUE,
+  DELETE_PROPERTY,
+}
+
 const index = () => {
   const [sdkKey, setSdkKey] = useState<string>('');
   const [totalFlags, setTotalFlags] = useState<number>(0);
   const [activeFlags, setActiveFlags] = useState<number>(0);
+  const [historySummaryList, setHistorySummaryList] = useState<Array<history>>([]);
   const [isModalOpened, setIsModalOpened] = useState(false);
   const [flagKeyword, setFlagKeyword] = useState<string>('');
   const [isDropdownOpened, setIsDropdownOpened] = useState(false);
@@ -54,6 +94,24 @@ const index = () => {
         setSdkKey(data.sdkKey ? data.sdkKey : '');
         setTotalFlags(data.totalFlags);
         setActiveFlags(data.activeFlags);
+        setHistorySummaryList([
+          {
+            flagTitle: '플래그 생성',
+            target: null,
+            previous: null,
+            current: null,
+            action: historyType.CREATE_FLAG,
+            createdAt: '2021-08-01T00:00:00',
+          },
+          {
+            flagTitle: '플래그 생성',
+            target: null,
+            previous: null,
+            current: null,
+            action: historyType.CREATE_FLAG,
+            createdAt: '2021-08-01T00:00:00',
+          },
+        ]);
       },
       (err) => {
         console.error(err);
@@ -225,12 +283,37 @@ const index = () => {
             </S.FlagContentContainer>
           </S.FlagComponent>
 
-          <S.HistoryComponent>
-            <S.HisotryTitleContainer>
-              <S.Title>히스토리</S.Title>
-            </S.HisotryTitleContainer>
-          </S.HistoryComponent>
-        </S.OverviewComponent>
+        <S.HistoryComponent>
+          <S.HisotryTitleContainer>
+            <S.Title>히스토리</S.Title>
+          </S.HisotryTitleContainer>
+          <S.HistoryListContainer>
+            {/* HistoryIconListContainer의 len과 HistoryContentTextContainer의 len은 반드시 일치 */}
+            <S.HistoryIconListContainer>
+              <S.Line />
+              {historySummaryList.map((history, index) => {
+                return (
+                  <S.HistoryIconPadding key={index} $len={2.5}>
+                    <S.HistoryIconContainer $len={1.5}>
+                      <QueryBuilder />
+                    </S.HistoryIconContainer>
+                  </S.HistoryIconPadding>
+                );
+              })}
+            </S.HistoryIconListContainer>
+            <S.HistoryContentContainer>
+              {/* map */}
+              {historySummaryList.map((history, index) => {
+                return (
+                  <S.HistoryContentTextContainer $len={2.5} key={index}>
+                    <HistorySummary {...history} />
+                  </S.HistoryContentTextContainer>
+                );
+              })}
+            </S.HistoryContentContainer>
+          </S.HistoryListContainer>
+        </S.HistoryComponent>
+      </S.OverviewComponent>
 
         <S.FlagTableComponent>
           <S.TableNavContainer>

@@ -336,6 +336,88 @@ export const HisotryTitleContainer = styled.div`
   gap: 0.625rem;
 `;
 
+export const HistoryListContainer = styled.div`
+  display: flex;
+  padding: 0.625rem;
+  align-items: flex-start;
+  gap: 0.625rem;
+  align-self: stretch;
+  height: 100%;
+`;
+
+export const HistoryIconListContainer = styled.div`
+  position: relative;
+  display: flex;
+  padding: 0.625rem 0rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+`;
+
+export const Line = styled.div`
+  width: 0.125rem;
+  height: 100%;
+  position: absolute;
+  left: 1rem;
+  bottom: 0;
+  z-index: 1;
+
+  background: var(--black-012, rgba(0, 0, 0, 0.12));
+`;
+
+export const HistoryIconPadding = styled.div<{ $len: number }>`
+  width: ${({ $len }) => `${$len}rem`};
+  height: ${({ $len }) => `${$len}rem`};
+
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+`;
+
+export const HistoryIconContainer = styled.div<{ $len: number }>`
+  display: flex;
+  width: ${({ $len }) => `${$len}rem`};
+  height: ${({ $len }) => `${$len}rem`};
+  z-index: 1;
+  padding: 0.3125rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.625rem;
+
+  border-radius: 0.3125rem;
+  background: #0f71b8;
+`;
+
+export const HistoryContentTextContainer = styled.div<{ $len: number }>`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.625rem;
+  width: 100%;
+  height: ${({ $len }) => `${$len}rem`};
+`;
+
+export const HistoryContentText = styled.div`
+  color: #000;
+  font-family: Pretendard;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+
+export const HistoryContentContainer = styled.div`
+  display: flex;
+  padding: 0.625rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+  flex: 1 0 0;
+`;
+
 // FlagTableComponent 하위 컴포넌트 ========================
 
 export const TableNavContainer = styled.div`
