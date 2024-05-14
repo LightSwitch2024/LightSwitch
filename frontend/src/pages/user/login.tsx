@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
 import { logIn } from '@/api/userDetail/userAxios';
-import LightswitchLogo from '@/assets/lightswitchLogo.svg?react';
+// import LightswitchLogo from '@/assets/lightswitchLogo.svg?react';
+import LightswitchLogo from '@/assets/lightswitchLogo.png';
 import SignUpModal from '@/components/signup/index';
 import { AuthAtom } from '@/global/AuthAtom';
 import * as L from '@/pages/user/loginStyle';
@@ -76,26 +77,33 @@ const LogIn = () => {
     <L.Layout>
       <L.LogInLayout>
         <L.LogInContainer>
-          <LightswitchLogo />
-          <L.LogInInputBox>
-            <L.LogInInput
-              type="text"
-              placeholder="이메일"
-              value={email}
-              onChange={handleEmail}
-            />
-          </L.LogInInputBox>
-          <L.LogInInputBox>
-            <L.LogInInput
-              type="password"
-              placeholder="비밀번호"
-              value={password}
-              onChange={handlePassword}
-            />
-          </L.LogInInputBox>
+          <L.LogoBox>
+            <L.LogoImg src={LightswitchLogo} alt="Lightswitch Logo" />
+          </L.LogoBox>
+
+          <L.LoginInputBox>
+            <L.LogInInputWrapper>
+              <L.LogInInput
+                type="text"
+                placeholder="이메일"
+                value={email}
+                onChange={handleEmail}
+              />
+            </L.LogInInputWrapper>
+            <L.LogInInputWrapper>
+              <L.LogInInput
+                type="password"
+                placeholder="비밀번호"
+                value={password}
+                onChange={handlePassword}
+              />
+            </L.LogInInputWrapper>
+          </L.LoginInputBox>
+
           <L.ButtonWrapper>
             <L.OKButton onClick={onClickLogIn}>로그인</L.OKButton>
           </L.ButtonWrapper>
+
           <L.LogInLinkBox>
             <L.SignUpText onClick={onPressSignUpButton}>회원가입</L.SignUpText>
             <L.PasswordText to="/passwordfind">비밀번호 찾기</L.PasswordText>
