@@ -60,7 +60,7 @@ const PasswordModal: React.FC<Props> = ({ isOpen, onClose }) => {
         newPassword: password,
       };
       updatePassword<PWData>(
-        auth.memberId,
+        auth.email,
         passwordData,
         (data) => {
           console.log('Password update successful:', data);

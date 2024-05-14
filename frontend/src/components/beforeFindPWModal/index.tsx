@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 
 import { confirmAuthCode, sendAuthCode } from '@/api/userDetail/userAxios';
 import * as S from '@/components/beforeFindPWModal/indexStyle';
+import FindPWModal from '@/components/findPWModal/index';
+import { AuthAtom } from '@/global/AuthAtom';
 
 type Props = {
-  isbeforefindPWModal: boolean;
+  isBeforeFindPWModal: boolean;
   onClose: () => void;
 };
 
@@ -23,14 +26,16 @@ type FindPWData = {
   authCode: string;
 };
 
-const BeforeFindPW: React.FC<Props> = ({ isbeforefindPWModal, onClose }) => {
+const BeforeFindPW: React.FC<Props> = ({ isBeforeFindPWModal, onClose }) => {
   const navigator = useNavigate();
 
   const [email, setEmail] = useState<string>('');
   const [emailCheck, setEmailCheck] = useState<boolean>(false);
   const [authCode, setAuthCode] = useState<string>('');
   const [isAuth, setIsAuth] = useState<boolean>(false);
+  const [isFindPWModal, setIsFindPWModal] = useState<boolean>(false);
   const [findPWFlag, setFindPWFlag] = useState<boolean>(false);
+  const [auth, setAuth] = useRecoilState(AuthAtom);
 
   useEffect(() => {
     if (emailCheck && isAuth) {
@@ -38,7 +43,13 @@ const BeforeFindPW: React.FC<Props> = ({ isbeforefindPWModal, onClose }) => {
     } else {
       setFindPWFlag(false);
     }
-  }, [isAuth]);
+  }, [emailCheck, isAuth]);
+
+  useEffect(() => {
+    let vh = 0;
+    vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  }, [window.innerHeight]);
 
   const validateEmail = (email: string): boolean => {
     const email_regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
@@ -59,6 +70,11 @@ const BeforeFindPW: React.FC<Props> = ({ isbeforefindPWModal, onClose }) => {
   };
 
   const handleSendAuthCode = (): void => {
+    if (!findPWFlag) {
+      alert('모든 항목을 입력해주세요.');
+      return;
+    }
+
     const sendAuthCodeData: SendAuthCodeData = {
       email: email,
     };
@@ -83,7 +99,12 @@ const BeforeFindPW: React.FC<Props> = ({ isbeforefindPWModal, onClose }) => {
     confirmAuthCode<boolean>(
       confirmAuthCodeData,
       () => {
+        setAuth((prev) => ({
+          ...prev,
+          email: email,
+        }));
         setIsAuth(true);
+        setIsFindPWModal(true);
       },
       (err) => {
         console.log(err);
@@ -95,9 +116,9 @@ const BeforeFindPW: React.FC<Props> = ({ isbeforefindPWModal, onClose }) => {
     onClose();
   };
 
-  return (
-    <S.Layout isbeforefindPWModal={isbeforefindPWModal}>
-      <S.Container isbeforefindPWModal={isbeforefindPWModal}>
+  return !isFindPWModal ? (
+    <S.BeforeLayout isbeforefindPWModal={isBeforeFindPWModal}>
+      <S.Container isbeforefindPWModal={isBeforeFindPWModal}>
         <S.InputBox>
           <S.TitleText>비밀번호를 찾고자 하는 이메일 입력</S.TitleText>
           <S.Input
@@ -135,7 +156,9 @@ const BeforeFindPW: React.FC<Props> = ({ isbeforefindPWModal, onClose }) => {
           </S.ButtonWrapper>
         </S.InputBox>
       </S.Container>
-    </S.Layout>
+    </S.BeforeLayout>
+  ) : (
+    <FindPWModal isFindPWModal={isFindPWModal} onClose={() => setIsFindPWModal(false)} />
   );
 };
 

@@ -13,7 +13,14 @@ export const Layout = styled.div`
 `;
 
 export const LogInLayout = styled.div`
-  width: 560px;
+  display: flex;
+  justify-content: center;
+  width: 500px;
+  height: 100%;
+  border-radius: 1.25rem;
+  border: 1px solid #bdbdbd;
+  background: #fff;
+  box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.25);
 `;
 
 export const LogInContainer = styled.div`
@@ -80,7 +87,7 @@ export const LogInLinkBox = styled.div`
   padding: 0 2rem;
 `;
 
-export const SignUpButton = styled.button`
+export const SignUpText = styled.button`
   color: #000000;
   text-decoration: underline;
   background: none;
@@ -92,7 +99,18 @@ export const SignUpButton = styled.button`
 export const PasswordButton = styled.button`
   color: #000000;
   text-decoration: underline;
-  margin: 0;
+  background: none;
+  border: none;
+  font-size: 0.8rem;
+  cursor: pointer;
+`;
+
+export const SignUpButton = styled.a`
+  color: #000000;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  font-size: 0.8rem;
   cursor: pointer;
 `;
 

@@ -18,7 +18,7 @@ export const Layout = styled.div`
 
 export const SignUpLayout = styled.div<ModalProps>`
   display: flex;
-  width: 560px;
+  width: 500px;
   height: 100%;
   border-radius: 1.25rem;
   border: 1px solid #bdbdbd;
@@ -34,13 +34,13 @@ export const SignUpContainer = styled.div<ModalProps>`
   flex-direction: column;
   justify-content: center;
   width: 100%;
-  gap: 0.5rem;
+  gap: 0.3rem;
   transform: ${(props) => (props.isSignUpModal ? 'translateX(0)' : 'translateX(100%)')};
 `;
 
 export const SignUpInput = styled.input`
   width: 100%;
-  padding: 0.75rem 0;
+  padding: 0.5rem 0;
   border-radius: 0.5rem;
   border: 1px solid #ddd;
   font-size: 1rem;
@@ -75,7 +75,7 @@ export const SignUpInputBox = styled.div`
   width: 100%;
   flex-direction: column;
   justify-content: center;
-  gap: 0.3rem;
+  gap: 0.5rem;
 `;
 
 export const SignUpInputWrapper = styled.div`
