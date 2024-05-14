@@ -41,6 +41,12 @@ const LogIn = () => {
     console.log(auth);
   }, [auth]);
 
+  useEffect(() => {
+    let vh = 0;
+    vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  }, [window.innerHeight]);
+
   const onClickLogIn = (): void => {
     console.log('Logging in with:', email, password);
     logIn<MemberInfo>(

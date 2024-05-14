@@ -18,6 +18,7 @@
 		B51090F32BEB40A60078EA1B /* LoginResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51090F22BEB40A60078EA1B /* LoginResponse.swift */; };
 		B51090F52BEB40C70078EA1B /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51090F42BEB40C70078EA1B /* LoginView.swift */; };
 		B51090F92BEB50630078EA1B /* BaseResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51090F82BEB50630078EA1B /* BaseResponse.swift */; };
+		B5D55E322BF1BDD60033939A /* SwitchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D55E312BF1BDD60033939A /* SwitchRequest.swift */; };
 		B5F817212BECF6D5004C9C7E /* LoginService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F817202BECF6D5004C9C7E /* LoginService.swift */; };
 		B5F817232BECFC90004C9C7E /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F817222BECFC90004C9C7E /* APIService.swift */; };
 		B5F817272BED0155004C9C7E /* Flag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F817262BED0155004C9C7E /* Flag.swift */; };
@@ -61,7 +62,7 @@
 		B51090F22BEB40A60078EA1B /* LoginResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginResponse.swift; sourceTree = "<group>"; };
 		B51090F42BEB40C70078EA1B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		B51090F82BEB50630078EA1B /* BaseResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseResponse.swift; sourceTree = "<group>"; };
-		B5F817162BEB5C27004C9C7E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		B5D55E312BF1BDD60033939A /* SwitchRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchRequest.swift; sourceTree = "<group>"; };
 		B5F817202BECF6D5004C9C7E /* LoginService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginService.swift; sourceTree = "<group>"; };
 		B5F817222BECFC90004C9C7E /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		B5F817262BED0155004C9C7E /* Flag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flag.swift; sourceTree = "<group>"; };
@@ -122,7 +123,6 @@
 			isa = PBXGroup;
 			children = (
 				B5F817172BEB61C9004C9C7E /* Services */,
-				B5F817162BEB5C27004C9C7E /* Info.plist */,
 				B51090EB2BEB3F290078EA1B /* ViewModels */,
 				B51090EA2BEB3F200078EA1B /* Models */,
 				B51090E92BEB3F180078EA1B /* Views */,
@@ -191,6 +191,7 @@
 			isa = PBXGroup;
 			children = (
 				B51090F02BEB409B0078EA1B /* LoginRequest.swift */,
+				B5D55E312BF1BDD60033939A /* SwitchRequest.swift */,
 			);
 			path = Request;
 			sourceTree = "<group>";
@@ -355,6 +356,7 @@
 				B5F817292BED0291004C9C7E /* Tag.swift in Sources */,
 				B5F8172B2BED0306004C9C7E /* FlagService.swift in Sources */,
 				B51090F12BEB409B0078EA1B /* LoginRequest.swift in Sources */,
+				B5D55E322BF1BDD60033939A /* SwitchRequest.swift in Sources */,
 				B5F8172D2BED039F004C9C7E /* FlagViewModel.swift in Sources */,
 				B5F817272BED0155004C9C7E /* Flag.swift in Sources */,
 				B51090F32BEB40A60078EA1B /* LoginResponse.swift in Sources */,
@@ -527,6 +529,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = lightswitchios/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -556,6 +559,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = lightswitchios/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

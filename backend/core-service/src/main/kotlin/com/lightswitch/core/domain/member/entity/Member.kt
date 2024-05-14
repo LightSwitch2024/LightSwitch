@@ -1,8 +1,10 @@
 package com.lightswitch.core.domain.member.entity
 
 import com.lightswitch.core.common.entity.BaseEntity
-import com.lightswitch.core.domain.organization.repository.entity.Organization
-import jakarta.persistence.*
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
 
 @Entity(name = "member")
 class Member(

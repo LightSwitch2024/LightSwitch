@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 class FlagViewModel: ObservableObject {
-    @Published var contentViewModel: ContentViewModel
+    var contentViewModel: ContentViewModel
     @Published var flags: Flags = []
     @Published var error: Error?
     @Published var isLoading: Bool = false
@@ -23,6 +23,7 @@ class FlagViewModel: ObservableObject {
     func getFlags() {
         self.isLoading = true
         FlagService().getFlags()
+            .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -34,13 +35,10 @@ class FlagViewModel: ObservableObject {
                     self.error = error
                 }
             } receiveValue: { response in
-                DispatchQueue.main.async {
-                    if let data = response.data {
-                        self.flags = data
-                        print("flags: \(data)")
-                    } else {
-                        print("플래그 가져오기 실패")
-                    }
+                if let data = response.data {
+                    self.flags = data
+                } else {
+                    print("플래그 가져오기 실패")
                 }
             }
             .store(in: &cancellables)
@@ -50,7 +48,7 @@ class FlagViewModel: ObservableObject {
         self.contentViewModel.removeLoginResponse()
     }
     
-    func test() {
+    @MainActor func test() {
         if flags.isEmpty {
             getFlags()
         } else {
@@ -58,8 +56,11 @@ class FlagViewModel: ObservableObject {
         }
     }
     
-    func switchFlag(flagId: Int32) {
-        FlagService().switchFlag(flagId: flagId)
+    func switchFlag(flagId: Int32, active: Bool) {
+        let switchRequest = SwitchRequest(active: active)
+        
+        FlagService().switchFlag(flagId: flagId, switchRequest: switchRequest)
+            .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -69,12 +70,10 @@ class FlagViewModel: ObservableObject {
                     self.error = error
                 }
             } receiveValue: { response in
-                DispatchQueue.main.async {
-                    if let data = response.data {
-                        print("flagId: \(data)")
-                    } else {
-                        print("플래그 스위치 실패")
-                    }
+                if let data = response.data {
+                    print("flagId: \(data)")
+                } else {
+                    print("플래그 스위치 실패")
                 }
             }
             .store(in: &cancellables)

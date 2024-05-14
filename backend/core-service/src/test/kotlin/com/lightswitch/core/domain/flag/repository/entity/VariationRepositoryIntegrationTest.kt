@@ -11,11 +11,13 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 
 @Transactional
 @SpringBootTest
-class VariationTest {
+@ActiveProfiles("test")
+class VariationRepositoryIntegrationTest {
     @Autowired
     private lateinit var variationRepository: VariationRepository
 
