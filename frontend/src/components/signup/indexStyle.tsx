@@ -4,14 +4,25 @@ interface ModalProps {
   isSignUpModal: boolean;
 }
 
+export const Layout = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: calc(var(--vh, 1vh) * 100 - 4rem);
+  padding: 1rem 0;
+  margin-right: 14.5rem;
+  box-sizing: border-box;
+  overflow: hidden;
+`;
+
 export const SignUpLayout = styled.div<ModalProps>`
   width: 560px;
-  margin-top: 5rem;
-  margin-right: 16rem;
-  border: 2px solid gray;
-  border-radius: 10px;
-  padding: 2rem;
-  height: auto;
+  border-radius: 1.25rem;
+  border: 1px solid #bdbdbd;
+  background: #fff;
+  box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.25);
+  height: 100%;
   display: ${(props) => (props.isSignUpModal ? 'block' : 'none')};
 `;
 

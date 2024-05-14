@@ -7,7 +7,8 @@ export const Layout = styled.div`
   align-items: center;
   width: 100%;
   height: calc(var(--vh, 1vh) * 100 - 4rem);
-  padding: 2rem 0;
+  padding: 1rem 0;
+  margin-right: 14.5rem;
   box-sizing: border-box;
   overflow: hidden;
 `;
@@ -17,9 +18,10 @@ export const LogInLayout = styled.div`
   justify-content: center;
   width: 560px;
   height: 100%;
-  border: 2px solid gray;
-  border-radius: 10px;
-  margin-right: 14.5rem;
+  border-radius: 1.25rem;
+  border: 1px solid #bdbdbd;
+  background: #fff;
+  box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.25);
 `;
 
 export const LogInContainer = styled.div`

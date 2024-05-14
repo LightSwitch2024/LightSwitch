@@ -73,7 +73,7 @@ const LogIn = () => {
     );
   };
 
-  return (
+  return !isSignUpModal ? (
     <L.Layout>
       <L.LogInLayout>
         <L.LogInContainer>
@@ -110,11 +110,9 @@ const LogIn = () => {
           </L.LogInLinkBox>
         </L.LogInContainer>
       </L.LogInLayout>
-      <SignUpModal
-        isSignUpModal={isSignUpModal}
-        onClose={() => setIsSignUpModal(false)}
-      />
     </L.Layout>
+  ) : (
+    <SignUpModal isSignUpModal={isSignUpModal} onClose={() => setIsSignUpModal(false)} />
   );
 };
 export default LogIn;
