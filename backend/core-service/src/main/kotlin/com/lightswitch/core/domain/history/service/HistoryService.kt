@@ -1,7 +1,5 @@
 package com.lightswitch.core.domain.history.service
 
-import com.lightswitch.core.common.dto.ResponseCode
-import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.domain.flag.dto.KeywordDto
 import com.lightswitch.core.domain.flag.dto.PropertyDto
 import com.lightswitch.core.domain.flag.dto.VariationDto
@@ -11,6 +9,10 @@ import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.flag.repository.VariationRepository
 import com.lightswitch.core.domain.flag.repository.entity.Flag
 import com.lightswitch.core.domain.flag.repository.entity.Keyword
+import com.lightswitch.core.domain.flag.repository.entity.Variation
+import com.lightswitch.core.domain.history.dto.PreFlag
+import com.lightswitch.core.domain.history.dto.PreKeyword
+import com.lightswitch.core.domain.history.dto.PreVariation
 import com.lightswitch.core.domain.history.repository.HistoryRepository
 import com.lightswitch.core.domain.history.repository.entity.History
 import com.lightswitch.core.domain.history.repository.entity.HistoryType
@@ -87,119 +89,84 @@ class HistoryService(
 
     @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.switchFlag(..)) && args(flagId,switchRequestDto)")
     fun switchFlag(proceedingJoinPoint: ProceedingJoinPoint, flagId: Long, switchRequestDto: SwitchRequestDto): Any? {
-        val proceed = proceedingJoinPoint.proceed()
         val flag = flagRepository.findById(flagId).orElseThrow()
+        val preFlag = flag.toPrevious()
+        val proceed = proceedingJoinPoint.proceed()
         historyRepository.save(
             History(
                 flag = flag,
                 action = HistoryType.SWITCH_FLAG,
-                previous = flag.active.toString(),
+                previous = preFlag.active.toString(),
                 current = switchRequestDto.active.toString()
             )
         )
         return proceed;
     }
 
-    @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.updateFlag(..)) && args(flagId,flagRequestDto)")
+//    @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.updateFlag(..)) && args(flagId,flagRequestDto)")
     fun updateFlag(proceedingJoinPoint: ProceedingJoinPoint, flagId: Long, flagRequestDto: FlagRequestDto): Any? {
-        val proceed = proceedingJoinPoint.proceed()
         val flag = flagRepository.findById(flagId).orElseThrow()
-
-        if (flag.title != flagRequestDto.title) {
-            historyRepository.save(
-                History(
-                    flag = flag,
-                    action = HistoryType.UPDATE_FLAG_TITLE,
-                    previous = flag.title,
-                    current = flagRequestDto.title
-                )
-            )
-        }
-
-        if (flag.type != flagRequestDto.type) {
-            historyRepository.save(
-                History(
-                    flag = flag,
-                    action = HistoryType.UPDATE_FLAG_TYPE,
-                    previous = flag.type.toString(),
-                    current = flagRequestDto.type.toString()
-                )
-            )
-        }
-
-        val defaultVariation =
-            variationRepository.findByFlagAndDefaultFlagIsTrueAndDeletedAtIsNull(flag)
-                ?: throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
-
-        if (defaultVariation.value != flagRequestDto.defaultValue) {
-            historyRepository.save(
-                History(
-                    flag = flag,
-                    action = HistoryType.UPDATE_VARIATION_VALUE,
-                    previous = defaultVariation.value,
-                    current = flagRequestDto.defaultValue
-                )
-            )
-        }
-
-        if (defaultVariation.portion != flagRequestDto.defaultPortion) {
-            historyRepository.save(
-                History(
-                    flag = flag,
-                    action = HistoryType.UPDATE_VARIATION_PORTION,
-                    target = defaultVariation.value,
-                    previous = defaultVariation.portion.toString(),
-                    current = flagRequestDto.defaultPortion.toString()
-                )
-            )
-        }
-
-        val variationInfoRequestDto = VariationInfoRequestDto(
-            type = flagRequestDto.type,
-            defaultValue = flagRequestDto.defaultValue,
-            defaultPortion = flagRequestDto.defaultPortion,
-            defaultDescription = flagRequestDto.description,
-            variations = flagRequestDto.variations
-        )
-
-        //variation
-        checkVariation(flag, variationInfoRequestDto)
-
-        val keywords = KeywordInfoRequestDto(flagRequestDto.keywords)
-        checkKeyword(keywords, flag)
+        val preFlag = flag.toPrevious()
+        val variations = variationRepository.findByFlagFlagId(flagId)
+        val preVariation = variations.map { it.toPrevious() }
+        val proceed = proceedingJoinPoint.proceed()
+        print("======= updateFlag =======")
+        checkFlagTitle(preFlag, flag)
+        checkFlagType(preFlag, flag)
+        checkVariation(flag, preVariation, variations)
+        checkKeyword(preFlag, flag)
 
         return proceed;
     }
 
-    private fun checkProperty(
-        keywordDto: KeywordDto,
-        keyword: Keyword,
+    private fun checkFlagType(
+        preFlag: PreFlag,
         flag: Flag
     ) {
-        for (propertyDto in keywordDto.properties) {
+        if (preFlag.type != flag.type) {
+            historyRepository.save(
+                History(
+                    flag = flag,
+                    action = HistoryType.UPDATE_FLAG_TYPE,
+                    previous = preFlag.type.toString(),
+                    current = flag.type.toString()
+                )
+            )
+        }
+    }
+
+    private fun checkProperty(
+        flag: Flag,
+        preKeyword: PreKeyword,
+        keyword: Keyword
+    ) {
+        val properties = keyword.properties
+        val preProperties = preKeyword.properties
+
+        for (property in properties) {
             var matchedProperty = false
-            for (property in keyword.properties) {
-                if (propertyDto.propertyId == property.propertyId) {
+            for (preProperty in preProperties) {
+                if (property.propertyId == preProperty.propertyId) {
                     matchedProperty = true
-                    if (propertyDto.property != property.property) {
+                    if (property.property != preProperty.property) {
                         historyRepository.save(
                             History(
                                 flag = flag,
                                 action = HistoryType.UPDATE_PROPERTY_KEY,
-                                target = keywordDto.description,
-                                previous = property.property,
-                                current = propertyDto.property
+                                target = keyword.description,
+                                previous = preProperty.property,
+                                current = property.property
                             )
                         )
                     }
-                    if (propertyDto.data != property.data) {
+                    if (property.data != preProperty.data) {
                         historyRepository.save(
                             History(
                                 flag = flag,
                                 action = HistoryType.UPDATE_PROPERTY_VALUE,
-                                target = keywordDto.description,
-                                previous = property.data,
-                                current = propertyDto.data
+                                target = keyword.description,
+                                previous = preProperty.data,
+                                current = property.data
                             )
                         )
                     }
@@ -210,8 +177,8 @@ class HistoryService(
                     History(
                         flag = flag,
                         action = HistoryType.CREATE_PROPERTY,
-                        target = keywordDto.description,
-                        current = propertyDto.property
+                        target = keyword.description,
+                        current = property.property
                     )
                 )
             }
@@ -224,99 +191,95 @@ class HistoryService(
         flagId: Long,
         flagInfoRequestDto: FlagInfoRequestDto
     ): Any? {
-        val proceed = proceedingJoinPoint.proceed()
         val flag = flagRepository.findById(flagId).orElseThrow()
+        val preFlag = flag.toPrevious()
+        val proceed = proceedingJoinPoint.proceed()
+        print("======= updateFlagInfo =======")
 
-        if (flag.title != flagInfoRequestDto.title) {
+        checkFlagTitle(preFlag, flag)
+        return proceed
+    }
+
+    private fun checkFlagTitle(
+        preFlag: PreFlag,
+        flag: Flag
+    ) {
+        if (preFlag.title != flag.title) {
             historyRepository.save(
                 History(
                     flag = flag,
                     action = HistoryType.UPDATE_FLAG_TITLE,
-                    previous = flag.title,
-                    current = flagInfoRequestDto.title
+                    previous = preFlag.title,
+                    current = flag.title
                 )
             )
         }
-
-        return proceed
     }
 
-    @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.updateVariationInfo(..)) && args(flagId,variationInfoRequestDto)")
+//    @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.updateVariationInfo(..)) && args(flagId,variationInfoRequestDto)")
     fun updateVariationInfo(
         proceedingJoinPoint: ProceedingJoinPoint,
         flagId: Long,
         variationInfoRequestDto: VariationInfoRequestDto
     ): Any? {
-        val proceed = proceedingJoinPoint.proceed()
         val flag = flagRepository.findById(flagId).orElseThrow()
+        val variations = variationRepository.findByFlagFlagId(flagId)
+        val preVariations = variations.map { it.toPrevious() }
+        val proceed = proceedingJoinPoint.proceed()
+        print("======= updateVariationInfo =======")
 
-        checkDefaultVariation(flag, variationInfoRequestDto)
-        //variation
-        checkVariation(flag, variationInfoRequestDto)
+        checkVariation(flag, preVariations, variations)
 
         return proceed
     }
 
-    private fun checkDefaultVariation(
-        flag: Flag,
+    @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.updateVariationInfoWithHardDelete(..)) && args(flagId,variationInfoRequestDto)")
+    fun updateVariationInfoWithHardDelete(
+        proceedingJoinPoint: ProceedingJoinPoint,
+        flagId: Long,
         variationInfoRequestDto: VariationInfoRequestDto
-    ) {
-        val defaultVariation =
-            variationRepository.findByFlagAndDefaultFlagIsTrueAndDeletedAtIsNull(flag)
-                ?: throw BaseException(ResponseCode.VARIATION_NOT_FOUND)
+    ): Any? {
+        val flag = flagRepository.findById(flagId).orElseThrow()
+        val variations = variationRepository.findByFlagFlagId(flagId)
+        val preVariations = variations.map { it.toPrevious() }
+        val proceed = proceedingJoinPoint.proceed()
+        print("======= updateVariationInfoWithHardDelete =======")
 
-        if (defaultVariation.value != variationInfoRequestDto.defaultValue) {
-            historyRepository.save(
-                History(
-                    flag = flag,
-                    action = HistoryType.UPDATE_VARIATION_VALUE,
-                    previous = defaultVariation.value,
-                    current = variationInfoRequestDto.defaultValue
-                )
-            )
-        }
-
-        if (defaultVariation.portion != variationInfoRequestDto.defaultPortion) {
-            historyRepository.save(
-                History(
-                    flag = flag,
-                    action = HistoryType.UPDATE_VARIATION_PORTION,
-                    previous = defaultVariation.portion.toString(),
-                    current = variationInfoRequestDto.defaultPortion.toString()
-                )
-            )
-        }
+        checkVariation(flag, preVariations, variations)
+        return proceed
     }
+
 
     private fun checkVariation(
         flag: Flag,
-        variationInfoRequestDto: VariationInfoRequestDto
+        preVariations: List<PreVariation>,
+        variations: List<Variation>
     ) {
-        val variations = variationRepository.findByFlagAndDefaultFlagIsFalseAndDeletedAtIsNull(flag)
 
-        variationInfoRequestDto.variations.forEach { variationDto ->
+        variations.forEach { variation ->
             var matchedVariation = false
-            for (variation in variations) {
-                if (variation.variationId == variationDto.variationId) {
+            for (preVariation in preVariations) {
+                print("${preVariation.variationId} / ${variation.variationId}")
+                if (preVariation.variationId == variation.variationId) {
                     matchedVariation = true
-                    if (variation.value != variationDto.value) {
+                    if (preVariation.value != variation.value) {
                         historyRepository.save(
                             History(
                                 flag = flag,
                                 action = HistoryType.UPDATE_VARIATION_VALUE,
-                                previous = variation.value,
-                                current = variationDto.value
+                                previous = preVariation.value,
+                                current = variation.value
                             )
                         )
                     }
-                    if (variation.portion != variationDto.portion) {
+                    if (preVariation.portion != variation.portion) {
                         historyRepository.save(
                             History(
                                 flag = flag,
                                 action = HistoryType.UPDATE_VARIATION_PORTION,
                                 target = variation.value,
-                                previous = variation.portion.toString(),
-                                current = variationDto.portion.toString()
+                                previous = preVariation.portion.toString(),
+                                current = variation.portion.toString()
                             )
                         )
                     }
@@ -329,24 +292,26 @@ class HistoryService(
                     History(
                         flag = flag,
                         action = HistoryType.CREATE_VARIATION,
-                        current = variationDto.value
+                        current = variation.value
                     )
                 )
             }
         }
     }
 
-    @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.updateKeywordInfo(..)) && args(flagId,keywordInfoRequestDto)")
+//    @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.updateKeywordInfo(..)) && args(flagId,keywordInfoRequestDto)")
     fun updateKeywordInfo(
         proceedingJoinPoint: ProceedingJoinPoint,
         flagId: Long,
         keywordInfoRequestDto: KeywordInfoRequestDto
     ): Any? {
-        val proceed = proceedingJoinPoint.proceed()
         val flag = flagRepository.findById(flagId).orElseThrow()
-
+        val preFlag = flag.toPrevious()
+        val proceed = proceedingJoinPoint.proceed()
         // keyword & property
-        checkKeyword(keywordInfoRequestDto, flag)
+        print("======= updateKeywordInfo =======")
+
+        checkKeyword(preFlag, flag)
 
         return proceed
     }
@@ -357,36 +322,41 @@ class HistoryService(
         flagId: Long,
         keywordInfoRequestDto: KeywordInfoRequestDto
     ): Any? {
-        val proceed = proceedingJoinPoint.proceed()
         val flag = flagRepository.findById(flagId).orElseThrow()
-
+        val preFlag = flag.toPrevious()
+        val proceed = proceedingJoinPoint.proceed()
         // keyword & property
-        checkKeyword(keywordInfoRequestDto, flag)
+        print("======= updateKeywordInfoWithHardDelete =======")
+
+        checkKeyword(preFlag, flag)
 
         return proceed
     }
 
     private fun checkKeyword(
-        keywordInfoRequestDto: KeywordInfoRequestDto,
+        preFlag: PreFlag,
         flag: Flag
     ) {
-        for (keywordDto in keywordInfoRequestDto.keywords) {
+        val keywords = flag.keywords
+        val preKeywords = preFlag.keywords
+
+        for (keyword in keywords) {
             var matchedKeyword = false
-            for (keyword in flag.keywords) {
-                if (keyword.keywordId == keywordDto.keywordId) {
+            for (preKeyword in preKeywords) {
+                if (preKeyword.keywordId == keyword.keywordId) {
                     matchedKeyword = true
-                    if (keyword.value != keywordDto.value) {
+                    if (preKeyword.value != keyword.value) {
                         historyRepository.save(
                             History(
                                 flag = flag,
                                 action = HistoryType.UPDATE_KEYWORD,
-                                target = keywordDto.description,
-                                previous = keyword.value,
-                                current = keywordDto.value
+                                target = keyword.description,
+                                previous = preKeyword.value,
+                                current = keyword.value
                             )
                         )
                     }
-                    checkProperty(keywordDto, keyword, flag)
+                    checkProperty(flag, preKeyword, keyword)
                     break
                 }
             }
@@ -395,8 +365,8 @@ class HistoryService(
                     History(
                         flag = flag,
                         action = HistoryType.CREATE_KEYWORD,
-                        target = keywordDto.description,
-                        current = keywordDto.value
+                        target = keyword.description,
+                        current = keyword.value
                     )
                 )
             }
