@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
 import { logIn } from '@/api/userDetail/userAxios';
-import LightswitchLogo from '@/assets/lightswitchLogo.svg?react';
+// import LightswitchLogo from '@/assets/lightswitchLogo.svg?react';
+import logo from '@/assets/removebg.png';
+import BeforeFindPWModal from '@/components/beforeFindPWModal/index';
 import SignUpModal from '@/components/signup/index';
 import { AuthAtom } from '@/global/AuthAtom';
 import * as L from '@/pages/user/loginStyle';
@@ -21,6 +23,7 @@ const LogIn = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isSignUpModal, setIsSignUpModal] = useState<boolean>(false);
+  const [isbeforefindPWModal, setIsbeforefindPWModal] = useState<boolean>(false);
 
   const [auth, setAuth] = useRecoilState(AuthAtom);
   const navigate = useNavigate();
@@ -35,6 +38,10 @@ const LogIn = () => {
 
   const onPressSignUpButton = (): void => {
     setIsSignUpModal(true);
+  };
+
+  const onPressFindPWButton = (): void => {
+    setIsbeforefindPWModal(true);
   };
 
   useEffect(() => {
@@ -82,7 +89,8 @@ const LogIn = () => {
     <L.Layout>
       <L.LogInLayout>
         <L.LogInContainer>
-          <LightswitchLogo />
+          {/* <LightswitchLogo /> */}
+          <img src={logo} alt="logo" />
           <L.LogInInputBox>
             <L.LogInInput
               type="text"
@@ -103,8 +111,10 @@ const LogIn = () => {
             <L.OKButton onClick={onClickLogIn}>로그인</L.OKButton>
           </L.ButtonWrapper>
           <L.LogInLinkBox>
-            <L.SignUpText onClick={onPressSignUpButton}>회원가입</L.SignUpText>
-            <L.PasswordText to="/passwordfind">비밀번호 찾기</L.PasswordText>
+            <L.SignUpButton onClick={onPressSignUpButton}>회원가입</L.SignUpButton>
+            <L.PasswordButton onClick={onPressFindPWButton}>
+              비밀번호 찾기
+            </L.PasswordButton>
           </L.LogInLinkBox>
         </L.LogInContainer>
       </L.LogInLayout>
@@ -112,7 +122,12 @@ const LogIn = () => {
         isSignUpModal={isSignUpModal}
         onClose={() => setIsSignUpModal(false)}
       />
+      <BeforeFindPWModal
+        isbeforefindPWModal={isbeforefindPWModal}
+        onClose={() => setIsbeforefindPWModal(false)}
+      />
     </L.Layout>
   );
 };
+
 export default LogIn;

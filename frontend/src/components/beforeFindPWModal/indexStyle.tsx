@@ -1,30 +1,32 @@
 import styled from 'styled-components';
 
 interface ModalProps {
-  isSignUpModal: boolean;
+  isbeforefindPWModal: boolean;
 }
 
-export const SignUpLayout = styled.div<ModalProps>`
-  width: 560px;
+export const Layout = styled.div<ModalProps>`
+  width: 500px;
   margin-top: 5rem;
-  margin-right: 16rem;
+  margin-right: 8rem;
   border: 2px solid gray;
   border-radius: 10px;
-  padding: 2rem;
+  align-content: center;
+  justify-content: center;
   height: auto;
-  display: ${(props) => (props.isSignUpModal ? 'block' : 'none')};
+  display: ${(props) => (props.isbeforefindPWModal ? 'block' : 'none')};
 `;
 
-export const SignUpContainer = styled.div<ModalProps>`
+export const Container = styled.div<ModalProps>`
   display: flex;
   flex-direction: column;
   justify-content: center;
   margin: 2.5rem 3rem;
   gap: 1rem;
-  transform: ${(props) => (props.isSignUpModal ? 'translateX(0)' : 'translateX(100%)')};
+  transform: ${(props) =>
+    props.isbeforefindPWModal ? 'translateX(0)' : 'translateX(100%)'};
 `;
 
-export const SignUpInput = styled.input`
+export const Input = styled.input`
   width: 100%;
   padding: 0.75rem 0;
   border-radius: 0.5rem;
@@ -35,21 +37,28 @@ export const SignUpInput = styled.input`
   }
 `;
 
-export const SignUpText = styled.div`
+export const Text = styled.div`
   align-self: flex-end;
   font-size: 0.6rem;
   color: #00c9ea;
   font-weight: 500;
 `;
 
-export const SignUpWarnText = styled.div`
+export const TitleText = styled.div`
+  font-size: 1.3rem;
+  padding-bottom: 0.6rem;
+  color: #000;
+  font-weight: 700;
+`;
+
+export const WarnText = styled.div`
   align-self: flex-end;
   font-size: 0.6rem;
   color: red;
   font-weight: 500;
 `;
 
-export const SignUpInputBox = styled.div`
+export const InputBox = styled.div`
   display: flex;
   width: 100%;
   flex-direction: column;
@@ -67,23 +76,11 @@ export const CancleButton = styled.button`
   cursor: pointer;
 `;
 
-export const OKButton = styled.button<{ $signUpFlag: boolean }>`
-  width: 100%;
-  padding: 0.3rem 1rem;
-  border-radius: 0.5rem;
-  border: 1px solid #ddd;
-  font-size: 1.4rem;
-  background-color: #00c9ea;
-  color: #fff;
-  cursor: pointer;
-  opacity: ${({ $signUpFlag }) => ($signUpFlag ? '1' : '0.3')};
-  pointer-events: ${({ $signUpFlag }) => ($signUpFlag ? 'auto' : 'none')};
-`;
-
 export const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
+  padding-top: 1rem;
   gap: 1rem;
 `;
 
