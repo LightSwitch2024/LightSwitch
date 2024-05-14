@@ -4,8 +4,7 @@ import { useRecoilState } from 'recoil';
 
 import { logIn } from '@/api/userDetail/userAxios';
 // import LightswitchLogo from '@/assets/lightswitchLogo.svg?react';
-import logo from '@/assets/removebg.png';
-import BeforeFindPWModal from '@/components/beforeFindPWModal/index';
+import LightswitchLogo from '@/assets/lightswitchLogo.png';
 import SignUpModal from '@/components/signup/index';
 import { AuthAtom } from '@/global/AuthAtom';
 import * as L from '@/pages/user/loginStyle';
@@ -85,31 +84,37 @@ const LogIn = () => {
     );
   };
 
-  return (
+  return !isSignUpModal ? (
     <L.Layout>
       <L.LogInLayout>
         <L.LogInContainer>
-          {/* <LightswitchLogo /> */}
-          <img src={logo} alt="logo" />
-          <L.LogInInputBox>
-            <L.LogInInput
-              type="text"
-              placeholder="이메일"
-              value={email}
-              onChange={handleEmail}
-            />
-          </L.LogInInputBox>
-          <L.LogInInputBox>
-            <L.LogInInput
-              type="password"
-              placeholder="비밀번호"
-              value={password}
-              onChange={handlePassword}
-            />
-          </L.LogInInputBox>
+          <L.LogoBox>
+            <L.LogoImg src={LightswitchLogo} alt="Lightswitch Logo" />
+          </L.LogoBox>
+
+          <L.LoginInputBox>
+            <L.LogInInputWrapper>
+              <L.LogInInput
+                type="text"
+                placeholder="이메일"
+                value={email}
+                onChange={handleEmail}
+              />
+            </L.LogInInputWrapper>
+            <L.LogInInputWrapper>
+              <L.LogInInput
+                type="password"
+                placeholder="비밀번호"
+                value={password}
+                onChange={handlePassword}
+              />
+            </L.LogInInputWrapper>
+          </L.LoginInputBox>
+
           <L.ButtonWrapper>
             <L.OKButton onClick={onClickLogIn}>로그인</L.OKButton>
           </L.ButtonWrapper>
+
           <L.LogInLinkBox>
             <L.SignUpButton onClick={onPressSignUpButton}>회원가입</L.SignUpButton>
             <L.PasswordButton onClick={onPressFindPWButton}>
@@ -118,15 +123,10 @@ const LogIn = () => {
           </L.LogInLinkBox>
         </L.LogInContainer>
       </L.LogInLayout>
-      <SignUpModal
-        isSignUpModal={isSignUpModal}
-        onClose={() => setIsSignUpModal(false)}
-      />
-      <BeforeFindPWModal
-        isbeforefindPWModal={isbeforefindPWModal}
-        onClose={() => setIsbeforefindPWModal(false)}
       />
     </L.Layout>
+  ) : (
+    <SignUpModal isSignUpModal={isSignUpModal} onClose={() => setIsSignUpModal(false)} />
   );
 };
 
