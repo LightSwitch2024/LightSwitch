@@ -1,6 +1,7 @@
 package com.lightswitch.core.domain.flag.repository.entity
 
 import com.lightswitch.core.common.entity.BaseEntity
+import com.lightswitch.core.domain.history.dto.PreKeyword
 import jakarta.persistence.*
 
 @Entity(name = "keyword")
@@ -19,4 +20,9 @@ Keyword(
 
     val description: String,
     val value: String,
-) : BaseEntity()
+) : BaseEntity() {
+
+    fun toPrevious(): PreKeyword {
+        return PreKeyword(this)
+    }
+}
