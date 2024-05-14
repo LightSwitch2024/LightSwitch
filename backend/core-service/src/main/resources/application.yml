@@ -6,25 +6,6 @@ spring:
     name: core-service
   profiles:
     active: dev,blue
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: lightswitch2024@gmail.com
-    password: vqzwtrcffaseolyt
-    protocol: smtp
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-  data:
-    redis:
-      port: 6379
-      password: switchlight2024!
-      code:
-        signup: signup-authentication-code
-
 #actuator
 management:
   endpoints:

@@ -11,6 +11,7 @@ class History(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flag_id", referencedColumnName = "flagId")
     val flag: Flag,
+    @Enumerated(EnumType.STRING)
     val action: HistoryType,
     val target: String? = null,
     val previous: String? = null,

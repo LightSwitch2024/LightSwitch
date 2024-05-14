@@ -63,14 +63,8 @@ dependencies {
     // /actuator/prometheus를 위한 actuator
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 
-    // redis
-    implementation("org.springframework.boot:spring-boot-starter-data-redis")
-
     // spring security
     implementation("org.springframework.security:spring-security-crypto")
-
-    // spring mail
-    implementation("org.springframework.boot:spring-boot-starter-mail")
 
     // spring framework
     implementation("org.springframework.boot:spring-boot-starter-web")

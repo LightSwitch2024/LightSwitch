@@ -43,8 +43,8 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
   const [passwordCheck, setPasswordCheck] = useState<boolean>(false);
   const [rePassword, setRePassword] = useState<string>('');
   const [authCode, setAuthCode] = useState<string>('');
-  const [isAuth, setIsAuth] = useState<boolean>(false);
-  const [signUpFlag, setSignUpFlag] = useState<boolean>(false);
+  const [isAuth, setIsAuth] = useState<boolean>(true);
+  const [signUpFlag, setSignUpFlag] = useState<boolean>(true);
 
   const validateHangle = (hangle: string): boolean => {
     const hangle_regex = /^[가-힣]+$/g;
@@ -191,7 +191,7 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
     ) {
       setSignUpFlag(true);
     } else {
-      setSignUpFlag(false);
+      // setSignUpFlag(false);
     }
   }, [firstNameCheck, lastNameCheck, telNumberCheck, emailCheck, passwordCheck, isAuth]);
 
@@ -289,7 +289,7 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
           )}
           <S.ButtonWrapper>
             <S.CancleButton onClick={handleCancle}>취소</S.CancleButton>
-            <S.OKButton $signUpFlag={signUpFlag} onClick={handleSignUp}>
+            <S.OKButton $signUpFlag={true} onClick={handleSignUp}>
               회원가입
             </S.OKButton>
           </S.ButtonWrapper>

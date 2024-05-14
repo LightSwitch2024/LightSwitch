@@ -7,8 +7,8 @@ ARG JAR_FILE=backend/core-service/build/libs/*.jar
 COPY ${JAR_FILE} home/conf/app.jar
 
 # frontend build output copy
-ARG WEB_PATH=frontend/dist
-COPY $WEB_PATH var/www/html/.
+ARG WEB_PATH=frontend/dist/
+COPY ${WEB_PATH} /var/www/html/
 
 
 RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
@@ -22,10 +22,12 @@ apt-get update && \
 apt-get install sudo -y && \
 apt-get install -y nginx&& \
 apt-get install -y postgresql-16 && \
-apt-get install -y git
+apt-get install -y git && \
+apt-get install -y vim 
 
 COPY ./database-setup.sql /home/conf/database-setup.sql
 COPY ./install.sh /home/conf/install.sh
+COPY ./default.conf /etc/nginx/sites-enabled/default
 
 
 ENTRYPOINT [ "bin/bash", "home/conf/install.sh" ]
