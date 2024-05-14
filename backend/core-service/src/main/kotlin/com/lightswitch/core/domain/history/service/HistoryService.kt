@@ -241,10 +241,12 @@ class HistoryService(
         variationInfoRequestDto: VariationInfoRequestDto
     ): Any? {
         val flag = flagRepository.findById(flagId).orElseThrow()
-        val variations = variationRepository.findByFlagFlagId(flagId)
+        var variations = variationRepository.findByFlagAndDeletedAtIsNull(flag)
         val preVariations = variations.map { it.toPrevious() }
         val proceed = proceedingJoinPoint.proceed()
         println("======= updateVariationInfoWithHardDelete =======")
+        variations = variationRepository.findByFlagAndDeletedAtIsNull(flag)
+        println("======= ${preVariations} =======")
         checkVariation(flag, preVariations, variations)
         return proceed
     }
@@ -256,7 +258,7 @@ class HistoryService(
         variations: List<Variation>
     ) {
 
-        variations.forEach { variation ->
+        variations.filter { it.deletedAt == null }.forEach { variation ->
             var matchedVariation = false
             for (preVariation in preVariations) {
                 if (preVariation.variationId == variation.variationId) {
@@ -291,6 +293,27 @@ class HistoryService(
                         flag = flag,
                         action = HistoryType.CREATE_VARIATION,
                         current = variation.value
+                    )
+                )
+            }
+        }
+
+        preVariations.forEach { preVariation ->
+            var stillExists = false
+            for (variation in variations) {
+                if (preVariation.variationId == variation.variationId && variation.deletedAt == null) {
+                    stillExists = true
+                    break
+                }
+            }
+            println(stillExists)
+            if (!stillExists) {
+                println(preVariation.variationId)
+                historyRepository.save(
+                    History(
+                        flag = flag,
+                        action = HistoryType.DELETE_VARIATION,
+                        previous = preVariation.value
                     )
                 )
             }

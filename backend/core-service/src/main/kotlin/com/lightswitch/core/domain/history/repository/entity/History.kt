@@ -15,5 +15,5 @@ class History(
     val action: HistoryType,
     val target: String? = null,
     val previous: String? = null,
-    val current: String?,
+    val current: String? = null,
 ) : BaseEntity()
