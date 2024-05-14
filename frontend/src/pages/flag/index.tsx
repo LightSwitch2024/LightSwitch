@@ -9,27 +9,30 @@ import * as S from '@pages/flag/indexStyle';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate, useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
 import { deleteFlag, getFlagDetail, updateFlag } from '@/api/flagDetail/flagDetailAxios';
 import { getTagList, getTagListByKeyword } from '@/api/main/mainAxios';
 import CreateModal from '@/components/createModal';
 import UpdateModal from '@/components/updateModal';
 
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
-
 interface Variation {
+  variationId: number | '';
   value: string;
   portion: number | '';
   description: string;
 }
 
 interface Keyword {
+  keywordId: number | '';
   properties: Array<Property>;
   description: string;
   value: string;
 }
 
 interface Property {
+  propertyId: number | '';
   property: string;
   data: string;
 }
@@ -108,9 +111,9 @@ const FlagDetail = () => {
   };
 
   const requestDeleteFlag = () => {
-    deleteFlag<Number>(
+    deleteFlag<number>(
       Number(flagId),
-      (data: Number) => {
+      (data: number) => {
         navigator('/');
       },
       (error) => {

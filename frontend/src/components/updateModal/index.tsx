@@ -21,18 +21,21 @@ interface UpdateModalProps {
 }
 
 interface Variation {
+  variationId: number | '';
   value: string;
   portion: number | '';
   description: string;
 }
 
 interface Keyword {
+  keywordId: number | '';
   properties: Array<Property>;
   description: string;
   value: string;
 }
 
 interface Property {
+  propertyId: number | '';
   property: string;
   data: string;
 }
@@ -151,6 +154,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     setVariations([
       ...variations,
       {
+        variationId: '',
         value: '',
         portion: '',
         description: '',
@@ -228,6 +232,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       setDefaultDescription(newDefaultDescription);
       // Set variations based on the new type
       let newVariations: {
+        variationId: number;
         value: string;
         portion: number;
         description: string;
@@ -236,7 +241,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       if (typeItem === 'BOOLEAN') {
         // For BOOLEAN type, add two default variations
         setDefaultPortion(100);
-        newVariations = [{ value: 'FALSE', portion: 0, description: '' }];
+        newVariations = [{ variationId: 0, value: 'FALSE', portion: 0, description: '' }];
       } else {
         newVariations = [];
       }
@@ -479,6 +484,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
         return {
           ...keyword,
           properties: keyword.properties.concat({
+            propertyId: '',
             property: '',
             data: '',
           }),
@@ -500,6 +506,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     setEditedKeywordInfo({
       ...editedKeywordInfo,
       keywords: editedKeywordInfo.keywords.concat({
+        keywordId: '',
         properties: [],
         description: '',
         value: '',
@@ -527,6 +534,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       setEditedVariationInfo({
         ...editedVariationInfo,
         variations: editedVariationInfo.variations.concat({
+          variationId: '',
           value: editedVariationInfo.defaultValue === 'TRUE' ? 'FALSE' : 'TRUE',
           portion: 0,
           description: '',
@@ -539,6 +547,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     setEditedVariationInfo({
       ...editedVariationInfo,
       variations: editedVariationInfo.variations.concat({
+        variationId: '',
         value: '',
         portion: '',
         description: '',
@@ -1103,7 +1112,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
           </S.FlagVariationContentLayer>
 
           {editedVariationInfo.variations.map((variation, index) => (
-            <>
+            <React.Fragment key={index}>
               <div key={index}>
                 <S.Horizontal></S.Horizontal>
                 <S.FlagVariationContentLayer>
@@ -1153,7 +1162,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                 <S.DelButton onClick={deleteVariation(index)}>변수 삭제</S.DelButton>
               </S.ButtonLayer>
               <S.Horizontal />
-            </>
+            </React.Fragment>
           ))}
           <S.ButtonLayer>
             <S.AddButton onClick={addVariation}>변수 추가</S.AddButton>

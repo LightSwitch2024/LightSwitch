@@ -255,8 +255,10 @@ class FlagService(
             type = flag.type,
             keywords = keywordList.map { k ->
                 KeywordDto(
+                    keywordId = k.keywordId,
                     properties = k.properties.map { p ->
                         PropertyDto(
+                            propertyId = p.propertyId,
                             property = p.property,
                             data = p.data,
                         )
@@ -270,6 +272,7 @@ class FlagService(
             defaultDescription = defaultVariation.description,
             variations = variations.map {
                 VariationDto(
+                    variationId = it.variationId,
                     value = it.value,
                     portion = it.portion,
                     description = it.description
