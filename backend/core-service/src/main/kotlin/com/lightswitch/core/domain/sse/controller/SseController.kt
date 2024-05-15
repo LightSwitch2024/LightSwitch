@@ -33,13 +33,23 @@ class SseController(
         sseService.sendData(sseDto)
     }
 
-    @CrossOrigin(origins = ["*"])
+    @CrossOrigin(
+        origins = ["*"],
+        methods = [RequestMethod.POST, RequestMethod.OPTIONS],
+        allowedHeaders = ["*"],
+        allowCredentials = "true"
+    )
     @PostMapping("/subscribe")
     fun createUserKey(@RequestBody sseRequestDto: SseRequestDto): BaseResponse<SseUserKeyResponseDto> {
         return success(sseService.createUserKey(sseRequestDto))
     }
 
-    @CrossOrigin(origins = ["*"])
+    @CrossOrigin(
+        origins = ["*"],
+        methods = [RequestMethod.DELETE, RequestMethod.OPTIONS],
+        allowedHeaders = ["*"],
+        allowCredentials = "true"
+    )
     @DeleteMapping("/disconnect")
     fun disconnect(@RequestBody userKeyRequestDto: UserKeyRequestDto) {
         success(sseService.disconnect(userKeyRequestDto))
