@@ -14,8 +14,8 @@ class WebConfig : WebMvcConfigurer {
             .allowedOrigins("*")
             .allowedHeaders("*")
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
-            .exposedHeaders("Authorization")
-            .allowCredentials(true)
-            .maxAge(3000)
+//            .exposedHeaders("Authorization")
+//            .allowCredentials(true)
+//            .maxAge(3000)
     }
 }
