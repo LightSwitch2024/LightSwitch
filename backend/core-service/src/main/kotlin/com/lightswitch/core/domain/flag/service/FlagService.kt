@@ -11,6 +11,7 @@ import com.lightswitch.core.domain.flag.dto.res.*
 import com.lightswitch.core.domain.flag.repository.*
 import com.lightswitch.core.domain.flag.repository.entity.*
 import com.lightswitch.core.domain.flag.repository.queydsl.FlagCustomRepository
+import com.lightswitch.core.domain.history.dto.HistoryResponse
 import com.lightswitch.core.domain.history.repository.HistoryRepository
 import com.lightswitch.core.domain.history.repository.entity.History
 import com.lightswitch.core.domain.history.repository.entity.HistoryType
@@ -1038,5 +1039,9 @@ class FlagService(
                 maintainerName = "${flag.maintainer.firstName} ${flag.maintainer.lastName}",
             )
         }
+    }
+
+    fun getHistoriesOverview() : List<HistoryResponse>{
+        return  historyRepository.findAllByLimit(3)
     }
 }
