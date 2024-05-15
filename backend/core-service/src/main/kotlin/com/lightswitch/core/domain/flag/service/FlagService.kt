@@ -11,6 +11,7 @@ import com.lightswitch.core.domain.flag.dto.res.*
 import com.lightswitch.core.domain.flag.repository.*
 import com.lightswitch.core.domain.flag.repository.entity.*
 import com.lightswitch.core.domain.flag.repository.queydsl.FlagCustomRepository
+import com.lightswitch.core.domain.history.repository.HistoryRepository
 import com.lightswitch.core.domain.history.repository.entity.History
 import com.lightswitch.core.domain.history.repository.entity.HistoryType
 import com.lightswitch.core.domain.member.entity.SdkKey
@@ -52,6 +53,9 @@ class FlagService(
 
     @Autowired
     private val propertyRepository: PropertyRepository,
+
+    @Autowired
+    private val historyRepository: HistoryRepository
 ) {
 
     fun buildSSEData(flag: Flag): FlagInitResponseDto {
@@ -270,6 +274,8 @@ class FlagService(
         // TODO : flag의 keywords의 deletedAt이 null인 것만 남기기 <- 이 과정을 서비스 로직으로 처리하는 것이 맞는지 확인 필요, 쿼리로 처리하는 것이 더 효율적인지 확인 필요
         val keywordList = flag.keywords.filter { it.deletedAt == null }
 
+        val histories = historyRepository.findByFlagFlagId(flagId)
+
         return FlagResponseDto(
             flagId = flag.flagId!!,
             title = flag.title,
@@ -302,11 +308,10 @@ class FlagService(
                 )
             },
             memberId = flag.maintainer.memberId!!,
-
             createdAt = flag.createdAt.toString(),
             updatedAt = flag.updatedAt.toString(),
-
             active = flag.active,
+            histories = histories
         )
     }
 

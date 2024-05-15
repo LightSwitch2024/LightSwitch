@@ -5,6 +5,8 @@ import com.lightswitch.core.domain.flag.dto.KeywordDto
 import com.lightswitch.core.domain.flag.dto.PropertyDto
 import com.lightswitch.core.domain.flag.dto.VariationDto
 import com.lightswitch.core.domain.flag.repository.entity.Flag
+import com.lightswitch.core.domain.history.dto.HistoryResponse
+import com.lightswitch.core.domain.history.repository.entity.History
 
 data class FlagResponseDto(
     val flagId: Long?,
@@ -20,7 +22,8 @@ data class FlagResponseDto(
     val memberId: Long?,
     val createdAt: String,
     val updatedAt: String,
-    val active: Boolean
+    val active: Boolean,
+    val histories: List<HistoryResponse>? = mutableListOf()
 ) {
     constructor(flag: Flag) : this(
         flagId = flag.flagId,
