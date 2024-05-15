@@ -2,6 +2,19 @@ pipeline {
     agent any
 
     stages {
+        stage ('[Download Env File]') {
+            steps {
+                dir('frontend') {
+                    withCredentials([file(credentialsId: 'frontend-env', variable: 'feEnvFile'),
+                                file(credentialsId: 'frontend-env-production', variable: 'feProdEnvFile')]) {
+                        script {
+                        sh 'cp $feEnvFile .'
+                        sh 'cp $feProdEnvFile .'
+                        }
+                    }
+                }
+            }
+        }
         stage ('[Test]') {
             parallel {
                 stage ('BE Test') {
@@ -203,7 +216,6 @@ pipeline {
                         echo 'FE - Deploy to Nginx'
                         dir ('frontend'){
                             sh'''
-                                yarn build
                                 cp -r ./dist/. /var/www/html/.
                             '''
                         }

@@ -1,5 +1,5 @@
 import CryptoJS from 'crypto-js';
-
+import { Property } from './types';
 export async function getRequest(url: string): Promise<any> {
   try {
     const response = await fetch(url);
@@ -50,4 +50,27 @@ export function getHashedPercentageForObjectIds(
   }
 
   return value;
+}
+
+export function compareObjectsAndMaps(
+  obj: Property[],
+  map: Map<string, string>,
+): boolean {
+  // Object의 키-값 쌍 비교
+  for (const item of obj) {
+    const { property, data } = item;
+    if (!map.has(property) || map.get(property) !== data) {
+      return false;
+    }
+  }
+
+  // Map의 키-값 쌍 비교
+  for (const [key, value] of map.entries()) {
+    const found = obj.find((item) => item.property === key);
+    if (!found || found.data !== value) {
+      return false;
+    }
+  }
+
+  return true;
 }

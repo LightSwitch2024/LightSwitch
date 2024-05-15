@@ -1,7 +1,7 @@
 package com.lightswitch.core.domain.flag.repository.entity
 
 import com.lightswitch.core.common.entity.BaseEntity
-import jakarta.annotation.Nullable
+import com.lightswitch.core.domain.history.dto.PreVariation
 import jakarta.persistence.*
 
 @Entity(name = "variation")
@@ -19,4 +19,9 @@ class Variation(
     var description: String,
 
     val defaultFlag: Boolean = false,
-) : BaseEntity()
+) : BaseEntity() {
+
+    fun toPrevious(): PreVariation {
+        return PreVariation(this)
+    }
+}

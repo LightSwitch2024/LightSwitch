@@ -11,12 +11,11 @@ import com.lightswitch.core.domain.member.dto.req.MemberUpdateReqDto
 import com.lightswitch.core.domain.member.dto.req.SdkKeyReqDto
 import com.lightswitch.core.domain.member.dto.res.MemberResDto
 import com.lightswitch.core.domain.member.dto.res.MemberResponseDto
+import com.lightswitch.core.domain.member.dto.res.OrgResDto
 import com.lightswitch.core.domain.member.dto.res.SdkKeyResDto
-import com.lightswitch.core.domain.member.entity.Member
 import com.lightswitch.core.domain.member.service.MemberService
-import io.swagger.v3.oas.annotations.tags.Tag
 import com.lightswitch.core.domain.member.service.SdkKeyService
-import org.springframework.http.ResponseEntity
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.*
 
 @Tag(name = "Member", description = "회원 관련 API")
@@ -47,6 +46,7 @@ class MemberController(
     fun logIn(
         @RequestBody logInReqDto: LogInReqDto
     ): BaseResponse<MemberResDto> {
+
         return success(memberService.logIn(logInReqDto))
     }
 
@@ -67,12 +67,11 @@ class MemberController(
     }
 
     // 비밀번호 수정
-    @PutMapping("/{memberId}/password")
+    @PutMapping("/{email}/password")
     fun updatePassword(
         @RequestBody pwData: PasswordUpdateReqDto
     ): BaseResponse<MemberResDto?> {
-        println("Controller")
-        println(pwData)
+
         return success(memberService.updatePassword(pwData))
     }
 

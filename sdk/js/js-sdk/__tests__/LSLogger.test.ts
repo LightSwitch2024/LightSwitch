@@ -1,4 +1,4 @@
-import { describe, expect } from '@jest/globals';
+import { jest, describe, expect, it } from '@jest/globals';
 import { LSLogger } from '../lib/LSLogger';
 import { LogLevel } from '../lib/types';
 

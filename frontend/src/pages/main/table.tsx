@@ -44,6 +44,11 @@ interface TablePaginationActionsProps {
 interface FlagTableProps {
   flagKeyword: string;
   tags: Array<Tag>;
+  activeFlagChanged: (activeFlags: number) => void;
+}
+
+interface FlagActiveReqDto {
+  active: boolean;
 }
 
 /**
@@ -111,7 +116,7 @@ const FlagTable = (props: FlagTableProps) => {
   const [flagList, setFlagList] = useState<Array<FlagListItem>>([]);
 
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(4);
 
   /**
    * 페이지 네이션 변경 이벤트 핸들러
@@ -236,8 +241,8 @@ const FlagTable = (props: FlagTableProps) => {
     },
   }));
 
-  const handleToggleButtonClick = (flagId: number) => {
-    onPressFlagSwitch(flagId);
+  const handleToggleButtonClick = (flagId: number, active: boolean) => {
+    onPressFlagSwitch(flagId, active);
   };
 
   useEffect(() => {
@@ -255,17 +260,20 @@ const FlagTable = (props: FlagTableProps) => {
    * flag Id에 해당하는 플래그의 활성화 상태를 변경합니다.
    * @param flagId 플래그 아이디
    */
-  function switchFlag(flagId: number): void {
+  function switchFlag(flagId: number, result: boolean): void {
     const newFlagList = flagList.map((flag) => {
       if (flag.flagId === flagId) {
         return {
           ...flag,
-          active: !flag.active,
+          active: result,
         };
       }
       return flag;
     });
     setFlagList(newFlagList);
+
+    const activeFlags = newFlagList.filter((flag) => flag.active);
+    props.activeFlagChanged(activeFlags.length);
   }
 
   /**
@@ -273,11 +281,15 @@ const FlagTable = (props: FlagTableProps) => {
    * @param flagId 플래그 아이디
    * @returns
    */
-  const onPressFlagSwitch = (flagId: number) => {
-    patchFlagActive(
+  const onPressFlagSwitch = (flagId: number, currentActive: boolean) => {
+    // 서로 다른 사용자가 동시에 같은 플래그를 수정할 때 발생하는 문제를 해결하기 위해
+    // 현재 상태를 active로 보내고, 서버에서도 변경된 flag의 active 상태를 반환받아
+    // 클라이언트에서 다시 한 번 변경을 시도합니다.
+    patchFlagActive<boolean>(
       flagId,
-      () => {
-        switchFlag(flagId);
+      { active: currentActive },
+      (changedActive) => {
+        switchFlag(flagId, changedActive);
       },
       (err) => {
         console.log(err);
@@ -401,7 +413,7 @@ const FlagTable = (props: FlagTableProps) => {
                   <MaterialUISwitch
                     sx={{ m: 1 }}
                     defaultChecked={row.active}
-                    onChange={() => handleToggleButtonClick(row.flagId)}
+                    onChange={() => handleToggleButtonClick(row.flagId, row.active)}
                   />
                 </StyledTableCell>
                 <StyledTableCell align="left">
@@ -413,7 +425,7 @@ const FlagTable = (props: FlagTableProps) => {
           <TableFooter>
             <TableRow>
               <TablePagination
-                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                rowsPerPageOptions={[4, 8, 20, { label: 'All', value: -1 }]}
                 colSpan={3}
                 count={flagList.length}
                 rowsPerPage={rowsPerPage}

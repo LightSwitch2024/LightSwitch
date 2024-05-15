@@ -156,14 +156,13 @@ export const IconContainer = styled.div`
 export const TextContainer = styled.div`
   display: flex;
   flex-direction: row;
-  margin: 15px 0 2px 0;
+  margin: 2px 0 0.5rem 1rem;
   gap: 0.625rem;
 `;
 
 export const KeywordTextContainer = styled.div`
   display: flex;
   flex-direction: row;
-  margin-top: 10px;
   gap: 0.625rem;
 `;
 
@@ -179,6 +178,14 @@ export const VarContainer = styled.div`
   flex-direction: row;
   gap: 0.125rem;
 `;
+
+export const VarDesContainer = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  // gap: 0.rem;
+`;
+
 export const VarDefinitionContainer = styled.div`
   display: flex;
   width: 100%;
@@ -209,6 +216,7 @@ export const Input = styled.input<{ $flag: boolean }>`
 
   font-size: 1.5rem;
   font-style: normal;
+  font-family: 'Pretendard-Regular';
   font-weight: 400;
   line-height: normal;
 
@@ -259,6 +267,20 @@ export const VarText = styled.div`
   display: flex;
   width: 4rem;
   color: #000;
+  margin-top: 20px;
+  font-family: Pretendard;
+  font-size: 1.5rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+
+export const VarDesText = styled.div`
+  display: flex;
+  width: 4rem;
+  color: #000;
+  margin-top: 20px;
+  margin-left: 5px;
   font-family: Pretendard;
   font-size: 1.5rem;
   font-style: normal;
@@ -267,7 +289,7 @@ export const VarText = styled.div`
 `;
 
 export const TextArea = styled.textarea<{ $flag: boolean }>`
-  padding: 8px 0x;
+  padding: 8px 8px;
   width: 100%;
   height: 7rem;
   border-radius: 6px;
@@ -340,9 +362,9 @@ export const CancelButton = styled.button`
   font-weight: 400;
   line-height: 1.25rem; /* 100% */
 
-  &:hover {
-    background: #e0e0e0;
-  }
+  // &:hover {
+  //   background: #e0e0e0;
+  // }
 
   &:active {
     background: #f5f6f7;
@@ -367,9 +389,9 @@ export const ConfirmButton = styled.button`
   font-weight: 400;
   line-height: 1.25rem; /* 100% */
 
-  &:hover {
-    background: #002f87;
-  }
+  // &:hover {
+  //   background: #002f87;
+  // }
 
   &:active {
     background: #031c5b;
@@ -395,9 +417,9 @@ export const AddButton = styled.button`
   font-weight: 400;
   line-height: 1rem; /* 100% */
 
-  &:hover {
-    background: #002f87;
-  }
+  // &:hover {
+  //   background: #002f87;
+  // }
 
   &:active {
     background: #031c5b;
@@ -423,9 +445,9 @@ export const DelButton = styled.button`
   font-weight: 400;
   line-height: 1rem; /* 100% */
 
-  &:hover {
-    background: #e0e0e0;
-  }
+  // &:hover {
+  //   background: #e0e0e0;
+  // }
 
   &:active {
     background: #f5f6f7;
@@ -463,4 +485,134 @@ export const WarnText = styled.div`
   font-weight: 500;
   line-height: normal;
   color: #ff0000;
+`;
+
+export const WarnTextWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+export const WarnEndWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+export const BottomWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+`;
+
+export const BottomLayer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+`;
+
+export const FlagTypeContainer = styled.div`
+  display: flex;
+  width: 8.625rem;
+  height: 2.125rem;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+
+  border-radius: 0.625rem;
+  background: #30c2e7;
+`;
+
+export const FlagTypeContentContainer = styled.div`
+  display: flex;
+  padding: 0.6875rem 0rem;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: stretch;
+`;
+
+export const FlagTypeTextContainer = styled.div`
+  display: flex;
+  padding: 0.25rem 0rem;
+  align-items: center;
+  gap: 0.625rem;
+`;
+
+export const FlagTypeText = styled.div`
+  color: #1e3232;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 0.9375rem; /* 75% */
+  letter-spacing: 0.07813rem;
+  text-transform: uppercase;
+`;
+
+export const FlagTypeContentContainerChecked = styled.div`
+  display: flex;
+  padding: 0.6875rem 0.5rem;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: stretch;
+  background: #f5f6f7;
+
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 0.625rem;
+`;
+
+export const FlagTypeContentContainerUnchecked = styled.div`
+  display: flex;
+  padding: 0.6875rem 0.5rem;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: stretch;
+
+  border-radius: 0.625rem;
+`;
+
+export const FlagVariationContentLayer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9375rem;
+  align-self: stretch;
+`;
+
+export const FlagVariationRowContainer = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+`;
+
+export const FlagVariationInput = styled.input<{ $flag: boolean }>`
+  display: flex;
+  width: 100%;
+  height: 2rem;
+  padding: 0.9375rem 0.75rem;
+  align-items: center;
+  gap: 0.625rem;
+  flex: 1 0 0;
+
+  border-radius: 0.625rem;
+  border: 1px solid #000;
+
+  font-family: Pretendard;
+  font-size: 20px;
+  font-style: normal;
+  color: #545454;
+  font-weight: 600;
+  line-height: normal;
+
+  &::placeholder {
+    color: #d6d6d6;
+  }
+
+  ${(props) =>
+    props.$flag &&
+    `
+    background-color: #f2f2f2;
+    pointer-events: none;
+  `}
 `;

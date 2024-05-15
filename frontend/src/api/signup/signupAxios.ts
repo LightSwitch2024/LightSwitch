@@ -19,6 +19,7 @@ interface ConfirmAuthCodeData {
 interface SignUpData {
   firstName: string;
   lastName: string;
+  orgName: string;
   telNumber: string;
   email: string;
   password: string;

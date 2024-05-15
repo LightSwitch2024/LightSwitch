@@ -14,6 +14,7 @@ interface FlagInfo {
 }
 
 interface Variation {
+  variationId: number | '';
   value: string;
   portion: number | '';
   description: string;
@@ -22,18 +23,20 @@ interface Variation {
 interface VariationInfo {
   type: string;
   defaultValue: string;
-  defaultPortion: number;
+  defaultPortion: number | '';
   defaultDescription: string;
   variations: Array<Variation>;
 }
 
 interface Keyword {
+  keywordId: number | '';
   properties: Array<Property>;
   description: string;
   value: string;
 }
 
 interface Property {
+  propertyId: number | '';
   property: string;
   data: string;
 }

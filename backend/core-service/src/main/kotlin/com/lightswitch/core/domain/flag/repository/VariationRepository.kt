@@ -11,6 +11,9 @@ interface VariationRepository : JpaRepository<Variation, Long> {
     fun findByFlagAndDeletedAtIsNull(flag: Flag): List<Variation>
     fun findByFlagFlagId(flagId: Long): List<Variation>
 
-    fun findByFlagAndDefaultFlagIsTrueAndDeletedAtIsNull(flag: Flag): Variation?
+    fun findByFlagAndDefaultFlagIsTrueAndDeletedAtIsNull(flag: Flag): Variation
     fun findByFlagAndDefaultFlagIsFalseAndDeletedAtIsNull(flag: Flag): List<Variation>
+
+    fun deleteByFlagFlagId(flagId: Long)
+    fun deleteByFlagFlagIdAndDefaultFlagIsFalse(flagId: Long)
 }
