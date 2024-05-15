@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
 interface ModalProps {
-  isSignUpModal: boolean;
+  isFindPWModal: boolean;
 }
 
-export const Layout = styled.div`
+export const LayOut = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -16,8 +16,10 @@ export const Layout = styled.div`
   overflow: hidden;
 `;
 
-export const SignUpLayout = styled.div<ModalProps>`
+export const FindLayout = styled.div<ModalProps>`
   display: flex;
+  justify-content: center;
+  align-items: center;
   width: 500px;
   height: 100%;
   border-radius: 1.25rem;
@@ -26,118 +28,96 @@ export const SignUpLayout = styled.div<ModalProps>`
   box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.25);
   padding: 2rem 2rem;
   box-sizing: border-box;
-  display: ${(props) => (props.isSignUpModal ? 'block' : 'none')};
+  display: ${(props) => (props.isFindPWModal ? 'block' : 'none')};
 `;
 
-export const SignUpContainer = styled.div<ModalProps>`
+export const Container = styled.div<ModalProps>`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 100%;
-  gap: 0.3rem;
-  transform: ${(props) => (props.isSignUpModal ? 'translateX(0)' : 'translateX(100%)')};
+  margin: 2.5rem 3rem;
+  gap: 1rem;
+  transform: ${(props) => (props.isFindPWModal ? 'translateX(0)' : 'translateX(100%)')};
 `;
 
-export const SignUpInput = styled.input`
+export const Input = styled.input`
   width: 100%;
-  padding: 0.5rem 0;
+  padding: 0.75rem 0;
   border-radius: 0.5rem;
   border: 1px solid #ddd;
-  font-size: 1rem;
+  font-size: 1.3rem;
   &::placeholder {
     color: #bdbdbd;
   }
 `;
 
-export const SignUpText = styled.div`
+export const Text = styled.div`
   align-self: flex-end;
   font-size: 0.6rem;
   color: #00c9ea;
   font-weight: 500;
-  line-height: 0.6rem;
 `;
 
-export const SignUpWarnText = styled.div`
+export const WarnText = styled.div`
   align-self: flex-end;
   font-size: 0.6rem;
   color: red;
   font-weight: 500;
-  line-height: 0.6rem;
 `;
 
-export const SignUpEmptyText = styled.div`
+export const TitleText = styled.div`
+  font-size: 1.3rem;
+  padding-bottom: 0.6rem;
+  color: #000;
+  font-weight: 700;
+`;
+
+export const EmptyText = styled.div`
   width: 100%;
   height: 0.6rem;
 `;
 
-export const SignUpInputBox = styled.div`
+export const InputBox = styled.div`
   display: flex;
   width: 100%;
   flex-direction: column;
   justify-content: center;
   gap: 0.5rem;
-`;
-
-export const SignUpInputWrapper = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: center;
 `;
 
 export const CancleButton = styled.button`
   width: 100%;
   padding: 0.3rem 1rem;
   border-radius: 0.5rem;
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   background-color: #1e3232;
   color: #fff;
   cursor: pointer;
 `;
 
-export const OKButton = styled.button<{ $signUpFlag: boolean }>`
+export const OKButton = styled.button<{ $checkPWFlag: boolean }>`
   width: 100%;
   padding: 0.3rem 1rem;
   border-radius: 0.5rem;
   border: 1px solid #ddd;
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   background-color: #00c9ea;
   color: #fff;
-  cursor: pointer;
-  opacity: ${({ $signUpFlag }) => ($signUpFlag ? '1' : '0.3')};
-  pointer-events: ${({ $signUpFlag }) => ($signUpFlag ? 'auto' : 'none')};
+  cursor: ${({ $checkPWFlag }) => ($checkPWFlag ? 'pointer' : 'default')};
+  opacity: ${({ $checkPWFlag }) => ($checkPWFlag ? '1' : '0.3')};
+  pointer-events: ${({ $checkPWFlag }) => ($checkPWFlag ? 'auto' : 'none')};
 `;
 
 export const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  margin-top: 1rem;
   gap: 1rem;
-`;
-
-export const SendMailButton = styled.button`
-  width: 100%;
-  padding: 0.3rem 0;
-  // padding: 0.3rem 1rem;
-  border-radius: 0.5rem;
-  font-size: 0.85rem;
-  background-color: #1e3232;
-  color: #fff;
-  cursor: pointer;
-`;
-
-export const AuthConfirmWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  margin-top: 0.5rem;
-  gap: 0.5rem;
 `;
 
 export const ConfirmButton = styled.button<{ $isAuth: boolean }>`
   width: 5rem;
-  padding: 0.75rem 0.5rem;
+  padding: 1rem 0.5rem;
   border-radius: 0.5rem;
   font-size: 1rem;
   background-color: #031c58;

@@ -67,7 +67,7 @@ class MemberController(
     }
 
     // 비밀번호 수정
-    @PutMapping("/{memberId}/password")
+    @PutMapping("/{email}/password")
     fun updatePassword(
         @RequestBody pwData: PasswordUpdateReqDto
     ): BaseResponse<MemberResDto?> {
