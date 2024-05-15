@@ -2,6 +2,7 @@ package com.lightswitch.core.domain.flag.repository.entity
 
 import com.lightswitch.core.common.entity.BaseEntity
 import com.lightswitch.core.domain.flag.common.enum.FlagType
+import com.lightswitch.core.domain.history.dto.PreFlag
 import com.lightswitch.core.domain.history.repository.entity.History
 import com.lightswitch.core.domain.member.entity.Member
 import jakarta.persistence.*
@@ -37,4 +38,9 @@ class Flag(
 
     @OneToMany(mappedBy = "flag", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     val histories: MutableList<History> = mutableListOf(),
-) : BaseEntity()
+) : BaseEntity() {
+
+    fun toPrevious(): PreFlag {
+        return PreFlag(this)
+    }
+}

@@ -1,6 +1,7 @@
 package com.lightswitch.core.domain.flag.repository.entity
 
 import com.lightswitch.core.common.entity.BaseEntity
+import com.lightswitch.core.domain.history.dto.PreProperty
 import jakarta.persistence.*
 
 @Entity(name = "property")
@@ -9,11 +10,15 @@ class Property(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val propertyId: Long? = null,
 
-    val property: String,
-    val data: String,
-
+    var property: String,
+    var data: String,
 
     @JoinColumn(name = "keyword_id")
     @ManyToOne(fetch = FetchType.LAZY)
     val keyword: Keyword,
-) : BaseEntity()
+) : BaseEntity(){
+
+    fun toPrevious(): PreProperty {
+        return PreProperty(this)
+    }
+}
