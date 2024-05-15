@@ -21,18 +21,21 @@ import History from '@/components/history';
 import UpdateModal from '@/components/updateModal';
 
 interface Variation {
+  variationId: number | '';
   value: string;
   portion: number | '';
   description: string;
 }
 
 interface Keyword {
+  keywordId: number | '';
   properties: Array<Property>;
   description: string;
   value: string;
 }
 
 interface Property {
+  propertyId: number | '';
   property: string;
   data: string;
 }

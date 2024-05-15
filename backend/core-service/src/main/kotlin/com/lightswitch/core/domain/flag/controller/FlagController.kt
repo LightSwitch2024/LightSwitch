@@ -99,7 +99,9 @@ class FlagController(
         @PathVariable flagId: Long,
         @RequestBody variationInfoRequestDto: VariationInfoRequestDto
     ): BaseResponse<FlagResponseDto> {
-        return success(flagService.updateVariationInfoWithHardDelete(flagId, variationInfoRequestDto))
+        val flagResponseDto = flagService.updateVariationInfoWithHardDelete(flagId, variationInfoRequestDto)
+        flagService.sendSse(flagResponseDto)
+        return success(flagService.getFlag(flagId))
     }
 
     @PatchMapping("/keywordinfo/soft/{flagId}")
@@ -115,7 +117,9 @@ class FlagController(
         @PathVariable flagId: Long,
         @RequestBody keywordInfoRequestDto: KeywordInfoRequestDto
     ): BaseResponse<FlagResponseDto> {
-        return success(flagService.updateKeywordInfoWithHardDelete(flagId, keywordInfoRequestDto))
+        val flagResponseDto = flagService.updateKeywordInfoWithHardDelete(flagId, keywordInfoRequestDto)
+        flagService.sendSse(flagResponseDto)
+        return success(flagService.getFlag(flagId))
     }
 
     @GetMapping("/overview")

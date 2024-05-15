@@ -1,6 +1,7 @@
 package com.lightswitch.core.domain.flag.repository.entity
 
 import com.lightswitch.core.common.entity.BaseEntity
+import com.lightswitch.core.domain.history.dto.PreKeyword
 import jakarta.persistence.*
 
 @Entity(name = "keyword")
@@ -15,8 +16,13 @@ Keyword(
     val flag: Flag,
 
     @OneToMany(mappedBy = "keyword", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-    val properties: MutableList<Property> = mutableListOf(),
+    var properties: MutableList<Property> = mutableListOf(),
 
-    val description: String,
-    val value: String,
-) : BaseEntity()
+    var description: String,
+    var value: String,
+) : BaseEntity() {
+
+    fun toPrevious(): PreKeyword {
+        return PreKeyword(this)
+    }
+}
