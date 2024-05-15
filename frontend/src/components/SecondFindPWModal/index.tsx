@@ -4,12 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
 import { updatePassword } from '@/api/userDetail/userAxios';
-import * as S from '@/components/findPWModal/indexStyle';
+import * as S from '@/components/SecondFindPWModal/indexStyle';
 import { AuthAtom } from '@/global/AuthAtom';
 
 type Props = {
-  isFindPWModal: boolean;
+  isSecondFindPWModal: boolean;
   onClose: () => void;
+  onPasswordResetSuccess: () => void;
 };
 
 type PWData = {
@@ -17,7 +18,8 @@ type PWData = {
   newPassword: string;
 };
 
-const FindPW: React.FC<Props> = ({ isFindPWModal, onClose }) => {
+const FindPW: React.FC<Props> = ({ isSecondFindPWModal, onClose }) => {
+  if (!isSecondFindPWModal) return null;
   const navigator = useNavigate();
 
   const [password, setPassword] = useState<string>('');
@@ -62,33 +64,38 @@ const FindPW: React.FC<Props> = ({ isFindPWModal, onClose }) => {
     onClose();
   };
 
-  const handleUpdatePW = (): void => {
+  const handleUpdatePW = async () => {
     if (!checkPWFlag) {
       alert('모든 항목을 입력해주세요.');
       return;
     }
 
-    const PWData: PWData = {
-      email: auth.email,
-      newPassword: password,
-    };
+    try {
+      const PWData: PWData = {
+        email: auth.email,
+        newPassword: password,
+      };
 
-    updatePassword<PWData>(
-      auth.email,
-      PWData,
-      () => {
-        alert('비밀번호 재설정완료');
-        navigator('/login');
-      },
-      (err) => {
-        console.log(err);
-      },
-    );
+      await updatePassword<PWData>(
+        auth.email,
+        PWData,
+        () => {
+          alert('비밀번호 재설정완료');
+          navigator('/login');
+          onClose();
+        },
+        (err) => {
+          console.log(err);
+        },
+      );
+    } catch (error) {
+      alert('비밀번호 재설정에 실패했습니다.');
+    }
   };
 
   return (
-    <S.FindLayout isFindPWModal={isFindPWModal}>
-      <S.Container isFindPWModal={isFindPWModal}>
+    <S.FindLayout isFindPWModal={isSecondFindPWModal}>
+      <S.Container isFindPWModal={isSecondFindPWModal}>
         <S.InputBox>
           <S.TitleText>비밀번호 재설정</S.TitleText>
           <S.Input
