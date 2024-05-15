@@ -1097,6 +1097,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                   placeholder="변수 비율"
                   value={defaultPortion}
                   onChange={handleDefaultPortionChange}
+                  onWheel={(event) => (event.target as HTMLElement).blur()}
                   $flag={isDetailMode()}
                 />
               </S.VarContainer>
@@ -1144,6 +1145,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                         placeholder="변수 비율"
                         value={variation.portion}
                         onChange={handleChangeVariaionPortion(index)}
+                        onWheel={(event) => (event.target as HTMLElement).blur()}
                         $flag={isFocused}
                       />
                     </S.VarContainer>

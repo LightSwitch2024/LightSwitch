@@ -561,6 +561,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               handleVariationPortionChange(e, idx)
             }
+            onWheel={(event) => (event.target as HTMLElement).blur()}
             $flag={isDetailMode()}
           />
         </S.FlagVariationRowContainer>
@@ -714,6 +715,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
                     placeholder="변수 비율"
                     value={defaultPortion}
                     onChange={handleDefaultPortionChange}
+                    onWheel={(event) => (event.target as HTMLElement).blur()}
                     $flag={isDetailMode()}
                   />
                 </S.FlagVariationRowContainer>
