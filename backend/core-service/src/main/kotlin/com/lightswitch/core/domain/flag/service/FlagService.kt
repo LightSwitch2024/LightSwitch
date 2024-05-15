@@ -456,7 +456,7 @@ class FlagService(
 
     fun switchFlag(flagId: Long, switchRequestDto: SwitchRequestDto): Boolean {
         val flag = flagRepository.findById(flagId).get()
-        flag.active = switchRequestDto.active
+        flag.active = !switchRequestDto.active
 
         val sdkKey =
             sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(flag.maintainer.memberId!!) ?: throw BaseException(
