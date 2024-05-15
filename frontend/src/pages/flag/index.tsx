@@ -46,7 +46,7 @@ interface history {
   previous: string | null;
   current: string | null;
   action: historyType;
-  createdAt: string;
+  createdAt: number[];
 }
 
 enum historyType {
@@ -85,6 +85,24 @@ interface FlagDetailItem {
   active: boolean;
 }
 
+interface FlagDetailResponse {
+  flagId: number;
+  title: string;
+  tags: Array<{ content: string; colorHex: string }>;
+  description: string;
+  type: string;
+  keywords: Array<Keyword>;
+  defaultValue: string;
+  defaultPortion: number;
+  defaultDescription: string;
+  variations: Array<Variation>;
+  memberId: number;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
+  histories: Array<history>;
+}
+
 interface TagItem {
   content: string;
   colorHex: string;
@@ -104,142 +122,144 @@ const FlagDetail = () => {
   useEffect(() => {
     if (flagId === undefined || flagId === null) return;
 
-    getFlagDetail<FlagDetailItem>(
+    getFlagDetail<FlagDetailResponse>(
       Number(flagId),
-      (data: FlagDetailItem) => {
+      (data: FlagDetailResponse) => {
         console.log(data);
         setFlagDetail(data);
         setIsToggle(new Array(data.keywords.length).fill(false));
-        setHistoryList([
-          {
-            action: historyType.CREATE_FLAG,
-            flagTitle: data.title,
-            target: null,
-            previous: null,
-            current: null,
-            createdAt: data.createdAt,
-          },
-          {
-            action: historyType.UPDATE_FLAG_TITLE,
-            flagTitle: data.title,
-            target: null,
-            previous: 'previous',
-            current: 'current',
-            createdAt: data.createdAt,
-          },
-          {
-            action: historyType.UPDATE_FLAG_TYPE,
-            flagTitle: data.title,
-            target: null,
-            previous: 'BOOLEAN',
-            current: 'STRING',
-            createdAt: '2021-09-01T00:00:00.000Z',
-          },
-          {
-            action: historyType.SWITCH_FLAG,
-            flagTitle: data.title,
-            target: null,
-            previous: null,
-            current: 'ON',
-            createdAt: '2024-04-01T00:00:00.000Z',
-          },
-          {
-            action: historyType.DELETE_FLAG,
-            flagTitle: data.title,
-            target: null,
-            previous: null,
-            current: null,
-            createdAt: '2024-03-01T00:00:00.000Z',
-          },
-          {
-            action: historyType.CREATE_VARIATION,
-            flagTitle: data.title,
-            target: null,
-            previous: null,
-            current: '1',
-            createdAt: '2024-03-01T00:00:00.000Z',
-          },
-          {
-            action: historyType.UPDATE_VARIATION_VALUE,
-            flagTitle: data.title,
-            target: null,
-            previous: '1',
-            current: '2',
-            createdAt: '2024-03-01T00:00:00.000Z',
-          },
-          {
-            action: historyType.UPDATE_VARIATION_PORTION,
-            flagTitle: data.title,
-            target: '1',
-            previous: '90',
-            current: '80',
-            createdAt: '2024-02-01T00:00:00.000Z',
-          },
-          {
-            action: historyType.DELETE_VARIATION,
-            flagTitle: data.title,
-            target: null,
-            previous: '1',
-            current: null,
-            createdAt: '2024-01-01T00:00:00.000Z',
-          },
-          {
-            action: historyType.CREATE_KEYWORD,
-            flagTitle: data.title,
-            target: null,
-            previous: null,
-            current: 'keyword 1',
-            createdAt: '2024-01-01T00:00:00.000Z',
-          },
-          {
-            action: historyType.UPDATE_KEYWORD,
-            flagTitle: data.title,
-            target: 'keyword 1',
-            previous: 'TRUE',
-            current: 'FALSE',
-            createdAt: '2023-12-01T00:00:00.000Z',
-          },
-          {
-            action: historyType.DELETE_KEYWORD,
-            flagTitle: data.title,
-            target: null,
-            previous: 'keyword 1',
-            current: null,
-            createdAt: '2023-11-01T00:00:00.000Z',
-          },
-          {
-            action: historyType.CREATE_PROPERTY,
-            flagTitle: data.title,
-            target: 'keyword 1',
-            previous: null,
-            current: 'property 1',
-            createdAt: '2023-10-01T00:00:00.000Z',
-          },
-          {
-            action: historyType.UPDATE_PROPERTY_KEY,
-            flagTitle: data.title,
-            target: 'keyword 1',
-            previous: 'property 1',
-            current: 'property 2',
-            createdAt: '2023-09-01T00:00:00.000Z',
-          },
-          {
-            action: historyType.UPDATE_PROPERTY_VALUE,
-            flagTitle: data.title,
-            target: '"keyword 1"의 속성 "property 2"',
-            previous: 'value 1',
-            current: 'value 2',
-            createdAt: '2023-08-01T00:00:00.000Z',
-          },
-          {
-            action: historyType.DELETE_PROPERTY,
-            flagTitle: data.title,
-            target: 'keyword 1',
-            previous: 'property 2',
-            current: null,
-            createdAt: '2023-07-01T00:00:00.000Z',
-          },
-        ]);
+        // setHistoryList([
+        //   {
+        //     action: historyType.CREATE_FLAG,
+        //     flagTitle: data.title,
+        //     target: null,
+        //     previous: null,
+        //     current: null,
+        //     createdAt: data.createdAt,
+        //   },
+        //   {
+        //     action: historyType.UPDATE_FLAG_TITLE,
+        //     flagTitle: data.title,
+        //     target: null,
+        //     previous: 'previous',
+        //     current: 'current',
+        //     createdAt: data.createdAt,
+        //   },
+        //   {
+        //     action: historyType.UPDATE_FLAG_TYPE,
+        //     flagTitle: data.title,
+        //     target: null,
+        //     previous: 'BOOLEAN',
+        //     current: 'STRING',
+        //     createdAt: '2021-09-01T00:00:00.000Z',
+        //   },
+        //   {
+        //     action: historyType.SWITCH_FLAG,
+        //     flagTitle: data.title,
+        //     target: null,
+        //     previous: null,
+        //     current: 'ON',
+        //     createdAt: '2024-04-01T00:00:00.000Z',
+        //   },
+        //   {
+        //     action: historyType.DELETE_FLAG,
+        //     flagTitle: data.title,
+        //     target: null,
+        //     previous: null,
+        //     current: null,
+        //     createdAt: '2024-03-01T00:00:00.000Z',
+        //   },
+        //   {
+        //     action: historyType.CREATE_VARIATION,
+        //     flagTitle: data.title,
+        //     target: null,
+        //     previous: null,
+        //     current: '1',
+        //     createdAt: '2024-03-01T00:00:00.000Z',
+        //   },
+        //   {
+        //     action: historyType.UPDATE_VARIATION_VALUE,
+        //     flagTitle: data.title,
+        //     target: null,
+        //     previous: '1',
+        //     current: '2',
+        //     createdAt: '2024-03-01T00:00:00.000Z',
+        //   },
+        //   {
+        //     action: historyType.UPDATE_VARIATION_PORTION,
+        //     flagTitle: data.title,
+        //     target: '1',
+        //     previous: '90',
+        //     current: '80',
+        //     createdAt: '2024-02-01T00:00:00.000Z',
+        //   },
+        //   {
+        //     action: historyType.DELETE_VARIATION,
+        //     flagTitle: data.title,
+        //     target: null,
+        //     previous: '1',
+        //     current: null,
+        //     createdAt: '2024-01-01T00:00:00.000Z',
+        //   },
+        //   {
+        //     action: historyType.CREATE_KEYWORD,
+        //     flagTitle: data.title,
+        //     target: null,
+        //     previous: null,
+        //     current: 'keyword 1',
+        //     createdAt: '2024-01-01T00:00:00.000Z',
+        //   },
+        //   {
+        //     action: historyType.UPDATE_KEYWORD,
+        //     flagTitle: data.title,
+        //     target: 'keyword 1',
+        //     previous: 'TRUE',
+        //     current: 'FALSE',
+        //     createdAt: '2023-12-01T00:00:00.000Z',
+        //   },
+        //   {
+        //     action: historyType.DELETE_KEYWORD,
+        //     flagTitle: data.title,
+        //     target: null,
+        //     previous: 'keyword 1',
+        //     current: null,
+        //     createdAt: '2023-11-01T00:00:00.000Z',
+        //   },
+        //   {
+        //     action: historyType.CREATE_PROPERTY,
+        //     flagTitle: data.title,
+        //     target: 'keyword 1',
+        //     previous: null,
+        //     current: 'property 1',
+        //     createdAt: '2023-10-01T00:00:00.000Z',
+        //   },
+        //   {
+        //     action: historyType.UPDATE_PROPERTY_KEY,
+        //     flagTitle: data.title,
+        //     target: 'keyword 1',
+        //     previous: 'property 1',
+        //     current: 'property 2',
+        //     createdAt: '2023-09-01T00:00:00.000Z',
+        //   },
+        //   {
+        //     action: historyType.UPDATE_PROPERTY_VALUE,
+        //     flagTitle: data.title,
+        //     target: '"keyword 1"의 속성 "property 2"',
+        //     previous: 'value 1',
+        //     current: 'value 2',
+        //     createdAt: '2023-08-01T00:00:00.000Z',
+        //   },
+        //   {
+        //     action: historyType.DELETE_PROPERTY,
+        //     flagTitle: data.title,
+        //     target: 'keyword 1',
+        //     previous: 'property 2',
+        //     current: null,
+        //     createdAt: '2023-07-01T00:00:00.000Z',
+        //   },
+        // ]);
+        console.log(data.histories);
+        setHistoryList(data.histories);
         // setupEditedFlag(data);
       },
       (err) => {
