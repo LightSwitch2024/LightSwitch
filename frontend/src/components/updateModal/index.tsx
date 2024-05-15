@@ -1119,12 +1119,12 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                 />
               </S.VarDesContainer>
             </S.FlagVariationRowContainer>
+            <S.Horizontal />
           </S.FlagVariationContentLayer>
 
           {editedVariationInfo.variations.map((variation, index) => (
             <React.Fragment key={index}>
               <div key={index}>
-                <S.Horizontal></S.Horizontal>
                 <S.FlagVariationContentLayer>
                   <S.FlagVariationRowContainer>
                     <S.VarContainer>

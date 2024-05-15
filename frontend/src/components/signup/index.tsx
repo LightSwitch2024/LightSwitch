@@ -23,10 +23,10 @@ type SignUpData = {
   firstName: string;
   lastName: string;
   telNumber: string;
-  orgName: string;
   email: string;
   password: string;
   authCode: string;
+  orgName: string;
 };
 
 const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
@@ -194,13 +194,22 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
       emailCheck &&
       passwordCheck &&
       password === rePassword &&
-      isAuth
+      isAuth &&
+      orgName
     ) {
       setSignUpFlag(true);
     } else {
       setSignUpFlag(false);
     }
-  }, [firstNameCheck, lastNameCheck, telNumberCheck, emailCheck, passwordCheck, isAuth]);
+  }, [
+    firstNameCheck,
+    lastNameCheck,
+    telNumberCheck,
+    emailCheck,
+    passwordCheck,
+    isAuth,
+    orgName,
+  ]);
 
   useEffect(() => {
     let vh = 0;

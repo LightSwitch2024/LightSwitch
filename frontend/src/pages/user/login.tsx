@@ -5,7 +5,8 @@ import { useRecoilState } from 'recoil';
 import { logIn } from '@/api/userDetail/userAxios';
 // import LightswitchLogo from '@/assets/lightswitchLogo.svg?react';
 import LightswitchLogo from '@/assets/lightswitchLogo.png';
-import BeforeFindPWModal from '@/components/beforeFindPWModal/index';
+import FistFindPWModal from '@/components/FirstFindPWModal/index';
+import SecondFindPWModal from '@/components/SecondFindPWModal/index';
 // import FindPWModal from '@/components/findPWModal/index';
 import SignUpModal from '@/components/signup/index';
 import { AuthAtom } from '@/global/AuthAtom';
@@ -24,7 +25,8 @@ const LogIn = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isSignUpModal, setIsSignUpModal] = useState<boolean>(false);
-  const [isBeforeFindPWModal, setIsBeforeFindPWModal] = useState<boolean>(false);
+  const [isFirstFindPWModal, setIsFirstFindPWModal] = useState<boolean>(false);
+  const [isSecondFindPwModal, setIsSecondFindPWModal] = useState(false);
   //화면 체크용
   // const [isFindPWModal, setIsFindPWModal] = useState<boolean>(false);
 
@@ -41,13 +43,18 @@ const LogIn = () => {
 
   const onPressSignUpButton = () => {
     setIsSignUpModal(true);
-    setIsBeforeFindPWModal(false);
+    setIsFirstFindPWModal(false);
     // setIsFindPWModal(false);
   };
   const onPressFindPWButton = () => {
     setIsSignUpModal(false);
-    setIsBeforeFindPWModal(true);
+    setIsFirstFindPWModal(true);
     // setIsFindPWModal(true);
+  };
+
+  const handlePasswordReset = async () => {
+    setIsFirstFindPWModal(false);
+    setIsSecondFindPWModal(false);
   };
 
   useEffect(() => {
@@ -93,19 +100,7 @@ const LogIn = () => {
 
   return (
     <L.Layout>
-      {isSignUpModal && (
-        <SignUpModal
-          isSignUpModal={isSignUpModal}
-          onClose={() => setIsSignUpModal(false)}
-        />
-      )}
-      {isBeforeFindPWModal && (
-        <BeforeFindPWModal
-          isBeforeFindPWModal={isBeforeFindPWModal}
-          onClose={() => setIsBeforeFindPWModal(false)}
-        />
-      )}
-      {!isSignUpModal && !isBeforeFindPWModal && (
+      {!isSignUpModal && (
         <L.LogInLayout>
           <L.LogInContainer>
             <L.LogoBox>
@@ -143,6 +138,26 @@ const LogIn = () => {
             </L.LogInLinkBox>
           </L.LogInContainer>
         </L.LogInLayout>
+      )}
+      {isSignUpModal && (
+        <SignUpModal
+          isSignUpModal={isSignUpModal}
+          onClose={() => setIsSignUpModal(false)}
+        />
+      )}
+      {isFirstFindPWModal && (
+        <FistFindPWModal
+          isFirstFindPWModal={isFirstFindPWModal}
+          onClose={() => setIsFirstFindPWModal(false)}
+          onOpenSecondModal={() => setIsSecondFindPWModal(true)}
+        />
+      )}
+      {isSecondFindPwModal && (
+        <SecondFindPWModal
+          isSecondFindPWModal={isSecondFindPwModal}
+          onClose={() => setIsSecondFindPWModal(false)}
+          onPasswordResetSuccess={handlePasswordReset}
+        />
       )}
     </L.Layout>
   );

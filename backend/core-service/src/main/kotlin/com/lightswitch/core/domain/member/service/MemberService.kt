@@ -43,11 +43,11 @@ class MemberService(
 
         var firstName = signupReqDto.firstName
         var lastName = signupReqDto.lastName
-        var orgName = signupReqDto.orgName
         var phoneNumber = signupReqDto.telNumber
         val email = signupReqDto.email
         val password = signupReqDto.password
         val authCode = signupReqDto.authCode
+        var orgName = signupReqDto.orgName
 
         val existsMember: Member? = memberRepository.findByEmailAndDeletedAtIsNull(email)
         existsMember?.let {

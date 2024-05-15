@@ -2,14 +2,15 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
-import { confirmAuthCode, sendAuthCode } from '@/api/userDetail/userAxios';
-import * as S from '@/components/beforeFindPWModal/indexStyle';
-import FindPWModal from '@/components/findPWModal/index';
+import { confirmAuthCode, sendAuthCode } from '@/api/signup/signupAxios';
+import * as S from '@/components/FirstFindPWModal/indexStyle';
+import FindPWModal from '@/components/SecondFindPWModal/index';
 import { AuthAtom } from '@/global/AuthAtom';
 
 type Props = {
-  isBeforeFindPWModal: boolean;
+  isFirstFindPWModal: boolean;
   onClose: () => void;
+  onOpenSecondModal: () => void;
 };
 
 type ConfirmAuthCodeData = {
@@ -26,7 +27,13 @@ type FindPWData = {
   authCode: string;
 };
 
-const BeforeFindPW: React.FC<Props> = ({ isBeforeFindPWModal, onClose }) => {
+const BeforeFindPW: React.FC<Props> = ({
+  isFirstFindPWModal,
+  onClose,
+  onOpenSecondModal,
+}) => {
+  if (!isFirstFindPWModal) return null;
+
   const navigator = useNavigate();
 
   const [email, setEmail] = useState<string>('');
@@ -70,11 +77,6 @@ const BeforeFindPW: React.FC<Props> = ({ isBeforeFindPWModal, onClose }) => {
   };
 
   const handleSendAuthCode = (): void => {
-    if (!findPWFlag) {
-      alert('모든 항목을 입력해주세요.');
-      return;
-    }
-
     const sendAuthCodeData: SendAuthCodeData = {
       email: email,
     };
@@ -104,7 +106,8 @@ const BeforeFindPW: React.FC<Props> = ({ isBeforeFindPWModal, onClose }) => {
           email: email,
         }));
         setIsAuth(true);
-        setIsFindPWModal(true);
+        onOpenSecondModal();
+        onClose();
       },
       (err) => {
         console.log(err);
@@ -116,9 +119,9 @@ const BeforeFindPW: React.FC<Props> = ({ isBeforeFindPWModal, onClose }) => {
     onClose();
   };
 
-  return !isFindPWModal ? (
-    <S.BeforeLayout isbeforefindPWModal={isBeforeFindPWModal}>
-      <S.Container isbeforefindPWModal={isBeforeFindPWModal}>
+  return (
+    <S.BeforeLayout isbeforefindPWModal={isFirstFindPWModal}>
+      <S.Container isbeforefindPWModal={isFirstFindPWModal}>
         <S.InputBox>
           <S.TitleText>비밀번호를 찾고자 하는 이메일 입력</S.TitleText>
           <S.Input
@@ -157,8 +160,6 @@ const BeforeFindPW: React.FC<Props> = ({ isBeforeFindPWModal, onClose }) => {
         </S.InputBox>
       </S.Container>
     </S.BeforeLayout>
-  ) : (
-    <FindPWModal isFindPWModal={isFindPWModal} onClose={() => setIsFindPWModal(false)} />
   );
 };
 
