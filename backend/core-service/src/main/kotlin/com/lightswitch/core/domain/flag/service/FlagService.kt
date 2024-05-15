@@ -233,7 +233,7 @@ class FlagService(
         )
 
         val userKey = sseService.hash(sdkKey.key)
-        sseService.sendData(SseDto(userKey, SseDto.SseType.CREATE, flagInitResponseDto))
+        sseService.sendDataToEveryone(SseDto(userKey, SseDto.SseType.CREATE, flagInitResponseDto))
 
         return this.getFlag(savedFlag.flagId!!)
     }
@@ -412,7 +412,7 @@ class FlagService(
 
         val userKey = sseService.hash(sdkKey.key)
 
-        sseService.sendData(
+        sseService.sendDataToEveryone(
             SseDto(
                 userKey,
                 SseDto.SseType.DELETE,
@@ -448,7 +448,7 @@ class FlagService(
 
         val userKey = sseService.hash(sdkKey.key)
 
-        sseService.sendData(
+        sseService.sendDataToEveryone(
             SseDto(
                 userKey,
                 SseDto.SseType.DELETE,
@@ -469,7 +469,7 @@ class FlagService(
             )
 
         val userKey = sseService.hash(sdkKey.key)
-        sseService.sendData(
+        sseService.sendDataToEveryone(
             SseDto(
                 userKey,
                 SseDto.SseType.SWITCH,
@@ -623,7 +623,7 @@ class FlagService(
             )
 
         val userKey = sseService.hash(sdkKey.key)
-        sseService.sendData(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
+        sseService.sendDataToEveryone(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
 
         return this.getFlag(flag.flagId!!)
     }
@@ -644,7 +644,7 @@ class FlagService(
             )
 
         val userKey = sseService.hash(sdkKey.key)
-        sseService.sendData(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
+        sseService.sendDataToEveryone(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
 
         return this.getFlag(flag.flagId!!)
     }
@@ -714,7 +714,7 @@ class FlagService(
             )
 
         val userKey = sseService.hash(sdkKey.key)
-        sseService.sendData(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
+        sseService.sendDataToEveryone(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
 
         return this.getFlag(flag.flagId!!)
     }
@@ -776,7 +776,7 @@ class FlagService(
             )
 
         val userKey = sseService.hash(sdkKey.key)
-        sseService.sendData(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
+        sseService.sendDataToEveryone(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
     }
 
     @Transactional
@@ -861,7 +861,7 @@ class FlagService(
             )
 
         val userKey = sseService.hash(sdkKey.key)
-        sseService.sendData(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
+        sseService.sendDataToEveryone(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
 
         return this.getFlag(flag.flagId!!)
     }

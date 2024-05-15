@@ -1,21 +1,32 @@
 package com.lightswitch.core.domain.sse.service
 
+import com.lightswitch.core.common.dto.ResponseCode
+import com.lightswitch.core.common.exception.BaseException
 import com.lightswitch.core.domain.flag.dto.req.UserKeyRequestDto
+import com.lightswitch.core.domain.organization.service.OrganizationService
 import com.lightswitch.core.domain.sse.dto.SseDto
 import com.lightswitch.core.domain.sse.dto.req.SseRequestDto
 import com.lightswitch.core.domain.sse.dto.res.SseUserKeyResponseDto
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 import java.security.MessageDigest
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 
 @Service
-class SseService {
+class SseService(
+    private val organizationService: OrganizationService
+) {
 
     private val map: ConcurrentMap<String, SseEmitter> = ConcurrentHashMap()
 
-    fun subscribe(userKey: String): SseEmitter {
+    fun subscribe(sdkKey: String): SseEmitter {
+        if (sdkKey != organizationService.getSdkKey()) {
+            throw BaseException(ResponseCode.INVALID_ORGANIZATION_KEY)
+        }
+
+        val randomKey = UUID.randomUUID().toString()
         val emitter = createEmitter()
         emitter.onTimeout {
             emitter.complete()
@@ -26,10 +37,10 @@ class SseService {
         }
 
         emitter.onCompletion {
-            map.remove(userKey)
+            map.remove(randomKey)
         }
 
-        map[userKey] = emitter
+        map[randomKey] = emitter
 
         val event = SseEmitter.event()
             .name("sse")
@@ -44,6 +55,15 @@ class SseService {
 
         emitter?.let {
 
+            val event = SseEmitter.event()
+                .name("sse")
+                .data(sseDto)
+            emitter.send(event)
+        }
+    }
+
+    fun sendDataToEveryone(sseDto: SseDto) {
+        map.forEach { (_, emitter) ->
             val event = SseEmitter.event()
                 .name("sse")
                 .data(sseDto)
