@@ -435,4 +435,26 @@ class HistoryService(
             }
         }
     }
+
+    @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.deleteFlagWithHardDelete(..)) && args(flagId)")
+    fun deleteFlagWithHardDelete(
+        proceedingJoinPoint: ProceedingJoinPoint,
+        flagId: Long,
+    ): Any? {
+        print("======= deleteFlagWithHardDelete =======")
+        val proceed = proceedingJoinPoint.proceed()
+        val flag = flagRepository.findById(flagId).orElseThrow()
+
+        if (flag.deletedAt != null) {
+            historyRepository.save(
+                History(
+                    flag = flag,
+                    action = HistoryType.DELETE_FLAG,
+                    previous = flag.title
+                )
+            )
+        }
+        return proceed
+    }
+
 }
