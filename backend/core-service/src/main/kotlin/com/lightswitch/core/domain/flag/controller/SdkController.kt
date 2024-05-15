@@ -15,11 +15,6 @@ class SdkController(
     private val flagService: FlagService,
 ) {
 
-    @CrossOrigin(
-        origins = ["*"],
-        methods = [RequestMethod.POST, RequestMethod.OPTIONS],
-        allowedHeaders = ["*"]
-    )
     @PostMapping("/init")
     fun init(@RequestBody flagInitRequestDto: FlagInitRequestDto): BaseResponse<List<FlagInitResponseDto>> {
         return success(flagService.getAllFlagForInit(flagInitRequestDto))
