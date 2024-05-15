@@ -946,6 +946,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
           defaultPortion: Number(100) - calculateTotalPortion(),
         };
       });
+      setDefaultPortion(Number(100) - calculateTotalPortion());
     }
   }, [editedVariationInfo.variations]);
 
@@ -1097,6 +1098,9 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                   placeholder="변수 비율"
                   value={defaultPortion}
                   onChange={handleDefaultPortionChange}
+                  onWheel={(event) => (event.target as HTMLElement).blur()}
+                  disabled={true}
+                  readOnly={true}
                   $flag={isDetailMode()}
                 />
               </S.VarContainer>
@@ -1144,6 +1148,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                         placeholder="변수 비율"
                         value={variation.portion}
                         onChange={handleChangeVariaionPortion(index)}
+                        onWheel={(event) => (event.target as HTMLElement).blur()}
                         $flag={isFocused}
                       />
                     </S.VarContainer>

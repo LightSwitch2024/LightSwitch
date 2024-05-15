@@ -196,6 +196,10 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
     e: React.ChangeEvent<HTMLInputElement>,
     idx: number,
   ): void => {
+    // 맨 앞에 0이 들어가면 0을 제거
+    if (e.target.value[0] === '0') {
+      e.target.value = e.target.value.slice(1);
+    }
     e.target.value = e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
     const inputValue = e.target.value;
 
@@ -561,6 +565,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               handleVariationPortionChange(e, idx)
             }
+            onWheel={(event) => (event.target as HTMLElement).blur()}
             $flag={isDetailMode()}
           />
         </S.FlagVariationRowContainer>
@@ -714,6 +719,8 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
                     placeholder="변수 비율"
                     value={defaultPortion}
                     onChange={handleDefaultPortionChange}
+                    onWheel={(event) => (event.target as HTMLElement).blur()}
+                    disabled={true}
                     $flag={isDetailMode()}
                   />
                 </S.FlagVariationRowContainer>
