@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import * as S from '@/components/history/indexStyle';
 
@@ -8,40 +8,52 @@ interface history {
   previous: string | null;
   current: string | null;
   action: historyType;
-  createdAt: string;
+  createdAt: number[];
 }
 
 enum historyType {
   // flag
-  CREATE_FLAG,
-  UPDATE_FLAG_TITLE,
-  UPDATE_FLAG_TYPE,
-  SWITCH_FLAG,
-  DELETE_FLAG,
+  CREATE_FLAG = 'CREATE_FLAG',
+  UPDATE_FLAG_TITLE = 'UPDATE_FLAG_TITLE',
+  UPDATE_FLAG_TYPE = 'UPDATE_FLAG_TYPE',
+  SWITCH_FLAG = 'SWITCH_FLAG',
+  DELETE_FLAG = 'DELETE_FLAG',
 
   // variation
-  CREATE_VARIATION,
-  UPDATE_VARIATION_VALUE,
-  UPDATE_VARIATION_PORTION,
-  DELETE_VARIATION,
+  CREATE_VARIATION = 'CREATE_VARIATION',
+  UPDATE_VARIATION_VALUE = 'UPDATE_VARIATION_VALUE',
+  UPDATE_VARIATION_PORTION = 'UPDATE_VARIATION_PORTION',
+  DELETE_VARIATION = 'DELETE_VARIATION',
 
   // keyword
-  CREATE_KEYWORD,
-  UPDATE_KEYWORD,
+  CREATE_KEYWORD = 'CREATE_KEYWORD',
+  UPDATE_KEYWORD = 'UPDATE_KEYWORD',
 
   //    UPDATE_KEYWORD_PROPERTY,
-  DELETE_KEYWORD,
+  DELETE_KEYWORD = 'DELETE_KEYWORD',
 
   // property
-  CREATE_PROPERTY,
-  UPDATE_PROPERTY_KEY,
-  UPDATE_PROPERTY_VALUE,
-  DELETE_PROPERTY,
+  CREATE_PROPERTY = 'CREATE_PROPERTY',
+  UPDATE_PROPERTY_KEY = 'UPDATE_PROPERTY_KEY',
+  UPDATE_PROPERTY_VALUE = 'UPDATE_PROPERTY_VALUE',
+  DELETE_PROPERTY = 'DELETE_PROPERTY',
 }
 
 const index = (props: history) => {
-  const setTimeOption = (createdAt: string) => {
-    const time = new Date(createdAt);
+  useEffect(() => {
+    console.log(props);
+  }, []);
+
+  const setTimeOption = (createdAt: number[]) => {
+    const year = createdAt[0];
+    const month = createdAt[1] < 10 ? `0${createdAt[1]}` : createdAt[1];
+    const day = createdAt[2] < 10 ? `0${createdAt[2]}` : createdAt[2];
+    const hour = createdAt[3] < 10 ? `0${createdAt[3]}` : createdAt[3];
+    const minute = createdAt[4] < 10 ? `0${createdAt[4]}` : createdAt[4];
+    const second = createdAt[5] < 10 ? `0${createdAt[5]}` : createdAt[5];
+    const timeString = `${year}-${month}-${day}T${hour}:${minute}:${second}`;
+
+    const time = new Date(timeString);
 
     // 현재시간 기준 1분 안이면 방금 전
     if (new Date().getTime() - time.getTime() < 60000) {
@@ -197,8 +209,7 @@ const index = (props: history) => {
         <>
           <S.HistoryContentText>
             &quot;{history.flagTitle}&quot;의 키워드 &quot;{history.target}&quot;의 값이{' '}
-            {history.previous}에서
-            {history.current}로 변경되었습니다.
+            {history.previous}에서 {history.current}로 변경되었습니다.
           </S.HistoryContentText>
           <S.HistoryTimeContainer>
             <S.HistoryTimeText>{setTimeOption(history.createdAt)}</S.HistoryTimeText>
