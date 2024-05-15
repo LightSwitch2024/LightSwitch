@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "lightswitch"
+version = "0.1.0"
+description = "A simple SDK for your API"
+authors = ["sumin <lsmmuseum@gmail.com>"]
+readme = "README.md"
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+sseclient = "^0.0.27"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.2.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
