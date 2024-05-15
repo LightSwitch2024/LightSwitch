@@ -134,13 +134,13 @@ export async function updateUser<T>(
 }
 
 export async function updatePassword<T>(
-  memberId: number,
+  email: string,
   data: PWData,
   onSuccess: (data: T) => void,
   onFail: (err: AxiosError) => void,
 ): Promise<void> {
   axios
-    .put<BaseResponse<T>>(`/api/v1/member/${memberId}/password`, data)
+    .put<BaseResponse<T>>(`/api/v1/member/${email}/password`, data)
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
     .catch((err: AxiosError) => onFail(err));
 }

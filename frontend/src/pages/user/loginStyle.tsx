@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const Layout = styled.div`
@@ -16,7 +15,7 @@ export const Layout = styled.div`
 export const LogInLayout = styled.div`
   display: flex;
   justify-content: center;
-  width: 560px;
+  width: 500px;
   height: 100%;
   border-radius: 1.25rem;
   border: 1px solid #bdbdbd;
@@ -97,7 +96,7 @@ export const SignUpText = styled.button`
   cursor: pointer;
 `;
 
-export const PasswordText = styled(Link)`
+export const PasswordButton = styled.button`
   color: #000000;
   text-decoration: underline;
   background: none;
@@ -107,12 +106,11 @@ export const PasswordText = styled(Link)`
 `;
 
 export const SignUpButton = styled.a`
-  width: 100%;
-  padding: 0.3rem 1rem;
-  border-radius: 0.5rem;
-  font-size: 1.4rem;
-  background-color: #1e3232;
-  color: #fff;
+  color: #000000;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  font-size: 0.8rem;
   cursor: pointer;
 `;
 
