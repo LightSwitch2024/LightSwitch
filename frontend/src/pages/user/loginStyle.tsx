@@ -10,6 +10,7 @@ export const Layout = styled.div`
   margin-right: 14.5rem;
   box-sizing: border-box;
   overflow: hidden;
+  gap: 20px;
 `;
 
 export const LogInLayout = styled.div`
