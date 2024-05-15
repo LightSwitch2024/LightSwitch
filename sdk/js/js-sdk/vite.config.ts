@@ -19,7 +19,7 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'lib/index.ts'), // 진입점 파일 설정
       formats: ['es', 'cjs'], // CommonJS 형식으로 번들링
-      fileName: 'index.js', // 번들 파일 이름 설정
+      fileName: 'index', // 번들 파일 이름 설정
     },
     rollupOptions: {
       // 라이브러리가 의존하는 외부 패키지들을 external로 설정

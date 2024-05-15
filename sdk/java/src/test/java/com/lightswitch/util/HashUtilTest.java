@@ -2,6 +2,7 @@ package com.lightswitch.util;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -11,8 +12,8 @@ class HashUtilTest {
 
 	@Test
 	void 결과는_0_100_사이의_값이다() {
-		double result1 = HashUtil.getHashedPercentage("123", 1);
-		double result2 = HashUtil.getHashedPercentage("121", 1);
+		double result1 = HashUtil.getHashedPercentage(List.of("123","flagTitle"), 1);
+		double result2 = HashUtil.getHashedPercentage(List.of("121","flagTitle"), 1);
 
 		assertThat(result1).isBetween(0.0, 100.0);
 		assertThat(result2).isBetween(0.0, 100.0);
@@ -27,7 +28,7 @@ class HashUtilTest {
 
 		for (int i = 0; i < totalTests; i++) {
 			String randomUnicodeString = generateRandomUnicodeString(random);
-			double percentage = HashUtil.getHashedPercentage(randomUnicodeString, 1);
+			double percentage = HashUtil.getHashedPercentage(List.of(randomUnicodeString, "flagTitle"), 1);
 
 			if (percentage < 50.0) {
 				lowerHalf++;
@@ -56,7 +57,7 @@ class HashUtilTest {
 
 		for (int i = 0; i < totalTests; i++) {
 			String randomUUIDString = UUID.randomUUID().toString();
-			double percentage = HashUtil.getHashedPercentage(randomUUIDString, 1);
+			double percentage = HashUtil.getHashedPercentage(List.of(randomUUIDString, "flagTitle"), 1);
 
 			if (percentage < 50.0) {
 				lowerHalf++;
@@ -71,7 +72,7 @@ class HashUtilTest {
 
 	@Test
 	void 결과는_정확히_100이_나오지_않는다() {
-		double result = HashUtil.getHashedPercentage("specificInput", 1);
+		double result = HashUtil.getHashedPercentage(List.of("userId", "flagTitle"), 1);
 		assertThat(result).isNotEqualTo(100.0);
 	}
 

@@ -3,10 +3,8 @@ package com.lightswitch.core.domain.flag.repository.queydsl
 import com.lightswitch.core.domain.flag.common.enum.FlagType
 import com.lightswitch.core.domain.flag.repository.FlagRepository
 import com.lightswitch.core.domain.flag.repository.TagRepository
-import com.lightswitch.core.domain.flag.repository.VariationRepository
 import com.lightswitch.core.domain.flag.repository.entity.Flag
 import com.lightswitch.core.domain.flag.repository.entity.Tag
-import com.lightswitch.core.domain.flag.service.FlagService
 import com.lightswitch.core.domain.member.entity.Member
 import com.lightswitch.core.domain.member.repository.MemberRepository
 import org.assertj.core.api.Assertions.assertThat

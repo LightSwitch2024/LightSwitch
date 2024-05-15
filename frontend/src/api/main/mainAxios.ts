@@ -13,13 +13,16 @@ interface SdkKeyReqDto {
   email: string;
 }
 
+interface FlagActiveReqDto {
+  active: boolean;
+}
+
 export async function getMainPageOverview<T>(
-  memberId: number,
   onSuccess: (data: T) => void,
   onFail: (err: AxiosError) => void,
 ): Promise<void> {
   axios
-    .get<BaseResponse<T>>(`/api/v1/flag/overview?memberId=${memberId}`)
+    .get<BaseResponse<T>>(`/api/v1/flag/overview`)
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
     .catch((err: AxiosError) => onFail(err));
 }
@@ -57,11 +60,12 @@ export async function getTagListByKeyword<T>(
 
 export async function patchFlagActive<T>(
   flagId: number,
+  active: FlagActiveReqDto,
   onSuccess: (data: T) => void,
   onFail: (err: AxiosError) => void,
 ): Promise<void> {
   axios
-    .patch<BaseResponse<T>>(`/api/v1/flag/${flagId}`)
+    .patch<BaseResponse<T>>(`/api/v1/flag/${flagId}`, active)
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
     .catch((err: AxiosError) => onFail(err));
 }

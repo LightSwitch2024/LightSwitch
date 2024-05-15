@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://43.203.234.163:5431/testdb
+    username: testuser
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+  data:
+    redis:
+      host: 43.203.234.163

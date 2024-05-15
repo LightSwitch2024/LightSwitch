@@ -3,10 +3,10 @@ import CreateFlag from '@pages/create/index';
 import * as S from '@routes/indexStyle';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
-import SignUp from '@/components/signup/index';
 import FlagDetail from '@/pages/flag/index';
 import Main from '@/pages/main/index';
 import UserDetail from '@/pages/mypage/index';
+import FillOrg from '@/pages/organization/index';
 import LogIn from '@/pages/user/login';
 
 import ProtectedRoute from './protectedRoute';
@@ -14,10 +14,11 @@ import ProtectedRoute from './protectedRoute';
 const Router = () => {
   const location = useLocation();
   const isLoginPage = location.pathname === '/login';
+  const isOrgPage = location.pathname === '/fillorg';
 
   return (
     <div>
-      {!isLoginPage && <Tab />}
+      {!isLoginPage && !isOrgPage && <Tab />}
       <S.Content>
         <Routes>
           {/* 메인화면 가기 전에 로그인 거치게끔하는 코드 */}
@@ -29,6 +30,7 @@ const Router = () => {
           <Route path="/flag/:flagId" element={<FlagDetail />} />
           <Route path="/mypage" element={<UserDetail />} />
           <Route path="/passwordfind" element={<UserDetail />} />
+          <Route path="/fillorg" element={<FillOrg />} />
         </Routes>
       </S.Content>
     </div>

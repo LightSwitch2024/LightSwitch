@@ -14,22 +14,22 @@ import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
 class CoreServiceApplicationTests @Autowired constructor(
-		@PersistenceContext
-		private val entityManager: EntityManager
+    @PersistenceContext
+    private val entityManager: EntityManager
 ) {
 
-	@Test
-	@Transactional
-	fun contextLoads() {
-		val test = Tests()
-		entityManager.persist(test)
+    @Test
+    @Transactional
+    fun contextLoads() {
+        val test = Tests()
+        entityManager.persist(test)
 
-		val queryFactory = JPAQueryFactory(entityManager)
-		val qTest = QTests("test")
+        val queryFactory = JPAQueryFactory(entityManager)
+        val qTest = QTests("test")
 
-		val result = queryFactory.selectFrom(qTest).fetchOne()
+        val result = queryFactory.selectFrom(qTest).fetchOne()
 
-		assertThat(result).isEqualTo(test)
-		assertThat(result?.id).isEqualTo(test.id)
-	}
+        assertThat(result).isEqualTo(test)
+        assertThat(result?.id).isEqualTo(test.id)
+    }
 }

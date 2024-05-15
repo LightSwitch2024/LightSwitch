@@ -45,6 +45,13 @@ class SdkKeyServiceTest(
     }
 
     @Test
+    fun `SDK Key 생성_테스트`() {
+        val key = sdkKeyService.generateSdkKey()
+        Assertions.assertThat(key).isNotNull()
+        Assertions.assertThat(key.length).isEqualTo(32)
+    }
+
+    @Test
     fun `SDK Key 형식_테스트`() {
         val key = sdkKeyService.generateSdkKey()
         if (key.contains("-")) {

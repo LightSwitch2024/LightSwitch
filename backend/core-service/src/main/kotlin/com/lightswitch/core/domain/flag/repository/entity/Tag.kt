@@ -1,8 +1,10 @@
 package com.lightswitch.core.domain.flag.repository.entity
 
 import com.lightswitch.core.common.entity.BaseEntity
-import jakarta.persistence.*
-import lombok.Getter
+import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
+import jakarta.persistence.Id
+import jakarta.persistence.ManyToMany
 
 @Entity(name = "tag")
 class Tag(

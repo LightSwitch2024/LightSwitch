@@ -39,6 +39,11 @@ interface SignUpData {
   authCode: string;
 }
 
+interface OrgData {
+  name: string;
+  ownerId: number;
+}
+
 interface sendAuthCodeData {
   email: string;
 }
@@ -89,7 +94,9 @@ export async function logIn<T>(
   axios
     .post<BaseResponse<T>>('/api/v1/member/login', data)
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
-    .catch((err: AxiosError) => onFail(err));
+    .catch((err: AxiosError) => {
+      onFail(err);
+    });
 }
 
 export async function getUserDetail<T>(
@@ -127,13 +134,13 @@ export async function updateUser<T>(
 }
 
 export async function updatePassword<T>(
-  memberId: number,
+  email: string,
   data: PWData,
   onSuccess: (data: T) => void,
   onFail: (err: AxiosError) => void,
 ): Promise<void> {
   axios
-    .put<BaseResponse<T>>(`/api/v1/member/${memberId}/password`, data)
+    .put<BaseResponse<T>>(`/api/v1/member/${email}/password`, data)
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
     .catch((err: AxiosError) => onFail(err));
 }
@@ -146,6 +153,17 @@ export async function checkPassword<T>(
 ): Promise<void> {
   await axios
     .post<BaseResponse<T>>(`/api/v1/member/${memberId}`, data)
+    .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
+    .catch((err: AxiosError) => onFail(err));
+}
+
+export async function fillOrg<T>(
+  data: OrgData,
+  onSuccess: (data: T) => void,
+  onFail: (err: AxiosError) => void,
+): Promise<void> {
+  axios
+    .post<BaseResponse<T>>(`/api/v1/organization`, data)
     .then((res: AxiosResponse<BaseResponse<T>>) => onSuccess(res.data.data))
     .catch((err: AxiosError) => onFail(err));
 }

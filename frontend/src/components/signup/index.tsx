@@ -35,6 +35,7 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
   const [firstNameCheck, setFirstNameCheck] = useState<boolean>(false);
   const [lastName, setLastName] = useState<string>('');
   const [lastNameCheck, setLastNameCheck] = useState<boolean>(false);
+  const [orgName, setOrgName] = useState<string>('');
   const [telNumber, settelNumber] = useState<string>('');
   const [telNumberCheck, settelNumberCheck] = useState<boolean>(false);
   const [email, setEmail] = useState<string>('');
@@ -77,6 +78,10 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
   const handletelNumberChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     settelNumber(e.target.value);
     settelNumberCheck(validatetelNumber(e.target.value));
+  };
+
+  const handleorgNameChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setOrgName(e.target.value);
   };
 
   const validateEmail = (email: string): boolean => {
@@ -171,7 +176,7 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
       signUpData,
       () => {
         alert('회원가입이 완료되었습니다.');
-        navigator('/login');
+        navigator('/');
       },
       (err) => {
         console.log(err);
@@ -195,103 +200,156 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
     }
   }, [firstNameCheck, lastNameCheck, telNumberCheck, emailCheck, passwordCheck, isAuth]);
 
+  useEffect(() => {
+    let vh = 0;
+    vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  }, [window.innerHeight]);
+
   return (
     <S.SignUpLayout isSignUpModal={isSignUpModal}>
       <S.SignUpContainer isSignUpModal={isSignUpModal}>
         <S.SignUpInputBox>
-          <S.SignUpInput
-            type="text"
-            placeholder="이름(First name)"
-            value={firstName}
-            onChange={handleFirstNameChange}
-          />
-          <S.SignUpInput
-            type="text"
-            placeholder="성(Last name)"
-            value={lastName}
-            onChange={handleLastNameChange}
-          />
-          {firstName && lastName && (!firstNameCheck || !lastNameCheck) && (
+          <S.SignUpInputWrapper>
+            <S.SignUpInput
+              type="text"
+              placeholder="이름(First name)"
+              value={firstName}
+              onChange={handleFirstNameChange}
+            />
+          </S.SignUpInputWrapper>
+          <S.SignUpInputWrapper>
+            <S.SignUpInput
+              type="text"
+              placeholder="성(Last name)"
+              value={lastName}
+              onChange={handleLastNameChange}
+            />
+          </S.SignUpInputWrapper>
+          {firstName && lastName && (!firstNameCheck || !lastNameCheck) ? (
             <S.SignUpWarnText>유효하지 않은 형식입니다.</S.SignUpWarnText>
-          )}
-        </S.SignUpInputBox>
-        <S.SignUpInputBox>
-          <S.SignUpInput
-            type="text"
-            placeholder="전화번호"
-            value={telNumber}
-            onChange={handletelNumberChange}
-          />
-          {telNumber && !telNumberCheck && (
-            <S.SignUpWarnText>유효하지 않은 형식입니다.</S.SignUpWarnText>
-          )}
-        </S.SignUpInputBox>
-        <S.SignUpInputBox>
-          <S.SignUpInput
-            type="text"
-            placeholder="이메일"
-            value={email}
-            onChange={handleEmailChange}
-          />
-          {email && !emailCheck && (
-            <S.SignUpWarnText>유효하지 않은 형식입니다.</S.SignUpWarnText>
-          )}
-        </S.SignUpInputBox>
-        <S.SignUpInputBox>
-          <S.SignUpInput
-            type="password"
-            placeholder="비밀번호"
-            value={password}
-            onChange={handlePasswordChange}
-          />
-          {passwordCheck ? (
-            <S.SignUpText>안전한 비밀번호 입니다.</S.SignUpText>
           ) : (
-            <S.SignUpWarnText>
-              8~15자의 영문 대소문자, 숫자, 특수문자를 사용하세요.
-            </S.SignUpWarnText>
+            <S.SignUpEmptyText />
           )}
-          <S.SignUpInput
-            type="password"
-            placeholder="비밀번호 확인"
-            value={rePassword}
-            onChange={handlRePasswordChange}
-            disabled={!passwordCheck}
-          />
-          {rePassword &&
-            (password !== rePassword ? (
+        </S.SignUpInputBox>
+
+        <S.SignUpInputBox>
+          <S.SignUpInputWrapper>
+            <S.SignUpInput
+              type="text"
+              placeholder="회사명"
+              value={orgName}
+              onChange={handleorgNameChange}
+            />
+          </S.SignUpInputWrapper>
+        </S.SignUpInputBox>
+
+        <S.SignUpInputBox>
+          <S.SignUpInputWrapper>
+            <S.SignUpInput
+              type="text"
+              placeholder="전화번호"
+              value={telNumber}
+              onChange={handletelNumberChange}
+            />
+          </S.SignUpInputWrapper>
+          {telNumber && !telNumberCheck ? (
+            <S.SignUpWarnText>유효하지 않은 형식입니다.</S.SignUpWarnText>
+          ) : (
+            <S.SignUpEmptyText />
+          )}
+        </S.SignUpInputBox>
+
+        <S.SignUpInputBox>
+          <S.SignUpInputWrapper>
+            <S.SignUpInput
+              type="text"
+              placeholder="이메일"
+              value={email}
+              onChange={handleEmailChange}
+            />
+          </S.SignUpInputWrapper>
+          {email && !emailCheck ? (
+            <S.SignUpWarnText>유효하지 않은 형식입니다.</S.SignUpWarnText>
+          ) : (
+            <S.SignUpEmptyText />
+          )}
+        </S.SignUpInputBox>
+
+        <S.SignUpInputBox>
+          <S.SignUpInputWrapper>
+            <S.SignUpInput
+              type="password"
+              placeholder="비밀번호"
+              value={password}
+              onChange={handlePasswordChange}
+            />
+          </S.SignUpInputWrapper>
+          {password ? (
+            passwordCheck ? (
+              <S.SignUpText>안전한 비밀번호 입니다.</S.SignUpText>
+            ) : (
+              <S.SignUpWarnText>
+                8~15자의 영문 대소문자, 숫자, 특수문자를 사용하세요.
+              </S.SignUpWarnText>
+            )
+          ) : (
+            <S.SignUpEmptyText />
+          )}
+        </S.SignUpInputBox>
+        <S.SignUpInputBox>
+          <S.SignUpInputWrapper>
+            <S.SignUpInput
+              type="password"
+              placeholder="비밀번호 확인"
+              value={rePassword}
+              onChange={handlRePasswordChange}
+              disabled={!passwordCheck}
+            />
+          </S.SignUpInputWrapper>
+          {rePassword ? (
+            password !== rePassword ? (
               <S.SignUpWarnText>비밀번호가 일치하지 않습니다.</S.SignUpWarnText>
             ) : (
               <S.SignUpText>비밀번호가 일치합니다.</S.SignUpText>
-            ))}
+            )
+          ) : (
+            <S.SignUpEmptyText />
+          )}
         </S.SignUpInputBox>
-        <S.SendMailButton onClick={handleSendAuthCode}>
-          이메일 인증 키 받기
-        </S.SendMailButton>
-        <S.AuthConfirmWrapper>
-          <S.SignUpInput
-            type="text"
-            placeholder="인증 키"
-            style={{ width: '100%' }}
-            value={authCode}
-            onChange={handleAuthCode}
-            disabled={isAuth}
-          />
-          <S.ConfirmButton onClick={handleConfirmAuthCode} $isAuth={isAuth}>
-            확인
-          </S.ConfirmButton>
-        </S.AuthConfirmWrapper>
-        {isAuth ? (
-          <S.SignUpText>인증되었습니다.</S.SignUpText>
-        ) : (
-          <S.SignUpWarnText>인증이 필요합니다.</S.SignUpWarnText>
-        )}
-        <S.ButtonWrapper>
-          <S.CancleButton onClick={handleCancle}>취소</S.CancleButton>
-          <S.OKButton $signUpFlag={signUpFlag} onClick={handleSignUp}>
-            회원가입
-          </S.OKButton>
-        </S.ButtonWrapper>
+
+        <S.SignUpInputBox>
+          <S.SendMailButton onClick={handleSendAuthCode}>
+            이메일 인증 키 받기
+          </S.SendMailButton>
+        </S.SignUpInputBox>
+        <S.SignUpInputBox>
+          <S.AuthConfirmWrapper>
+            <S.SignUpInput
+              type="text"
+              placeholder="인증 키"
+              style={{ width: '100%' }}
+              value={authCode}
+              onChange={handleAuthCode}
+              disabled={isAuth}
+            />
+            <S.ConfirmButton onClick={handleConfirmAuthCode} $isAuth={isAuth}>
+              확인
+            </S.ConfirmButton>
+          </S.AuthConfirmWrapper>
+          {isAuth ? (
+            <S.SignUpText>인증되었습니다.</S.SignUpText>
+          ) : (
+            <S.SignUpWarnText>인증이 필요합니다.</S.SignUpWarnText>
+          )}
+
+          <S.ButtonWrapper>
+            <S.CancleButton onClick={handleCancle}>취소</S.CancleButton>
+            <S.OKButton $signUpFlag={signUpFlag} onClick={handleSignUp}>
+              회원가입
+            </S.OKButton>
+          </S.ButtonWrapper>
+        </S.SignUpInputBox>
       </S.SignUpContainer>
     </S.SignUpLayout>
   );

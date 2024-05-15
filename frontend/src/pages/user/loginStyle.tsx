@@ -1,41 +1,49 @@
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const Layout = styled.div`
-  width: 100%;
-  height: calc(var(--vh, 1vh) * 100 - 60px);
   display: flex;
-  margin-right: 10rem;
-  flex-direction: row;
   justify-content: center;
-  gap: 20px;
+  align-items: center;
+  width: 100%;
+  height: calc(var(--vh, 1vh) * 100 - 4rem);
+  padding: 1rem 0;
+  margin-right: 14.5rem;
+  box-sizing: border-box;
+  overflow: hidden;
 `;
 
 export const LogInLayout = styled.div`
-  width: 560px;
-  margin-top: 5rem;
-  border: 2px solid gray;
-  border-radius: 10px;
-  padding: 2rem;
-  height: auto;
+  display: flex;
+  justify-content: center;
+  width: 500px;
+  height: 100%;
+  border-radius: 1.25rem;
+  border: 1px solid #bdbdbd;
+  background: #fff;
+  box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.25);
 `;
 
 export const LogInContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  margin: 2.5rem 0 2.5rem 0;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+  padding: 2rem 0;
+  box-sizing: border-box;
   gap: 1rem;
 `;
 
-export const LogInInput = styled.input`
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  border: 1px solid #ddd;
-  font-size: 1.3rem;
-  &::placeholder {
-    color: #bdbdbd;
-  }
+export const LogoBox = styled.div`
+  height: 13rem;
+  padding: 0 2rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+`;
+
+export const LogoImg = styled.img`
+  height: 100%;
+  width: 100%;
 `;
 
 export const LogInWarnText = styled.div`
@@ -45,18 +53,38 @@ export const LogInWarnText = styled.div`
   font-weight: 500;
 `;
 
-export const LogInInputBox = styled.div`
+export const LoginInputBox = styled.div`
   display: flex;
   flex-direction: column;
+  height: auto;
+  width: 100%;
+  padding: 0 2rem;
+  box-sizing: border-box;
+  gap: 1rem;
+`;
+
+export const LogInInputWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  height: inherit;
   justify-content: center;
-  gap: 0.5rem;
+`;
+
+export const LogInInput = styled.input`
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  &::placeholder {
+    color: #bdbdbd;
+  }
 `;
 
 export const LogInLinkBox = styled.div`
   display: flex;
   justify-content: space-between;
-  gap: 0.5rem;
-  margin: 0 0 3rem 0;
+  padding: 0 2rem;
 `;
 
 export const SignUpText = styled.button`
@@ -64,26 +92,25 @@ export const SignUpText = styled.button`
   text-decoration: underline;
   background: none;
   border: none;
-  padding-left: 5px;
-  margin: 0;
-  font-size: 16px;
+  font-size: 0.8rem;
   cursor: pointer;
 `;
 
-export const PasswordText = styled(Link)`
+export const PasswordButton = styled.button`
   color: #000000;
   text-decoration: underline;
-  margin-right: 3px;
+  background: none;
+  border: none;
+  font-size: 0.8rem;
   cursor: pointer;
 `;
 
 export const SignUpButton = styled.a`
-  width: 100%;
-  padding: 0.3rem 1rem;
-  border-radius: 0.5rem;
-  font-size: 1.4rem;
-  background-color: #1e3232;
-  color: #fff;
+  color: #000000;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  font-size: 0.8rem;
   cursor: pointer;
 `;
 
@@ -92,7 +119,7 @@ export const OKButton = styled.button`
   padding: 0.3rem 1rem;
   border-radius: 0.5rem;
   border: 1px solid #ddd;
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   background-color: #00c9ea;
   color: #fff;
   cursor: pointer;
@@ -100,16 +127,8 @@ export const OKButton = styled.button`
 
 export const ButtonWrapper = styled.div`
   display: flex;
-  flex-direction: row;
   justify-content: center;
-  margin: 5rem 0 5rem 0;
-  gap: 1rem;
-`;
-
-export const LogoWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
+  padding: 0 2rem;
 `;
 
 export const Logo = styled.img`
