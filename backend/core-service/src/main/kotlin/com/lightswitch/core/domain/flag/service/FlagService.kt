@@ -18,6 +18,7 @@ import com.lightswitch.core.domain.history.repository.entity.HistoryType
 import com.lightswitch.core.domain.member.entity.SdkKey
 import com.lightswitch.core.domain.member.repository.MemberRepository
 import com.lightswitch.core.domain.member.repository.SdkKeyRepository
+import com.lightswitch.core.domain.organization.service.OrganizationService
 import com.lightswitch.core.domain.sse.dto.SseDto
 import com.lightswitch.core.domain.sse.service.SseService
 import org.springframework.beans.factory.annotation.Autowired
@@ -56,7 +57,10 @@ class FlagService(
     private val propertyRepository: PropertyRepository,
 
     @Autowired
-    private val historyRepository: HistoryRepository
+    private val historyRepository: HistoryRepository,
+
+    @Autowired
+    private val oraganizationService: OrganizationService,
 ) {
 
     fun buildSSEData(flag: Flag): FlagInitResponseDto {
@@ -228,12 +232,13 @@ class FlagService(
 
         // SSE 데이터 전송
         val flagInitResponseDto = buildSSEData(savedFlag)
-        val sdkKey = sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(member.memberId!!) ?: throw BaseException(
-            ResponseCode.SDK_KEY_NOT_FOUND
-        )
+//        val sdkKey = sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(member.memberId!!) ?: throw BaseException(
+//            ResponseCode.SDK_KEY_NOT_FOUND
+//        )
+        val orgKey = oraganizationService.getSdkKey()
 
-        val userKey = sseService.hash(sdkKey.key)
-        sseService.sendData(SseDto(userKey, SseDto.SseType.CREATE, flagInitResponseDto))
+//        val userKey = sseService.hash(sdkKey.key)
+        sseService.sendData(SseDto("", SseDto.SseType.CREATE, flagInitResponseDto))
 
         return this.getFlag(savedFlag.flagId!!)
     }
@@ -414,7 +419,7 @@ class FlagService(
 
         sseService.sendData(
             SseDto(
-                userKey,
+                "",
                 SseDto.SseType.DELETE,
                 FlagTitleResponseDto(flag.title)
             )
@@ -450,7 +455,7 @@ class FlagService(
 
         sseService.sendData(
             SseDto(
-                userKey,
+                "",
                 SseDto.SseType.DELETE,
                 FlagTitleResponseDto(flag.title)
             )
@@ -471,7 +476,7 @@ class FlagService(
         val userKey = sseService.hash(sdkKey.key)
         sseService.sendData(
             SseDto(
-                userKey,
+                "",
                 SseDto.SseType.SWITCH,
                 FlagIdResponseDto(flag.title, flag.active)
             )
@@ -623,7 +628,7 @@ class FlagService(
             )
 
         val userKey = sseService.hash(sdkKey.key)
-        sseService.sendData(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
+        sseService.sendData(SseDto("", SseDto.SseType.UPDATE, flagInitResponseDto))
 
         return this.getFlag(flag.flagId!!)
     }
@@ -644,7 +649,7 @@ class FlagService(
             )
 
         val userKey = sseService.hash(sdkKey.key)
-        sseService.sendData(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
+        sseService.sendData(SseDto("", SseDto.SseType.UPDATE, flagInitResponseDto))
 
         return this.getFlag(flag.flagId!!)
     }
@@ -714,7 +719,7 @@ class FlagService(
             )
 
         val userKey = sseService.hash(sdkKey.key)
-        sseService.sendData(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
+        sseService.sendData(SseDto("", SseDto.SseType.UPDATE, flagInitResponseDto))
 
         return this.getFlag(flag.flagId!!)
     }
@@ -776,7 +781,7 @@ class FlagService(
             )
 
         val userKey = sseService.hash(sdkKey.key)
-        sseService.sendData(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
+        sseService.sendData(SseDto("", SseDto.SseType.UPDATE, flagInitResponseDto))
     }
 
     @Transactional
@@ -861,7 +866,7 @@ class FlagService(
             )
 
         val userKey = sseService.hash(sdkKey.key)
-        sseService.sendData(SseDto(userKey, SseDto.SseType.UPDATE, flagInitResponseDto))
+        sseService.sendData(SseDto("", SseDto.SseType.UPDATE, flagInitResponseDto))
 
         return this.getFlag(flag.flagId!!)
     }

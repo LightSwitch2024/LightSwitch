@@ -7,6 +7,7 @@ import com.lightswitch.core.domain.sse.dto.res.SseUserKeyResponseDto
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 import java.security.MessageDigest
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 
@@ -40,6 +41,16 @@ class SseService {
     }
 
     fun sendData(sseDto: SseDto) {
+        // 전체 emitter에 전송
+        map.forEach { (_, emitter) ->
+            val event = SseEmitter.event()
+                .name("sse")
+                .data(sseDto)
+            emitter.send(event)
+        }
+    }
+
+    fun sendData2(sseDto: SseDto) {
         val emitter: SseEmitter? = map[sseDto.userKey]
 
         emitter?.let {
@@ -56,7 +67,7 @@ class SseService {
     }
 
     fun createUserKey(sseRequestDto: SseRequestDto): SseUserKeyResponseDto {
-        return SseUserKeyResponseDto(userKey = hash(sseRequestDto.sdkKey))
+        return SseUserKeyResponseDto(userKey = UUID.randomUUID().toString())
     }
 
     fun hash(value: String): String {
