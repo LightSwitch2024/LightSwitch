@@ -41,6 +41,16 @@ class SseService {
     }
 
     fun sendData(sseDto: SseDto) {
+        // 전체 emitter에 전송
+        map.forEach { (_, emitter) ->
+            val event = SseEmitter.event()
+                .name("sse")
+                .data(sseDto)
+            emitter.send(event)
+        }
+    }
+
+    fun sendData2(sseDto: SseDto) {
         val emitter: SseEmitter? = map[sseDto.userKey]
 
         emitter?.let {
