@@ -111,7 +111,6 @@ class HistoryService(
         val variations = variationRepository.findByFlagFlagId(flagId)
         val preVariation = variations.map { it.toPrevious() }
         val proceed = proceedingJoinPoint.proceed()
-        print("======= updateFlag =======")
         checkFlagTitle(preFlag, flag)
         checkFlagType(preFlag, flag)
         checkVariation(flag, preVariation, variations)
@@ -193,9 +192,7 @@ class HistoryService(
                     break
                 }
             }
-            println(stillExists)
             if (!stillExists) {
-                println(preProperty.propertyId)
                 historyRepository.save(
                     History(
                         flag = flag,
@@ -217,7 +214,6 @@ class HistoryService(
         val flag = flagRepository.findById(flagId).orElseThrow()
         val preFlag = flag.toPrevious()
         val proceed = proceedingJoinPoint.proceed()
-        print("======= updateFlagInfo =======")
 
         checkFlagTitle(preFlag, flag)
         return proceed
@@ -249,7 +245,6 @@ class HistoryService(
         val variations = variationRepository.findByFlagFlagId(flagId)
         val preVariations = variations.map { it.toPrevious() }
         val proceed = proceedingJoinPoint.proceed()
-        print("======= updateVariationInfo =======")
 
         checkVariation(flag, preVariations, variations)
 
@@ -266,7 +261,6 @@ class HistoryService(
         var variations = variationRepository.findByFlagAndDeletedAtIsNull(flag)
         val preVariations = variations.map { it.toPrevious() }
         val proceed = proceedingJoinPoint.proceed()
-        println("======= updateVariationInfoWithHardDelete =======")
         variations = variationRepository.findByFlagAndDeletedAtIsNull(flag)
         checkVariation(flag, preVariations, variations)
         return proceed
@@ -327,9 +321,7 @@ class HistoryService(
                     break
                 }
             }
-            println(stillExists)
             if (!stillExists) {
-                println(preVariation.variationId)
                 historyRepository.save(
                     History(
                         flag = flag,
@@ -351,7 +343,6 @@ class HistoryService(
         val preFlag = flag.toPrevious()
         val proceed = proceedingJoinPoint.proceed()
         // keyword & property
-        print("======= updateKeywordInfo =======")
 
         checkKeyword(preFlag, flag)
 
@@ -368,7 +359,6 @@ class HistoryService(
         val preFlag = flag.toPrevious()
         val proceed = proceedingJoinPoint.proceed()
         // keyword & property
-        print("======= updateKeywordInfoWithHardDelete =======")
 
         checkKeyword(preFlag, flag)
 
@@ -422,9 +412,7 @@ class HistoryService(
                     break
                 }
             }
-            println(stillExists)
             if (!stillExists) {
-                println(preKeyword.keywordId)
                 historyRepository.save(
                     History(
                         flag = flag,
@@ -441,7 +429,6 @@ class HistoryService(
         proceedingJoinPoint: ProceedingJoinPoint,
         flagId: Long,
     ): Any? {
-        print("======= deleteFlagWithHardDelete =======")
         val proceed = proceedingJoinPoint.proceed()
         val flag = flagRepository.findById(flagId).orElseThrow()
 
