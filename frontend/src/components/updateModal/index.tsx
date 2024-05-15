@@ -716,7 +716,13 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
 
     updateVariations<FlagDetailItem>(
       props.flagDetail?.flagId,
-      editedVariationInfo,
+      {
+        type: editedVariationInfo.type,
+        defaultValue: defaultValue,
+        defaultPortion: defaultPortion,
+        defaultDescription: defaultDescription,
+        variations: editedVariationInfo.variations,
+      },
       (data: FlagDetailItem) => {
         console.log(data);
         // 수정된 flagDetail 업데이트

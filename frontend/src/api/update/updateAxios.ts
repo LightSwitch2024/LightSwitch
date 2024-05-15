@@ -22,7 +22,7 @@ interface Variation {
 interface VariationInfo {
   type: string;
   defaultValue: string;
-  defaultPortion: number;
+  defaultPortion: number | '';
   defaultDescription: string;
   variations: Array<Variation>;
 }
