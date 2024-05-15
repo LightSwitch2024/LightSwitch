@@ -126,15 +126,15 @@ class FlagController(
     fun getFlagOverview(): BaseResponse<MainPageOverviewDto> {
         val flagCountForOverview = flagService.getFlagCountForOverview()
         val sdkKey = organizationService.getSdkKey()
-
+        val historiesOverview = flagService.getHistoriesOverview();
         val totalFlags = flagCountForOverview["totalFlags"] ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
         val activeFlags = flagCountForOverview["activeFlags"] ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
-
         return success(
             MainPageOverviewDto(
                 totalFlags = totalFlags,
                 activeFlags = activeFlags,
                 sdkKey = sdkKey,
+                histories = historiesOverview
             )
         )
     }
