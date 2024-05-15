@@ -11,6 +11,8 @@ import com.lightswitch.core.domain.flag.dto.res.*
 import com.lightswitch.core.domain.flag.repository.*
 import com.lightswitch.core.domain.flag.repository.entity.*
 import com.lightswitch.core.domain.flag.repository.queydsl.FlagCustomRepository
+import com.lightswitch.core.domain.history.dto.HistoryResponse
+import com.lightswitch.core.domain.history.repository.HistoryRepository
 import com.lightswitch.core.domain.history.repository.entity.History
 import com.lightswitch.core.domain.history.repository.entity.HistoryType
 import com.lightswitch.core.domain.member.entity.SdkKey
@@ -52,6 +54,9 @@ class FlagService(
 
     @Autowired
     private val propertyRepository: PropertyRepository,
+
+    @Autowired
+    private val historyRepository: HistoryRepository
 ) {
 
     fun buildSSEData(flag: Flag): FlagInitResponseDto {
@@ -254,7 +259,6 @@ class FlagService(
     fun getFlag(flagId: Long): FlagResponseDto {
 //        val flag = flagRepository.findFlagWithActiveKeywords(flagId) ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
 //        val flag = flagRepository.findById(flagId).get()
-        println("========= getFlag2 ============")
         val flag =
             flagRepository.findFlagsWithNoDeletedKeywords(flagId) ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
         val defaultVariation =
@@ -270,6 +274,8 @@ class FlagService(
 //        flag 의 keywords의 deleted at 이 null 인 것만 남기기
         // TODO : flag의 keywords의 deletedAt이 null인 것만 남기기 <- 이 과정을 서비스 로직으로 처리하는 것이 맞는지 확인 필요, 쿼리로 처리하는 것이 더 효율적인지 확인 필요
         val keywordList = flag.keywords.filter { it.deletedAt == null }
+
+        val histories = historyRepository.findByFlagFlagId(flagId)
 
         return FlagResponseDto(
             flagId = flag.flagId!!,
@@ -303,11 +309,10 @@ class FlagService(
                 )
             },
             memberId = flag.maintainer.memberId!!,
-
             createdAt = flag.createdAt.toString(),
             updatedAt = flag.updatedAt.toString(),
-
             active = flag.active,
+            histories = histories
         )
     }
 
@@ -456,7 +461,7 @@ class FlagService(
 
     fun switchFlag(flagId: Long, switchRequestDto: SwitchRequestDto): Boolean {
         val flag = flagRepository.findById(flagId).get()
-        flag.active = switchRequestDto.active
+        flag.active = !switchRequestDto.active
 
         val sdkKey =
             sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(flag.maintainer.memberId!!) ?: throw BaseException(
@@ -625,7 +630,6 @@ class FlagService(
 
     @Transactional
     fun updateFlagInfo(flagId: Long, flagInfoRequestDto: FlagInfoRequestDto): FlagResponseDto {
-        println("=================== updateFlagInfo")
         val flag = flagRepository.findById(flagId).get()
         flag.title = flagInfoRequestDto.title
         flag.description = flagInfoRequestDto.description
@@ -647,7 +651,6 @@ class FlagService(
 
     @Transactional
     fun updateVariationInfo(flagId: Long, variationInfoRequestDto: VariationInfoRequestDto): FlagResponseDto {
-        println("=================== updateVariationInfo")
 
         val flag = flagRepository.findById(flagId).get()
         flag.type = variationInfoRequestDto.type
@@ -721,7 +724,6 @@ class FlagService(
         flagId: Long,
         variationInfoRequestDto: VariationInfoRequestDto
     ): FlagResponseDto {
-        println("=================== updateVariationInfoWithHardDelete")
 
         val flag = flagRepository.findById(flagId).get()
         flag.type = variationInfoRequestDto.type
@@ -779,7 +781,6 @@ class FlagService(
 
     @Transactional
     fun updateKeywordInfo(flagId: Long, keywordInfoRequestDto: KeywordInfoRequestDto): FlagResponseDto {
-        println("=================== updateKeywordInfo")
 
         val flag = flagRepository.findById(flagId).get()
         flag.keywords.map { k ->
@@ -867,7 +868,6 @@ class FlagService(
 
     @Transactional
     fun updateKeywordInfoWithHardDelete(flagId: Long, keywordInfoRequestDto: KeywordInfoRequestDto): FlagResponseDto {
-        println("=================== updateKeywordInfoWithHardDelete")
 
         val flag = flagRepository.findById(flagId).get()
         val existingKeywords = mutableListOf<Keyword>()
@@ -1039,5 +1039,9 @@ class FlagService(
                 maintainerName = "${flag.maintainer.firstName} ${flag.maintainer.lastName}",
             )
         }
+    }
+
+    fun getHistoriesOverview() : List<HistoryResponse>{
+        return  historyRepository.findAllByLimit(3)
     }
 }
