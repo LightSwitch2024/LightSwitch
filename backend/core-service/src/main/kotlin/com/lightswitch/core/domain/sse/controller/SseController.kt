@@ -33,11 +33,13 @@ class SseController(
         sseService.sendData(sseDto)
     }
 
+    @CrossOrigin(origins = ["*"])
     @PostMapping("/subscribe")
     fun createUserKey(@RequestBody sseRequestDto: SseRequestDto): BaseResponse<SseUserKeyResponseDto> {
         return success(sseService.createUserKey(sseRequestDto))
     }
 
+    @CrossOrigin(origins = ["*"])
     @DeleteMapping("/disconnect")
     fun disconnect(@RequestBody userKeyRequestDto: UserKeyRequestDto) {
         success(sseService.disconnect(userKeyRequestDto))
