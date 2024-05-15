@@ -23,7 +23,6 @@ type SignUpData = {
   firstName: string;
   lastName: string;
   telNumber: string;
-  orgName: string;
   email: string;
   password: string;
   authCode: string;
@@ -173,7 +172,6 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
       email: email,
       password: password,
       authCode: authCode,
-      orgName: orgName,
     };
 
     signUp<SignUpData>(
