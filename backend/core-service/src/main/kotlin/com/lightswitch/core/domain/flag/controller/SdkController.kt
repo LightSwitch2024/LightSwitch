@@ -18,8 +18,7 @@ class SdkController(
     @CrossOrigin(
         origins = ["*"],
         methods = [RequestMethod.POST, RequestMethod.OPTIONS],
-        allowedHeaders = ["*"],
-        allowCredentials = "true"
+        allowedHeaders = ["*"]
     )
     @PostMapping("/init")
     fun init(@RequestBody flagInitRequestDto: FlagInitRequestDto): BaseResponse<List<FlagInitResponseDto>> {
