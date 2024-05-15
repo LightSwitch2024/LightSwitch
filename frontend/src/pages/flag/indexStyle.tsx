@@ -30,6 +30,8 @@ export const HistoryContainer = styled.div`
   border-radius: 0.625rem;
   background: #89e6f5;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+
+  z-index: -3;
 `;
 
 export const FlagTitleAndTagsLayer = styled.div`
@@ -528,7 +530,7 @@ export const HistoryIconPadding = styled.div<{ $len: number }>`
   width: ${({ $len }) => `${$len}rem`};
   height: ${({ $len }) => `${$len}rem`};
 
-  z-index: 2;
+  z-index: -1;
 
   display: flex;
   align-items: center;
@@ -583,7 +585,7 @@ export const Line = styled.div`
   position: absolute;
   left: 1rem;
   bottom: 0;
-  z-index: 1;
+  z-index: -2;
 
   background: var(--black-012, rgba(0, 0, 0, 0.12));
 `;
