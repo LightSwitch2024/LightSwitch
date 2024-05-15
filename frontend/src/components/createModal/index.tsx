@@ -716,6 +716,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
                     value={defaultPortion}
                     onChange={handleDefaultPortionChange}
                     onWheel={(event) => (event.target as HTMLElement).blur()}
+                    disabled={true}
                     $flag={isDetailMode()}
                   />
                 </S.FlagVariationRowContainer>

@@ -946,6 +946,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
           defaultPortion: Number(100) - calculateTotalPortion(),
         };
       });
+      setDefaultPortion(Number(100) - calculateTotalPortion());
     }
   }, [editedVariationInfo.variations]);
 
@@ -1098,6 +1099,8 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                   value={defaultPortion}
                   onChange={handleDefaultPortionChange}
                   onWheel={(event) => (event.target as HTMLElement).blur()}
+                  disabled={true}
+                  readOnly={true}
                   $flag={isDetailMode()}
                 />
               </S.VarContainer>
