@@ -36,8 +36,7 @@ class SseController(
     @CrossOrigin(
         origins = ["*"],
         methods = [RequestMethod.POST, RequestMethod.OPTIONS],
-        allowedHeaders = ["*"],
-        allowCredentials = "true"
+        allowedHeaders = ["*"]
     )
     @PostMapping("/subscribe")
     fun createUserKey(@RequestBody sseRequestDto: SseRequestDto): BaseResponse<SseUserKeyResponseDto> {
@@ -47,8 +46,7 @@ class SseController(
     @CrossOrigin(
         origins = ["*"],
         methods = [RequestMethod.DELETE, RequestMethod.OPTIONS],
-        allowedHeaders = ["*"],
-        allowCredentials = "true"
+        allowedHeaders = ["*"]
     )
     @DeleteMapping("/disconnect")
     fun disconnect(@RequestBody userKeyRequestDto: UserKeyRequestDto) {
