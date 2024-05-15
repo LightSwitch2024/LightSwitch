@@ -8,8 +8,6 @@ class SignupReqDto(
     @field:NotBlank
     val lastName: String,
     @field:NotBlank
-    val orgName: String,
-    @field:NotBlank
     val telNumber: String,
     @field:NotBlank
     val email: String,
@@ -17,4 +15,6 @@ class SignupReqDto(
     val password: String,
     @field:NotBlank
     val authCode: String,
+    @field:NotBlank
+    val orgName: String,
 )
