@@ -56,12 +56,6 @@ repositories {
 }
 
 dependencies {
-    // prometheus
-    implementation("io.micrometer:micrometer-registry-prometheus")
-    implementation("io.micrometer:micrometer-core")
-
-    // /actuator/prometheus를 위한 actuator
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     // spring security
     implementation("org.springframework.security:spring-security-crypto")

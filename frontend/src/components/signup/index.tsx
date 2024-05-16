@@ -2,21 +2,12 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { confirmAuthCode, sendAuthCode, signUp } from '@/api/userDetail/userAxios';
+import { signUp } from '@/api/userDetail/userAxios';
 import * as S from '@/components/signup/indexStyle';
 
 type Props = {
   isSignUpModal: boolean;
   onClose: () => void;
-};
-
-type SendAuthCodeData = {
-  email: string;
-};
-
-type ConfirmAuthCodeData = {
-  email: string;
-  authCode: string;
 };
 
 type SignUpData = {
@@ -25,7 +16,6 @@ type SignUpData = {
   telNumber: string;
   email: string;
   password: string;
-  authCode: string;
 };
 
 const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
@@ -42,8 +32,6 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
   const [password, setPassword] = useState<string>('');
   const [passwordCheck, setPasswordCheck] = useState<boolean>(false);
   const [rePassword, setRePassword] = useState<string>('');
-  const [authCode, setAuthCode] = useState<string>('');
-  const [isAuth, setIsAuth] = useState<boolean>(true);
   const [signUpFlag, setSignUpFlag] = useState<boolean>(true);
 
   const validateHangle = (hangle: string): boolean => {
@@ -111,43 +99,6 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
     setRePassword(e.target.value);
   };
 
-  const handleAuthCode = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setAuthCode(e.target.value);
-  };
-
-  const handleSendAuthCode = (): void => {
-    const sendAuthCodeData: SendAuthCodeData = {
-      email: email,
-    };
-
-    sendAuthCode<SendAuthCodeData>(
-      sendAuthCodeData,
-      (data) => {
-        console.log(data);
-      },
-      (err) => {
-        console.log(err);
-      },
-    );
-  };
-
-  const handleConfirmAuthCode = (): void => {
-    const confirmAuthCodeData: ConfirmAuthCodeData = {
-      email: email,
-      authCode: authCode,
-    };
-
-    confirmAuthCode<boolean>(
-      confirmAuthCodeData,
-      () => {
-        setIsAuth(true);
-      },
-      (err) => {
-        console.log(err);
-      },
-    );
-  };
-
   const handleCancle = (): void => {
     onClose();
   };
@@ -164,7 +115,6 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
       telNumber: telNumber,
       email: email,
       password: password,
-      authCode: authCode,
     };
 
     signUp<SignUpData>(
@@ -186,14 +136,20 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
       telNumberCheck &&
       emailCheck &&
       passwordCheck &&
-      password === rePassword &&
-      isAuth
+      password === rePassword
     ) {
       setSignUpFlag(true);
     } else {
-      // setSignUpFlag(false);
+      setSignUpFlag(false);
     }
-  }, [firstNameCheck, lastNameCheck, telNumberCheck, emailCheck, passwordCheck, isAuth]);
+  }, [
+    firstNameCheck,
+    lastNameCheck,
+    telNumberCheck,
+    emailCheck,
+    passwordCheck,
+    rePassword,
+  ]);
 
   return (
     <S.Layout>
@@ -266,30 +222,10 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
                 <S.SignUpText>비밀번호가 일치합니다.</S.SignUpText>
               ))}
           </S.SignUpInputBox>
-          <S.SendMailButton onClick={handleSendAuthCode}>
-            이메일 인증 키 받기
-          </S.SendMailButton>
-          <S.AuthConfirmWrapper>
-            <S.SignUpInput
-              type="text"
-              placeholder="인증 키"
-              style={{ width: '100%' }}
-              value={authCode}
-              onChange={handleAuthCode}
-              disabled={isAuth}
-            />
-            <S.ConfirmButton onClick={handleConfirmAuthCode} $isAuth={isAuth}>
-              확인
-            </S.ConfirmButton>
-          </S.AuthConfirmWrapper>
-          {isAuth ? (
-            <S.SignUpText>인증되었습니다.</S.SignUpText>
-          ) : (
-            <S.SignUpWarnText>인증이 필요합니다.</S.SignUpWarnText>
-          )}
+
           <S.ButtonWrapper>
             <S.CancleButton onClick={handleCancle}>취소</S.CancleButton>
-            <S.OKButton $signUpFlag={true} onClick={handleSignUp}>
+            <S.OKButton $signUpFlag={signUpFlag} onClick={handleSignUp}>
               회원가입
             </S.OKButton>
           </S.ButtonWrapper>

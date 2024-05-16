@@ -39,22 +39,15 @@ class MemberService(
         var phoneNumber = signupReqDto.telNumber
         val email = signupReqDto.email
         val password = signupReqDto.password
-        val authCode = signupReqDto.authCode
 
         val existsMember: Member? = memberRepository.findByEmailAndDeletedAtIsNull(email)
         existsMember?.let {
             throw MemberException("이미 가입된 이메일 입니다.")
         }
 
-//        redisService.find("$signupCode:$email") ?: throw MemberException("코드 만료 시간이 지났습니다.")
-//
-//        if (authCode != redisService.find("$signupCode:$email")) {
-//            throw MemberException("인증 코드가 일치하지 않습니다.")
-//        }
-
         val encodedPassword = passwordService.encode(password)
 
-        val member: Member = Member(
+        val member = Member(
             firstName = firstName,
             lastName = lastName,
             telNumber = phoneNumber,

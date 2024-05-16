@@ -36,7 +36,6 @@ interface SignUpData {
   telNumber: string;
   email: string;
   password: string;
-  authCode: string;
 }
 
 interface sendAuthCodeData {

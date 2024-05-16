@@ -1,36 +1,9 @@
 server:
+  port: 8000
   servlet:
     context-path: /api
 spring:
   application:
     name: core-service
   profiles:
-    active: dev,blue
-#actuator
-management:
-  endpoints:
-    web:
-      exposure:
-        include:
-          - info
-          - health
-          - loggers
-          - mappings
-          - metrics
-          - shutdown
-          - prometheus
----
-spring:
-  config:
-    activate:
-      on-profile: blue
-server:
-  port: 8000
-
----
-spring:
-  config:
-    activate:
-      on-profile: green
-server:
-  port: 8001
+    active: dev
