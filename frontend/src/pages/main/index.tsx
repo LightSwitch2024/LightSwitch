@@ -139,26 +139,11 @@ const index = () => {
             <S.imageLunitLogo path={LunitLogo} />
           </S.imageContainer>
           <S.LunitInfoContainer>
-            {/* <S.LunitTitleContainer> */}
-            <S.LunitTitle>Lunit</S.LunitTitle>
-            {/* </S.LunitTitleContainer> */}
-            {/* <S.DescriptionContainer> */}
-            {/* <S.SummaryInfoContinaer>
-              <S.InfoTextContiner>
-                <S.InfoText>#Created Time : 2024.04.19</S.InfoText>
-              </S.InfoTextContiner>
-              <S.InfoTextContiner>
-                <S.InfoText>#Total Member : 12</S.InfoText>
-              </S.InfoTextContiner>
-            </S.SummaryInfoContinaer> */}
-            {/* <S.CatchPhraseContainer> */}
-            {/* <S.InfoTextContiner> */}
+            <S.LunitTitle>Light Switch</S.LunitTitle>
             <S.InfoText>
-              인공지능 기술로 암을 정복합니다. 기술과 사람을 연결하여 생명을 구합니다.
+              Light Switch는 플래그를 관리하고, 플래그를 통해 서비스의 기능을 제어할 수
+              있는 플랫폼입니다.
             </S.InfoText>
-            {/* </S.InfoTextContiner> */}
-            {/* </S.CatchPhraseContainer> */}
-            {/* </S.DescriptionContainer> */}
           </S.LunitInfoContainer>
         </S.MainTitleComponent>
 
@@ -185,8 +170,6 @@ const index = () => {
                     </S.createSdkKeyButton>
                   </S.NoExistSdkKeyText>
                 )}
-                {/* <S.SdkKeyText>{sdkKey}</S.SdkKeyText> */}
-                {/* <S.SdkKeyText>asdfasdfasdfasdf-asdf-qwerqwer</S.SdkKeyText> */}
               </S.SdkKeyTextContainer>
             </S.SdkkeyContentContainer>
           </S.SdkKeyComponent>

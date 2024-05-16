@@ -4,6 +4,7 @@ import * as S from '@routes/indexStyle';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
 import FlagDetail from '@/pages/flag/index';
+import List from '@/pages/list/index';
 import Main from '@/pages/main/index';
 import UserDetail from '@/pages/mypage/index';
 import FillOrg from '@/pages/organization/index';
@@ -21,16 +22,33 @@ const Router = () => {
       {!isLoginPage && !isOrgPage && <Tab />}
       <S.Content>
         <Routes>
+          <Route path="/login" element={<LogIn />} />
+
           {/* 메인화면 가기 전에 로그인 거치게끔하는 코드 */}
           <Route path="/" element={<ProtectedRoute />}>
             <Route path="/" element={<Main />} />
           </Route>
-          <Route path="/login" element={<LogIn />} />
+
           <Route path="/create" element={<CreateFlag />} />
-          <Route path="/flag/:flagId" element={<FlagDetail />} />
-          <Route path="/mypage" element={<UserDetail />} />
-          <Route path="/passwordfind" element={<UserDetail />} />
-          <Route path="/fillorg" element={<FillOrg />} />
+          <Route path="/" element={<ProtectedRoute />}>
+            <Route path="/list" element={<List />} />
+          </Route>
+
+          <Route path="/" element={<ProtectedRoute />}>
+            <Route path="/flag/:flagId" element={<FlagDetail />} />
+          </Route>
+
+          <Route path="/" element={<ProtectedRoute />}>
+            <Route path="/mypage" element={<UserDetail />} />
+          </Route>
+
+          <Route path="/" element={<ProtectedRoute />}>
+            <Route path="/passwordfind" element={<UserDetail />} />
+          </Route>
+
+          <Route path="/" element={<ProtectedRoute />}>
+            <Route path="/fillorg" element={<FillOrg />} />
+          </Route>
         </Routes>
       </S.Content>
     </div>
