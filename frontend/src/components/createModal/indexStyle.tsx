@@ -19,6 +19,8 @@ export const ModalBackground = styled.div`
   top: 0;
   left: 0;
   background-color: rgba(0, 0, 0, 0.5);
+
+  z-index: 2;
 `;
 
 export const Modal = styled.div`
@@ -116,6 +118,7 @@ export const FlagTitleIconContainer = styled.div`
 
 export const FlagTitleInput = styled.input<{ $flag: boolean }>`
   border: none;
+  width: 100%;
   font-family: Pretendard;
   font-size: 20px;
   font-style: normal;

@@ -334,7 +334,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
       },
       (data: FlagDetailItem) => {
         console.log(data);
-        navigator(`flag/${data.flagId}`);
+        navigator(`/flag/${data.flagId}`);
         const html = document.querySelector('html');
         html?.classList.remove('scroll-locked');
       },
