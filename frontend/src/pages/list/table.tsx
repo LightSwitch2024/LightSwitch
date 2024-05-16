@@ -20,6 +20,7 @@ import {
   TableRow,
   useTheme,
 } from '@mui/material';
+import { switchClasses } from '@mui/material/Switch';
 import * as S from '@pages/main/indexStyle';
 import { Tag } from '@pages/main/tag';
 import React, { useEffect, useState } from 'react';
@@ -194,6 +195,68 @@ const FlagTable = (props: FlagTableProps) => {
   /**
    * 스위치 컴포넌트 스타일 선언
    */
+  const SwitchTextTrack = styled(Switch)({
+    width: 80,
+    height: 48,
+    padding: 8,
+    [`& .${switchClasses.switchBase}`]: {
+      padding: 11,
+      color: '#565555',
+    },
+    [`& .${switchClasses.thumb}`]: {
+      width: 26,
+      height: 26,
+      backgroundColor: '#fff',
+    },
+    [`& .${switchClasses.track}`]: {
+      background: 'linear-gradient(to right, #565555, #a2a1a1)',
+      opacity: '1 !important',
+      borderRadius: 20,
+      position: 'relative',
+      '&:before, &:after': {
+        display: 'inline-block',
+        position: 'absolute',
+        top: '50%',
+        width: '50%',
+        transform: 'translateY(-50%)',
+        color: '#fff',
+        textAlign: 'center',
+        fontSize: '0.75rem',
+        fontWeight: 500,
+      },
+      '&:before': {
+        content: '"ON"',
+        left: 4,
+        opacity: 0,
+      },
+      '&:after': {
+        content: '"OFF"',
+        right: 4,
+      },
+    },
+    [`& .${switchClasses.checked}`]: {
+      [`&.${switchClasses.switchBase}`]: {
+        color: '#031c5b',
+        transform: 'translateX(32px)',
+        '&:hover': {
+          backgroundColor: 'rgba(24,90,257,0.08)',
+        },
+      },
+      [`& .${switchClasses.thumb}`]: {
+        backgroundColor: '#fff',
+      },
+      [`& + .${switchClasses.track}`]: {
+        background: 'linear-gradient(to right, #0533a5, #031c5b)',
+        '&:before': {
+          opacity: 1,
+        },
+        '&:after': {
+          opacity: 0,
+        },
+      },
+    },
+  });
+
   const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     width: 62,
     height: 28,
@@ -372,7 +435,7 @@ const FlagTable = (props: FlagTableProps) => {
                   component="th"
                   scope="row"
                   onClick={() => {
-                    navigator(`flag/${row.flagId}`);
+                    navigator(`/flag/${row.flagId}`);
                   }}
                 >
                   <span>{row.title}</span>
@@ -380,7 +443,7 @@ const FlagTable = (props: FlagTableProps) => {
                 <StyledTableCell
                   align="left"
                   onClick={() => {
-                    navigator(`flag/${row.flagId}`);
+                    navigator(`/flag/${row.flagId}`);
                   }}
                 >
                   {row.tags.map((tag) => {
@@ -403,14 +466,14 @@ const FlagTable = (props: FlagTableProps) => {
                 <StyledTableCell
                   align="left"
                   onClick={() => {
-                    navigator(`flag/${row.flagId}`);
+                    navigator(`/flag/${row.flagId}`);
                   }}
                 >
                   <S.TableRowDescriptionDiv>{row.description}</S.TableRowDescriptionDiv>
                 </StyledTableCell>
                 <StyledTableCell align="left">{row.maintainerName}</StyledTableCell>
                 <StyledTableCell align="left">
-                  <MaterialUISwitch
+                  <SwitchTextTrack
                     sx={{ m: 1 }}
                     defaultChecked={row.active}
                     onChange={() => handleToggleButtonClick(row.flagId, row.active)}
