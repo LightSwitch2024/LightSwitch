@@ -40,7 +40,7 @@ export interface ILSClient {
   getBooleanFlag: (name: string, LSUser: ILSUser, defaultVal: boolean) => boolean;
   getIntegerFlag: (name: string, LSUser: ILSUser, defaultVal: number) => number;
   getStringFlag: (name: string, LSUser: ILSUser, defaultVal: string) => string;
-  getAllFlags: () => void;
+  getAllFlags: () => Flags;
   destroy: () => void;
 }
 
