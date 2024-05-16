@@ -2,9 +2,11 @@
 CREATE DATABASE lightswitch;
 
 -- 사용자 생성
-CREATE USER lightswitch2024 WITH PASSWORD 'switchlight2024!';
+CREATE ROLE lightswitch2024 WITH LOGIN PASSWORD 'switchlight2024!';
 
 ALTER USER lightswitch2024 WITH SUPERUSER;
+
+GRANT ALL PRIVILEGES ON database lightswitch to lightswitch2024;
 
 -- -- public 스키마에 대한 권한 부여
 -- GRANT USAGE ON SCHEMA public TO lightswitch2024;
