@@ -15,6 +15,4 @@ class SignupReqDto(
     val password: String,
     @field:NotBlank
     val authCode: String,
-    @field:NotBlank
-    val orgName: String,
 )
