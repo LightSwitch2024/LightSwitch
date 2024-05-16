@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
 import { fillOrg } from '@/api/userDetail/userAxios';
-import LightswitchLogo from '@/assets/lightswitchLogo.svg?react';
+// import LightswitchLogo from '@/assets/lightswitchLogo.svg?react';
+import LightswitchLogo from '@/assets/lightswitchLogo.png';
 import { AuthAtom } from '@/global/AuthAtom';
 import * as L from '@/pages/organization/indexStyle';
 
@@ -25,6 +26,12 @@ const FillOrg = () => {
   useEffect(() => {
     console.log(auth);
   }, [auth]);
+
+  useEffect(() => {
+    let vh = 0;
+    vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  }, [window.innerHeight]);
 
   const onClickCreate = (): void => {
     const ownerId = Number(auth.memberId);
@@ -51,16 +58,20 @@ const FillOrg = () => {
     <L.Layout>
       <L.OrgLayout>
         <L.Container>
-          <LightswitchLogo />
-          <L.TextBox>
-            <L.TitleText>회사 이름을 입력해주세요</L.TitleText>
-          </L.TextBox>
-          <L.Input
-            type="text"
-            placeholder="회사명"
-            value={organization}
-            onChange={handleOrganization}
-          />
+          <L.LogoBox>
+            <L.LogoImg src={LightswitchLogo} alt="Lightswitch Logo" />
+          </L.LogoBox>
+          <L.InputWrapper>
+            <L.TextBox>
+              <L.TitleText>회사 이름을 입력해주세요</L.TitleText>
+            </L.TextBox>
+            <L.Input
+              type="text"
+              placeholder="회사명"
+              value={organization}
+              onChange={handleOrganization}
+            />
+          </L.InputWrapper>
           <L.ButtonWrapper>
             <L.OKButton onClick={onClickCreate}>확인</L.OKButton>
           </L.ButtonWrapper>
