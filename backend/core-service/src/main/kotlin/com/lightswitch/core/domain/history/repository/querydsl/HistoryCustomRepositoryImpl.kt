@@ -28,6 +28,7 @@ class HistoryCustomRepositoryImpl(
             .from(history)
             .join(history.flag, flag)
             .where(history.flag.flagId.eq(flagId))
+            .orderBy(history.createdAt.desc())
             .fetch()
     }
 
@@ -45,6 +46,7 @@ class HistoryCustomRepositoryImpl(
         )
             .from(history)
             .join(history.flag, flag)
+            .orderBy(history.createdAt.desc())
             .limit(limit)
             .fetch()
 
