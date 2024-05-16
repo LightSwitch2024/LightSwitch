@@ -148,14 +148,14 @@ const FlagTable = (props: FlagTableProps) => {
     [`&.${tableCellClasses.head}`]: {
       fontFamily: 'Pretendard-Regular',
       backgroundColor: '#031c5b',
-      fontSize: 20,
+      fontSize: 18,
       fontWeight: 'bold',
       color: theme.palette.common.white,
-      zIndex: 0,
+      zIndex: 1,
     },
     [`&.${tableCellClasses.body}`]: {
       fontFamily: 'Pretendard-Regular',
-      fontSize: 18,
+      fontSize: 15,
     },
     '&:nth-child(1)': {
       width: '15%',
