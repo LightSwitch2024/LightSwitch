@@ -9,7 +9,7 @@ export const TabBar = styled.nav`
 
   display: flex;
   width: 12rem;
-  height: 100%;
+  height: 100vh;
   padding: 1.25rem;
   flex-direction: column;
   align-items: center;
@@ -56,8 +56,7 @@ export const Button = styled.button`
 export const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  margin-top: 8rem;
+  justify-content: space-between;
   align-items: center;
   gap: 1rem;
 `;
@@ -66,7 +65,6 @@ export const LogoWrapper = styled.div`
   display: flex;
   flex-direction: row;
   width: 12rem;
-  height: 100%;
   gap: 1rem;
 `;
 
@@ -79,21 +77,12 @@ export const LoginWrapper = styled.div`
 `;
 
 export const LogoutWrapper = styled.div`
+  position: absolute;
+  bottom: 5rem;
   display: flex;
   flex-direction: row;
-  margin-top: 10rem;
   width: 12rem;
-  height: 100%;
   gap: 1rem;
-`;
-
-export const LogoButtonWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin: 0 0 5rem 0;
-  gap: 5rem;
 `;
 
 export const OutWrapper = styled.div`
@@ -130,11 +119,12 @@ export const LogOutbutton = styled.button`
   justify-content: center;
   font-weight: bold;
   font-size: 1.2rem;
-  border: 'none',
-  textDecoration: 'none',
-  cursor: 'pointer',
-  color: 'white',
+  border: none;
+  textdecoration: none;
+  cursor: pointer;
+  color: white;
   gap: 0.5rem;
+  background: none;
 `;
 
 export const NavLinkWrapper = styled(NavLink)`
@@ -146,4 +136,11 @@ export const NavLinkWrapper = styled(NavLink)`
   color: white;
   text-decoration: none;
   gap: 0.5rem;
+`;
+
+export const ContentContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
 `;
