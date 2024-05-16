@@ -972,16 +972,14 @@ class FlagService(
     }
 
     fun getAllFlagForInit(flagInitRequestDto: FlagInitRequestDto): List<FlagInitResponseDto> {
+        val sdkKey = oraganizationService.getSdkKey();
+        if (sdkKey != flagInitRequestDto.sdkKey) {
+            throw BaseException(ResponseCode.SDK_KEY_NOT_FOUND)
+        }
+        val flagList = flagRepository.findAll()
 
-        val sdkKey: SdkKey = sdkKeyRepository.findByKey(flagInitRequestDto.sdkKey) ?: throw BaseException(
-            ResponseCode.SDK_KEY_NOT_FOUND
-        )
-        val maintainerId: Long = sdkKey.member.memberId!!
-
-        val flagList = flagRepository.findByMaintainerMemberIdAndDeletedAtIsNull(maintainerId)
         return flagList.map { flag ->
             val allVariation = variationRepository.findByFlagAndDeletedAtIsNull(flag)
-
             var defaultValue = ""
             var defaultPortion = 0
             var defaultDescription = ""
