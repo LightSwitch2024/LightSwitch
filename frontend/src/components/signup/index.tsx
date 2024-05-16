@@ -26,7 +26,6 @@ type SignUpData = {
   email: string;
   password: string;
   authCode: string;
-  orgName: string;
 };
 
 const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
@@ -36,7 +35,6 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
   const [firstNameCheck, setFirstNameCheck] = useState<boolean>(false);
   const [lastName, setLastName] = useState<string>('');
   const [lastNameCheck, setLastNameCheck] = useState<boolean>(false);
-  const [orgName, setOrgName] = useState<string>('');
   const [telNumber, settelNumber] = useState<string>('');
   const [telNumberCheck, settelNumberCheck] = useState<boolean>(false);
   const [email, setEmail] = useState<string>('');
@@ -79,10 +77,6 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
   const handletelNumberChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     settelNumber(e.target.value);
     settelNumberCheck(validatetelNumber(e.target.value));
-  };
-
-  const handleorgNameChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setOrgName(e.target.value);
   };
 
   const validateEmail = (email: string): boolean => {
@@ -167,7 +161,6 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
     const signUpData: SignUpData = {
       firstName: firstName,
       lastName: lastName,
-      orgName: orgName,
       telNumber: telNumber,
       email: email,
       password: password,
@@ -194,22 +187,13 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
       emailCheck &&
       passwordCheck &&
       password === rePassword &&
-      isAuth &&
-      orgName
+      isAuth
     ) {
       setSignUpFlag(true);
     } else {
       setSignUpFlag(false);
     }
-  }, [
-    firstNameCheck,
-    lastNameCheck,
-    telNumberCheck,
-    emailCheck,
-    passwordCheck,
-    isAuth,
-    orgName,
-  ]);
+  }, [firstNameCheck, lastNameCheck, telNumberCheck, emailCheck, passwordCheck, isAuth]);
 
   useEffect(() => {
     let vh = 0;
@@ -243,18 +227,6 @@ const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {
             <S.SignUpEmptyText />
           )}
         </S.SignUpInputBox>
-
-        <S.SignUpInputBox>
-          <S.SignUpInputWrapper>
-            <S.SignUpInput
-              type="text"
-              placeholder="회사명"
-              value={orgName}
-              onChange={handleorgNameChange}
-            />
-          </S.SignUpInputWrapper>
-        </S.SignUpInputBox>
-
         <S.SignUpInputBox>
           <S.SignUpInputWrapper>
             <S.SignUpInput

@@ -37,7 +37,6 @@ interface SignUpData {
   email: string;
   password: string;
   authCode: string;
-  orgName: string;
 }
 
 interface OrgData {
