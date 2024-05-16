@@ -1,5 +1,6 @@
 import LunitLogo from '@assets/LunitLogo.png';
 import { AuthAtom } from '@global/AuthAtom';
+import { IconButton } from '@mui/material';
 import { Tag } from '@pages/main/tag';
 import { TagsInputComponent } from '@pages/main/tagInput';
 import React, { useEffect, useRef, useState } from 'react';
@@ -37,6 +38,16 @@ const index = () => {
   const auth = useRecoilValue(AuthAtom);
   const dropdownContainerRef = useRef(null);
   const [selectedTags, setSelectedTags] = useState<Array<Tag>>([]);
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(sdkKey);
+      alert('Text copied to clipboard!');
+    } catch (err) {
+      alert('Failed to copy text to clipboard');
+      console.error('Failed to copy text: ', err);
+    }
+  };
 
   useEffect(() => {
     console.log('auth');
@@ -155,7 +166,9 @@ const index = () => {
           <S.SdkKeyComponent>
             <S.SdkKeyTitleContainer>
               <S.Title>SDK 키</S.Title>
-              <CopyButton />
+              <IconButton onClick={copyToClipboard} style={{ cursor: 'pointer' }}>
+                <CopyButton />
+              </IconButton>
             </S.SdkKeyTitleContainer>
             <S.SdkkeyContentContainer>
               <S.SdkKeyIconContainer>
