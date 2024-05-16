@@ -15,7 +15,6 @@ import com.lightswitch.core.domain.history.dto.HistoryResponse
 import com.lightswitch.core.domain.history.repository.HistoryRepository
 import com.lightswitch.core.domain.history.repository.entity.History
 import com.lightswitch.core.domain.history.repository.entity.HistoryType
-import com.lightswitch.core.domain.member.entity.SdkKey
 import com.lightswitch.core.domain.member.repository.MemberRepository
 import com.lightswitch.core.domain.member.repository.SdkKeyRepository
 import com.lightswitch.core.domain.organization.service.OrganizationService
@@ -232,12 +231,6 @@ class FlagService(
 
         // SSE 데이터 전송
         val flagInitResponseDto = buildSSEData(savedFlag)
-//        val sdkKey = sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(member.memberId!!) ?: throw BaseException(
-//            ResponseCode.SDK_KEY_NOT_FOUND
-//        )
-        val orgKey = oraganizationService.getSdkKey()
-
-//        val userKey = sseService.hash(sdkKey.key)
         sseService.sendData(SseDto("", SseDto.SseType.CREATE, flagInitResponseDto))
 
         return this.getFlag(savedFlag.flagId!!)
@@ -410,13 +403,6 @@ class FlagService(
             it.delete()
         }
 
-        val sdkKey =
-            sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(flag.maintainer.memberId!!) ?: throw BaseException(
-                ResponseCode.SDK_KEY_NOT_FOUND
-            )
-
-        val userKey = sseService.hash(sdkKey.key)
-
         sseService.sendData(
             SseDto(
                 "",
@@ -445,14 +431,6 @@ class FlagService(
         keywordRepository.deleteByFlagFlagId(flagId)
 
         flag.delete()
-
-        val sdkKey =
-            sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(flag.maintainer.memberId!!) ?: throw BaseException(
-                ResponseCode.SDK_KEY_NOT_FOUND
-            )
-
-        val userKey = sseService.hash(sdkKey.key)
-
         sseService.sendData(
             SseDto(
                 "",
@@ -468,12 +446,6 @@ class FlagService(
         val flag = flagRepository.findById(flagId).get()
         flag.active = !switchRequestDto.active
 
-        val sdkKey =
-            sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(flag.maintainer.memberId!!) ?: throw BaseException(
-                ResponseCode.SDK_KEY_NOT_FOUND
-            )
-
-        val userKey = sseService.hash(sdkKey.key)
         sseService.sendData(
             SseDto(
                 "",
@@ -622,12 +594,6 @@ class FlagService(
             active = flag.active,
         )
 
-        val sdkKey =
-            sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(flag.maintainer.memberId!!) ?: throw BaseException(
-                ResponseCode.SDK_KEY_NOT_FOUND
-            )
-
-        val userKey = sseService.hash(sdkKey.key)
         sseService.sendData(SseDto("", SseDto.SseType.UPDATE, flagInitResponseDto))
 
         return this.getFlag(flag.flagId!!)
@@ -642,13 +608,6 @@ class FlagService(
 
         // SSE
         val flagInitResponseDto = buildSSEData(save)
-
-        val sdkKey =
-            sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(flag.maintainer.memberId!!) ?: throw BaseException(
-                ResponseCode.SDK_KEY_NOT_FOUND
-            )
-
-        val userKey = sseService.hash(sdkKey.key)
         sseService.sendData(SseDto("", SseDto.SseType.UPDATE, flagInitResponseDto))
 
         return this.getFlag(flag.flagId!!)
@@ -713,14 +672,7 @@ class FlagService(
             active = flag.active,
         )
 
-        val sdkKey =
-            sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(flag.maintainer.memberId!!) ?: throw BaseException(
-                ResponseCode.SDK_KEY_NOT_FOUND
-            )
-
-        val userKey = sseService.hash(sdkKey.key)
         sseService.sendData(SseDto("", SseDto.SseType.UPDATE, flagInitResponseDto))
-
         return this.getFlag(flag.flagId!!)
     }
 
@@ -775,12 +727,6 @@ class FlagService(
         flagResponseDto: FlagResponseDto
     ) {
         val flagInitResponseDto = buildSSEData(flagResponseDto)
-        val sdkKey =
-            sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(flagInitResponseDto.maintainerId!!) ?: throw BaseException(
-                ResponseCode.SDK_KEY_NOT_FOUND
-            )
-
-        val userKey = sseService.hash(sdkKey.key)
         sseService.sendData(SseDto("", SseDto.SseType.UPDATE, flagInitResponseDto))
     }
 
@@ -860,14 +806,7 @@ class FlagService(
             active = flag.active,
         )
 
-        val sdkKey =
-            sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(flag.maintainer.memberId!!) ?: throw BaseException(
-                ResponseCode.SDK_KEY_NOT_FOUND
-            )
-
-        val userKey = sseService.hash(sdkKey.key)
         sseService.sendData(SseDto("", SseDto.SseType.UPDATE, flagInitResponseDto))
-
         return this.getFlag(flag.flagId!!)
     }
 
