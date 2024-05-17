@@ -9,4 +9,5 @@ data class LoginResponse(
     val firstName: String,
     val lastName: String,
     val telNumber: String,
+    val orgName: String
 )
