@@ -1,4 +1,4 @@
-const LSClient = require('./LSClient');
+const LSClient = require('./LightSwitch');
 const LSUser = require('./LSUser');
 const { LSFlagNotFoundError, LSServerError, LSTypeCastError } = require('./error');
 
