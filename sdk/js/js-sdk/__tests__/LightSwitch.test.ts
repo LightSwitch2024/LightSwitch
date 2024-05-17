@@ -1,17 +1,17 @@
 import { jest, describe, expect, it, afterEach } from '@jest/globals';
-import LSClient from '../lib/LSClient';
+import LightSwitch from '../lib/LightSwitch';
 import { LogLevel, SdkConfig } from '../lib/types';
 // getRequest 모듈을 mock으로 대체하여 외부 의존성을 제어한다
 
-describe('LSClient', () => {
+describe('LightSwitch', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('LSClient는 항상 같은 인스턴스를 반환해야한다.', () => {
+  it('LightSwitch는 항상 같은 인스턴스를 반환해야한다.', () => {
     // Arrange
-    const instance1 = LSClient.getInstance();
-    const instance2 = LSClient.getInstance();
+    const instance1 = LightSwitch.getInstance();
+    const instance2 = LightSwitch.getInstance();
 
     // Act & Assert
     expect(instance1).toBe(instance2);
@@ -19,7 +19,7 @@ describe('LSClient', () => {
 
   it('init 함수 호출 후에는 isInitialized가 true로 반환된다.', async () => {
     // Arrange
-    const instance = LSClient.getInstance();
+    const instance = LightSwitch.getInstance();
 
     // Act
     await instance.init({
@@ -29,12 +29,12 @@ describe('LSClient', () => {
     });
 
     // Assert
-    expect(LSClient.isInitialized).toBe(true);
+    expect(LightSwitch.isInitialized).toBe(true);
   });
 
   it('init 함수는 오직 한번만 실행된다.', async () => {
     // Arrange
-    const instance = LSClient.getInstance();
+    const instance = LightSwitch.getInstance();
     const consoleLogSpy = jest.spyOn(console, 'log');
 
     // Act
@@ -57,7 +57,7 @@ describe('LSClient', () => {
 
   it('sdkKey가 없는경우 오류를 Throw 한다.', async () => {
     // Arrange
-    const instance = LSClient.getInstance();
+    const instance = LightSwitch.getInstance();
 
     // Act & Assert
     await expect(

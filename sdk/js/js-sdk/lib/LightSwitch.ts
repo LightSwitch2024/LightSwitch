@@ -6,7 +6,7 @@ import {
   ErrorCallback,
   userKey,
   LSMessage,
-  ILSClient,
+  ILightSwitch,
   ILSUser,
   Title,
   flagChangedCallback,
@@ -33,16 +33,16 @@ const MEMBER_NOT_FOUND = 2000;
 const SDK_KEY_ALREADY_EXISTS = 3000;
 const SDK_KEY_NOT_FOUND = 3001;
 
-class LSClient implements ILSClient {
-  private static instance: LSClient | null = null;
+class LightSwitch implements ILightSwitch {
+  private static instance: LightSwitch | null = null;
   public static isInitialized = false;
   private constructor() {}
 
-  public static getInstance(): LSClient {
-    if (!LSClient.instance) {
-      LSClient.instance = new LSClient();
+  public static getInstance(): LightSwitch {
+    if (!LightSwitch.instance) {
+      LightSwitch.instance = new LightSwitch();
     }
-    return LSClient.instance;
+    return LightSwitch.instance;
   }
 
   private sdkKey = '';
@@ -60,7 +60,7 @@ class LSClient implements ILSClient {
   SSE_CONNECT_PATH = this.SERVER_URL + '/api/v1/sse/subscribe';
 
   public async init(config: SdkConfig): Promise<void> {
-    if (LSClient.instance != null && LSClient.isInitialized) {
+    if (LightSwitch.instance != null && LightSwitch.isInitialized) {
       logger.info('lightswitch is already initialized, skip init process');
       return;
     }
@@ -94,7 +94,7 @@ class LSClient implements ILSClient {
 
     this.eventSource = this.getEventSource(this.userKey, this.reconnectTime);
     this.addSseListener();
-    LSClient.isInitialized = true;
+    LightSwitch.isInitialized = true;
     // logger.info('success to initialize client sdk');
   }
   private getVariationValue<T>(flag: Flag, LSUser: ILSUser): any {
@@ -316,13 +316,13 @@ class LSClient implements ILSClient {
   }
 
   public destroy(): void {
-    if (!LSClient.isInitialized) {
+    if (!LightSwitch.isInitialized) {
       throw new Error('LightSwitch is not initialized.');
     }
     this.eventSource?.close();
-    LSClient.isInitialized = false;
+    LightSwitch.isInitialized = false;
     logger.debug('call destroy');
   }
 }
 
-export default LSClient;
+export default LightSwitch;
