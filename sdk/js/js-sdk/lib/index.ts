@@ -1,4 +1,4 @@
-import LSClient from './LSClient';
+import LSClient from './LightSwitch';
 import LSUser from './LSUser';
 
 import { LSFlagNotFoundError, LSServerError, LSTypeCastError } from './error';
