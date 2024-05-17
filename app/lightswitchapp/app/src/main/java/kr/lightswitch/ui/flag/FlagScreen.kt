@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -34,6 +35,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -168,11 +170,15 @@ fun FlagView(flag: Flag, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
             Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(
                     text = flag.title,
-                    style = MaterialTheme.typography.headlineMedium,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight(800),
-                    color = C900
+                    color = C900,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f) // Text가 가능한 만큼의 공간을 차지하도록 함
                 )
                 AssistChip(
+                    modifier = Modifier.width(100.dp).padding(start = 8.dp),
                     onClick = { },
                     label = { Text("${flag.maintainerName}") },
                     leadingIcon = {
@@ -245,12 +251,6 @@ fun FlagView(flag: Flag, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
                     Switch(
                         checked = checked,
                         onCheckedChange = onCheckedChange
-                    )
-                }
-                Row(Modifier.fillMaxSize()) {
-                    Text(
-                        text = flag.description,
-                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }
