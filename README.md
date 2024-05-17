@@ -88,6 +88,16 @@ ls.init(environment_key=env_key)
 
 ### LightSwitch Python SDK 플래그 수신
 
+플래그 값을 수신하기 이전에 해당 플래그의 활성화 여부만을 확인할 수 있습니다.
+이때 플래그 이름을 인자로 전달하고 bool 값을 반환받습니다. 
+
+플래그 활성화 여부에 따라 조건문으로 처리하여 
+플래그가 활성화되어 있는 경우에 수행할 코드에서 특정 사용자에 대한 값을 받아오도록 합니다.  
+
+```
+is_new_feature_active = ls.flags.is_feature_enabled("new_tag")
+```
+
 LightSwitch의 경우 아래의 메서드를 통해 플래그를 수신할 수 있습니다.
 flag_title를 인자로 전달해 특정 유저의 해당 플래그 값을 수신합니다.
 
@@ -96,14 +106,6 @@ get_flag(self, flag_title: str, user: LSUser, default_value: typing.Any) -> typi
 get_boolean_flag(self, flag_title: str, user: LSUser, default_value: bool) -> bool;
 def get_number_flag(self, flag_title: str, user: LSUser, default_value: int) -> int;
 def get_string_flag(self, flag_title: str, user: LSUser, default_value: str) -> str;
-```
-
-플래그 값을 수신하기 이전에 해당 플래그의 활성화 여부만을 확인할 수 있습니다.
-이때 플래그 이름을 인자로 전달하고 bool 값을 반환받습니다. 
-
-```
-is_new_feature_active = ls.flags.is_feature_enabled("new_tag")
-```
 
 ### LightSwitch Python SDK 실시간 데이터 수신
 
