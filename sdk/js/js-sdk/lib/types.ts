@@ -34,7 +34,7 @@ export interface ILSUser {
   getUserId: () => string;
 }
 
-export interface ILSClient {
+export interface ILightSwitch {
   init: (config: SdkConfig) => void;
   getFlag: <T>(name: string, LSUser: ILSUser, defaultVal: T) => T;
   getBooleanFlag: (name: string, LSUser: ILSUser, defaultVal: boolean) => boolean;
