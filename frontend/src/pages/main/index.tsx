@@ -1,12 +1,15 @@
 import LunitLogo from '@assets/LunitLogo.png';
 import { AuthAtom } from '@global/AuthAtom';
+import { IconButton } from '@mui/material';
 import { Tag } from '@pages/main/tag';
 import { TagsInputComponent } from '@pages/main/tagInput';
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
 import { createSdkKey, getMainPageOverview } from '@/api/main/mainAxios';
+import CopyCheck from '@/assets/check.svg?react';
 import CopyButton from '@/assets/content-copy.svg?react';
 import FilteringIcon from '@/assets/filtering.svg?react';
 import FilledFlag from '@/assets/flag.svg?react';
@@ -33,15 +36,40 @@ const index = () => {
   const [activeFlags, setActiveFlags] = useState<number>(0);
   const [isModalOpened, setIsModalOpened] = useState(false);
   const [flagKeyword, setFlagKeyword] = useState<string>('');
+  const [nullSDK, setNullSDK] = useState<boolean>(false);
   const [isDropdownOpened, setIsDropdownOpened] = useState(false);
   const auth = useRecoilValue(AuthAtom);
   const dropdownContainerRef = useRef(null);
   const [selectedTags, setSelectedTags] = useState<Array<Tag>>([]);
+  const [isCopied, setIsCopied] = useState<boolean>(false);
+  const navigate = useNavigate();
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(sdkKey);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (err) {
+      console.log(err);
+      navigate('/');
+    }
+  };
 
   useEffect(() => {
     console.log('auth');
     console.log(auth);
-  }, [auth]);
+    if (sdkKey == '') {
+      setNullSDK(true);
+    } else {
+      setNullSDK(false);
+    }
+  }, [auth, sdkKey]);
+
+  useEffect(() => {
+    let vh = 0;
+    vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  }, [window.innerHeight]);
 
   /**
    * 화면 마운트 시 필요한 정보 가져오기
@@ -128,26 +156,11 @@ const index = () => {
             <S.imageLunitLogo path={LunitLogo} />
           </S.imageContainer>
           <S.LunitInfoContainer>
-            {/* <S.LunitTitleContainer> */}
-            <S.LunitTitle>Lunit</S.LunitTitle>
-            {/* </S.LunitTitleContainer> */}
-            {/* <S.DescriptionContainer> */}
-            {/* <S.SummaryInfoContinaer>
-              <S.InfoTextContiner>
-                <S.InfoText>#Created Time : 2024.04.19</S.InfoText>
-              </S.InfoTextContiner>
-              <S.InfoTextContiner>
-                <S.InfoText>#Total Member : 12</S.InfoText>
-              </S.InfoTextContiner>
-            </S.SummaryInfoContinaer> */}
-            {/* <S.CatchPhraseContainer> */}
-            {/* <S.InfoTextContiner> */}
+            <S.LunitTitle>Light Switch</S.LunitTitle>
             <S.InfoText>
-              인공지능 기술로 암을 정복합니다. 기술과 사람을 연결하여 생명을 구합니다.
+              Light Switch는 플래그를 관리하고, 플래그를 통해 서비스의 기능을 제어할 수
+              있는 플랫폼입니다.
             </S.InfoText>
-            {/* </S.InfoTextContiner> */}
-            {/* </S.CatchPhraseContainer> */}
-            {/* </S.DescriptionContainer> */}
           </S.LunitInfoContainer>
         </S.MainTitleComponent>
 
@@ -155,7 +168,25 @@ const index = () => {
           <S.SdkKeyComponent>
             <S.SdkKeyTitleContainer>
               <S.Title>SDK 키</S.Title>
-              <CopyButton />
+              {!nullSDK && (
+                <>
+                  {!isCopied ? (
+                    <IconButton
+                      onClick={copyToClipboard}
+                      style={{ cursor: 'pointer', width: '2.5rem', height: '2.5rem' }}
+                    >
+                      <CopyButton />
+                    </IconButton>
+                  ) : (
+                    <IconButton
+                      onClick={copyToClipboard}
+                      style={{ cursor: 'pointer', width: '2.5rem', height: '2.5rem' }}
+                    >
+                      <CopyCheck style={{ width: '100%', height: '100%' }} />
+                    </IconButton>
+                  )}
+                </>
+              )}
             </S.SdkKeyTitleContainer>
             <S.SdkkeyContentContainer>
               <S.SdkKeyIconContainer>
@@ -172,8 +203,6 @@ const index = () => {
                     </S.createSdkKeyButton>
                   </S.NoExistSdkKeyText>
                 )}
-                {/* <S.SdkKeyText>{sdkKey}</S.SdkKeyText> */}
-                {/* <S.SdkKeyText>asdfasdfasdfasdf-asdf-qwerqwer</S.SdkKeyText> */}
               </S.SdkKeyTextContainer>
             </S.SdkkeyContentContainer>
           </S.SdkKeyComponent>

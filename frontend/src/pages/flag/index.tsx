@@ -7,6 +7,8 @@ import QueryBuilder from '@assets/query-builder.svg?react';
 import Restore from '@assets/restore.svg?react';
 import ToggleOffIcon from '@assets/unfold_less.svg?react';
 import ToggleOnIcon from '@assets/unfold-more.svg?react';
+import { styled, Switch } from '@mui/material';
+import { switchClasses } from '@mui/material/Switch';
 import * as S from '@pages/flag/indexStyle';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -15,7 +17,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
 import { deleteFlag, getFlagDetail, updateFlag } from '@/api/flagDetail/flagDetailAxios';
-import { getTagList, getTagListByKeyword } from '@/api/main/mainAxios';
+import { getTagList, getTagListByKeyword, patchFlagActive } from '@/api/main/mainAxios';
 import CreateModal from '@/components/createModal';
 import History from '@/components/history';
 import UpdateModal from '@/components/updateModal';
@@ -50,22 +52,31 @@ interface history {
 }
 
 enum historyType {
-  CREATE_FLAG,
-  UPDATE_FLAG_TITLE,
-  UPDATE_FLAG_TYPE,
-  SWITCH_FLAG,
-  DELETE_FLAG,
-  CREATE_VARIATION,
-  UPDATE_VARIATION_VALUE,
-  UPDATE_VARIATION_PORTION,
-  DELETE_VARIATION,
-  CREATE_KEYWORD,
-  UPDATE_KEYWORD,
-  DELETE_KEYWORD,
-  CREATE_PROPERTY,
-  UPDATE_PROPERTY_KEY,
-  UPDATE_PROPERTY_VALUE,
-  DELETE_PROPERTY,
+  // flag
+  CREATE_FLAG = 'CREATE_FLAG',
+  UPDATE_FLAG_TITLE = 'UPDATE_FLAG_TITLE',
+  UPDATE_FLAG_TYPE = 'UPDATE_FLAG_TYPE',
+  SWITCH_FLAG = 'SWITCH_FLAG',
+  DELETE_FLAG = 'DELETE_FLAG',
+
+  // variation
+  CREATE_VARIATION = 'CREATE_VARIATION',
+  UPDATE_VARIATION_VALUE = 'UPDATE_VARIATION_VALUE',
+  UPDATE_VARIATION_PORTION = 'UPDATE_VARIATION_PORTION',
+  DELETE_VARIATION = 'DELETE_VARIATION',
+
+  // keyword
+  CREATE_KEYWORD = 'CREATE_KEYWORD',
+  UPDATE_KEYWORD = 'UPDATE_KEYWORD',
+
+  //    UPDATE_KEYWORD_PROPERTY,
+  DELETE_KEYWORD = 'DELETE_KEYWORD',
+
+  // property
+  CREATE_PROPERTY = 'CREATE_PROPERTY',
+  UPDATE_PROPERTY_KEY = 'UPDATE_PROPERTY_KEY',
+  UPDATE_PROPERTY_VALUE = 'UPDATE_PROPERTY_VALUE',
+  DELETE_PROPERTY = 'DELETE_PROPERTY',
 }
 
 interface FlagDetailItem {
@@ -128,139 +139,8 @@ const FlagDetail = () => {
         console.log(data);
         setFlagDetail(data);
         setIsToggle(new Array(data.keywords.length).fill(false));
-        // setHistoryList([
-        //   {
-        //     action: historyType.CREATE_FLAG,
-        //     flagTitle: data.title,
-        //     target: null,
-        //     previous: null,
-        //     current: null,
-        //     createdAt: data.createdAt,
-        //   },
-        //   {
-        //     action: historyType.UPDATE_FLAG_TITLE,
-        //     flagTitle: data.title,
-        //     target: null,
-        //     previous: 'previous',
-        //     current: 'current',
-        //     createdAt: data.createdAt,
-        //   },
-        //   {
-        //     action: historyType.UPDATE_FLAG_TYPE,
-        //     flagTitle: data.title,
-        //     target: null,
-        //     previous: 'BOOLEAN',
-        //     current: 'STRING',
-        //     createdAt: '2021-09-01T00:00:00.000Z',
-        //   },
-        //   {
-        //     action: historyType.SWITCH_FLAG,
-        //     flagTitle: data.title,
-        //     target: null,
-        //     previous: null,
-        //     current: 'ON',
-        //     createdAt: '2024-04-01T00:00:00.000Z',
-        //   },
-        //   {
-        //     action: historyType.DELETE_FLAG,
-        //     flagTitle: data.title,
-        //     target: null,
-        //     previous: null,
-        //     current: null,
-        //     createdAt: '2024-03-01T00:00:00.000Z',
-        //   },
-        //   {
-        //     action: historyType.CREATE_VARIATION,
-        //     flagTitle: data.title,
-        //     target: null,
-        //     previous: null,
-        //     current: '1',
-        //     createdAt: '2024-03-01T00:00:00.000Z',
-        //   },
-        //   {
-        //     action: historyType.UPDATE_VARIATION_VALUE,
-        //     flagTitle: data.title,
-        //     target: null,
-        //     previous: '1',
-        //     current: '2',
-        //     createdAt: '2024-03-01T00:00:00.000Z',
-        //   },
-        //   {
-        //     action: historyType.UPDATE_VARIATION_PORTION,
-        //     flagTitle: data.title,
-        //     target: '1',
-        //     previous: '90',
-        //     current: '80',
-        //     createdAt: '2024-02-01T00:00:00.000Z',
-        //   },
-        //   {
-        //     action: historyType.DELETE_VARIATION,
-        //     flagTitle: data.title,
-        //     target: null,
-        //     previous: '1',
-        //     current: null,
-        //     createdAt: '2024-01-01T00:00:00.000Z',
-        //   },
-        //   {
-        //     action: historyType.CREATE_KEYWORD,
-        //     flagTitle: data.title,
-        //     target: null,
-        //     previous: null,
-        //     current: 'keyword 1',
-        //     createdAt: '2024-01-01T00:00:00.000Z',
-        //   },
-        //   {
-        //     action: historyType.UPDATE_KEYWORD,
-        //     flagTitle: data.title,
-        //     target: 'keyword 1',
-        //     previous: 'TRUE',
-        //     current: 'FALSE',
-        //     createdAt: '2023-12-01T00:00:00.000Z',
-        //   },
-        //   {
-        //     action: historyType.DELETE_KEYWORD,
-        //     flagTitle: data.title,
-        //     target: null,
-        //     previous: 'keyword 1',
-        //     current: null,
-        //     createdAt: '2023-11-01T00:00:00.000Z',
-        //   },
-        //   {
-        //     action: historyType.CREATE_PROPERTY,
-        //     flagTitle: data.title,
-        //     target: 'keyword 1',
-        //     previous: null,
-        //     current: 'property 1',
-        //     createdAt: '2023-10-01T00:00:00.000Z',
-        //   },
-        //   {
-        //     action: historyType.UPDATE_PROPERTY_KEY,
-        //     flagTitle: data.title,
-        //     target: 'keyword 1',
-        //     previous: 'property 1',
-        //     current: 'property 2',
-        //     createdAt: '2023-09-01T00:00:00.000Z',
-        //   },
-        //   {
-        //     action: historyType.UPDATE_PROPERTY_VALUE,
-        //     flagTitle: data.title,
-        //     target: '"keyword 1"의 속성 "property 2"',
-        //     previous: 'value 1',
-        //     current: 'value 2',
-        //     createdAt: '2023-08-01T00:00:00.000Z',
-        //   },
-        //   {
-        //     action: historyType.DELETE_PROPERTY,
-        //     flagTitle: data.title,
-        //     target: 'keyword 1',
-        //     previous: 'property 2',
-        //     current: null,
-        //     createdAt: '2023-07-01T00:00:00.000Z',
-        //   },
-        // ]);
         console.log(data.histories);
         setHistoryList(data.histories);
-        // setupEditedFlag(data);
       },
       (err) => {
         console.log(err);
@@ -309,6 +189,104 @@ const FlagDetail = () => {
     if (confirm) setIsModalOpened(false);
   };
 
+  /**
+   * 스위치 컴포넌트 스타일 선언
+   */
+  const SwitchTextTrack = styled(Switch)({
+    width: 80,
+    height: 48,
+    padding: 8,
+    [`& .${switchClasses.switchBase}`]: {
+      padding: 11,
+      color: '#565555',
+    },
+    [`& .${switchClasses.thumb}`]: {
+      width: 26,
+      height: 26,
+      backgroundColor: '#fff',
+    },
+    [`& .${switchClasses.track}`]: {
+      background: 'linear-gradient(to right, #565555, #a2a1a1)',
+      opacity: '1 !important',
+      borderRadius: 20,
+      position: 'relative',
+      '&:before, &:after': {
+        display: 'inline-block',
+        position: 'absolute',
+        top: '50%',
+        width: '50%',
+        transform: 'translateY(-50%)',
+        color: '#fff',
+        textAlign: 'center',
+        fontSize: '0.75rem',
+        fontWeight: 500,
+      },
+      '&:before': {
+        content: '"ON"',
+        left: 4,
+        opacity: 0,
+      },
+      '&:after': {
+        content: '"OFF"',
+        right: 4,
+      },
+    },
+    [`& .${switchClasses.checked}`]: {
+      [`&.${switchClasses.switchBase}`]: {
+        color: '#031c5b',
+        transform: 'translateX(32px)',
+        '&:hover': {
+          backgroundColor: 'rgba(24,90,257,0.08)',
+        },
+      },
+      [`& .${switchClasses.thumb}`]: {
+        backgroundColor: '#fff',
+      },
+      [`& + .${switchClasses.track}`]: {
+        background: 'linear-gradient(to right, #0533a5, #031c5b)',
+        '&:before': {
+          opacity: 1,
+        },
+        '&:after': {
+          opacity: 0,
+        },
+      },
+    },
+  });
+
+  const handleToggleButtonClick = (flagId: number, active: boolean) => {
+    onPressFlagSwitch(flagId, active);
+  };
+
+  /**
+   * 플래그 스위치를 눌렀을 때 실행되는 함수를 반환합니다.
+   * @param flagId 플래그 아이디
+   * @returns
+   */
+  const onPressFlagSwitch = (flagId: number, currentActive: boolean) => {
+    // 서로 다른 사용자가 동시에 같은 플래그를 수정할 때 발생하는 문제를 해결하기 위해
+    // 현재 상태를 active로 보내고, 서버에서도 변경된 flag의 active 상태를 반환받아
+    // 클라이언트에서 다시 한 번 변경을 시도합니다.
+    patchFlagActive<boolean>(
+      flagId,
+      { active: currentActive },
+      (changedActive) => {
+        switchFlag(changedActive);
+      },
+      (err) => {
+        console.log(err);
+      },
+    );
+  };
+
+  /**
+   * flag Id에 해당하는 플래그의 활성화 상태를 변경합니다.
+   * @param flagId 플래그 아이디
+   */
+  function switchFlag(result: boolean): void {
+    setFlagDetail({ ...flagDetail, active: result });
+  }
+
   return (
     <>
       {isModalOpened &&
@@ -332,6 +310,16 @@ const FlagDetail = () => {
                 value={flagDetail.title}
                 readOnly
               />
+              <S.OnOffButtonContainer>
+                <SwitchTextTrack
+                  sx={{ m: 1 }}
+                  defaultChecked={flagDetail.active}
+                  onChange={() =>
+                    handleToggleButtonClick(flagDetail.flagId, flagDetail.active)
+                  }
+                />
+                {/* <S.OnOffButton>{flagDetail.active ? 'ON' : 'OFF'}</S.OnOffButton> */}
+              </S.OnOffButtonContainer>
             </S.FlagTitleInputContainer>
           </S.FlagTitleAndTagsLayer>
 

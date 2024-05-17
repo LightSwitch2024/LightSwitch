@@ -1,30 +1,50 @@
 import styled from 'styled-components';
 
 export const Layout = styled.div`
-  width: 100%;
-  height: calc(var(--vh, 1vh) * 100 - 60px);
   display: flex;
-
-  flex-direction: row;
   justify-content: center;
-  gap: 10px;
+  align-items: center;
+  width: 100%;
+  height: calc(var(--vh, 1vh) * 100 - 4rem);
+  padding: 1rem 0;
+  margin-right: 14.5rem;
+  box-sizing: border-box;
+  overflow: hidden;
+  gap: 20px;
 `;
 
 export const OrgLayout = styled.div`
-  width: 560px;
-  margin-top: 5rem;
-  border: 2px solid gray;
-  border-radius: 10px;
-  padding: 2rem;
-  height: auto;
+  display: flex;
+  justify-content: center;
+  width: 500px;
+  height: 100%;
+  border-radius: 1.25rem;
+  border: 1px solid #bdbdbd;
+  background: #fff;
+  box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.25);
 `;
 
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  margin: 2.5rem 0 2.5rem 0;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+  padding: 2rem 0;
+  box-sizing: border-box;
   gap: 1rem;
+`;
+
+export const LogoBox = styled.div`
+  height: 13rem;
+  padding: 0 2rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+`;
+
+export const LogoImg = styled.img`
+  height: 100%;
+  width: 100%;
 `;
 
 export const Input = styled.input`
@@ -47,8 +67,11 @@ export const WarnText = styled.div`
 export const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 0.5rem;
+  height: auto;
+  width: 100%;
+  padding: 0 2rem;
+  box-sizing: border-box;
+  gap: 1rem;
 `;
 
 export const LinkWrapper = styled.div`
@@ -82,10 +105,8 @@ export const OKButton = styled.button`
 
 export const ButtonWrapper = styled.div`
   display: flex;
-  flex-direction: row;
   justify-content: center;
-  margin: 5rem 0 5rem 0;
-  gap: 1rem;
+  padding: 0 2rem;
 `;
 
 export const LogoWrapper = styled.div`

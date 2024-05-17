@@ -47,7 +47,6 @@ class MemberService(
         val email = signupReqDto.email
         val password = signupReqDto.password
         val authCode = signupReqDto.authCode
-        var orgName = signupReqDto.orgName
 
         val existsMember: Member? = memberRepository.findByEmailAndDeletedAtIsNull(email)
         existsMember?.let {
@@ -67,25 +66,24 @@ class MemberService(
             lastName = lastName,
             telNumber = phoneNumber,
             email = email,
-            password = encodedPassword,
-            orgName = orgName,
+            password = encodedPassword
         )
 
         val savedMember = memberRepository.save(member)
         val sdkKey = sdkKeyRepository.findByMemberMemberIdAndDeletedAtIsNull(savedMember.memberId!!)
 
         return MemberResponseDto(
-                memberId = savedMember.memberId!!,
-                firstName = savedMember.firstName,
-                lastName = savedMember.lastName,
-                telNumber = savedMember.telNumber,
-                email = savedMember.email,
-                password = savedMember.password,
-                sdkKey = sdkKey?.key ?: "",
-                createdAt = savedMember.createdAt.toString(),
-                updatedAt = savedMember.updatedAt.toString(),
-                deletedAt = savedMember.deletedAt?.toString() ?: "",
-            )
+            memberId = savedMember.memberId!!,
+            firstName = savedMember.firstName,
+            lastName = savedMember.lastName,
+            telNumber = savedMember.telNumber,
+            email = savedMember.email,
+            password = savedMember.password,
+            sdkKey = sdkKey?.key ?: "",
+            createdAt = savedMember.createdAt.toString(),
+            updatedAt = savedMember.updatedAt.toString(),
+            deletedAt = savedMember.deletedAt?.toString() ?: "",
+        )
     }
 
     fun validateHangle(name: String): Boolean {
@@ -122,18 +120,9 @@ class MemberService(
         val isCorrectPW = passwordService.matches(logInReqDto.password, savedMember.password)
 
         // 지금 존재하는 org인지 확인
-        val organization = organizationRepository.findByNameAndDeletedAtIsNull(savedMember.orgName)
+        val organization = organizationRepository.findAll()
+        val orgName = organization.firstOrNull()?.name ?: "false"
 
-        if ( organization == null ) {
-            return MemberResDto(
-                memberId = savedMember.memberId!!,
-                email = savedMember.email,
-                firstName = savedMember.firstName,
-                lastName = savedMember.lastName,
-                telNumber = savedMember.telNumber,
-                orgName = "False",
-            )
-        } else {
         return if (isCorrectPW) {
             MemberResDto(
                 memberId = savedMember.memberId!!,
@@ -141,11 +130,10 @@ class MemberService(
                 firstName = savedMember.firstName,
                 lastName = savedMember.lastName,
                 telNumber = savedMember.telNumber,
-                orgName = savedMember.orgName,
+                orgName = orgName,
             )
         } else {
             throw BaseException(ResponseCode.INVALID_PASSWORD)
-            }
         }
     }
 
@@ -154,13 +142,15 @@ class MemberService(
         val savedMember =
             memberRepository.findByEmailAndDeletedAtIsNull(email) ?: throw BaseException(ResponseCode.MEMBER_NOT_FOUND)
 
+        val organization = organizationRepository.findAll()
+
         return MemberResDto(
             memberId = savedMember.memberId!!,
             email = savedMember.email,
             firstName = savedMember.firstName,
             lastName = savedMember.lastName,
             telNumber = savedMember.telNumber,
-            orgName = savedMember.orgName,
+            orgName = organization.get(1).name,
         )
     }
 
@@ -198,6 +188,8 @@ class MemberService(
             ResponseCode.MEMBER_NOT_FOUND
         )
 
+        val organization = organizationRepository.findAll()
+
         val updatedMember: Member = Member(
             memberId = savedMember.memberId!!,
             email = savedMember.email,
@@ -205,7 +197,6 @@ class MemberService(
             lastName = newData.lastName,
             telNumber = newData.telNumber,
             password = savedMember.password,
-            orgName = savedMember.orgName,
         )
 
         memberRepository.save(updatedMember)
@@ -216,7 +207,7 @@ class MemberService(
             lastName = savedMember.lastName,
             telNumber = savedMember.telNumber,
             email = savedMember.email,
-            orgName = savedMember.orgName,
+            orgName = organization.get(1).name,
         )
     }
 
@@ -228,6 +219,8 @@ class MemberService(
 
         val encodedPassword = passwordService.encode(update.newPassword)
 
+        val organization = organizationRepository.findAll()
+
         val updatedMember: Member = Member(
             memberId = savedMember.memberId!!,
             firstName = savedMember.firstName,
@@ -235,7 +228,6 @@ class MemberService(
             telNumber = savedMember.telNumber,
             email = savedMember.email,
             password = encodedPassword,
-            orgName = savedMember.orgName,
         )
 
         memberRepository.save(updatedMember)
@@ -246,7 +238,7 @@ class MemberService(
             lastName = savedMember.lastName,
             telNumber = savedMember.telNumber,
             email = savedMember.email,
-            orgName = savedMember.orgName,
+            orgName = organization.get(1).name,
         )
     }
 

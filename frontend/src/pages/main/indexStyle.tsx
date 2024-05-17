@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const fullHeight = `calc(var(--vh, 1vh) * 100 - 40px)`;
+export const fullHeight = `calc(var(--vh, 1vh) * 100 - 4rem)`;
 
 export const MainLayout = styled.div`
   width: 100%;
@@ -180,6 +180,8 @@ export const SdkkeyContentContainer = styled.div`
   display: flex;
   padding: calc(${fullHeight} * 0.02);
   gap: calc(${fullHeight} * 0.015);
+  box-sizing: border-box;
+  overflow: hidden;
 `;
 
 export const SdkKeyIconContainer = styled.div`
@@ -190,12 +192,16 @@ export const SdkKeyIconContainer = styled.div`
 
   border-radius: 0.3125rem;
   background: #a8ca47;
+
+  box-sizing: border-box;
 `;
 
 export const SdkKeyTextContainer = styled.div`
+  flex: 1;
   width: 100%;
   display: flex;
   align-items: center;
+  box-sizing: border-box;
 `;
 
 export const NoExistSdkKeyText = styled.div`
@@ -203,7 +209,8 @@ export const NoExistSdkKeyText = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: calc(${fullHeight} * 0.015);
+  gap: calc(${fullHeight} * 0.01);
+  box-sizing: border-box;
 `;
 
 export const createSdkKeyButton = styled.button`

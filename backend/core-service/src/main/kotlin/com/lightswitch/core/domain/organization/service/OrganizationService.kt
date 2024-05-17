@@ -38,18 +38,17 @@ class OrganizationService(
             )
         )
 
-        // 멤버 orgName 에 org저장.
-        memberRepository.save(
-            Member(
-                memberId = owner.memberId!!,
-                email = owner.email,
-                firstName = owner.firstName,
-                lastName = owner.lastName,
-                telNumber = owner.telNumber,
-                password = owner.password,
-                orgName = createOrganizationRequestDto.name,
-            )
-        )
+//        // 멤버 orgName 에 org저장.
+//        memberRepository.save(
+//            Member(
+//                memberId = owner.memberId!!,
+//                email = owner.email,
+//                firstName = owner.firstName,
+//                lastName = owner.lastName,
+//                telNumber = owner.telNumber,
+//                password = owner.password,
+//            )
+//        )
 
         return OrganizationResponseDto(
             id = savedOrganization.organizationId!!,

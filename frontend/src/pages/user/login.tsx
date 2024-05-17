@@ -86,7 +86,7 @@ const LogIn = () => {
           orgName: orgName || '',
         }));
 
-        if (orgName == 'False') {
+        if (orgName == 'false') {
           navigate('/fillorg');
         } else {
           navigate('/');
