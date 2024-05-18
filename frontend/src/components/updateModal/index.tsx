@@ -11,6 +11,7 @@ import * as S from '@components/updateModal/indexStyle';
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { DefaultValue } from 'recoil';
+import { useLoadingStore } from '@/global/LoadingAtom';
 import { confirmDuplicateFlag } from '@/api/create/createAxios';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -78,6 +79,7 @@ interface KeywordInfo {
 const UpdateModal: React.FC<UpdateModalProps> = (props) => {
   // input box hover용
   const [isFocused, setIsFocused] = useState<boolean>(false);
+  const { loading, contentLoading, contentLoaded } = useLoadingStore();
 
   const MySwal = withReactContent(Swal);
 
@@ -648,7 +650,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     }
 
     if (!valid) return;
-
+    contentLoading();
     updateFlag<FlagDetailItem>(
       props.flagDetail?.flagId,
       editedFlagInfo,
@@ -657,9 +659,11 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
         // 수정된 flagDetail 업데이트
         props.setFlagDetail(data);
         setIsBlankData(false);
+        contentLoaded();
       },
       (err: AxiosError) => {
         console.log(err);
+        contentLoaded();
       },
     );
   };
