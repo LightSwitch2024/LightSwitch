@@ -11,7 +11,7 @@ import * as S from '@components/updateModal/indexStyle';
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { DefaultValue } from 'recoil';
-
+import { useLoadingStore } from '@/global/LoadingAtom';
 import { confirmDuplicateFlag } from '@/api/create/createAxios';
 
 interface UpdateModalProps {
@@ -78,6 +78,7 @@ interface KeywordInfo {
 const UpdateModal: React.FC<UpdateModalProps> = (props) => {
   // input box hover용
   const [isFocused, setIsFocused] = useState<boolean>(false);
+  const { loading, contentLoading, contentLoaded } = useLoadingStore();
 
   // 이벤트 버블링 방지
   const stopPropagation = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -646,7 +647,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     }
 
     if (!valid) return;
-
+    contentLoading();
     updateFlag<FlagDetailItem>(
       props.flagDetail?.flagId,
       editedFlagInfo,
@@ -655,9 +656,11 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
         // 수정된 flagDetail 업데이트
         props.setFlagDetail(data);
         setIsBlankData(false);
+        contentLoaded();
       },
       (err: AxiosError) => {
         console.log(err);
+        contentLoaded();
       },
     );
   };

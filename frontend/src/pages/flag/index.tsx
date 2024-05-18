@@ -21,7 +21,7 @@ import { getTagList, getTagListByKeyword, patchFlagActive } from '@/api/main/mai
 import CreateModal from '@/components/createModal';
 import History from '@/components/history';
 import UpdateModal from '@/components/updateModal';
-
+import { useLoadingStore } from '@/global/LoadingAtom';
 interface Variation {
   variationId: number | '';
   value: string;
@@ -127,12 +127,13 @@ const FlagDetail = () => {
   const [isToggle, setIsToggle] = useState<boolean[]>([]);
   const navigator = useNavigate();
   const MySwal = withReactContent(Swal);
+  const { loading, contentLoading, contentLoaded } = useLoadingStore();
   /**
    * flagId를 통해 마운트 시 해당 flag의 상세 정보를 가져옴
    */
   useEffect(() => {
     if (flagId === undefined || flagId === null) return;
-
+    contentLoading();
     getFlagDetail<FlagDetailResponse>(
       Number(flagId),
       (data: FlagDetailResponse) => {
@@ -141,9 +142,11 @@ const FlagDetail = () => {
         setIsToggle(new Array(data.keywords.length).fill(false));
         console.log(data.histories);
         setHistoryList(data.histories);
+        contentLoaded();
       },
       (err) => {
         console.log(err);
+        contentLoaded();
       },
     );
   }, [flagId]);

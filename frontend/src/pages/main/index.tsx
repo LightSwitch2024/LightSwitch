@@ -19,7 +19,7 @@ import SearchIcon from '@/assets/search.svg?react';
 import CreateModal from '@/components/createModal';
 import * as S from '@/pages/main/indexStyle';
 import FlagTable from '@/pages/main/table';
-
+import { useLoadingStore } from '@/global/LoadingAtom';
 interface OverviewInfo {
   sdkKey: string;
   totalFlags: number;
@@ -43,7 +43,7 @@ const index = () => {
   const [selectedTags, setSelectedTags] = useState<Array<Tag>>([]);
   const [isCopied, setIsCopied] = useState<boolean>(false);
   const navigate = useNavigate();
-
+  const { loading, contentLoading, contentLoaded } = useLoadingStore();
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(sdkKey);
@@ -75,6 +75,7 @@ const index = () => {
    * 화면 마운트 시 필요한 정보 가져오기
    */
   useEffect(() => {
+    contentLoading();
     getMainPageOverview(
       (data: OverviewInfo) => {
         console.log('data');
@@ -82,9 +83,11 @@ const index = () => {
         setSdkKey(data.sdkKey ? data.sdkKey : '');
         setTotalFlags(data.totalFlags);
         setActiveFlags(data.activeFlags);
+        contentLoaded();
       },
       (err) => {
         console.error(err);
+        contentLoaded();
       },
     );
   }, [auth]);
