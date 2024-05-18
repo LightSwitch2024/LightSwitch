@@ -5,8 +5,8 @@ from typing import Callable, Optional, Protocol
 
 import requests
 
-from .custom_sseclient import CustomSSEClient
-from .exceptions import StreamDataError
+from custom_sseclient import CustomSSEClient
+from exceptions import StreamDataError
 
 logger = logging.getLogger(__name__)
 
@@ -36,14 +36,8 @@ class StreamManager(threading.Thread):
                 sse_client = CustomSSEClient(self.stream_url, headers={"Accept": "application/json, text/event-stream"}, timeout=None)
 
                 for event in sse_client:
-                    # if hasattr(event, 'event'):
-                    #     print(f"Event: {event.event}")
-                    # if hasattr(event, 'data'):
-                    #     print(f"Data: {event.data}")
-                    # if hasattr(event, 'type'):
-                    #     print(f"Type: {event.type}")
                     if event.data.strip():
-                        if event.data != 'SSE connected':  # 수정 필요
+                        if event.data != 'SSE connected':  # 이후 버전에서 수정 필요
                             self.on_event(event)
 
             except requests.exceptions.ReadTimeout:
