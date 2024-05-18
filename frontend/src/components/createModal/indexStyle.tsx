@@ -573,7 +573,6 @@ export const ModalTitleText = styled.div`
 
 export const ModalTitleTextContainer = styled.div`
   display: flex;
-  padding: 2rem 0;
   gap: 0.625rem;
 `;
 
