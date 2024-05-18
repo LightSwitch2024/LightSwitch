@@ -959,20 +959,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
   }, [editedVariationInfo.variations]);
 
   const renderContentByTab = () => {
-    const [selectedTags, setSelectedTags] = useState<Array<TagItem>>([]);
-    const [tags, setTags] = useState<Array<TagItem>>(props.flagDetail?.tags || []);
-    const [tagSearchKeyword, setTagSearchKeyword] = useState<string>('');
-
-    useEffect(() => {
-      // 태그 목록이 비어있고 태그 검색어가 있으면 새로운 태그 생성
-      if (tags.length === 0 && tagSearchKeyword) {
-        setSelectedTags([
-          ...selectedTags,
-          { content: tagSearchKeyword, colorHex: '#909090' },
-        ]);
-      }
-    }, [tags]);
-
     // 플래그 수정 폼
     if (selectedTab === 0) {
       return (
@@ -999,22 +985,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
               <S.WarnText>중복된 플래그 이름이 존재합니다.</S.WarnText>
             )}
           </S.Container>
-          <S.TagContainer>
-            <S.Layer>
-              <S.IconContainer>
-                <Bookmark />
-              </S.IconContainer>
-              <S.TextContainer>
-                <S.LabelText>태그</S.LabelText>
-              </S.TextContainer>
-            </S.Layer>
-            {/* 여기에다가 태그 수정 로직 */}
-            {/*<TagsInputComponent*/}
-            {/*  selectedTags={selectedTags}*/}
-            {/*  setSelectedTags={setSelectedTags}*/}
-            {/*  allowCreation={true}*/}
-            {/*/>*/}
-          </S.TagContainer>
           <S.Container>
             <S.Layer>
               <S.IconContainer>
