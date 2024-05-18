@@ -19,7 +19,8 @@ import SearchIcon from '@/assets/search.svg?react';
 import CreateModal from '@/components/createModal';
 import * as S from '@/pages/main/indexStyle';
 import FlagTable from '@/pages/main/table';
-
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 interface OverviewInfo {
   sdkKey: string;
   totalFlags: number;
@@ -43,7 +44,7 @@ const index = () => {
   const [selectedTags, setSelectedTags] = useState<Array<Tag>>([]);
   const [isCopied, setIsCopied] = useState<boolean>(false);
   const navigate = useNavigate();
-
+  const MySwal = withReactContent(Swal);
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(sdkKey);
@@ -107,11 +108,25 @@ const index = () => {
   };
 
   const closeCreateModal = () => {
-    const closeConfirm = window.confirm('진짜 닫을거야?');
-    if (closeConfirm) {
-      setIsModalOpened(false);
-      html?.classList.remove('scroll-locked');
-    }
+    MySwal.fire({
+      title: '모달을 닫으시겠습니까?',
+      text: '변경사항이 저장되지 않습니다.',
+      icon: 'warning',
+
+      showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+      confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
+      cancelButtonColor: '#d33', // cancel 버튼 색깔 지정
+      confirmButtonText: '확인', // confirm 버튼 텍스트 지정
+      cancelButtonText: '취소', // cancel 버튼 텍스트 지정
+
+      reverseButtons: true, // 버튼 순서 거꾸로
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const html = document.querySelector('html');
+        setIsModalOpened(false);
+        html?.classList.remove('scroll-locked');
+      }
+    });
   };
 
   const openDropdown = () => {
