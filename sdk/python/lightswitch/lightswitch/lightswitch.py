@@ -5,9 +5,9 @@ import typing
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
-from .models import Flags, Flag, LSUser
-from .stream_manager import StreamManager, StreamEvent
-from .exceptions import StreamDataError, LSServerError, LSTypeCastError, LSFlagNotFoundError
+from models import Flags, Flag, LSUser
+from stream_manager import StreamManager, StreamEvent
+from exceptions import StreamDataError, LSServerError, LSTypeCastError, LSFlagNotFoundError
 
 
 DEFAULT_API_URL = 'http://localhost:8000/api/v1/'
@@ -135,9 +135,10 @@ class Lightswitch:
                 self.delete_flag(new_flag_data['title'])
 
         except json.JSONDecodeError as e:
-            raise StreamDataError(
-                "new_stream_event로부터 유효한 json 데이터를 가져오는데 실패하였습니다."
-            ) from e
+            pass
+            # raise StreamDataError(
+            #     "new_stream_event로부터 유효한 json 데이터를 가져오는데 실패하였습니다."
+            # ) from e
 
     def add_flag(self, new_flag: Flag):
         if self.flags is None:
@@ -177,7 +178,7 @@ class Lightswitch:
             return default_value
 
         value_if_is_targeted = flag.get_user_variation_by_keyword(user)
-        if not value_if_is_targeted:
+        if value_if_is_targeted == "not targeted":
             return flag.get_user_variation_by_percentile(user)
         return value_if_is_targeted
 
@@ -262,4 +263,5 @@ class Lightswitch:
 
         # 세션 종료
         self.session.close()
+
 
