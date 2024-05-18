@@ -65,20 +65,17 @@ export const TabElementContainer = styled.div<{ $select: boolean }>`
   ${(props) =>
     props.$select
       ? `
-  background: #031c5b;
+  background: #FFF;
   `
       : `
-  border-top: 1px solid rgba(0, 0, 0, 0.50);
-  border-right: 1px solid rgba(0, 0, 0, 0.50);
-  border-left: 1px solid rgba(0, 0, 0, 0.50);
-  background: #FFF;
+  background: #031c5b;
   `}
 `;
 
 export const TabElementText = styled.div<{ $select: boolean }>`
   text-align: center;
   font-family: Pretendard;
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
@@ -86,10 +83,10 @@ export const TabElementText = styled.div<{ $select: boolean }>`
   ${(props) =>
     props.$select
       ? `
-  color: #fff;
+  color: #000;
   `
       : `
-  color: #7F7F7F;
+  color: #a9a9a9;
   `}
 `;
 
@@ -139,7 +136,7 @@ export const Layer = styled.div`
 export const KeywordHeadWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  margin: 1.3rem 0;
+  margin: 0.5rem 0;
   justify-content: space-between;
 `;
 
@@ -147,7 +144,16 @@ export const IconContainer = styled.div`
   display: flex;
   gap: 0.625rem;
   > svg {
-    margin-top: 1.2rem;
+    margin: auto;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+`;
+
+export const TitleContainer = styled.div`
+  display: flex;
+  gap: 0.625rem;
+  > svg {
     width: 2.5rem;
     height: 2.5rem;
   }
@@ -155,8 +161,7 @@ export const IconContainer = styled.div`
 
 export const TextContainer = styled.div`
   display: flex;
-  flex-direction: row;
-  margin: 2px 0 0.5rem 1rem;
+  margin: auto 0;
   gap: 0.625rem;
 `;
 
@@ -174,7 +179,6 @@ export const PropertyIndexTextContainer = styled.div`
 
 export const VarContainer = styled.div`
   display: flex;
-  width: 48%;
   flex-direction: row;
   gap: 0.125rem;
 `;
@@ -236,7 +240,7 @@ export const Input = styled.input<{ $flag: boolean }>`
 export const LabelText = styled.div`
   color: #000;
   font-family: Pretendard;
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-style: normal;
   font-weight: 600;
   line-height: normal;
@@ -245,7 +249,7 @@ export const LabelText = styled.div`
 export const KeywordText = styled.div`
   color: #000;
   font-family: Pretendard;
-  font-size: 2rem;
+  font-size: 1.6rem;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
@@ -265,9 +269,8 @@ export const PropertyIndexText = styled.div`
 
 export const VarText = styled.div`
   display: flex;
-  width: 4rem;
+  width: 5rem;
   color: #000;
-  margin-top: 20px;
   font-family: Pretendard;
   font-size: 1.5rem;
   font-style: normal;
@@ -277,7 +280,7 @@ export const VarText = styled.div`
 
 export const VarDesText = styled.div`
   display: flex;
-  width: 4rem;
+  width: 5rem;
   color: #000;
   margin-top: 20px;
   margin-left: 5px;
@@ -317,10 +320,9 @@ export const TextArea = styled.textarea<{ $flag: boolean }>`
 export const ButtonLayer = styled.div`
   display: flex;
   justify-content: flex-end;
-  gap: 0.8125rem;
   flex: 1 0 0;
   align-self: stretch;
-  padding: 0.5rem 0 0.5rem 0;
+  padding: 0 0 0.2rem 0;
 `;
 
 export const HorizonButtonLayer = styled.div`
@@ -335,7 +337,7 @@ export const HorizonButtonLayer = styled.div`
 
 export const BottomButtonLayer = styled.div`
   display: flex;
-  padding: 5rem 0 0.75rem 0;
+  padding: 1rem 0 0.75rem 0;
   justify-content: flex-end;
   align-items: center;
   gap: 0.8125rem;
@@ -412,7 +414,7 @@ export const AddButton = styled.button`
   color: #fff;
   text-align: center;
   font-family: Pretendard;
-  font-size: 1rem;
+  font-size: 1.3rem;
   font-style: normal;
   font-weight: 400;
   line-height: 1rem; /* 100% */
@@ -429,7 +431,6 @@ export const AddButton = styled.button`
 export const DelButton = styled.button`
   display: flex;
   padding: 0.8rem 0.8rem;
-  margin-right: 0.3rem;
   justify-content: center;
   align-items: center;
   gap: 0.375rem;
@@ -440,11 +441,11 @@ export const DelButton = styled.button`
   color: rgba(0, 0, 0, 0.87);
   text-align: center;
   font-family: Pretendard;
-  font-size: 1rem;
+  font-size: 1.3rem;
   font-style: normal;
   font-weight: 400;
   line-height: 1rem; /* 100% */
-
+  border: 1px solid #c2c3c3;
   // &:hover {
   //   background: #e0e0e0;
   // }
@@ -458,24 +459,33 @@ export const Horizontal = styled.div`
   display: flex;
   width: 100%;
   height: 1px;
-  background-color: #000;
-  margin: 1.4rem 0;
+  background-color: #a9a9a9;
+  margin: 1rem 0;
 `;
 
 export const BoldHorizontal = styled.div`
   display: flex;
   width: 100%;
-  height: 4px;
-  background-color: #000;
+  height: 2px;
+  background-color: #a9a9a9;
   margin: 1.4rem 0;
 `;
 
-export const VarTextContainer = styled.div``;
+export const VarTextContainer = styled.div`
+  margin: auto;
+`;
 
 export const Boundary = styled.div`
-  border: 2px solid #545454;
-  border-radius: 10px;
-  padding: 1rem;
+  padding: 0 1.75rem;
+  margin: 0.75rem 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9375rem;
+  align-self: stretch;
+
+  border-radius: 1.225rem;
+  border: 1px solid #a8a8a8;
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
 `;
 
 export const WarnText = styled.div`
@@ -511,8 +521,8 @@ export const BottomLayer = styled.div`
 
 export const FlagTypeContainer = styled.div`
   display: flex;
-  width: 8.625rem;
-  height: 2.125rem;
+  margin: 0 0.4rem;
+  padding: 0 0.4rem;
   justify-content: center;
   align-items: center;
   gap: 1rem;
@@ -523,7 +533,7 @@ export const FlagTypeContainer = styled.div`
 
 export const FlagTypeContentContainer = styled.div`
   display: flex;
-  padding: 0.6875rem 0rem;
+  padding: 0.6875rem 0;
   align-items: center;
   gap: 0.5rem;
   align-self: stretch;
@@ -531,7 +541,6 @@ export const FlagTypeContentContainer = styled.div`
 
 export const FlagTypeTextContainer = styled.div`
   display: flex;
-  padding: 0.25rem 0rem;
   align-items: center;
   gap: 0.625rem;
 `;
@@ -540,11 +549,11 @@ export const FlagTypeText = styled.div`
   color: #1e3232;
   text-align: center;
   font-family: Pretendard;
-  font-size: 1.25rem;
+  font-size: 1.05rem;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 0.9375rem; /* 75% */
-  letter-spacing: 0.07813rem;
+  letter-spacing: 0.05813rem;
   text-transform: uppercase;
 `;
 
@@ -576,14 +585,14 @@ export const FlagVariationContentLayer = styled.div`
   align-items: center;
   gap: 0.9375rem;
   align-self: stretch;
+  padding: 0.5rem;
 `;
 
 export const FlagVariationRowContainer = styled.div`
   display: flex;
   width: 100%;
-  justify-content: center;
   align-items: center;
-  gap: 3rem;
+  gap: 2rem;
 `;
 
 export const FlagVariationInput = styled.input<{ $flag: boolean }>`
@@ -596,7 +605,7 @@ export const FlagVariationInput = styled.input<{ $flag: boolean }>`
   flex: 1 0 0;
 
   border-radius: 0.625rem;
-  border: 1px solid #000;
+  border: 1px solid #a9a9a9;
 
   font-family: Pretendard;
   font-size: 20px;
@@ -615,4 +624,14 @@ export const FlagVariationInput = styled.input<{ $flag: boolean }>`
     background-color: #f2f2f2;
     pointer-events: none;
   `}
+`;
+
+export const FlagTypeLayer = styled.div`
+  display: flex;
+  padding: 0.5rem 0;
+  margin-bottom: 1rem;
+  align-items: center;
+  gap: 1.615rem;
+  // flex: 1 0 0;
+  align-self: stretch;
 `;
