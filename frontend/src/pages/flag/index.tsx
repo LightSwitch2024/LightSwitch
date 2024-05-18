@@ -155,7 +155,7 @@ const FlagDetail = () => {
     setIsModalOpened(true);
   };
 
-  const onClickdeleteFlag = () => {
+  const onClickDeleteFlag = () => {
     MySwal.fire({
       title: '플래그를 삭제하시겠습니까?',
       text: '다시 되돌릴 수 없습니다. 신중하세요.',
@@ -188,8 +188,25 @@ const FlagDetail = () => {
   };
 
   const closeUpdateModal = () => {
-    const confirm = window.confirm('닫을 거라고??');
-    if (confirm) setIsModalOpened(false);
+    MySwal.fire({
+      title: '모달을 닫으시겠습니까?',
+      text: '변경사항이 저장되지 않습니다.',
+      icon: 'warning',
+
+      showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+      confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
+      cancelButtonColor: '#d33', // cancel 버튼 색깔 지정
+      confirmButtonText: '확인', // confirm 버튼 텍스트 지정
+      cancelButtonText: '취소', // cancel 버튼 텍스트 지정
+
+      reverseButtons: true, // 버튼 순서 거꾸로
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const html = document.querySelector('html');
+        setIsModalOpened(false);
+        html?.classList.remove('scroll-locked');
+      }
+    });
   };
 
   /**
@@ -550,7 +567,7 @@ const FlagDetail = () => {
             ))}
 
           <S.ButtonLayer>
-            <S.DeleteButton onClick={onClickdeleteFlag}>
+            <S.DeleteButton onClick={onClickDeleteFlag}>
               <S.DeleteButtonText>삭제하기</S.DeleteButtonText>
             </S.DeleteButton>
             <S.UpdateButton onClick={openUpdateModal}>

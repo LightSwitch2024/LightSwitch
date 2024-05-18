@@ -13,7 +13,8 @@ import React, { useEffect, useState } from 'react';
 import { DefaultValue } from 'recoil';
 import { useLoadingStore } from '@/global/LoadingAtom';
 import { confirmDuplicateFlag } from '@/api/create/createAxios';
-
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 interface UpdateModalProps {
   closeUpdateModal: () => void;
   flagDetail: FlagDetailItem;
@@ -79,6 +80,8 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
   // input box hover용
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const { loading, contentLoading, contentLoaded } = useLoadingStore();
+
+  const MySwal = withReactContent(Swal);
 
   // 이벤트 버블링 방지
   const stopPropagation = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -801,64 +804,121 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
   };
 
   const onClickCancelFlagInfo = () => {
-    // 수정된게 없으면 return
-    let confirm = false;
-    if (
-      editedFlagInfo.title === props.flagDetail.title &&
-      editedFlagInfo.description === props.flagDetail.description
-    ) {
-      confirm = window.confirm('수정을 종료하시겠습니까?');
-    } else {
-      confirm = window.confirm(
-        '수정된 내용이 저장되지 않습니다. 수정을 종료하시겠습니까?',
-      );
-    }
+    props.closeUpdateModal();
+    // MySwal.fire({
+    //   title: '수정을 종료하겠습니까?',
+    //   text: '변경사항이 저장되지 않습니다.',
+    //   icon: 'warning',
 
-    if (confirm) {
-      // editedFlagInfo 초기화
-      initEditedData();
-      props.closeUpdateModal();
-    }
+    //   showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+    //   confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
+    //   cancelButtonColor: '#d33', // cancel 버튼 색깔 지정
+    //   confirmButtonText: '확인', // confirm 버튼 텍스트 지정
+    //   cancelButtonText: '취소', // cancel 버튼 텍스트 지정
+
+    //   reverseButtons: true, // 버튼 순서 거꾸로
+    // }).then((result) => {
+    //   if (result.isConfirmed) {
+    //     // initEditedData();
+    //     // props.closeUpdateModal();
+    //   }
+    // });
+    // 수정된게 없으면 return
+    // let confirm = false;
+    // if (
+    //   editedFlagInfo.title === props.flagDetail.title &&
+    //   editedFlagInfo.description === props.flagDetail.description
+    // ) {
+    //   confirm = window.confirm('수정을 종료하시겠습니까?');
+    // } else {
+    //   confirm = window.confirm(
+    //     '수정된 내용이 저장되지 않습니다. 수정을 종료하시겠습니까?',
+    //   );
+    // }
+
+    // if (confirm) {
+    //   // editedFlagInfo 초기화
+    //   initEditedData();
+    //   props.closeUpdateModal();
+    // }
   };
 
   const onClickCancelVariationInfo = () => {
+    props.closeUpdateModal();
     // 수정된게 없으면 return
-    let confirm = false;
-    if (
-      editedVariationInfo.defaultValue === props.flagDetail.defaultValue &&
-      editedVariationInfo.defaultPortion === props.flagDetail.defaultPortion &&
-      editedVariationInfo.defaultDescription === props.flagDetail.defaultDescription
-    ) {
-      confirm = window.confirm('수정을 종료하시겠습니까?');
-    } else {
-      confirm = window.confirm(
-        '수정된 내용이 저장되지 않습니다. 수정을 종료하시겠습니까?',
-      );
-    }
+    // MySwal.fire({
+    //   title: '수정을 종료하겠습니까?',
+    //   text: '변경사항이 저장되지 않습니다.',
+    //   icon: 'warning',
 
-    if (confirm) {
-      // editedVariationInfo 초기화
-      initEditedData();
-      props.closeUpdateModal();
-    }
+    //   showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+    //   confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
+    //   cancelButtonColor: '#d33', // cancel 버튼 색깔 지정
+    //   confirmButtonText: '확인', // confirm 버튼 텍스트 지정
+    //   cancelButtonText: '취소', // cancel 버튼 텍스트 지정
+
+    //   reverseButtons: true, // 버튼 순서 거꾸로
+    // }).then((result) => {
+    //   if (result.isConfirmed) {
+    //     initEditedData();
+    //     props.closeUpdateModal();
+    //   }
+    // });
+    // let confirm = false;
+    // if (
+    //   editedVariationInfo.defaultValue === props.flagDetail.defaultValue &&
+    //   editedVariationInfo.defaultPortion === props.flagDetail.defaultPortion &&
+    //   editedVariationInfo.defaultDescription === props.flagDetail.defaultDescription
+    // ) {
+    //   confirm = window.confirm('수정을 종료하시겠습니까?');
+    // } else {
+    //   confirm = window.confirm(
+    //     '수정된 내용이 저장되지 않습니다. 수정을 종료하시겠습니까?',
+    //   );
+    // }
+
+    // if (confirm) {
+    //   // editedVariationInfo 초기화
+    //   initEditedData();
+    //   props.closeUpdateModal();
+    // }
   };
 
   const onClickCancelKeywordInfo = () => {
-    // 수정된게 없으면 return
-    let confirm = false;
-    if (editedKeywordInfo.keywords === props.flagDetail.keywords) {
-      confirm = window.confirm('수정을 종료하시겠습니까?');
-    } else {
-      confirm = window.confirm(
-        '수정된 내용이 저장되지 않습니다. 수정을 종료하시겠습니까?',
-      );
-    }
+    props.closeUpdateModal();
+    // MySwal.fire({
+    //   title: '수정을 종료하겠습니까?',
+    //   text: '변경사항이 저장되지 않습니다.',
+    //   icon: 'warning',
 
-    if (confirm) {
-      // editedKeywordInfo 초기화
-      initEditedData();
-      props.closeUpdateModal();
-    }
+    //   showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+    //   confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
+    //   cancelButtonColor: '#d33', // cancel 버튼 색깔 지정
+    //   confirmButtonText: '확인', // confirm 버튼 텍스트 지정
+    //   cancelButtonText: '취소', // cancel 버튼 텍스트 지정
+
+    //   reverseButtons: true, // 버튼 순서 거꾸로
+    // }).then((result) => {
+    //   if (result.isConfirmed) {
+    //     initEditedData();
+    //     props.closeUpdateModal();
+    //   }
+    // });
+    // 수정된게 없으면 return
+    // let confirm = false;
+    // if (editedKeywordInfo.keywords === props.flagDetail.keywords) {
+    //   confirm = window.confirm('수정을 종료하시겠습니까?');
+    // } else {
+    //   confirm = window.confirm(
+    //     '수정된 내용이 저장되지 않습니다. 수정을 종료하시겠습니까?',
+    //   );
+    // }
+
+    // if (confirm) {
+    //   // editedKeywordInfo 초기화
+    //   initEditedData();
+    //   props.closeUpdateModal();
+    // }
   };
 
   // 탭 이동함수 & 초기화
@@ -1224,7 +1284,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
             <div key={indexOfKeyword}>
               <S.KeywordHeadWrapper>
                 <S.KeywordTextContainer>
-                  <S.KeywordText>키워드{indexOfKeyword}</S.KeywordText>
+                  <S.KeywordText>키워드 {indexOfKeyword}</S.KeywordText>
                 </S.KeywordTextContainer>
                 <S.ButtonLayer>
                   <S.DelButton onClick={() => deleteKeyword(indexOfKeyword)}>
