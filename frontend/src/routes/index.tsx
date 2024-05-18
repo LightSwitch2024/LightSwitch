@@ -11,14 +11,17 @@ import FillOrg from '@/pages/organization/index';
 import LogIn from '@/pages/user/login';
 
 import ProtectedRoute from './protectedRoute';
+import Loading from '@/components/loading/index';
+import { useLoadingStore } from '@/global/LoadingAtom';
 
 const Router = () => {
   const location = useLocation();
   const isLoginPage = location.pathname === '/login';
   const isOrgPage = location.pathname === '/fillorg';
-
+  const { loading, contentLoading, contentLoaded } = useLoadingStore();
   return (
     <div>
+      {loading ? <Loading /> : <div />}
       {!isLoginPage && !isOrgPage && <Tab />}
       <S.Content>
         <Routes>

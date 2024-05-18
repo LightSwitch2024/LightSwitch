@@ -23,7 +23,7 @@ import { getTagList, getTagListByKeyword, patchFlagActive } from '@/api/main/mai
 import CreateModal from '@/components/createModal';
 import History from '@/components/history';
 import UpdateModal from '@/components/updateModal';
-
+import { useLoadingStore } from '@/global/LoadingAtom';
 interface Variation {
   variationId: number | '';
   value: string;
@@ -129,12 +129,13 @@ const FlagDetail = () => {
   const [isToggle, setIsToggle] = useState<boolean[]>([]);
   const navigator = useNavigate();
   const MySwal = withReactContent(Swal);
+  const { loading, contentLoading, contentLoaded } = useLoadingStore();
   /**
    * flagId를 통해 마운트 시 해당 flag의 상세 정보를 가져옴
    */
   useEffect(() => {
     if (flagId === undefined || flagId === null) return;
-
+    contentLoading();
     getFlagDetail<FlagDetailResponse>(
       Number(flagId),
       (data: FlagDetailResponse) => {
@@ -143,9 +144,11 @@ const FlagDetail = () => {
         setIsToggle(new Array(data.keywords.length).fill(false));
         console.log(data.histories);
         setHistoryList(data.histories);
+        contentLoaded();
       },
       (err) => {
         console.log(err);
+        contentLoaded();
       },
     );
   }, [flagId]);
@@ -154,7 +157,7 @@ const FlagDetail = () => {
     setIsModalOpened(true);
   };
 
-  const onClickdeleteFlag = () => {
+  const onClickDeleteFlag = () => {
     MySwal.fire({
       title: '플래그를 삭제하시겠습니까?',
       text: '다시 되돌릴 수 없습니다. 신중하세요.',
@@ -187,8 +190,25 @@ const FlagDetail = () => {
   };
 
   const closeUpdateModal = () => {
-    const confirm = window.confirm('닫을 거라고??');
-    if (confirm) setIsModalOpened(false);
+    MySwal.fire({
+      title: '모달을 닫으시겠습니까?',
+      text: '변경사항이 저장되지 않습니다.',
+      icon: 'warning',
+
+      showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+      confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
+      cancelButtonColor: '#d33', // cancel 버튼 색깔 지정
+      confirmButtonText: '확인', // confirm 버튼 텍스트 지정
+      cancelButtonText: '취소', // cancel 버튼 텍스트 지정
+
+      reverseButtons: true, // 버튼 순서 거꾸로
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const html = document.querySelector('html');
+        setIsModalOpened(false);
+        html?.classList.remove('scroll-locked');
+      }
+    });
   };
 
   /**
@@ -571,7 +591,7 @@ const FlagDetail = () => {
             ))}
 
           <S.ButtonLayer>
-            <S.DeleteButton onClick={onClickdeleteFlag}>
+            <S.DeleteButton onClick={onClickDeleteFlag}>
               <S.DeleteButtonText>삭제하기</S.DeleteButtonText>
             </S.DeleteButton>
             <S.UpdateButton onClick={openUpdateModal}>

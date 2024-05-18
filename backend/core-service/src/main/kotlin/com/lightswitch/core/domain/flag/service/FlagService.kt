@@ -839,18 +839,21 @@ class FlagService(
                     keywordDto.description,
                     keywordDto.value
                 )
-                flag.keywords.add(newKeyword)
 
                 keywordDto.properties.forEach { propertyDto: PropertyDto ->
-                    propertyRepository.save(
-                        Property(
-                            null,
-                            propertyDto.property,
-                            propertyDto.data,
-                            newKeyword
+                    newKeyword.properties.add(
+                        propertyRepository.save(
+                            Property(
+                                null,
+                                propertyDto.property,
+                                propertyDto.data,
+                                newKeyword
+                            )
                         )
                     )
                 }
+
+                flag.keywords.add(newKeyword)
             }
         }
 
@@ -883,12 +886,14 @@ class FlagService(
                 }
             }
             if (!matchProperty) {
-                propertyRepository.save(
-                    Property(
-                        null,
-                        propertyDto.property,
-                        propertyDto.data,
-                        keyword
+                keyword.properties.add(
+                    propertyRepository.save(
+                        Property(
+                            null,
+                            propertyDto.property,
+                            propertyDto.data,
+                            keyword
+                        )
                     )
                 )
             }

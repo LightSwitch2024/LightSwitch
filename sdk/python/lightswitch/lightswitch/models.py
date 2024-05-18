@@ -4,8 +4,8 @@ import json
 import typing
 from dataclasses import dataclass, field
 
-from .exceptions import LSFlagNotFoundError
-from .utils import get_hashed_percentage_for_object_ids
+from exceptions import LSFlagNotFoundError
+from utils import get_hashed_percentage_for_object_ids
 
 
 # 데이터 모델 정의
@@ -64,6 +64,9 @@ class Flag:
 
     def get_user_variation_by_keyword(self, user: LSUser) -> typing.Any:
         flag_keywords = self.keywords
+        if len(flag_keywords) == 0:
+            return "not targeted"
+        
         for keyword in flag_keywords:
             is_targeted = True
             for prop in keyword.get('properties', []):
@@ -79,25 +82,27 @@ class Flag:
                 return value
 
     def get_user_variation_by_percentile(self, user: LSUser) -> str:
-        user_percentile=get_hashed_percentage_for_object_ids([f"{user.user_id}", "self.flag_id"])
-
+        user_percentile = get_hashed_percentage_for_object_ids([f"{user.user_id}", "self.flag_id"])
+        print("user percentile : ", user_percentile)
+        default_portion = self.default_value_portion
         start_percentage = 0  # 시작 percentile
-        for context in sorted(self.variations, key=lambda context: context['portion']):
-            limit = start_percentage + context['portion']
+        for context in self.variations:
+            portion = context.get('portion', default_portion)
+            limit = start_percentage + portion
             if start_percentage <= user_percentile < limit:
                 value = self.convert_value(context['value'])
                 return value
 
             start_percentage = limit
 
-        return self.default_value
+        return self.convert_value(self.default_value)
 
     def convert_value(self, value: str) -> typing.Any:
         """
         value를 flag 타입에 따라 적절한 데이터 타입으로 변환하여 반환합니다.
         """
         if self.type == "BOOLEAN":
-            return bool(value)
+            return value.upper() == "TRUE"
         if self.type == "INTEGER":
             return int(value)
         if self.type == "JSON":
@@ -106,7 +111,7 @@ class Flag:
             except json.JSONDecodeError:
                 return value
         if self.type == "STRING":
-            return str(value)
+            return self
         return value
 
     @classmethod
