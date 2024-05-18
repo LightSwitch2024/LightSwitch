@@ -81,7 +81,8 @@ const PasswordModal: React.FC<Props> = ({ isDeleteModal, onClose }) => {
             <P.TitleText>정말 삭제하시겠습니까?</P.TitleText>
           </P.TWrapper>
           <P.CWrapper>
-            <P.NText>삭제하고 싶으시면, 비밀번호를 입력해주세요.</P.NText>
+            <P.NText>계정은 영구적으로 삭제되며, 복구할 수 없습니다.</P.NText>
+            <P.NText>정말 삭제하시려면 비밀번호를 입력해주세요.</P.NText>
           </P.CWrapper>
           <P.PasswordInputBox
             type="text"
