@@ -1221,7 +1221,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
             <div key={indexOfKeyword}>
               <S.KeywordHeadWrapper>
                 <S.KeywordTextContainer>
-                  <S.KeywordText>키워드{indexOfKeyword}</S.KeywordText>
+                  <S.KeywordText>키워드 {indexOfKeyword}</S.KeywordText>
                 </S.KeywordTextContainer>
                 <S.ButtonLayer>
                   <S.DelButton onClick={() => deleteKeyword(indexOfKeyword)}>
