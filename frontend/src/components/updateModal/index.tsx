@@ -8,6 +8,7 @@ import KeyWord from '@assets/keyword.svg?react';
 import Loop from '@assets/loop.svg?react';
 import OutlinedFlagBig from '@assets/outlined-flag-big.svg?react';
 import * as S from '@components/updateModal/indexStyle';
+import { TitleContainer } from '@components/updateModal/indexStyle';
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { DefaultValue } from 'recoil';
@@ -1024,21 +1025,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     if (selectedTab === 1) {
       return (
         <S.Container>
-          <S.Layer>
-            <S.IconContainer>
-              <CallSplit />
-            </S.IconContainer>
-            <S.TextContainer>
-              <S.LabelText>변수 타입</S.LabelText>
-            </S.TextContainer>
-          </S.Layer>
-          <S.FlagTypeContainer onClick={onClickTypeEdit}>
-            <S.FlagTypeContentContainer>
-              <S.FlagTypeTextContainer>
-                <S.FlagTypeText>{type}</S.FlagTypeText>
-              </S.FlagTypeTextContainer>
-            </S.FlagTypeContentContainer>
-          </S.FlagTypeContainer>
           {isTypeEdited &&
             typeConfig.map((typeItem, idx) =>
               typeItem === type ? (
@@ -1067,18 +1053,37 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
             <option value={'STRING'}>String</option>
           </select> */}
           <S.Layer>
-            <S.IconContainer>
-              <Loop />
-            </S.IconContainer>
-            <S.TextContainer>
-              <S.LabelText>변수</S.LabelText>
-            </S.TextContainer>
+            <S.FlagTypeLayer>
+              <S.TitleContainer>
+                <S.IconContainer>
+                  <Loop />
+                </S.IconContainer>
+                <S.TextContainer>
+                  <S.LabelText>변수</S.LabelText>
+                </S.TextContainer>
+              </S.TitleContainer>
+              <S.TitleContainer>
+                <S.IconContainer>
+                  <CallSplit />
+                </S.IconContainer>
+                <S.TextContainer>
+                  <S.LabelText>변수 타입</S.LabelText>
+                </S.TextContainer>
+                <S.FlagTypeContainer onClick={onClickTypeEdit}>
+                  <S.FlagTypeContentContainer>
+                    <S.FlagTypeTextContainer>
+                      <S.FlagTypeText>{type}</S.FlagTypeText>
+                    </S.FlagTypeTextContainer>
+                  </S.FlagTypeContentContainer>
+                </S.FlagTypeContainer>
+              </S.TitleContainer>
+            </S.FlagTypeLayer>
           </S.Layer>
           <S.FlagVariationContentLayer>
             <S.FlagVariationRowContainer>
               <S.VarContainer>
                 <S.VarTextContainer>
-                  <S.VarText>변수</S.VarText>
+                  <S.VarText>반환 값</S.VarText>
                 </S.VarTextContainer>
                 <S.FlagVariationInput
                   type="text"
@@ -1134,7 +1139,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                   <S.FlagVariationRowContainer>
                     <S.VarContainer>
                       <S.VarTextContainer>
-                        <S.VarText>변수</S.VarText>
+                        <S.VarText>반환 값</S.VarText>
                       </S.VarTextContainer>
                       <S.FlagVariationInput
                         type="text"
@@ -1162,6 +1167,11 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                         $flag={isFocused}
                       />
                     </S.VarContainer>
+                    <S.ButtonLayer>
+                      <S.DelButton onClick={deleteVariation(index)}>
+                        변수 삭제
+                      </S.DelButton>
+                    </S.ButtonLayer>
                   </S.FlagVariationRowContainer>
                   <S.FlagVariationRowContainer>
                     <S.VarDesContainer>
@@ -1179,9 +1189,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                   </S.FlagVariationRowContainer>
                 </S.FlagVariationContentLayer>
               </div>
-              <S.ButtonLayer>
-                <S.DelButton onClick={deleteVariation(index)}>변수 삭제</S.DelButton>
-              </S.ButtonLayer>
+
               <S.Horizontal />
             </React.Fragment>
           ))}
@@ -1219,18 +1227,24 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
           </S.Layer>
           {editedKeywordInfo.keywords.map((keyword, indexOfKeyword) => (
             <div key={indexOfKeyword}>
-              <S.KeywordHeadWrapper>
-                <S.KeywordTextContainer>
-                  <S.KeywordText>키워드{indexOfKeyword}</S.KeywordText>
-                </S.KeywordTextContainer>
-                <S.ButtonLayer>
-                  <S.DelButton onClick={() => deleteKeyword(indexOfKeyword)}>
-                    Keyword 삭제
-                  </S.DelButton>
-                </S.ButtonLayer>
-              </S.KeywordHeadWrapper>
               <S.Boundary>
                 <S.VarVertical>
+                  <S.VarDefinitionContainer>
+                    <S.TextContainer>
+                      <S.VarText>반환 값</S.VarText>
+                    </S.TextContainer>
+                    <S.FlagVariationInput
+                      type="text"
+                      value={keyword.value}
+                      onChange={handleChangeKeywordValue(indexOfKeyword)}
+                      $flag={isFocused}
+                    />
+                    <S.ButtonLayer>
+                      <S.DelButton onClick={() => deleteKeyword(indexOfKeyword)}>
+                        키워드 삭제
+                      </S.DelButton>
+                    </S.ButtonLayer>
+                  </S.VarDefinitionContainer>
                   <S.VarDefinitionContainer>
                     <S.TextContainer>
                       <S.VarText>설명</S.VarText>
@@ -1242,39 +1256,14 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                       $flag={isFocused}
                     />
                   </S.VarDefinitionContainer>
-                  <S.VarDefinitionContainer>
-                    <S.TextContainer>
-                      <S.VarText>값</S.VarText>
-                    </S.TextContainer>
-                    <S.FlagVariationInput
-                      type="text"
-                      value={keyword.value}
-                      onChange={handleChangeKeywordValue(indexOfKeyword)}
-                      $flag={isFocused}
-                    />
-                  </S.VarDefinitionContainer>
                 </S.VarVertical>
                 <S.BoldHorizontal />
                 {keyword.properties.map((property, indexOfProperty) => (
                   <div key={indexOfProperty}>
-                    <S.HorizonButtonLayer>
-                      <S.PropertyIndexTextContainer>
-                        <S.PropertyIndexText>
-                          property index {indexOfProperty}
-                        </S.PropertyIndexText>
-                      </S.PropertyIndexTextContainer>
-                      <S.ButtonLayer>
-                        <S.DelButton
-                          onClick={deleteProperty(indexOfKeyword, indexOfProperty)}
-                        >
-                          Property 삭제
-                        </S.DelButton>
-                      </S.ButtonLayer>
-                    </S.HorizonButtonLayer>
                     <S.VarHorizon>
                       <S.VarContainer>
                         <S.TextContainer>
-                          <S.VarText>Key</S.VarText>
+                          <S.VarText>속성</S.VarText>
                         </S.TextContainer>
                         <S.FlagVariationInput
                           type="text"
@@ -1285,7 +1274,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                       </S.VarContainer>
                       <S.VarContainer>
                         <S.TextContainer>
-                          <S.VarText>Value</S.VarText>
+                          <S.VarText>값</S.VarText>
                         </S.TextContainer>
                         <S.FlagVariationInput
                           type="text"
@@ -1294,20 +1283,29 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                           $flag={isFocused}
                         />
                       </S.VarContainer>
+                      <S.VarContainer>
+                        <S.ButtonLayer>
+                          <S.DelButton
+                            onClick={deleteProperty(indexOfKeyword, indexOfProperty)}
+                          >
+                            속성 삭제
+                          </S.DelButton>
+                        </S.ButtonLayer>
+                      </S.VarContainer>
                     </S.VarHorizon>
                     <S.Horizontal />
                   </div>
                 ))}
                 <S.ButtonLayer>
                   <S.AddButton onClick={() => addProperty(indexOfKeyword)}>
-                    Property 추가
+                    속성 추가
                   </S.AddButton>
                 </S.ButtonLayer>
               </S.Boundary>
             </div>
           ))}
           <S.ButtonLayer>
-            <S.AddButton onClick={addKeyword}>Keyword 추가</S.AddButton>
+            <S.AddButton onClick={addKeyword}>키워드 추가</S.AddButton>
           </S.ButtonLayer>
           <S.BottomWrapper>
             <S.BottomButtonLayer>
