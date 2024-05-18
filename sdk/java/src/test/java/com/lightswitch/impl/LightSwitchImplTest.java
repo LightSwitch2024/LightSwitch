@@ -92,7 +92,7 @@ class LightSwitchImplTest {
 		lightSwitch.init("sdkKey", "http://test.com");
 
 		//then
-		verify(mockConnector, atLeast(3)).setup(anyString(), anyString(), anyBoolean());
+		verify(mockConnector, atLeast(2)).setup(anyString(), anyString(), anyBoolean());
 		verify(mockConnector, atLeast(2)).sendData(any(HttpURLConnection.class), any());
 	}
 
@@ -157,18 +157,6 @@ class LightSwitchImplTest {
 		titleField.setAccessible(true);
 		titleField.set(userKeyResponse, "userKey");
 		return userKeyResponse;
-	}
-
-	@Test
-	void connectToSse_테스트() throws Exception {
-		when(mockConnector.createSseRunnable(any(HttpURLConnection.class), any())).thenReturn(mockRunnable);
-
-		Method userKeyResponse = LightSwitchImpl.class.getDeclaredMethod("connectToSse", HttpURLConnection.class);
-		userKeyResponse.setAccessible(true);
-
-		userKeyResponse.invoke(lightSwitch, mockHttpURLConnection);
-		verify(mockConnector).createSseRunnable(mockHttpURLConnection, lightSwitch);
-		verify(mockRunnable).run();
 	}
 
 	@Test

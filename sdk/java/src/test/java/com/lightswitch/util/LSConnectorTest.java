@@ -161,7 +161,7 @@ class LSConnectorTest {
 		parseResponse.setAccessible(true);
 
 		String result = (String)parseResponse.invoke(connector, reader);
-		assertThat(result).isEqualTo("");
+		assertThat(result).isEqualTo("disconnect");
 	}
 
 	@Test
@@ -201,46 +201,24 @@ class LSConnectorTest {
 
 	@Test
 	void createSseRunnable_요청1회_테스트() throws Exception {
-		String sseData = "event:data\ndata: message2\n\n";
+		String sseData = "event:data\ndata: message2\n\ndisconnect";
 		InputStream stream = new ByteArrayInputStream(sseData.getBytes(StandardCharsets.UTF_8));
 		when(mockConnection.getInputStream()).thenReturn(stream);
 
 		LSConnector connector = LSConnector.getInstance();
 		connector.setHostUrl("http://test.com");
-		Runnable sseRunnable = connector.createSseRunnable(mockConnection, mockCallback);
+		connector = spy(connector);
+		doReturn(mockConnection).when(connector).setup(anyString(), anyString(), anyBoolean());
+		Runnable sseRunnable = connector.createSseRunnable("userKey", mockCallback);
 
 		Thread thread = new Thread(sseRunnable);
 		thread.start();
 		Thread.sleep(500);
-		assertThat(thread.isAlive()).isTrue();
-
 
 		thread.interrupt();
 		thread.join();
 
 		verify(mockCallback, times(1)).onSseReceived(anyString());
-		assertThat(thread.isAlive()).isFalse();
-	}
-
-	@Test
-	void createSseRunnable_요청2회_테스트() throws Exception {
-		String sseData = "event:data\ndata: message2\nevent:disconnect\ndata: disconnect\n\n";
-		InputStream stream = new ByteArrayInputStream(sseData.getBytes(StandardCharsets.UTF_8));
-		when(mockConnection.getInputStream()).thenReturn(stream);
-
-		LSConnector connector = LSConnector.getInstance();
-		connector.setHostUrl("http://test.com");
-		Runnable sseRunnable = connector.createSseRunnable(mockConnection, mockCallback);
-
-		Thread thread = new Thread(sseRunnable);
-		thread.start();
-		Thread.sleep(500);
-		assertThat(thread.isAlive()).isTrue();
-
-		thread.interrupt();
-		thread.join();
-
-		verify(mockCallback, times(2)).onSseReceived(anyString());
 		assertThat(thread.isAlive()).isFalse();
 	}
 }

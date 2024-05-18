@@ -17,7 +17,6 @@ import com.lightswitch.domain.dto.UserKeyRequest;
 import com.lightswitch.domain.dto.UserKeyResponse;
 import com.lightswitch.exception.LSFlagRuntimeException;
 import com.lightswitch.exception.LSLSFlagNotFoundException;
-import com.lightswitch.exception.LSServerException;
 import com.lightswitch.util.LSConnector;
 
 public class LightSwitchImpl implements LightSwitch, SseCallback {
@@ -54,8 +53,7 @@ public class LightSwitchImpl implements LightSwitch, SseCallback {
 		connector.sendData(subscribeConn, new Config(sdkKey));
 		userKey = getUserKey(subscribeConn);
 
-		HttpURLConnection sseConn = connector.setup("sse/subscribe/" + userKey, "GET", true);
-		connectToSse(sseConn);
+		connectSse();
 	}
 
 	private void getAllFlags(HttpURLConnection initConn) throws LSFlagRuntimeException {
@@ -72,18 +70,19 @@ public class LightSwitchImpl implements LightSwitch, SseCallback {
 		return userKeyResponse.getUserKey();
 	}
 
-	private void connectToSse(HttpURLConnection sseConn) throws LSServerException {
-		Runnable task = connector.createSseRunnable(sseConn, this); //onSseReceived
+	private void connectSse() {
+		Runnable task = connector.createSseRunnable(userKey, this); //onSseReceived
 		thread = new Thread(task);
 		thread.start();
 	}
 
 	@Override
-	public void onSseReceived(String jsonData) {
+	public int onSseReceived(String jsonData) {
 		if (jsonData.isEmpty()) {
-			return;
+			return 1;
 		}
 		Flags.event(new Gson().fromJson(jsonData, SseResponse.class));
+		return 0;
 	}
 
 	@Override
