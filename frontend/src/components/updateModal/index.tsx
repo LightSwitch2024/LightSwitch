@@ -9,8 +9,10 @@ import Loop from '@assets/loop.svg?react';
 import OutlinedFlagBig from '@assets/outlined-flag-big.svg?react';
 import * as S from '@components/updateModal/indexStyle';
 import { TitleContainer } from '@components/updateModal/indexStyle';
+import { TagsInputComponent } from '@pages/main/tagInput';
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { DefaultValue } from 'recoil';
 
 import { confirmDuplicateFlag } from '@/api/create/createAxios';
@@ -74,6 +76,11 @@ interface VariationInfo {
 
 interface KeywordInfo {
   keywords: Array<Keyword>;
+}
+
+interface TagItem {
+  content: string;
+  colorHex: string;
 }
 
 const UpdateModal: React.FC<UpdateModalProps> = (props) => {
@@ -952,6 +959,20 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
   }, [editedVariationInfo.variations]);
 
   const renderContentByTab = () => {
+    const [selectedTags, setSelectedTags] = useState<Array<TagItem>>([]);
+    const [tags, setTags] = useState<Array<TagItem>>(props.flagDetail?.tags || []);
+    const [tagSearchKeyword, setTagSearchKeyword] = useState<string>('');
+
+    useEffect(() => {
+      // 태그 목록이 비어있고 태그 검색어가 있으면 새로운 태그 생성
+      if (tags.length === 0 && tagSearchKeyword) {
+        setSelectedTags([
+          ...selectedTags,
+          { content: tagSearchKeyword, colorHex: '#909090' },
+        ]);
+      }
+    }, [tags]);
+
     // 플래그 수정 폼
     if (selectedTab === 0) {
       return (
@@ -988,6 +1009,11 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
               </S.TextContainer>
             </S.Layer>
             {/* 여기에다가 태그 수정 로직 */}
+            {/*<TagsInputComponent*/}
+            {/*  selectedTags={selectedTags}*/}
+            {/*  setSelectedTags={setSelectedTags}*/}
+            {/*  allowCreation={true}*/}
+            {/*/>*/}
           </S.TagContainer>
           <S.Container>
             <S.Layer>

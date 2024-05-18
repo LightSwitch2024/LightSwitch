@@ -345,6 +345,14 @@ export const KeywordContainer = styled.div`
   box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
 `;
 
+export const TagContainer = styled.div`
+  display: flex;
+  padding: 0.5rem 0.625rem;
+  justify-content: start;
+  flex-direction: row;
+  gap: 0.9375rem;
+`;
+
 export const OutsideToggleContainer = styled.div`
   display: flex;
   flex-direction: column;

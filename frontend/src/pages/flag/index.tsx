@@ -7,9 +7,11 @@ import QueryBuilder from '@assets/query-builder.svg?react';
 import Restore from '@assets/restore.svg?react';
 import ToggleOffIcon from '@assets/unfold_less.svg?react';
 import ToggleOnIcon from '@assets/unfold-more.svg?react';
+import { Bookmark } from '@mui/icons-material';
 import { styled, Switch } from '@mui/material';
 import { switchClasses } from '@mui/material/Switch';
 import * as S from '@pages/flag/indexStyle';
+import { TagContainer } from '@pages/flag/indexStyle';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -318,11 +320,33 @@ const FlagDetail = () => {
                     handleToggleButtonClick(flagDetail.flagId, flagDetail.active)
                   }
                 />
-                {/* <S.OnOffButton>{flagDetail.active ? 'ON' : 'OFF'}</S.OnOffButton> */}
               </S.OnOffButtonContainer>
             </S.FlagTitleInputContainer>
           </S.FlagTitleAndTagsLayer>
-
+          <TagContainer>
+            <S.FlagDescriptionIconContainer>
+              <Bookmark />
+            </S.FlagDescriptionIconContainer>
+            <S.FlagDescriptionIconContainer>
+              <S.LabelText>태그</S.LabelText>
+            </S.FlagDescriptionIconContainer>
+            {flagDetail.tags?.map((tag) => {
+              return (
+                <span
+                  key={tag.content}
+                  style={{
+                    backgroundColor: tag.colorHex,
+                    padding: '0.2rem 0.5rem',
+                    borderRadius: '0.5rem',
+                    color: '#fff',
+                    marginRight: '0.5rem',
+                  }}
+                >
+                  {tag.content}
+                </span>
+              );
+            })}
+          </TagContainer>
           <S.FlagDescriptionLabel>
             <S.FlagDescriptionContainer>
               <S.FlagDescriptionIconContainer>
