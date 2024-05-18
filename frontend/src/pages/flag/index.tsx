@@ -193,16 +193,16 @@ const FlagDetail = () => {
    * 스위치 컴포넌트 스타일 선언
    */
   const SwitchTextTrack = styled(Switch)({
-    width: 80,
-    height: 48,
+    width: 100,
+    height: 58,
     padding: 8,
     [`& .${switchClasses.switchBase}`]: {
       padding: 11,
       color: '#565555',
     },
     [`& .${switchClasses.thumb}`]: {
-      width: 26,
-      height: 26,
+      width: 36,
+      height: 36,
       backgroundColor: '#fff',
     },
     [`& .${switchClasses.track}`]: {
@@ -218,7 +218,7 @@ const FlagDetail = () => {
         transform: 'translateY(-50%)',
         color: '#fff',
         textAlign: 'center',
-        fontSize: '0.75rem',
+        fontSize: '0.95rem',
         fontWeight: 500,
       },
       '&:before': {
@@ -339,24 +339,6 @@ const FlagDetail = () => {
             readOnly
           />
 
-          <S.FlagTypeLayer>
-            <S.FlagTypeLabel>
-              <S.FlagTypeIconContainer>
-                <CallSplit />
-              </S.FlagTypeIconContainer>
-              <S.FlagTypeLabelTextContainer>
-                <S.LabelText>변수 타입</S.LabelText>
-              </S.FlagTypeLabelTextContainer>
-            </S.FlagTypeLabel>
-            <S.FlagTypeContainer>
-              <S.FlagTypeContentContainer>
-                <S.FlagTypeTextContainer>
-                  <S.FlagTypeText>{flagDetail.type}</S.FlagTypeText>
-                </S.FlagTypeTextContainer>
-              </S.FlagTypeContentContainer>
-            </S.FlagTypeContainer>
-          </S.FlagTypeLayer>
-
           <S.FlagVariationLabel>
             <S.FlagVariationContainer>
               <S.FlagVariationIconContainer>
@@ -366,13 +348,31 @@ const FlagDetail = () => {
                 <S.LabelText>변수</S.LabelText>
               </S.FlagVariationLabelTextContainer>
             </S.FlagVariationContainer>
+
+            <S.FlagTypeLayer>
+              <S.FlagTypeLabel>
+                <S.FlagTypeIconContainer>
+                  <CallSplit />
+                </S.FlagTypeIconContainer>
+                <S.FlagTypeLabelTextContainer>
+                  <S.LabelText>변수 타입</S.LabelText>
+                </S.FlagTypeLabelTextContainer>
+              </S.FlagTypeLabel>
+              <S.FlagTypeContainer>
+                <S.FlagTypeContentContainer>
+                  <S.FlagTypeTextContainer>
+                    <S.FlagTypeText>{flagDetail.type}</S.FlagTypeText>
+                  </S.FlagTypeTextContainer>
+                </S.FlagTypeContentContainer>
+              </S.FlagTypeContainer>
+            </S.FlagTypeLayer>
           </S.FlagVariationLabel>
 
-          <S.FlagVariationContentLayer>
+          <S.KeywordContainer>
             <S.FlagVariationRowContainer>
               <S.PropertyContainer>
                 <S.KeywordLabelContainer>
-                  <S.KeywordText>변수</S.KeywordText>
+                  <S.KeywordText>반환 값</S.KeywordText>
                 </S.KeywordLabelContainer>
                 <S.KeywordValueContainer
                   type="text"
@@ -406,16 +406,16 @@ const FlagDetail = () => {
                 />
               </S.PropertyContainer>
             </S.FlagVariationRowContainer>
-          </S.FlagVariationContentLayer>
-          <S.FlagVariationDivisionLine />
+          </S.KeywordContainer>
+          {/*<S.FlagVariationDivisionLine />*/}
           {flagDetail.variations &&
             flagDetail.variations.map((variation, index) => (
               <>
-                <S.FlagVariationContentLayer key={index}>
+                <S.KeywordContainer key={index}>
                   <S.FlagVariationRowContainer>
                     <S.PropertyContainer>
                       <S.KeywordLabelContainer>
-                        <S.KeywordText>변수</S.KeywordText>
+                        <S.KeywordText>반환 값</S.KeywordText>
                       </S.KeywordLabelContainer>
                       <S.KeywordValueContainer
                         type="text"
@@ -449,9 +449,9 @@ const FlagDetail = () => {
                       />
                     </S.PropertyContainer>
                   </S.FlagVariationRowContainer>
-                </S.FlagVariationContentLayer>
+                </S.KeywordContainer>
 
-                <S.FlagVariationDivisionLine />
+                {/*<S.FlagVariationDivisionLine />*/}
               </>
             ))}
 
@@ -483,16 +483,16 @@ const FlagDetail = () => {
                 <S.OutsideToggleContainer>
                   <S.OutsideToggleRowContainer>
                     <S.KeywordLabelContainer>
-                      <S.KeywordText>설명</S.KeywordText>
+                      <S.KeywordText>반환 값</S.KeywordText>
                     </S.KeywordLabelContainer>
-                    <S.KeywordValueContainer value={keyword.description} readOnly />
+                    <S.KeywordValueContainer value={keyword.value} readOnly />
                   </S.OutsideToggleRowContainer>
 
                   <S.OutsideToggleRowContainer>
                     <S.KeywordLabelContainer>
-                      <S.KeywordText>변수</S.KeywordText>
+                      <S.KeywordText>설명</S.KeywordText>
                     </S.KeywordLabelContainer>
-                    <S.KeywordValueContainer value={keyword.value} readOnly />
+                    <S.KeywordValueContainer value={keyword.description} readOnly />
                   </S.OutsideToggleRowContainer>
 
                   <S.OutsideToggleRowContainer>
@@ -530,7 +530,7 @@ const FlagDetail = () => {
                       <S.OutsideToggleRowContainer key={index}>
                         <S.PropertyContainer>
                           <S.KeywordLabelContainer>
-                            <S.KeywordText>키</S.KeywordText>
+                            <S.KeywordText>속성</S.KeywordText>
                           </S.KeywordLabelContainer>
                           <S.KeywordValueContainer value={property.property} readOnly />
                         </S.PropertyContainer>
@@ -559,7 +559,7 @@ const FlagDetail = () => {
         <S.HistoryContainer>
           <S.HistoryTitleContainer>
             <Restore />
-            <S.HistoryTitleText>히스토리</S.HistoryTitleText>
+            <S.HistoryTitleText>변경 기록</S.HistoryTitleText>
           </S.HistoryTitleContainer>
 
           <S.HistoryListContainer>

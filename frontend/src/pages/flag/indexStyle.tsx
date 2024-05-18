@@ -30,7 +30,7 @@ export const HistoryContainer = styled.div`
   align-self: stretch;
 
   border-radius: 0.625rem;
-  background: #89e6f5;
+  background: #e1edf8;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 
   z-index: -3;
@@ -68,7 +68,7 @@ export const FlagTitleIconContainer = styled.div`
 export const FlagTitleInput = styled.input`
   border: none;
   font-family: Pretendard;
-  font-size: calc(${fullHeight} * 0.06);
+  font-size: calc(${fullHeight} * 0.05);
   font-style: normal;
   font-weight: 800;
   line-height: normal;
@@ -202,13 +202,13 @@ export const FlagTypeLabelTextContainer = styled.div`
 
 export const FlagTypeContainer = styled.div`
   display: flex;
-  width: 8rem;
-  height: 3rem;
+  width: 7.5rem;
+  height: 2.5rem;
   justify-content: center;
   align-items: center;
   gap: 1rem;
 
-  border-radius: 0.625rem;
+  border-radius: 0.825rem;
   background: #30c2e7;
 `;
 
@@ -240,8 +240,8 @@ export const FlagTypeText = styled.div`
   font-family: Pretendard;
   font-size: 1rem;
   font-style: normal;
-  font-weight: 500;
-  line-height: 0.9375rem;
+  font-weight: 700;
+  line-height: 0.8375rem;
   letter-spacing: 0.07813rem;
   text-transform: uppercase;
 `;
@@ -250,7 +250,7 @@ export const FlagVariationLabel = styled.div`
   display: flex;
   padding: 0.625rem;
   align-items: center;
-  gap: 0.625rem;
+  gap: 2.625rem;
   // flex: 1 0 0;
   align-self: stretch;
 `;
@@ -283,7 +283,9 @@ export const FlagVariationContentLayer = styled.div`
   align-items: center;
   gap: 0.9375rem;
   align-self: stretch;
-  padding-bottom: 1.25rem;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  background-color: #f5f5f5;
 `;
 
 export const FlagVariationRowContainer = styled.div`
@@ -325,10 +327,9 @@ export const FlagVariationDescriptionContainer = styled.div`
 `;
 
 export const FlagVariationDivisionLine = styled.div`
-  width: 98%;
+  width: 100%;
   height: 0.125rem;
-
-  background: #000;
+  background: #a9a9a9;
 `;
 
 export const KeywordContainer = styled.div`
@@ -339,9 +340,9 @@ export const KeywordContainer = styled.div`
   gap: 0.9375rem;
   align-self: stretch;
 
-  border-radius: 0.625rem;
-  border: 1px solid #000;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 1.225rem;
+  border: 1px solid #a8a8a8;
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
 `;
 
 export const OutsideToggleContainer = styled.div`
@@ -363,7 +364,7 @@ export const OutsideToggleRowContainer = styled.div`
 
 export const KeywordLabelContainer = styled.div`
   display: flex;
-  width: 3rem;
+  width: 4rem;
   padding: 0.0625rem 0.625rem;
   flex-direction: column;
   justify-content: center;
@@ -375,9 +376,9 @@ export const KeywordText = styled.div`
   color: #000;
   text-align: center;
   font-family: Pretendard;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
   line-height: normal;
 `;
 
@@ -401,7 +402,7 @@ export const KeywordValueContainer = styled.input`
   flex: 1 0 0;
 
   border-radius: 0.625rem;
-  border: 1px solid #000;
+  border: 1px solid #aaaaaa;
 
   color: #000;
   font-family: Pretendard;
@@ -517,7 +518,7 @@ export const HistoryTitleContainer = styled.div`
 export const HistoryTitleText = styled.div`
   color: #000;
   font-family: Roboto;
-  font-size: 2.8125rem;
+  font-size: 2.2125rem;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
@@ -528,7 +529,7 @@ export const HistoryContentContainer = styled.div`
   padding: 0.625rem;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1.25rem;
+  gap: 1.05rem;
   // flex: 1 0 0;
 `;
 
@@ -547,7 +548,7 @@ export const HistoryIconListContainer = styled.div`
   padding: 0.625rem 0rem;
   flex-direction: column;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1.05rem;
 `;
 
 export const HistoryIconPadding = styled.div<{ $len: number }>`
