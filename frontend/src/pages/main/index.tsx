@@ -7,6 +7,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 import { createSdkKey, getMainPageOverview } from '@/api/main/mainAxios';
 import CopyCheck from '@/assets/check.svg?react';
@@ -17,11 +19,9 @@ import OutlinedFlag from '@/assets/outlined-flag.svg?react';
 import SdkKey from '@/assets/sdk-key.svg?react';
 import SearchIcon from '@/assets/search.svg?react';
 import CreateModal from '@/components/createModal';
+import { useLoadingStore } from '@/global/LoadingAtom';
 import * as S from '@/pages/main/indexStyle';
 import FlagTable from '@/pages/main/table';
-import { useLoadingStore } from '@/global/LoadingAtom';
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
 
 interface OverviewInfo {
   sdkKey: string;
@@ -278,7 +278,7 @@ const index = () => {
 
           <S.HistoryComponent>
             <S.HisotryTitleContainer>
-              <S.Title>히스토리</S.Title>
+              <S.Title>변경 이력</S.Title>
             </S.HisotryTitleContainer>
           </S.HistoryComponent>
         </S.OverviewComponent>
