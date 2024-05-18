@@ -97,7 +97,7 @@ public class LSConnector {
 		while (Objects.nonNull(inputLine = reader.readLine())) {
 			if (inputLine.startsWith("event:")) {
 				if (inputLine.substring(6).contains("disconnect")) {
-					break;
+					return "disconnect";
 				}
 			} else if (inputLine.startsWith("data:")) {
 				inputLine = inputLine.substring(5);
@@ -113,17 +113,29 @@ public class LSConnector {
 		return response.toString();
 	}
 
-	public Runnable createSseRunnable(HttpURLConnection sseConn, SseCallback callback) {
+	public Runnable createSseRunnable(String userKey, SseCallback callback) throws LSServerException {
 		return () -> {
-			try (BufferedReader reader = new BufferedReader(new InputStreamReader(sseConn.getInputStream(), UTF_8))) {
-				while (!Thread.interrupted()) {
-					String sseResponse = parseResponse(reader);
-					if (!sseResponse.isEmpty()) {
-						callback.onSseReceived(sseResponse);
+			String sseResponse = "";
+			while (!Thread.interrupted() && !sseResponse.equals("disconnect")){
+				HttpURLConnection sseConn = setup("sse/subscribe/" + userKey, "GET", true);
+
+				try (BufferedReader reader = new BufferedReader(new InputStreamReader(sseConn.getInputStream(), UTF_8))) {
+					int count = 0;
+					while (!Thread.interrupted() && count < 10) {
+						sseResponse = parseResponse(reader);
+						if (sseResponse.equals("disconnect")) {
+							break;
+						}
+						count += callback.onSseReceived(sseResponse);
+					}
+				} catch (IOException e) {
+					System.err.println("LightSwitch 서버와 통신에 실패했습니다. : 재연결");
+					try {
+						Thread.sleep(5000);
+					} catch (InterruptedException ex) {
+						throw new LSServerException();
 					}
 				}
-			} catch (IOException e) {
-				throw new LSServerException();
 			}
 		};
 	}
