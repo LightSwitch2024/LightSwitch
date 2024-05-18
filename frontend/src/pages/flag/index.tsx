@@ -236,7 +236,7 @@ const FlagDetail = () => {
     [`& .${switchClasses.checked}`]: {
       [`&.${switchClasses.switchBase}`]: {
         color: '#031c5b',
-        transform: 'translateX(32px)',
+        transform: 'translateX(42px)',
         '&:hover': {
           backgroundColor: 'rgba(24,90,257,0.08)',
         },
