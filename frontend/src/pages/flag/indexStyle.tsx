@@ -49,7 +49,6 @@ export const FlagTitleInputContainer = styled.div`
   display: flex;
   height: 5rem;
 
-  padding: 0rem 0.625rem;
   align-items: center;
   gap: 0.625rem;
   flex-shrink: 0;
@@ -61,8 +60,6 @@ export const FlagTitleIconContainer = styled.div`
   justify-content: center;
   align-items: center;
   gap: 0.625rem;
-
-  border-radius: 0.3125rem;
 `;
 
 export const FlagTitleInput = styled.input`
@@ -107,7 +104,7 @@ export const FlagTagsInputContainer = styled.div`
 
 export const FlagDescriptionLabel = styled.div`
   display: flex;
-  padding: 0.5rem 0.625rem;
+  padding: 0.5rem 0.3rem;
   align-items: center;
   gap: 0.625rem;
   // flex: 1 0 0;
@@ -126,8 +123,8 @@ export const FlagDescriptionIconContainer = styled.div`
   gap: 0.625rem;
 
   > svg {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 2.3rem;
+    height: 2.3rem;
   }
 `;
 
@@ -150,6 +147,7 @@ export const FlagDescriptionTextArea = styled.textarea`
   display: flex;
   height: 5rem;
   padding: 0.625rem;
+  margin-left: 0.5rem;
   align-items: flex-start;
   gap: 0.625rem;
   flex-shrink: 0;
@@ -183,14 +181,21 @@ export const FlagTypeLabel = styled.div`
   gap: 0.3125rem;
 `;
 
+export const KeywordLabel = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.3125rem;
+  padding: 0.5rem 0.625rem;
+`;
+
 export const FlagTypeIconContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 0.625rem;
 
   > svg {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 2.3rem;
+    height: 2.3rem;
   }
 `;
 
@@ -267,8 +272,8 @@ export const FlagVariationIconContainer = styled.div`
   gap: 0.625rem;
 
   > svg {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 2.3rem;
+    height: 2.3rem;
   }
 `;
 
@@ -339,6 +344,7 @@ export const KeywordContainer = styled.div`
   align-items: center;
   gap: 0.9375rem;
   align-self: stretch;
+  margin-left: 1rem;
 
   border-radius: 1.225rem;
   border: 1px solid #a8a8a8;
@@ -347,7 +353,7 @@ export const KeywordContainer = styled.div`
 
 export const TagContainer = styled.div`
   display: flex;
-  padding: 0.5rem 0.625rem;
+  padding: 0.5rem 0.1rem;
   justify-content: start;
   flex-direction: row;
   gap: 0.9375rem;
@@ -479,6 +485,10 @@ export const DeleteButton = styled.button`
   border-radius: 0.625rem;
   background: #f5f6f7;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  &:hover {
+    background: #e0e0e0;
+  }
+  cursor: pointer;
 `;
 
 export const UpdateButton = styled.button`
@@ -491,6 +501,9 @@ export const UpdateButton = styled.button`
   border-radius: 0.625rem;
   background: #031c5b;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  &:hover {
+    background: #002f87;
+  }
 `;
 
 export const DeleteButtonText = styled.div`
@@ -511,6 +524,8 @@ export const UpdateButtonText = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 1.25rem; /* 100% */
+
+  cursor: pointer;
 `;
 
 export const HistoryTitleContainer = styled.div`

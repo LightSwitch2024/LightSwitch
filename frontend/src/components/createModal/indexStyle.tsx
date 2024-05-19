@@ -198,8 +198,8 @@ export const FlagDescriptionIconContainer = styled.div`
   align-items: center;
   gap: 0.625rem;
   > svg {
-    width: 1.4rem;
-    height: 1.4rem;
+    width: 1.7rem;
+    height: 1.7rem;
   }
 `;
 
@@ -326,6 +326,7 @@ export const FlagTypeText = styled.div`
   line-height: 0.9375rem; /* 75% */
   letter-spacing: 0.07813rem;
   text-transform: uppercase;
+  cursor: pointer;
 `;
 
 export const FlagVariationLabel = styled.div`
@@ -426,7 +427,7 @@ export const FlagVariationDivisionLine = styled.div`
 
 export const ButtonLayer = styled.div`
   display: flex;
-  padding: 0.1rem 0rem;
+  padding: 0.5rem 0rem;
   justify-content: flex-end;
   align-items: center;
   gap: 0.8125rem;
@@ -459,6 +460,7 @@ export const CancelButton = styled.button`
   &:active {
     background: #f5f6f7;
   }
+  cursor: pointer;
 `;
 
 export const DeleteButton = styled.button`
@@ -486,6 +488,7 @@ export const DeleteButton = styled.button`
   &:active {
     background: #f5f6f7;
   }
+  cursor: pointer;
 `;
 
 export const ConfirmButton = styled.button<{ $flag: boolean }>`
@@ -513,6 +516,7 @@ export const ConfirmButton = styled.button<{ $flag: boolean }>`
   &:active {
     background: #031c5b;
   }
+  cursor: pointer;
 
   ${(props) =>
     props.$flag &&
@@ -592,8 +596,8 @@ export const HeadFlagTitleIconContainer = styled.div`
   align-items: center;
   gap: 0.625rem;
   > svg {
-    width: 1.4rem;
-    height: 1.4rem;
+    width: 1.7rem;
+    height: 1.7rem;
   }
 `;
 

@@ -189,6 +189,7 @@ const FlagTable = (props: FlagTableProps) => {
     // hover effect
     '&:hover': {
       backgroundColor: '#89e6f5',
+      cursor: 'pointer',
     },
   }));
 
