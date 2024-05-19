@@ -1,14 +1,14 @@
 import { TagsInputComponent } from '@pages/main/tagInput';
 import React, { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 import FilteringIcon from '@/assets/filtering.svg?react';
 import SearchIcon from '@/assets/search.svg?react';
 import CreateModal from '@/components/createModal';
 import * as S from '@/pages/list/indexStyle';
 import FlagTable from '@/pages/list/table';
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
 export interface Tag {
   colorHex: string;
   content: string;

@@ -60,6 +60,7 @@ export const TabElementContainer = styled.div<{ $select: boolean }>`
   justify-content: center;
   align-items: center;
   gap: 0.625rem;
+  cursor: pointer;
 
   border-radius: 0.625rem 0.625rem 0rem 0rem;
   ${(props) =>
@@ -168,7 +169,7 @@ export const TextContainer = styled.div`
 export const KeywordTextContainer = styled.div`
   display: flex;
   flex-direction: row;
-  gap: 0.625rem;
+  margin: auto 0;
 `;
 
 export const PropertyIndexTextContainer = styled.div`
@@ -183,6 +184,12 @@ export const VarContainer = styled.div`
   gap: 0.125rem;
 `;
 
+export const KeywordContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 0.125rem;
+`;
+
 export const VarDesContainer = styled.div`
   display: flex;
   width: 100%;
@@ -191,6 +198,13 @@ export const VarDesContainer = styled.div`
 `;
 
 export const VarDefinitionContainer = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  gap: 0.125rem;
+`;
+
+export const KeywordDefinitionContainer = styled.div`
   display: flex;
   width: 100%;
   flex-direction: row;
@@ -246,15 +260,6 @@ export const LabelText = styled.div`
   line-height: normal;
 `;
 
-export const KeywordText = styled.div`
-  color: #000;
-  font-family: Pretendard;
-  font-size: 1.6rem;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
-`;
-
 export const PropertyIndexText = styled.div`
   display: flex;
   width: 20rem;
@@ -275,6 +280,17 @@ export const VarText = styled.div`
   font-size: 1.5rem;
   font-style: normal;
   font-weight: 400;
+  line-height: normal;
+`;
+
+export const KeywordText = styled.div`
+  display: flex;
+  width: 5rem;
+  color: #000;
+  font-family: Pretendard;
+  font-size: 1.5rem;
+  font-style: normal;
+  font-weight: 500;
   line-height: normal;
 `;
 
@@ -325,6 +341,15 @@ export const ButtonLayer = styled.div`
   padding: 0 0 0.2rem 0;
 `;
 
+export const DelButtonLayer = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 0;
+  align-self: stretch;
+  padding: 0 0 0.2rem 0;
+  justify-content: flex-end;
+`;
+
 export const HorizonButtonLayer = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -363,10 +388,11 @@ export const CancelButton = styled.button`
   font-style: normal;
   font-weight: 400;
   line-height: 1.25rem; /* 100% */
+  cursor: pointer;
 
-  // &:hover {
-  //   background: #e0e0e0;
-  // }
+  &:hover {
+    background: #e0e0e0;
+  }
 
   &:active {
     background: #f5f6f7;
@@ -391,13 +417,14 @@ export const ConfirmButton = styled.button`
   font-weight: 400;
   line-height: 1.25rem; /* 100% */
 
-  // &:hover {
-  //   background: #002f87;
-  // }
+  &:hover {
+    background: #002f87;
+  }
 
   &:active {
     background: #031c5b;
   }
+  cursor: pointer;
 `;
 
 export const AddButton = styled.button`
@@ -419,13 +446,14 @@ export const AddButton = styled.button`
   font-weight: 400;
   line-height: 1rem; /* 100% */
 
-  // &:hover {
-  //   background: #002f87;
-  // }
+  &:hover {
+    background: #002f87;
+  }
 
   &:active {
     background: #031c5b;
   }
+  cursor: pointer;
 `;
 
 export const DelButton = styled.button`
@@ -446,13 +474,14 @@ export const DelButton = styled.button`
   font-weight: 400;
   line-height: 1rem; /* 100% */
   border: 1px solid #c2c3c3;
-  // &:hover {
-  //   background: #e0e0e0;
-  // }
+  &:hover {
+    background: #e0e0e0;
+  }
 
   &:active {
     background: #f5f6f7;
   }
+  cursor: pointer;
 `;
 
 export const Horizontal = styled.div`
@@ -475,8 +504,13 @@ export const VarTextContainer = styled.div`
   margin: auto;
 `;
 
+export const UpperVarTextContainer = styled.div`
+  margin: auto;
+  padding-right: 0.2rem;
+`;
+
 export const Boundary = styled.div`
-  padding: 0 1.75rem;
+  padding: 1.75rem;
   margin: 0.75rem 0;
   flex-direction: column;
   align-items: center;
@@ -529,6 +563,7 @@ export const FlagTypeContainer = styled.div`
 
   border-radius: 0.625rem;
   background: #30c2e7;
+  cursor: pointer;
 `;
 
 export const FlagTypeContentContainer = styled.div`
@@ -537,12 +572,14 @@ export const FlagTypeContentContainer = styled.div`
   align-items: center;
   gap: 0.5rem;
   align-self: stretch;
+  cursor: pointer;
 `;
 
 export const FlagTypeTextContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 0.625rem;
+  cursor: pointer;
 `;
 
 export const FlagTypeText = styled.div`
@@ -555,6 +592,7 @@ export const FlagTypeText = styled.div`
   line-height: 0.9375rem; /* 75% */
   letter-spacing: 0.05813rem;
   text-transform: uppercase;
+  cursor: pointer;
 `;
 
 export const FlagTypeContentContainerChecked = styled.div`
@@ -567,6 +605,7 @@ export const FlagTypeContentContainerChecked = styled.div`
 
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   border-radius: 0.625rem;
+  cursor: pointer;
 `;
 
 export const FlagTypeContentContainerUnchecked = styled.div`
@@ -577,9 +616,19 @@ export const FlagTypeContentContainerUnchecked = styled.div`
   align-self: stretch;
 
   border-radius: 0.625rem;
+  cursor: pointer;
 `;
 
 export const FlagVariationContentLayer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9375rem;
+  align-self: stretch;
+  padding: 0.5rem;
+`;
+
+export const KeywordContentLayer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -592,16 +641,25 @@ export const FlagVariationRowContainer = styled.div`
   display: flex;
   width: 100%;
   align-items: center;
+  justify-content: space-between;
   gap: 2rem;
+`;
+
+export const KeywordRowContainer = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
 `;
 
 export const FlagVariationInput = styled.input<{ $flag: boolean }>`
   display: flex;
   width: 100%;
   height: 2rem;
-  padding: 0.9375rem 0.75rem;
+  padding: 0.9375rem 1rem;
   align-items: center;
-  gap: 0.625rem;
+  gap: 1rem;
   flex: 1 0 0;
 
   border-radius: 0.625rem;
@@ -634,4 +692,34 @@ export const FlagTypeLayer = styled.div`
   gap: 1.615rem;
   // flex: 1 0 0;
   align-self: stretch;
+`;
+
+export const FlagTypeLabel = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+  gap: 0.625rem;
+`;
+
+export const FlagTypeIconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  > svg {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+`;
+
+export const FlagTypeLabelTextContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+`;
+
+export const FlagTypeEditIconContainer = styled.div`
+  display: flex;
+  padding: 0.25rem 0rem;
+  align-items: center;
+  gap: 0.625rem;
 `;

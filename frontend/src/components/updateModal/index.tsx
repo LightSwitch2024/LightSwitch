@@ -1,23 +1,22 @@
 import { updateFlag, updateKeywords, updateVariations } from '@api/update/updateAxios';
 import BlackFlag from '@assets/black-flag.svg?react';
-import Bookmark from '@assets/bookmark.svg?react';
 import CallSplit from '@assets/call-split.svg?react';
 import Description from '@assets/description.svg?react';
 import Edit from '@assets/edit.svg?react';
 import KeyWord from '@assets/keyword.svg?react';
 import Loop from '@assets/loop.svg?react';
-import OutlinedFlagBig from '@assets/outlined-flag-big.svg?react';
 import * as S from '@components/updateModal/indexStyle';
-import { TitleContainer } from '@components/updateModal/indexStyle';
 import { TagsInputComponent } from '@pages/main/tagInput';
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { DefaultValue } from 'recoil';
-import { useLoadingStore } from '@/global/LoadingAtom';
-import { confirmDuplicateFlag } from '@/api/create/createAxios';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+
+import { confirmDuplicateFlag } from '@/api/create/createAxios';
+import { useLoadingStore } from '@/global/LoadingAtom';
+import { Call } from '@mui/icons-material';
 interface UpdateModalProps {
   closeUpdateModal: () => void;
   flagDetail: FlagDetailItem;
@@ -134,6 +133,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     props.flagDetail?.variations || [{ value: 'FALSE', portion: '', description: '' }],
   );
   const [isTypeEdited, setIsTypeEdited] = useState<boolean>(false);
+  const [isBool, setIsBool] = useState<boolean>(false);
 
   // default 값 =====================================================================
   const [defaultValue, setDefaultValue] = useState<string>(
@@ -182,7 +182,8 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
 
   const handleDefaultValueChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     if (type === 'BOOLEAN') {
-      setDefaultValue(e.target.value.toUpperCase());
+      // setDefaultValue(e.target.value.toUpperCase());
+      return;
     } else if (type === 'INTEGER' && isNaN(Number(e.target.value.at(-1)))) {
       setDefaultValue(e.target.value.slice(0, -1));
     } else {
@@ -253,6 +254,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       if (typeItem === 'BOOLEAN') {
         // For BOOLEAN type, add two default variations
         setDefaultPortion(100);
+        setIsBool(true);
         newVariations = [{ variationId: 0, value: 'FALSE', portion: 0, description: '' }];
       } else {
         newVariations = [];
@@ -296,7 +298,9 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
   const handleChangeDefaultValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
     if (editedVariationInfo.type === 'BOOLEAN') {
-      value = e.target.value.toUpperCase();
+      // value = e.target.value.toUpperCase();
+      // boolean일 때, value가 바뀔 필요가 없어서 막음!
+      return;
     } else if (
       editedVariationInfo.type === 'INTEGER' &&
       isNaN(Number(e.target.value.at(-1)))
@@ -340,7 +344,9 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value;
       if (editedVariationInfo.type === 'BOOLEAN') {
-        value = e.target.value.toUpperCase();
+        // value = e.target.value.toUpperCase();
+        //boolean타입일 때, 반환값 True, False말고 다른 값으로는 못바꾸게
+        return;
       } else if (
         editedVariationInfo.type === 'INTEGER' &&
         isNaN(Number(e.target.value.at(-1)))
@@ -537,6 +543,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       editedVariationInfo.variations.length >= 1
     ) {
       setIsInvalidBooleanVariation(true);
+      editedVariationInfo.defaultValue = 'TRUE';
       return;
     } else {
       setIsInvalidBooleanVariation(false);
@@ -1084,66 +1091,62 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     if (selectedTab === 1) {
       return (
         <S.Container>
-          {isTypeEdited &&
-            typeConfig.map((typeItem, idx) =>
-              typeItem === type ? (
-                <S.FlagTypeContentContainerChecked
-                  key={idx}
-                  onClick={handleEditeType(typeItem)}
-                >
-                  <S.FlagTypeTextContainer>
-                    <S.FlagTypeText>{typeItem}</S.FlagTypeText>
-                  </S.FlagTypeTextContainer>
-                </S.FlagTypeContentContainerChecked>
-              ) : (
-                <S.FlagTypeContentContainerUnchecked
-                  key={idx}
-                  onClick={handleEditeType(typeItem)}
-                >
-                  <S.FlagTypeTextContainer>
-                    <S.FlagTypeText>{typeItem}</S.FlagTypeText>
-                  </S.FlagTypeTextContainer>
-                </S.FlagTypeContentContainerUnchecked>
-              ),
-            )}
-          {/* <select value={editedVariationInfo.type}>
-            <option value={'BOOLEAN'}>boolean</option>
-            <option value={'INTEGER'}>Integer</option>
-            <option value={'STRING'}>String</option>
-          </select> */}
-          <S.Layer>
-            <S.FlagTypeLayer>
-              <S.TitleContainer>
-                <S.IconContainer>
-                  <Loop />
-                </S.IconContainer>
-                <S.TextContainer>
-                  <S.LabelText>변수</S.LabelText>
-                </S.TextContainer>
-              </S.TitleContainer>
-              <S.TitleContainer>
-                <S.IconContainer>
-                  <CallSplit />
-                </S.IconContainer>
-                <S.TextContainer>
-                  <S.LabelText>변수 타입</S.LabelText>
-                </S.TextContainer>
-                <S.FlagTypeContainer onClick={onClickTypeEdit}>
-                  <S.FlagTypeContentContainer>
+          <S.FlagTypeLayer>
+            <S.FlagTypeLabel>
+              <S.FlagTypeIconContainer>
+                <CallSplit />
+              </S.FlagTypeIconContainer>
+              <S.FlagTypeLabelTextContainer>
+                <S.LabelText>변수 타입</S.LabelText>
+              </S.FlagTypeLabelTextContainer>
+            </S.FlagTypeLabel>
+            <S.FlagTypeContainer onClick={onClickTypeEdit}>
+              <S.FlagTypeContentContainer>
+                <S.FlagTypeTextContainer>
+                  <S.FlagTypeText>{type}</S.FlagTypeText>
+                </S.FlagTypeTextContainer>
+                <S.FlagTypeEditIconContainer>
+                  <Edit />
+                </S.FlagTypeEditIconContainer>
+              </S.FlagTypeContentContainer>
+            </S.FlagTypeContainer>
+            {isTypeEdited &&
+              typeConfig.map((typeItem, idx) =>
+                typeItem === type ? (
+                  <S.FlagTypeContentContainerChecked
+                    key={idx}
+                    onClick={handleEditeType(typeItem)}
+                  >
                     <S.FlagTypeTextContainer>
-                      <S.FlagTypeText>{type}</S.FlagTypeText>
+                      <S.FlagTypeText>{typeItem}</S.FlagTypeText>
                     </S.FlagTypeTextContainer>
-                  </S.FlagTypeContentContainer>
-                </S.FlagTypeContainer>
-              </S.TitleContainer>
-            </S.FlagTypeLayer>
-          </S.Layer>
+                  </S.FlagTypeContentContainerChecked>
+                ) : (
+                  <S.FlagTypeContentContainerUnchecked
+                    key={idx}
+                    onClick={handleEditeType(typeItem)}
+                  >
+                    <S.FlagTypeTextContainer>
+                      <S.FlagTypeText>{typeItem}</S.FlagTypeText>
+                    </S.FlagTypeTextContainer>
+                  </S.FlagTypeContentContainerUnchecked>
+                ),
+              )}
+          </S.FlagTypeLayer>
+          <S.TitleContainer>
+            <S.IconContainer>
+              <Loop />
+            </S.IconContainer>
+            <S.TextContainer>
+              <S.LabelText>변수</S.LabelText>
+            </S.TextContainer>
+          </S.TitleContainer>
           <S.FlagVariationContentLayer>
             <S.FlagVariationRowContainer>
               <S.VarContainer>
-                <S.VarTextContainer>
+                <S.UpperVarTextContainer>
                   <S.VarText>반환 값</S.VarText>
-                </S.VarTextContainer>
+                </S.UpperVarTextContainer>
                 <S.FlagVariationInput
                   type="text"
                   placeholder="값을 입력하세요"
@@ -1197,9 +1200,9 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                 <S.FlagVariationContentLayer>
                   <S.FlagVariationRowContainer>
                     <S.VarContainer>
-                      <S.VarTextContainer>
+                      <S.UpperVarTextContainer>
                         <S.VarText>반환 값</S.VarText>
-                      </S.VarTextContainer>
+                      </S.UpperVarTextContainer>
                       <S.FlagVariationInput
                         type="text"
                         placeholder="값을 입력하세요"
@@ -1226,11 +1229,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                         $flag={isFocused}
                       />
                     </S.VarContainer>
-                    <S.ButtonLayer>
-                      <S.DelButton onClick={deleteVariation(index)}>
-                        변수 삭제
-                      </S.DelButton>
-                    </S.ButtonLayer>
                   </S.FlagVariationRowContainer>
                   <S.FlagVariationRowContainer>
                     <S.VarDesContainer>
@@ -1246,22 +1244,35 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                       />
                     </S.VarDesContainer>
                   </S.FlagVariationRowContainer>
+                  {type != 'BOOLEAN' ? (
+                    <S.DelButtonLayer>
+                      <S.DelButton onClick={deleteVariation(index)}>
+                        변수 삭제
+                      </S.DelButton>
+                    </S.DelButtonLayer>
+                  ) : (
+                    <></>
+                  )}
                 </S.FlagVariationContentLayer>
               </div>
 
-              <S.Horizontal />
+              {type != 'BOOLEAN' ? <S.Horizontal /> : <></>}
             </React.Fragment>
           ))}
-          <S.ButtonLayer>
-            <S.AddButton onClick={addVariation}>변수 추가</S.AddButton>
-          </S.ButtonLayer>
+          {type != 'BOOLEAN' ? (
+            <S.ButtonLayer>
+              <S.AddButton onClick={addVariation}>변수 추가</S.AddButton>
+            </S.ButtonLayer>
+          ) : (
+            <></>
+          )}
           <S.BottomButtonLayer>
             <S.CancelButton onClick={onClickCancelVariationInfo}>취소하기</S.CancelButton>
             <S.ConfirmButton onClick={onClickSaveVariationInfo}>저장하기</S.ConfirmButton>
-            {isBlankData && <S.WarnText>필수 값이 비어있습니다.</S.WarnText>}
           </S.BottomButtonLayer>
           <S.BottomLayer>
             <S.WarnTextWrapper>
+              {isBlankData && <S.WarnText>필수 값이 비어있습니다.</S.WarnText>}
               {isInvalidBooleanVariation && (
                 <S.WarnText>BOOLEAN 타입은 TRUE 와 FALSE 값만 유효합니다.</S.WarnText>
               )}
@@ -1287,72 +1298,78 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
           {editedKeywordInfo.keywords.map((keyword, indexOfKeyword) => (
             <div key={indexOfKeyword}>
               <S.Boundary>
-                <S.VarVertical>
-                  <S.VarDefinitionContainer>
-                    <S.TextContainer>
-                      <S.VarText>반환 값</S.VarText>
-                    </S.TextContainer>
-                    <S.FlagVariationInput
-                      type="text"
-                      value={keyword.value}
-                      onChange={handleChangeKeywordValue(indexOfKeyword)}
-                      $flag={isFocused}
-                    />
+                <S.KeywordContentLayer>
+                  <S.KeywordRowContainer>
+                    <S.VarContainer>
+                      <S.KeywordTextContainer>
+                        <S.VarText>반환 값</S.VarText>
+                      </S.KeywordTextContainer>
+                      <S.FlagVariationInput
+                        type="text"
+                        value={keyword.value}
+                        onChange={handleChangeKeywordValue(indexOfKeyword)}
+                        $flag={isFocused}
+                      />
+                    </S.VarContainer>
                     <S.ButtonLayer>
                       <S.DelButton onClick={() => deleteKeyword(indexOfKeyword)}>
                         키워드 삭제
                       </S.DelButton>
                     </S.ButtonLayer>
-                  </S.VarDefinitionContainer>
-                  <S.VarDefinitionContainer>
-                    <S.TextContainer>
+                  </S.KeywordRowContainer>
+                  <S.KeywordDefinitionContainer>
+                    <S.KeywordTextContainer>
                       <S.VarText>설명</S.VarText>
-                    </S.TextContainer>
+                    </S.KeywordTextContainer>
                     <S.FlagVariationInput
                       type="text"
                       value={keyword.description}
                       onChange={handleChangeKeywordDescription(indexOfKeyword)}
                       $flag={isFocused}
                     />
-                  </S.VarDefinitionContainer>
-                </S.VarVertical>
-                <S.BoldHorizontal />
+                  </S.KeywordDefinitionContainer>
+
+                  <S.BoldHorizontal />
+                </S.KeywordContentLayer>
                 {keyword.properties.map((property, indexOfProperty) => (
                   <div key={indexOfProperty}>
-                    <S.VarHorizon>
-                      <S.VarContainer>
-                        <S.TextContainer>
-                          <S.VarText>속성</S.VarText>
-                        </S.TextContainer>
-                        <S.FlagVariationInput
-                          type="text"
-                          value={property.property}
-                          onChange={handleChangeProperty(indexOfKeyword, indexOfProperty)}
-                          $flag={isFocused}
-                        />
-                      </S.VarContainer>
-                      <S.VarContainer>
-                        <S.TextContainer>
-                          <S.VarText>값</S.VarText>
-                        </S.TextContainer>
-                        <S.FlagVariationInput
-                          type="text"
-                          value={property.data}
-                          onChange={handleChangeData(indexOfKeyword, indexOfProperty)}
-                          $flag={isFocused}
-                        />
-                      </S.VarContainer>
-                      <S.VarContainer>
-                        <S.ButtonLayer>
-                          <S.DelButton
-                            onClick={deleteProperty(indexOfKeyword, indexOfProperty)}
-                          >
-                            속성 삭제
-                          </S.DelButton>
-                        </S.ButtonLayer>
-                      </S.VarContainer>
-                    </S.VarHorizon>
-                    <S.Horizontal />
+                    <S.KeywordContentLayer>
+                      <S.KeywordRowContainer>
+                        <S.KeywordContainer>
+                          <S.TextContainer>
+                            <S.VarText>속성</S.VarText>
+                          </S.TextContainer>
+                          <S.FlagVariationInput
+                            type="text"
+                            value={property.property}
+                            onChange={handleChangeProperty(
+                              indexOfKeyword,
+                              indexOfProperty,
+                            )}
+                            $flag={isFocused}
+                          />
+                        </S.KeywordContainer>
+                        <S.KeywordContainer>
+                          <S.KeywordTextContainer>
+                            <S.KeywordText>값</S.KeywordText>
+                          </S.KeywordTextContainer>
+                          <S.FlagVariationInput
+                            type="text"
+                            value={property.data}
+                            onChange={handleChangeData(indexOfKeyword, indexOfProperty)}
+                            $flag={isFocused}
+                          />
+                        </S.KeywordContainer>
+                      </S.KeywordRowContainer>
+                      <S.DelButtonLayer>
+                        <S.DelButton
+                          onClick={deleteProperty(indexOfKeyword, indexOfProperty)}
+                        >
+                          속성 삭제
+                        </S.DelButton>
+                      </S.DelButtonLayer>
+                      <S.Horizontal />
+                    </S.KeywordContentLayer>
                   </div>
                 ))}
                 <S.ButtonLayer>
