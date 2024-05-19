@@ -382,7 +382,23 @@ const FlagDetail = () => {
             value={flagDetail.description}
             readOnly
           />
-
+          <S.FlagTypeLayer>
+            <S.FlagTypeLabel>
+              <S.FlagTypeIconContainer>
+                <CallSplit />
+              </S.FlagTypeIconContainer>
+              <S.FlagTypeLabelTextContainer>
+                <S.LabelText>변수 타입</S.LabelText>
+              </S.FlagTypeLabelTextContainer>
+            </S.FlagTypeLabel>
+            <S.FlagTypeContainer>
+              <S.FlagTypeContentContainer>
+                <S.FlagTypeTextContainer>
+                  <S.FlagTypeText>{flagDetail.type}</S.FlagTypeText>
+                </S.FlagTypeTextContainer>
+              </S.FlagTypeContentContainer>
+            </S.FlagTypeContainer>
+          </S.FlagTypeLayer>
           <S.FlagVariationLabel>
             <S.FlagVariationContainer>
               <S.FlagVariationIconContainer>
@@ -392,24 +408,6 @@ const FlagDetail = () => {
                 <S.LabelText>변수</S.LabelText>
               </S.FlagVariationLabelTextContainer>
             </S.FlagVariationContainer>
-
-            <S.FlagTypeLayer>
-              <S.FlagTypeLabel>
-                <S.FlagTypeIconContainer>
-                  <CallSplit />
-                </S.FlagTypeIconContainer>
-                <S.FlagTypeLabelTextContainer>
-                  <S.LabelText>변수 타입</S.LabelText>
-                </S.FlagTypeLabelTextContainer>
-              </S.FlagTypeLabel>
-              <S.FlagTypeContainer>
-                <S.FlagTypeContentContainer>
-                  <S.FlagTypeTextContainer>
-                    <S.FlagTypeText>{flagDetail.type}</S.FlagTypeText>
-                  </S.FlagTypeTextContainer>
-                </S.FlagTypeContentContainer>
-              </S.FlagTypeContainer>
-            </S.FlagTypeLayer>
           </S.FlagVariationLabel>
 
           <S.KeywordContainer>
@@ -500,14 +498,14 @@ const FlagDetail = () => {
             ))}
 
           <S.FlagTypeLayer>
-            <S.FlagTypeLabel>
+            <S.KeywordLabel>
               <S.FlagTypeIconContainer>
                 <Code />
               </S.FlagTypeIconContainer>
               <S.FlagTypeLabelTextContainer>
                 <S.LabelText>키워드</S.LabelText>
               </S.FlagTypeLabelTextContainer>
-            </S.FlagTypeLabel>
+            </S.KeywordLabel>
           </S.FlagTypeLayer>
 
           {flagDetail.keywords && flagDetail.keywords.length === 0 && (

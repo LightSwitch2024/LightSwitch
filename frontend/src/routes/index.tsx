@@ -3,6 +3,8 @@ import CreateFlag from '@pages/create/index';
 import * as S from '@routes/indexStyle';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
+import Loading from '@/components/loading/index';
+import { useLoadingStore } from '@/global/LoadingAtom';
 import FlagDetail from '@/pages/flag/index';
 import List from '@/pages/list/index';
 import Main from '@/pages/main/index';
@@ -11,8 +13,6 @@ import FillOrg from '@/pages/organization/index';
 import LogIn from '@/pages/user/login';
 
 import ProtectedRoute from './protectedRoute';
-import Loading from '@/components/loading/index';
-import { useLoadingStore } from '@/global/LoadingAtom';
 
 const Router = () => {
   const location = useLocation();

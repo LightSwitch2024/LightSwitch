@@ -746,11 +746,15 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
               </S.FlagVariationContentLayer>
               <S.FlagVariationDivisionLine />
               {renderVariationForms()}
-              <S.ButtonLayer>
-                <S.ConfirmButton onClick={onClickAddVariation} $flag={isDetailMode()}>
-                  추가
-                </S.ConfirmButton>
-              </S.ButtonLayer>
+              {type != 'BOOLEAN' ? (
+                <S.ButtonLayer>
+                  <S.ConfirmButton onClick={onClickAddVariation} $flag={isDetailMode()}>
+                    추가
+                  </S.ConfirmButton>
+                </S.ButtonLayer>
+              ) : (
+                <></>
+              )}
               {isInvalidBooleanVariation && (
                 <S.WarnText>BOOLEAN 타입은 TRUE 와 FALSE 값만 유효합니다.</S.WarnText>
               )}
