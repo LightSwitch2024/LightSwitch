@@ -6,6 +6,7 @@ import Edit from '@assets/edit.svg?react';
 import KeyWord from '@assets/keyword.svg?react';
 import Loop from '@assets/loop.svg?react';
 import * as S from '@components/updateModal/indexStyle';
+import { Call } from '@mui/icons-material';
 import { TagsInputComponent } from '@pages/main/tagInput';
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
@@ -16,7 +17,6 @@ import withReactContent from 'sweetalert2-react-content';
 
 import { confirmDuplicateFlag } from '@/api/create/createAxios';
 import { useLoadingStore } from '@/global/LoadingAtom';
-import { Call } from '@mui/icons-material';
 interface UpdateModalProps {
   closeUpdateModal: () => void;
   flagDetail: FlagDetailItem;
