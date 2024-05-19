@@ -1033,7 +1033,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     if (selectedTab === 0) {
       return (
         <S.FlagEditForm>
-          <S.Container>
+          <S.FlagContainer>
             <S.Layer>
               <S.IconContainer>
                 <BlackFlag />
@@ -1054,8 +1054,8 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
             {isDuplicatedTitle && (
               <S.WarnText>중복된 플래그 이름이 존재합니다.</S.WarnText>
             )}
-          </S.Container>
-          <S.Container>
+          </S.FlagContainer>
+          <S.FlagContainer>
             <S.Layer>
               <S.IconContainer>
                 <Description />
@@ -1071,8 +1071,8 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                 onChange={handleChangeDescription}
               />
             </S.Layer>
-          </S.Container>
-          <S.Container>
+          </S.FlagContainer>
+          <S.FlagContainer>
             <S.BottomLayer>
               <S.BottomButtonLayer>
                 <S.CancelButton onClick={onClickCancelFlagInfo}>취소하기</S.CancelButton>
@@ -1082,7 +1082,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                 {isBlankData && <S.WarnText>필수 값이 비어있습니다.</S.WarnText>}
               </S.WarnTextWrapper>
             </S.BottomLayer>
-          </S.Container>
+          </S.FlagContainer>
         </S.FlagEditForm>
       );
     }
@@ -1090,7 +1090,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     // 변수 수정 폼
     if (selectedTab === 1) {
       return (
-        <S.Container>
+        <S.FlagEditForm>
           <S.FlagTypeLayer>
             <S.FlagTypeLabel>
               <S.FlagTypeIconContainer>
@@ -1229,6 +1229,15 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                         $flag={isFocused}
                       />
                     </S.VarContainer>
+                    {type != 'BOOLEAN' ? (
+                      <S.VarDelButtonLayer>
+                        <S.VarDelButton onClick={deleteVariation(index)}>
+                          변수 삭제
+                        </S.VarDelButton>
+                      </S.VarDelButtonLayer>
+                    ) : (
+                      <></>
+                    )}
                   </S.FlagVariationRowContainer>
                   <S.FlagVariationRowContainer>
                     <S.VarDesContainer>
@@ -1244,15 +1253,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
                       />
                     </S.VarDesContainer>
                   </S.FlagVariationRowContainer>
-                  {type != 'BOOLEAN' ? (
-                    <S.DelButtonLayer>
-                      <S.DelButton onClick={deleteVariation(index)}>
-                        변수 삭제
-                      </S.DelButton>
-                    </S.DelButtonLayer>
-                  ) : (
-                    <></>
-                  )}
                 </S.FlagVariationContentLayer>
               </div>
 
@@ -1279,134 +1279,142 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
               {isWrongType && <S.WarnText>INTEGER 타입은 숫자만 유효합니다.</S.WarnText>}
             </S.WarnTextWrapper>
           </S.BottomLayer>
-        </S.Container>
+        </S.FlagEditForm>
       );
     }
 
     //  키워드 수정 폼
     if (selectedTab === 2) {
       return (
-        <S.Container>
-          <S.Layer>
-            <S.IconContainer>
-              <KeyWord />
-            </S.IconContainer>
-            <S.TextContainer>
-              <S.LabelText>키워드</S.LabelText>
-            </S.TextContainer>
-          </S.Layer>
-          {editedKeywordInfo.keywords.map((keyword, indexOfKeyword) => (
-            <div key={indexOfKeyword}>
-              <S.Boundary>
-                <S.KeywordContentLayer>
-                  <S.KeywordRowContainer>
-                    <S.VarContainer>
+        <S.FlagEditForm>
+          <S.FlagContainer>
+            <S.Layer>
+              <S.IconContainer>
+                <KeyWord />
+              </S.IconContainer>
+              <S.TextContainer>
+                <S.LabelText>키워드</S.LabelText>
+              </S.TextContainer>
+            </S.Layer>
+            {editedKeywordInfo.keywords.map((keyword, indexOfKeyword) => (
+              <div key={indexOfKeyword}>
+                <S.Boundary>
+                  <S.KeywordContentLayer>
+                    <S.KeywordRowContainer>
+                      <S.VarContainer>
+                        <S.KeywordTextContainer>
+                          <S.VarText>반환 값</S.VarText>
+                        </S.KeywordTextContainer>
+                        <S.FlagVariationInput
+                          type="text"
+                          value={keyword.value}
+                          onChange={handleChangeKeywordValue(indexOfKeyword)}
+                          $flag={isFocused}
+                        />
+                      </S.VarContainer>
+                      <S.ButtonLayer>
+                        <S.DelButton onClick={() => deleteKeyword(indexOfKeyword)}>
+                          키워드 삭제
+                        </S.DelButton>
+                      </S.ButtonLayer>
+                    </S.KeywordRowContainer>
+                    <S.KeywordDefinitionContainer>
                       <S.KeywordTextContainer>
-                        <S.VarText>반환 값</S.VarText>
+                        <S.VarText>설명</S.VarText>
                       </S.KeywordTextContainer>
                       <S.FlagVariationInput
                         type="text"
-                        value={keyword.value}
-                        onChange={handleChangeKeywordValue(indexOfKeyword)}
+                        value={keyword.description}
+                        onChange={handleChangeKeywordDescription(indexOfKeyword)}
                         $flag={isFocused}
                       />
-                    </S.VarContainer>
-                    <S.ButtonLayer>
-                      <S.DelButton onClick={() => deleteKeyword(indexOfKeyword)}>
-                        키워드 삭제
-                      </S.DelButton>
-                    </S.ButtonLayer>
-                  </S.KeywordRowContainer>
-                  <S.KeywordDefinitionContainer>
-                    <S.KeywordTextContainer>
-                      <S.VarText>설명</S.VarText>
-                    </S.KeywordTextContainer>
-                    <S.FlagVariationInput
-                      type="text"
-                      value={keyword.description}
-                      onChange={handleChangeKeywordDescription(indexOfKeyword)}
-                      $flag={isFocused}
-                    />
-                  </S.KeywordDefinitionContainer>
+                    </S.KeywordDefinitionContainer>
 
-                  <S.BoldHorizontal />
-                </S.KeywordContentLayer>
-                {keyword.properties.map((property, indexOfProperty) => (
-                  <div key={indexOfProperty}>
-                    <S.KeywordContentLayer>
-                      <S.KeywordRowContainer>
-                        <S.KeywordContainer>
-                          <S.TextContainer>
-                            <S.VarText>속성</S.VarText>
-                          </S.TextContainer>
-                          <S.FlagVariationInput
-                            type="text"
-                            value={property.property}
-                            onChange={handleChangeProperty(
-                              indexOfKeyword,
-                              indexOfProperty,
-                            )}
-                            $flag={isFocused}
-                          />
-                        </S.KeywordContainer>
-                        <S.KeywordContainer>
-                          <S.KeywordTextContainer>
-                            <S.KeywordText>값</S.KeywordText>
-                          </S.KeywordTextContainer>
-                          <S.FlagVariationInput
-                            type="text"
-                            value={property.data}
-                            onChange={handleChangeData(indexOfKeyword, indexOfProperty)}
-                            $flag={isFocused}
-                          />
-                        </S.KeywordContainer>
-                      </S.KeywordRowContainer>
-                      <S.DelButtonLayer>
-                        <S.DelButton
-                          onClick={deleteProperty(indexOfKeyword, indexOfProperty)}
-                        >
-                          속성 삭제
-                        </S.DelButton>
-                      </S.DelButtonLayer>
-                      <S.Horizontal />
-                    </S.KeywordContentLayer>
-                  </div>
-                ))}
-                <S.ButtonLayer>
-                  <S.AddButton onClick={() => addProperty(indexOfKeyword)}>
-                    속성 추가
-                  </S.AddButton>
-                </S.ButtonLayer>
-              </S.Boundary>
-            </div>
-          ))}
-          <S.ButtonLayer>
-            <S.AddButton onClick={addKeyword}>키워드 추가</S.AddButton>
-          </S.ButtonLayer>
-          <S.BottomWrapper>
-            <S.BottomButtonLayer>
-              <S.CancelButton onClick={onClickCancelKeywordInfo}>취소하기</S.CancelButton>
-              <S.ConfirmButton onClick={onClickSaveKeywordInfo}>저장하기</S.ConfirmButton>
-            </S.BottomButtonLayer>
-            <S.WarnEndWrapper>
-              <S.BottomLayer>
-                <S.WarnTextWrapper>
-                  {isInvalidBooleanVariation && (
-                    <S.WarnText>BOOLEAN 타입은 TRUE 와 FALSE 값만 유효합니다.</S.WarnText>
-                  )}
-                </S.WarnTextWrapper>
-                <S.WarnTextWrapper>
-                  {isWrongType && (
-                    <S.WarnText>INTEGER 타입은 숫자만 유효합니다.</S.WarnText>
-                  )}
-                </S.WarnTextWrapper>
-                <S.WarnTextWrapper>
-                  {isBlankData && <S.WarnText>필수 값이 비어있습니다.</S.WarnText>}
-                </S.WarnTextWrapper>
-              </S.BottomLayer>
-            </S.WarnEndWrapper>
-          </S.BottomWrapper>
-        </S.Container>
+                    <S.BoldHorizontal />
+                  </S.KeywordContentLayer>
+                  {keyword.properties.map((property, indexOfProperty) => (
+                    <div key={indexOfProperty}>
+                      <S.KeywordContentLayer>
+                        <S.KeywordRowContainer>
+                          <S.KeywordContainer>
+                            <S.TextContainer>
+                              <S.VarText>속성</S.VarText>
+                            </S.TextContainer>
+                            <S.FlagVariationInput
+                              type="text"
+                              value={property.property}
+                              onChange={handleChangeProperty(
+                                indexOfKeyword,
+                                indexOfProperty,
+                              )}
+                              $flag={isFocused}
+                            />
+                          </S.KeywordContainer>
+                          <S.KeywordContainer>
+                            <S.KeywordTextContainer>
+                              <S.KeywordText>값</S.KeywordText>
+                            </S.KeywordTextContainer>
+                            <S.FlagVariationInput
+                              type="text"
+                              value={property.data}
+                              onChange={handleChangeData(indexOfKeyword, indexOfProperty)}
+                              $flag={isFocused}
+                            />
+                          </S.KeywordContainer>
+                          <S.DelButtonLayer>
+                            <S.PropertyDelButton
+                              onClick={deleteProperty(indexOfKeyword, indexOfProperty)}
+                            >
+                              속성 삭제
+                            </S.PropertyDelButton>
+                          </S.DelButtonLayer>
+                        </S.KeywordRowContainer>
+                        <S.Horizontal />
+                      </S.KeywordContentLayer>
+                    </div>
+                  ))}
+                  <S.ButtonLayer>
+                    <S.AddButton onClick={() => addProperty(indexOfKeyword)}>
+                      속성 추가
+                    </S.AddButton>
+                  </S.ButtonLayer>
+                </S.Boundary>
+              </div>
+            ))}
+            <S.ButtonLayer>
+              <S.AddButton onClick={addKeyword}>키워드 추가</S.AddButton>
+            </S.ButtonLayer>
+            <S.BottomWrapper>
+              <S.BottomButtonLayer>
+                <S.CancelButton onClick={onClickCancelKeywordInfo}>
+                  취소하기
+                </S.CancelButton>
+                <S.ConfirmButton onClick={onClickSaveKeywordInfo}>
+                  저장하기
+                </S.ConfirmButton>
+              </S.BottomButtonLayer>
+              <S.WarnEndWrapper>
+                <S.BottomLayer>
+                  <S.WarnTextWrapper>
+                    {isInvalidBooleanVariation && (
+                      <S.WarnText>
+                        BOOLEAN 타입은 TRUE 와 FALSE 값만 유효합니다.
+                      </S.WarnText>
+                    )}
+                  </S.WarnTextWrapper>
+                  <S.WarnTextWrapper>
+                    {isWrongType && (
+                      <S.WarnText>INTEGER 타입은 숫자만 유효합니다.</S.WarnText>
+                    )}
+                  </S.WarnTextWrapper>
+                  <S.WarnTextWrapper>
+                    {isBlankData && <S.WarnText>필수 값이 비어있습니다.</S.WarnText>}
+                  </S.WarnTextWrapper>
+                </S.BottomLayer>
+              </S.WarnEndWrapper>
+            </S.BottomWrapper>
+          </S.FlagContainer>
+        </S.FlagEditForm>
       );
     }
 

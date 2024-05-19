@@ -94,6 +94,8 @@ export const TabElementText = styled.div<{ $select: boolean }>`
 export const FlagEditForm = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
+  align-self: stretch;
   gap: 0.5rem;
   width: 100%;
 `;
@@ -112,11 +114,23 @@ export const ContentContainer = styled.div`
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 `;
 
+export const FlagContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0.325rem 2rem;
+  margin: 0.5rem 4rem;
+  gap: 0.525rem;
+`;
+
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 0.325rem 0;
-  margin: 0.5rem 2rem;
+  align-items: center;
+  align-self: stretch;
+  width: 100%;
+  padding: 0.325rem 2rem;
+  margin: 0.5rem 4rem;
   gap: 0.525rem;
 `;
 
@@ -131,6 +145,8 @@ export const TagContainer = styled.div`
 export const Layer = styled.div`
   display: flex;
   flex-direction: row;
+  align-self: stretch;
+  width: 100%;
   padding: 0.325rem 0;
   gap: 0.625rem;
 `;
@@ -254,7 +270,7 @@ export const Input = styled.input<{ $flag: boolean }>`
 export const LabelText = styled.div`
   color: #000;
   font-family: Pretendard;
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-style: normal;
   font-weight: 600;
   line-height: normal;
@@ -292,6 +308,7 @@ export const KeywordText = styled.div`
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+  padding-left: 2rem;
 `;
 
 export const VarDesText = styled.div`
@@ -314,28 +331,26 @@ export const TextArea = styled.textarea<{ $flag: boolean }>`
   border-radius: 6px;
   border: 2px ${({ $flag }) => ($flag ? '1px solid #545454' : ' solid #d4d4d4')};
 
-  font-size: 1.5rem;
   font-style: normal;
-  font-family: 'Pretendard-Regular';
-  font-weight: 400;
+  font-family: Pretendard;
+  font-weight: 500;
+  font-size: 1.3rem;
   line-height: normal;
-
-  // transition: border-color 0.3s, background-color 0.3s; /* 색상 변경 시 애니메이션 효과 */
-  // &:hover,
-  // &:focus {
-  //   border-color: darkblue;
-
+  color: #545454;
+  border-radius: 0.625rem;
+  border: 1px solid #a9a9a9;
+  padding: 1rem;
   ${(props) =>
     props.$flag &&
     `
-    border: 2px solid #545454
     pointer-events: none;
-  `}
+  `};
 `;
 
 export const ButtonLayer = styled.div`
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   flex: 1 0 0;
   align-self: stretch;
   padding: 0 0 0.2rem 0;
@@ -344,9 +359,20 @@ export const ButtonLayer = styled.div`
 export const DelButtonLayer = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
   flex: 1 0 0;
   align-self: stretch;
-  padding: 0 0 0.2rem 0;
+  padding: 0 0 0.5rem 0;
+  justify-content: flex-end;
+`;
+
+export const VarDelButtonLayer = styled.div`
+  display: flex;
+  flex-direction: column;F
+  align-items: center;
+  flex: 1 0 0;
+  align-self: stretch;
+  padding: 0 0 0.5rem 0;
   justify-content: flex-end;
 `;
 
@@ -362,7 +388,6 @@ export const HorizonButtonLayer = styled.div`
 
 export const BottomButtonLayer = styled.div`
   display: flex;
-  padding: 1rem 0 0.75rem 0;
   justify-content: flex-end;
   align-items: center;
   gap: 0.8125rem;
@@ -372,7 +397,7 @@ export const BottomButtonLayer = styled.div`
 
 export const CancelButton = styled.button`
   display: flex;
-  padding: 1.0625rem 1.5625rem;
+  padding: 1rem 1.02rem;
 
   justify-content: center;
   align-items: center;
@@ -384,7 +409,7 @@ export const CancelButton = styled.button`
   color: rgba(0, 0, 0, 0.87);
   text-align: center;
   font-family: Pretendard;
-  font-size: 1.25rem;
+  font-size: 1.05rem;
   font-style: normal;
   font-weight: 400;
   line-height: 1.25rem; /* 100% */
@@ -401,7 +426,7 @@ export const CancelButton = styled.button`
 
 export const ConfirmButton = styled.button`
   display: flex;
-  padding: 1.0625rem 1.5625rem;
+  padding: 1rem 1.02rem;
   justify-content: center;
   align-items: center;
   gap: 0.375rem;
@@ -412,7 +437,7 @@ export const ConfirmButton = styled.button`
   color: #fff;
   text-align: center;
   font-family: Pretendard;
-  font-size: 1.25rem;
+  font-size: 1.05rem;
   font-style: normal;
   font-weight: 400;
   line-height: 1.25rem; /* 100% */
@@ -469,7 +494,66 @@ export const DelButton = styled.button`
   color: rgba(0, 0, 0, 0.87);
   text-align: center;
   font-family: Pretendard;
-  font-size: 1.3rem;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 0.8rem; /* 100% */
+  border: 1px solid #c2c3c3;
+  &:hover {
+    background: #e0e0e0;
+  }
+
+  &:active {
+    background: #f5f6f7;
+  }
+  cursor: pointer;
+`;
+
+export const VarDelButton = styled.button`
+  display: flex;
+  padding: 0.8rem 0.8rem;
+  width: 6rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.375rem;
+
+  border-radius: 0.625rem;
+  background: #f5f6f7;
+
+  color: rgba(0, 0, 0, 0.87);
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 0.8rem; /* 100% */
+  border: 1px solid #c2c3c3;
+  &:hover {
+    background: #e0e0e0;
+  }
+
+  &:active {
+    background: #f5f6f7;
+  }
+  cursor: pointer;
+`;
+
+export const PropertyDelButton = styled.button`
+  display: flex;
+  width: 6rem;
+  padding: 0.8rem 0.8rem;
+  justify-content: center;
+  margin-left: 0.5rem;
+  align-items: center;
+  gap: 0.375rem;
+
+  border-radius: 0.625rem;
+  background: #f5f6f7;
+
+  color: rgba(0, 0, 0, 0.87);
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 1rem;
   font-style: normal;
   font-weight: 400;
   line-height: 1rem; /* 100% */
@@ -669,7 +753,7 @@ export const FlagVariationInput = styled.input<{ $flag: boolean }>`
   font-size: 20px;
   font-style: normal;
   color: #545454;
-  font-weight: 600;
+  font-weight: 500;
   line-height: normal;
 
   &::placeholder {
