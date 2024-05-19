@@ -1032,168 +1032,172 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     // 플래그 수정 폼
     if (selectedTab === 0) {
       return (
-        <S.FlagEditForm>
-          <S.FlagContainer>
-            <S.Layer>
-              <S.IconContainer>
-                <BlackFlag />
-              </S.IconContainer>
-              <S.TextContainer>
-                <S.LabelText>플래그 이름</S.LabelText>
-              </S.TextContainer>
-            </S.Layer>
-            <S.Layer>
+        <>
+          <S.FlagEditForm>
+            <S.FlagTypeLayer>
+              <S.FlagTypeLabel>
+                <S.IconContainer>
+                  <BlackFlag />
+                </S.IconContainer>
+                <S.TextContainer>
+                  <S.LabelText>플래그 이름</S.LabelText>
+                </S.TextContainer>
+              </S.FlagTypeLabel>
+            </S.FlagTypeLayer>
+            <S.FlagVarLayer>
               <S.FlagVariationInput
                 value={editedFlagInfo.title}
                 onChange={handelChangeTitle}
                 $flag={isFocused}
                 onBlur={checkDuplicatedTitle}
               />
-            </S.Layer>
-
+            </S.FlagVarLayer>
             {isDuplicatedTitle && (
               <S.WarnText>중복된 플래그 이름이 존재합니다.</S.WarnText>
             )}
-          </S.FlagContainer>
-          <S.FlagContainer>
-            <S.Layer>
-              <S.IconContainer>
-                <Description />
-              </S.IconContainer>
-              <S.TextContainer>
-                <S.LabelText>설명</S.LabelText>
-              </S.TextContainer>
-            </S.Layer>
-            <S.Layer>
+
+            <S.FlagTypeTopLayer>
+              <S.FlagTypeLabel>
+                <S.IconContainer>
+                  <Description />
+                </S.IconContainer>
+                <S.TextContainer>
+                  <S.LabelText>설명</S.LabelText>
+                </S.TextContainer>
+              </S.FlagTypeLabel>
+            </S.FlagTypeTopLayer>
+            <S.FlagVarLayer>
               <S.TextArea
                 $flag={isFocused}
                 value={editedFlagInfo.description}
                 onChange={handleChangeDescription}
               />
-            </S.Layer>
-          </S.FlagContainer>
-          <S.FlagContainer>
-            <S.BottomLayer>
-              <S.BottomButtonLayer>
-                <S.CancelButton onClick={onClickCancelFlagInfo}>취소하기</S.CancelButton>
-                <S.ConfirmButton onClick={onClickSaveFlagInfo}>저장하기</S.ConfirmButton>
-              </S.BottomButtonLayer>
-              <S.WarnTextWrapper>
-                {isBlankData && <S.WarnText>필수 값이 비어있습니다.</S.WarnText>}
-              </S.WarnTextWrapper>
-            </S.BottomLayer>
-          </S.FlagContainer>
-        </S.FlagEditForm>
+            </S.FlagVarLayer>
+          </S.FlagEditForm>
+          <S.BottomLayer>
+            <S.BottomButtonLayer>
+              <S.CancelButton onClick={onClickCancelFlagInfo}>취소하기</S.CancelButton>
+              <S.ConfirmButton onClick={onClickSaveFlagInfo}>저장하기</S.ConfirmButton>
+            </S.BottomButtonLayer>
+            <S.WarnTextWrapper>
+              {isBlankData && <S.WarnText>필수 값이 비어있습니다.</S.WarnText>}
+            </S.WarnTextWrapper>
+          </S.BottomLayer>
+        </>
       );
     }
 
     // 변수 수정 폼
     if (selectedTab === 1) {
       return (
-        <S.FlagEditForm>
+        <>
+          <S.FlagEditForm>
+            <S.FlagTypeTopLayer>
+              <S.FlagTypeLabel>
+                <S.FlagTypeIconContainer>
+                  <CallSplit />
+                </S.FlagTypeIconContainer>
+                <S.FlagTypeLabelTextContainer>
+                  <S.LabelText>변수 타입</S.LabelText>
+                </S.FlagTypeLabelTextContainer>
+              </S.FlagTypeLabel>
+              <S.FlagTypeContainer onClick={onClickTypeEdit}>
+                <S.FlagTypeContentContainer>
+                  <S.FlagTypeTextContainer>
+                    <S.FlagTypeText>{type}</S.FlagTypeText>
+                  </S.FlagTypeTextContainer>
+                  <S.FlagTypeEditIconContainer>
+                    <Edit />
+                  </S.FlagTypeEditIconContainer>
+                </S.FlagTypeContentContainer>
+              </S.FlagTypeContainer>
+              {isTypeEdited &&
+                typeConfig.map((typeItem, idx) =>
+                  typeItem === type ? (
+                    <S.FlagTypeContentContainerChecked
+                      key={idx}
+                      onClick={handleEditeType(typeItem)}
+                    >
+                      <S.FlagTypeTextContainer>
+                        <S.FlagTypeText>{typeItem}</S.FlagTypeText>
+                      </S.FlagTypeTextContainer>
+                    </S.FlagTypeContentContainerChecked>
+                  ) : (
+                    <S.FlagTypeContentContainerUnchecked
+                      key={idx}
+                      onClick={handleEditeType(typeItem)}
+                    >
+                      <S.FlagTypeTextContainer>
+                        <S.FlagTypeText>{typeItem}</S.FlagTypeText>
+                      </S.FlagTypeTextContainer>
+                    </S.FlagTypeContentContainerUnchecked>
+                  ),
+                )}
+            </S.FlagTypeTopLayer>
+          </S.FlagEditForm>
           <S.FlagTypeLayer>
             <S.FlagTypeLabel>
-              <S.FlagTypeIconContainer>
-                <CallSplit />
-              </S.FlagTypeIconContainer>
-              <S.FlagTypeLabelTextContainer>
-                <S.LabelText>변수 타입</S.LabelText>
-              </S.FlagTypeLabelTextContainer>
+              <S.IconContainer>
+                <Loop />
+              </S.IconContainer>
+              <S.TextContainer>
+                <S.LabelText>변수</S.LabelText>
+              </S.TextContainer>
             </S.FlagTypeLabel>
-            <S.FlagTypeContainer onClick={onClickTypeEdit}>
-              <S.FlagTypeContentContainer>
-                <S.FlagTypeTextContainer>
-                  <S.FlagTypeText>{type}</S.FlagTypeText>
-                </S.FlagTypeTextContainer>
-                <S.FlagTypeEditIconContainer>
-                  <Edit />
-                </S.FlagTypeEditIconContainer>
-              </S.FlagTypeContentContainer>
-            </S.FlagTypeContainer>
-            {isTypeEdited &&
-              typeConfig.map((typeItem, idx) =>
-                typeItem === type ? (
-                  <S.FlagTypeContentContainerChecked
-                    key={idx}
-                    onClick={handleEditeType(typeItem)}
-                  >
-                    <S.FlagTypeTextContainer>
-                      <S.FlagTypeText>{typeItem}</S.FlagTypeText>
-                    </S.FlagTypeTextContainer>
-                  </S.FlagTypeContentContainerChecked>
-                ) : (
-                  <S.FlagTypeContentContainerUnchecked
-                    key={idx}
-                    onClick={handleEditeType(typeItem)}
-                  >
-                    <S.FlagTypeTextContainer>
-                      <S.FlagTypeText>{typeItem}</S.FlagTypeText>
-                    </S.FlagTypeTextContainer>
-                  </S.FlagTypeContentContainerUnchecked>
-                ),
-              )}
-          </S.FlagTypeLayer>
-          <S.TitleContainer>
-            <S.IconContainer>
-              <Loop />
-            </S.IconContainer>
-            <S.TextContainer>
-              <S.LabelText>변수</S.LabelText>
-            </S.TextContainer>
-          </S.TitleContainer>
-          <S.FlagVariationContentLayer>
-            <S.FlagVariationRowContainer>
-              <S.VarContainer>
-                <S.UpperVarTextContainer>
-                  <S.VarText>반환 값</S.VarText>
-                </S.UpperVarTextContainer>
-                <S.FlagVariationInput
-                  type="text"
-                  placeholder="값을 입력하세요"
-                  value={defaultValue}
-                  onChange={handleDefaultValueChange}
-                  onBlur={checkFormatWithType}
-                  $flag={isDetailMode()}
-                />
-              </S.VarContainer>
-              <S.VarContainer>
-                <S.VarTextContainer>
-                  <S.VarText>비율</S.VarText>
-                </S.VarTextContainer>
-                <S.FlagVariationInput
-                  type="number"
-                  placeholder="변수 비율"
-                  value={defaultPortion}
-                  onChange={handleDefaultPortionChange}
-                  onWheel={(event: React.WheelEvent<HTMLInputElement>) => {
-                    const target = event.target as HTMLInputElement;
-                    if (target) {
-                      target.blur();
-                    }
-                  }}
-                  disabled={true}
-                  readOnly={true}
-                  $flag={isDetailMode()}
-                />
-              </S.VarContainer>
-            </S.FlagVariationRowContainer>
-            <S.FlagVariationRowContainer>
-              <S.VarDesContainer>
-                <S.VarTextContainer>
-                  <S.VarDesText>설명</S.VarDesText>
-                </S.VarTextContainer>
-                <S.FlagVariationInput
-                  type="text"
-                  placeholder="설명"
-                  value={defaultDescription}
-                  onChange={handleDefaultDescriptionChange}
-                  $flag={isDetailMode()}
-                />
-              </S.VarDesContainer>
-            </S.FlagVariationRowContainer>
-            <S.Horizontal />
-          </S.FlagVariationContentLayer>
 
+            <S.FlagVariationContentLayer>
+              <S.FlagVariationRowContainer>
+                <S.VarContainer>
+                  <S.UpperVarTextContainer>
+                    <S.VarText>반환 값</S.VarText>
+                  </S.UpperVarTextContainer>
+                  <S.FlagVariationInput
+                    type="text"
+                    placeholder="값을 입력하세요"
+                    value={defaultValue}
+                    onChange={handleDefaultValueChange}
+                    onBlur={checkFormatWithType}
+                    $flag={isDetailMode()}
+                  />
+                </S.VarContainer>
+                <S.VarContainer>
+                  <S.VarTextContainer>
+                    <S.VarText>비율</S.VarText>
+                  </S.VarTextContainer>
+                  <S.FlagVariationInput
+                    type="number"
+                    placeholder="변수 비율"
+                    value={defaultPortion}
+                    onChange={handleDefaultPortionChange}
+                    onWheel={(event: React.WheelEvent<HTMLInputElement>) => {
+                      const target = event.target as HTMLInputElement;
+                      if (target) {
+                        target.blur();
+                      }
+                    }}
+                    disabled={true}
+                    readOnly={true}
+                    $flag={isDetailMode()}
+                  />
+                </S.VarContainer>
+              </S.FlagVariationRowContainer>
+              <S.FlagVariationRowContainer>
+                <S.VarDesContainer>
+                  <S.VarTextContainer>
+                    <S.VarDesText>설명</S.VarDesText>
+                  </S.VarTextContainer>
+                  <S.FlagVariationInput
+                    type="text"
+                    placeholder="설명"
+                    value={defaultDescription}
+                    onChange={handleDefaultDescriptionChange}
+                    $flag={isDetailMode()}
+                  />
+                </S.VarDesContainer>
+              </S.FlagVariationRowContainer>
+              <S.Horizontal />
+            </S.FlagVariationContentLayer>
+          </S.FlagTypeLayer>
           {editedVariationInfo.variations.map((variation, index) => (
             <React.Fragment key={index}>
               <div key={index}>
@@ -1279,7 +1283,7 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
               {isWrongType && <S.WarnText>INTEGER 타입은 숫자만 유효합니다.</S.WarnText>}
             </S.WarnTextWrapper>
           </S.BottomLayer>
-        </S.FlagEditForm>
+        </>
       );
     }
 

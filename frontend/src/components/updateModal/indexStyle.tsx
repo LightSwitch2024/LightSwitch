@@ -123,6 +123,17 @@ export const FlagContainer = styled.div`
   gap: 0.525rem;
 `;
 
+export const FlagEditContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: stretch;
+  width: 100%;
+  padding: 0.325rem 2rem;
+  margin: 0.5rem 4rem;
+  gap: 0.525rem;
+`;
+
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -325,7 +336,7 @@ export const VarDesText = styled.div`
 `;
 
 export const TextArea = styled.textarea<{ $flag: boolean }>`
-  padding: 8px 8px;
+  padding: 0.2rem 0.5rem;
   width: 100%;
   height: 7rem;
   border-radius: 6px;
@@ -768,11 +779,27 @@ export const FlagVariationInput = styled.input<{ $flag: boolean }>`
   `}
 `;
 
-export const FlagTypeLayer = styled.div`
+export const FlagTypeTopLayer = styled.div`
   display: flex;
   padding: 0.5rem 0;
   margin-bottom: 1rem;
-  align-items: center;
+  gap: 1.615rem;
+  // flex: 1 0 0;
+  align-self: stretch;
+`;
+
+export const FlagTypeLayer = styled.div`
+  display: flex;
+  padding: 0.5rem 0;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  gap: 1.615rem;
+  // flex: 1 0 0;
+  align-self: stretch;
+`;
+
+export const FlagVarLayer = styled.div`
+  display: flex;
   gap: 1.615rem;
   // flex: 1 0 0;
   align-self: stretch;
@@ -781,7 +808,7 @@ export const FlagTypeLayer = styled.div`
 export const FlagTypeLabel = styled.div`
   display: flex;
   align-items: center;
-  padding: 0.5rem 0;
+  padding: 0.2rem 0;
   gap: 0.625rem;
 `;
 
