@@ -92,13 +92,13 @@ export const BWrapper = styled.div`
 export const Button = styled.button`
   align-self: flex-end;
   width: 9rem;
-  padding: 0.3rem 1rem;
+  padding: 0.5rem 1rem;
   border-radius: 5rem;
-  border: 1px solid #00c9ea;
   font-size: 1rem;
   font-weight: 500;
-  background-color: #00c9ea;
-  color: #000;
+  border: 0;
+  background-color: #4963a7;
+  color: #fff;
   cursor: pointer;
 `;
 

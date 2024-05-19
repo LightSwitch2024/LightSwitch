@@ -8,6 +8,7 @@ import DelIcon from '@/assets/delete_forever.svg?react';
 import DeleteModal from '@/components/deleteModal/deleteModal';
 import PasswordModal from '@/components/passwordModal/passwordModal';
 import * as M from '@/pages/mypage/indexStyle';
+import { MyPageHeader } from '@/pages/mypage/indexStyle';
 
 interface UserData {
   memberId: number;
@@ -145,12 +146,14 @@ const UserDetail = () => {
           <M.TitleText>사용자 계정 관리</M.TitleText>
         </M.MyPageTitleContainer>
         <M.MyPageMemberDataContainer>
-          {isEditMode ? (
-            <M.CloseButton onClick={onPressCancelButton}>×</M.CloseButton>
-          ) : (
-            <></>
-          )}
-          <M.MyPageText>Email 주소</M.MyPageText>
+          <M.MyPageHeader>
+            <M.MyPageText>Email 주소</M.MyPageText>
+            {isEditMode ? (
+              <M.CloseButton onClick={onPressCancelButton}>×</M.CloseButton>
+            ) : (
+              <></>
+            )}
+          </M.MyPageHeader>
           <M.EmailText>{userDetail?.email}</M.EmailText>
           <M.NameWrapper>
             <M.NameBoxWrapper>
@@ -210,31 +213,25 @@ const UserDetail = () => {
               )}
             </M.TelBox>
           </M.TelWrapper>
-          <M.ButtonWrapper>
-            {!isEditMode ? (
-              <M.Button onClick={onPressEditButton}>회원정보 수정</M.Button>
-            ) : (
-              <M.Button onClick={onPressSaveButton}>회원정보 저장</M.Button>
-            )}
-
-            <M.Button onClick={() => setModalOpen(true)}>비밀번호 수정</M.Button>
-            <PasswordModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
-          </M.ButtonWrapper>
         </M.MyPageMemberDataContainer>
-        <M.DelContainer>
-          <M.DelText>계정 삭제</M.DelText>
-          <M.DelWrapper>
-            <M.Text>계정이 영구적으로 삭제됩니다.</M.Text>
-            <M.DelButton onClick={onPressDeleteButton}>
-              <DelIcon />
-              <span>계정 삭제하기</span>
-            </M.DelButton>
-            <DeleteModal
-              isDeleteModal={isDeleteModal}
-              onClose={() => setIsDeleteModal(false)}
-            />
-          </M.DelWrapper>
-        </M.DelContainer>
+        <M.ButtonWrapper>
+          {!isEditMode ? (
+            <M.Button onClick={onPressEditButton}>회원정보 수정</M.Button>
+          ) : (
+            <M.Button onClick={onPressSaveButton}>회원정보 저장</M.Button>
+          )}
+
+          <M.Button onClick={() => setModalOpen(true)}>비밀번호 수정</M.Button>
+          <PasswordModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+          <M.DelButton onClick={onPressDeleteButton}>
+            <DelIcon />
+            <span>계정 삭제하기</span>
+          </M.DelButton>
+        </M.ButtonWrapper>
+        <DeleteModal
+          isDeleteModal={isDeleteModal}
+          onClose={() => setIsDeleteModal(false)}
+        />
       </M.MyPageContainer>
     </M.MyPageLayout>
   );

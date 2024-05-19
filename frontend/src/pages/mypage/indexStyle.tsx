@@ -20,7 +20,7 @@ export const MyPageMemberDataContainer = styled.div`
   justify-content: center;
   border-radius: 0.5rem;
   margin: 0 3rem;
-  background-color: #e3f4f6;
+  background-color: #f5f6f7;
   padding: 2rem 3rem 2rem 2rem;
   gap: 1rem;
 `;
@@ -53,15 +53,22 @@ export const MyPageInput = styled.input`
 `;
 
 export const MyPageText = styled.div`
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   color: #000000;
   font-weight: bold;
 `;
 
+export const MyPageHeader = styled.div`
+  height: 1.2rem;
+  display: flex;
+  flex-direction: row;
+`;
+
 export const EmailText = styled.div`
-  font-size: 1rem;
-  color: #07aec9;
-  font-weight: 400;
+  margin: 0.75rem 0;
+  font-size: 1.25rem;
+  color: #042781;
+  font-weight: 500;
 `;
 
 export const NameWrapper = styled.div`
@@ -83,10 +90,9 @@ export const TelWrapper = styled.div`
 
 export const Wrapper = styled.div`
   display: flex;
+  width: 100%;
   flex-direction: row;
-  align-self: flex-end;
-  padding: 0.2rem 5rem 0 0;
-  margin-right: 10rem;
+  justify-content: start;
   gap: 3rem;
 `;
 
@@ -101,7 +107,6 @@ export const NWrapper = styled.div`
 export const NameBox = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
   margin-bottom: 1rem;
   padding: 0.2rem 2.5rem 0.2rem 0;
   gap: 0.5rem;
@@ -138,27 +143,28 @@ export const TelInputBox = styled.input`
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
   border: 1px solid #ddd;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   &::placeholder {
     color: #bdbdbd;
   }
 `;
 
 export const ButtonWrapper = styled.div`
+  margin: 1.5rem 3rem;
   display: flex;
   flex-direction: row;
   gap: 1rem;
 `;
 
 export const Button = styled.button`
-  width: 9rem;
+  width: 10rem;
   padding: 0.3rem 1rem;
   border-radius: 7rem;
-  border: 1px solid #00c9ea;
   font-size: 1rem;
   font-weight: 500;
-  background-color: #00c9ea;
-  color: #000;
+  border: 0;
+  background-color: #4963a7;
+  color: #fff;
   cursor: pointer;
 `;
 
@@ -202,7 +208,7 @@ export const DelButton = styled.button`
   border: 1px solid #e8d4d4;
   font-size: 1rem;
   font-weight: 600;
-  background-color: #e8d4d4;
+  background-color: #ffe0de;
   color: #000;
   cursor: pointer;
   & > svg {
@@ -216,7 +222,6 @@ export const DelButton = styled.button`
 export const CloseButton = styled.button`
   display: flex;
   margin-left: auto;
-  padding-top: 2rem;
   cursor: pointer;
   border: none;
   background: none;

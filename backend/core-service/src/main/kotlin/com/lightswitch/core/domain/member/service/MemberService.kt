@@ -150,7 +150,7 @@ class MemberService(
             firstName = savedMember.firstName,
             lastName = savedMember.lastName,
             telNumber = savedMember.telNumber,
-            orgName = organization.get(1).name,
+            orgName = organization.get(0).name,
         )
     }
 
