@@ -23,6 +23,7 @@ export const TabLogo = styled.div`
   width: 100%;
   display: flex;
   padding: 0.63rem 0.31rem;
+  margin-bottom: 1.2rem;
   flex-direction: row;
   align-items: center;
   gap: 0.5rem;
@@ -142,5 +143,5 @@ export const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 1rem;
+  gap: 1.4rem;
 `;
