@@ -135,7 +135,7 @@ class FlagService(
         val member = memberRepository.findById(flagRequestDto.memberId)
             .orElseThrow { BaseException(ResponseCode.MEMBER_NOT_FOUND) }
 
-        val savedFlag = flagRepository.save(
+        var savedFlag = flagRepository.save(
             Flag(
                 title = flagRequestDto.title,
                 description = flagRequestDto.description,
@@ -228,13 +228,14 @@ class FlagService(
 
             JSON -> TODO()
         }
-        flagRepository.save(savedFlag)
 
         // SSE 데이터 전송
         val flagInitResponseDto = buildSSEData(savedFlag)
         sseService.sendData(SseDto("", SseDto.SseType.CREATE, flagInitResponseDto))
 
-        return this.getFlag(savedFlag.flagId!!)
+        val flagResponseDto = FlagResponseDto(savedFlag)
+
+        return flagResponseDto
     }
 
     fun confirmDuplicateTitle(title: String): Boolean {
@@ -454,8 +455,6 @@ class FlagService(
                 FlagIdResponseDto(flag.title, flag.active)
             )
         )
-
-        flagRepository.save(flag)
 
         return flag.active
     }
