@@ -443,7 +443,7 @@ class FlagService(
         return flag.flagId ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
     }
 
-    fun switchFlag(flagId: Long, switchRequestDto: SwitchRequestDto): ActiveResponseDto {
+    fun switchFlag(flagId: Long, switchRequestDto: SwitchRequestDto): Boolean {
         val flag = flagRepository.findById(flagId).get()
         flag.active = !switchRequestDto.active
 
@@ -457,7 +457,7 @@ class FlagService(
 
         flagRepository.save(flag)
 
-        return ActiveResponseDto(flag.active)
+        return flag.active
     }
 
     /*

@@ -18,7 +18,7 @@ interface LightSwitchRepository {
                    switchRequest: SwitchRequest,
                    onStart: () -> Unit,
                    onComplete: () -> Unit,
-                   onError: (cause: Throwable) -> Unit): Flow<BaseResponse<SwitchResponse>>
+                   onError: (cause: Throwable) -> Unit): Flow<BaseResponse<Boolean>>
 
     fun login(email: String,
               password: String,

@@ -67,7 +67,7 @@ class FlagController(
     }
 
     @PatchMapping("/{flagId}")
-    fun switchFlag(@PathVariable flagId: Long, @RequestBody switchRequestDto: SwitchRequestDto): BaseResponse<ActiveResponseDto> {
+    fun switchFlag(@PathVariable flagId: Long, @RequestBody switchRequestDto: SwitchRequestDto): BaseResponse<Boolean> {
         return success(flagService.switchFlag(flagId, switchRequestDto))
     }
 

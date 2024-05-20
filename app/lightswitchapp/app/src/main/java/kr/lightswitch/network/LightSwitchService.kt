@@ -17,7 +17,7 @@ interface LightSwitchService {
     suspend fun exampleRequest(): BaseResponse<List<Flag>>
 
     @PATCH("api/v1/flag/{flagId}")
-    suspend fun switchFlag(@Path("flagId") flagId: Int, @Body switchRequest: SwitchRequest): BaseResponse<SwitchResponse>
+    suspend fun switchFlag(@Path("flagId") flagId: Int, @Body switchRequest: SwitchRequest): BaseResponse<Boolean>
 
     @POST("api/v1/member/login")
     suspend fun loginRequest(@Body loginRequest: LoginRequest): BaseResponse<LoginResponse>
