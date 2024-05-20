@@ -228,6 +228,7 @@ class FlagService(
 
             JSON -> TODO()
         }
+        flagRepository.save(savedFlag)
 
         // SSE 데이터 전송
         val flagInitResponseDto = buildSSEData(savedFlag)
