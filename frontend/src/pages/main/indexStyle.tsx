@@ -26,7 +26,7 @@ export const MainTitleComponent = styled.div`
 
 export const OverviewComponent = styled.div`
   display: flex;
-  height: 23%;
+  height: 19%;
   align-items: center;
   gap: 1.25rem;
   align-self: stretch;
@@ -169,9 +169,10 @@ export const SdkKeyTitleContainer = styled.div`
 export const Title = styled.div`
   color: #000;
   font-family: Pretendard;
-  font-size: calc(${fullHeight} * 0.04);
+  font-size: calc(${fullHeight} * 0.035);
   font-style: normal;
   font-weight: 700;
+  margin: 0 1.25rem 0 0.25rem;
   line-height: calc(${fullHeight} * 0.04);
 `;
 
@@ -380,9 +381,9 @@ export const FlagNavSearchBoxContainer = styled.div`
   padding: 0 1.25rem;
   justify-content: space-between;
   align-items: center;
-  height: 100%;
+  height: 80%;
   border-radius: 0.625rem;
-  border: 0.125rem solid #bdbdbd;
+  border: 0.025rem solid #a9a9a9;
 `;
 
 export const FlagNavSearchInput = styled.input`
@@ -407,8 +408,8 @@ export const SearchIconContainer = styled.div`
 
 export const FlagNavFilteringContainer = styled.div`
   display: flex;
-  width: calc(${fullHeight} * 0.06);
-  height: calc(${fullHeight} * 0.06);
+  width: calc(${fullHeight} * 0.05);
+  height: calc(${fullHeight} * 0.05);
   justify-content: center;
   align-items: center;
 `;
@@ -418,9 +419,8 @@ export const FlagNavFilteringButton = styled.button`
   justify-content: center;
   align-items: center;
   align-self: stretch;
-
   border-radius: 0.625rem;
-  border: 2px solid #000;
+  border: 1px solid #a9a9a9;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 `;
 
@@ -458,7 +458,7 @@ export const FlagNavCreateButton = styled.button`
 export const ButtonText = styled.div`
   color: #fff;
   font-family: Pretendard;
-  font-size: calc(${fullHeight} * 0.04);
+  font-size: calc(${fullHeight} * 0.03);
   font-style: normal;
   font-weight: 400;
   line-height: calc(${fullHeight} * 0.04);
@@ -476,7 +476,7 @@ export const FlagTableContainer = styled.div`
 export const TableRowDescriptionDiv = styled.div`
   color: var(--Fonts-Primary-Variant, #6e6893);
   font-family: Pretendard;
-  font-size: 0.875rem;
+  font-size: 90%;
   font-style: normal;
   font-weight: 400;
   line-height: normal;

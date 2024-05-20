@@ -156,13 +156,13 @@ const FlagTable = (props: FlagTableProps) => {
     },
     [`&.${tableCellClasses.body}`]: {
       fontFamily: 'Pretendard-Regular',
-      fontSize: 15,
+      fontSize: 18,
     },
     '&:nth-child(1)': {
-      width: '15%',
+      width: '20%',
     },
     '&:nth-child(2)': {
-      width: '20%',
+      width: '15%',
     },
     '&:nth-child(3)': {
       width: '40%',

@@ -5,7 +5,7 @@ export const fullHeight = `calc(var(--vh, 1vh) * 100 - 40px)`;
 export const Title = styled.div`
   color: #000;
   font-family: Pretendard;
-  font-size: calc(${fullHeight} * 0.06);
+  font-size: calc(${fullHeight} * 0.05);
 
   font-style: normal;
   font-weight: 700;
@@ -24,6 +24,7 @@ export const FlagTableComponent = styled.div`
 // FlagTableComponent 하위 컴포넌트 ========================
 
 export const TableNavContainer = styled.div`
+  margin-top: 1rem;
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -58,9 +59,9 @@ export const FlagNavSearchBoxContainer = styled.div`
   padding: 0 1.25rem;
   justify-content: space-between;
   align-items: center;
-  height: 100%;
+  height: 90%;
   border-radius: 0.625rem;
-  border: 0.125rem solid #bdbdbd;
+  border: 0.025rem solid #a9a9a9;
 `;
 
 export const FlagNavSearchInput = styled.input`
@@ -85,8 +86,8 @@ export const SearchIconContainer = styled.div`
 
 export const FlagNavFilteringContainer = styled.div`
   display: flex;
-  width: calc(${fullHeight} * 0.06);
-  height: calc(${fullHeight} * 0.06);
+  width: calc(${fullHeight} * 0.05);
+  height: calc(${fullHeight} * 0.05);
   justify-content: center;
   align-items: center;
 `;
@@ -96,9 +97,8 @@ export const FlagNavFilteringButton = styled.button`
   justify-content: center;
   align-items: center;
   align-self: stretch;
-
   border-radius: 0.625rem;
-  border: 2px solid #000;
+  border: 1px solid #a9a9a9;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 `;
 
@@ -136,7 +136,7 @@ export const FlagNavCreateButton = styled.button`
 export const ButtonText = styled.div`
   color: #fff;
   font-family: Pretendard;
-  font-size: calc(${fullHeight} * 0.04);
+  font-size: calc(${fullHeight} * 0.03);
   font-style: normal;
   font-weight: 400;
   line-height: calc(${fullHeight} * 0.04);

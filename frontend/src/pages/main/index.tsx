@@ -278,7 +278,7 @@ const index = () => {
 
           <S.HistoryComponent>
             <S.HisotryTitleContainer>
-              <S.Title>히스토리</S.Title>
+              <S.Title>변경 이력</S.Title>
             </S.HisotryTitleContainer>
           </S.HistoryComponent>
         </S.OverviewComponent>
