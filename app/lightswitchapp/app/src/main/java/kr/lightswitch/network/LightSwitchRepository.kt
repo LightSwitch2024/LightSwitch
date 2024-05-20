@@ -1,6 +1,7 @@
 package kr.lightswitch.network
 
 import kotlinx.coroutines.flow.Flow
+import kr.lightswitch.model.request.SwitchRequest
 import kr.lightswitch.model.response.BaseResponse
 import kr.lightswitch.model.response.Flag
 import kr.lightswitch.model.response.LoginResponse
@@ -13,9 +14,10 @@ interface LightSwitchRepository {
 
     fun switchFlag(
                    flagId: Int,
+                   switchRequest: SwitchRequest,
                    onStart: () -> Unit,
                    onComplete: () -> Unit,
-                   onError: (cause: Throwable) -> Unit): Flow<BaseResponse<Int>>
+                   onError: (cause: Throwable) -> Unit): Flow<BaseResponse<Boolean>>
 
     fun login(email: String,
               password: String,

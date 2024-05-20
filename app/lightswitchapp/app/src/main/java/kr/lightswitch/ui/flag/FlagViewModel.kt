@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kr.lightswitch.model.request.SwitchRequest
 import kr.lightswitch.model.response.Flag
 import kr.lightswitch.network.LightSwitchRepository
 import kr.lightswitch.ui.MainViewModel
@@ -45,9 +46,12 @@ class FlagViewModel @Inject constructor(
         }
     }
     fun switchFlag(flag: Flag) {
+        val switchRequest = SwitchRequest(flag.active)
+
         viewModelScope.launch {
             lightSwitchRepository.switchFlag(
                 flagId = flag.flagId,
+                switchRequest = switchRequest,
                 onStart = {
                     Timber.d("onStart switchFlag")
                 },
@@ -58,7 +62,7 @@ class FlagViewModel @Inject constructor(
                     Timber.d("error occured : $error")
                     _uiState.value = UiState.Error(error)
                 }
-            ).collectLatest {response ->
+            ).collectLatest {
                 flag.active = flag.active.not()
             }
         }
