@@ -5,6 +5,7 @@ import kr.lightswitch.model.request.SwitchRequest
 import kr.lightswitch.model.response.BaseResponse
 import kr.lightswitch.model.response.Flag
 import kr.lightswitch.model.response.LoginResponse
+import kr.lightswitch.model.response.SwitchResponse
 
 
 interface LightSwitchRepository {
@@ -17,7 +18,7 @@ interface LightSwitchRepository {
                    switchRequest: SwitchRequest,
                    onStart: () -> Unit,
                    onComplete: () -> Unit,
-                   onError: (cause: Throwable) -> Unit): Flow<BaseResponse<Boolean>>
+                   onError: (cause: Throwable) -> Unit): Flow<BaseResponse<SwitchResponse>>
 
     fun login(email: String,
               password: String,

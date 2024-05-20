@@ -443,7 +443,7 @@ class FlagService(
         return flag.flagId ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
     }
 
-    fun switchFlag(flagId: Long, switchRequestDto: SwitchRequestDto): Boolean {
+    fun switchFlag(flagId: Long, switchRequestDto: SwitchRequestDto): ActiveResponseDto {
         val flag = flagRepository.findById(flagId).get()
         flag.active = !switchRequestDto.active
 
@@ -455,7 +455,9 @@ class FlagService(
             )
         )
 
-        return flagRepository.save(flag).active
+        flagRepository.save(flag)
+
+        return ActiveResponseDto(flag.active)
     }
 
     /*
@@ -989,7 +991,7 @@ class FlagService(
         }
     }
 
-    fun getHistoriesOverview() : List<HistoryResponse>{
-        return  historyRepository.findAllByLimit(3)
+    fun getHistoriesOverview(): List<HistoryResponse> {
+        return historyRepository.findAllByLimit(3)
     }
 }
