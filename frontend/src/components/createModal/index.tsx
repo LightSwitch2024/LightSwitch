@@ -16,50 +16,13 @@ import { confirmDuplicateFlag, createFlag } from '@/api/create/createAxios';
 import { updateFlag } from '@/api/flagDetail/flagDetailAxios';
 import { getTagList, getTagListByKeyword } from '@/api/main/mainAxios';
 import { AuthAtom } from '@/global/AuthAtom';
+import { FlagDetailItem, Variation, Keyword } from '@/types/Flag';
+import { Tag } from '@/types/Tag';
 
 interface CreateModalProps {
   closeCreateModal: () => void;
   mode: string;
   flagDetail: FlagDetailItem | undefined;
-}
-
-interface TagItem {
-  content: string;
-  colorHex: string;
-}
-
-interface Variation {
-  value: string;
-  portion: number | '';
-  description: string;
-}
-
-interface Keyword {
-  properties: Array<Property>;
-  description: string;
-  value: string;
-}
-
-interface Property {
-  property: string;
-  data: string;
-}
-
-interface FlagDetailItem {
-  flagId: number;
-  title: string;
-  tags: Array<{ content: string; colorHex: string }>;
-  description: string;
-  type: string;
-  keywords: Array<Keyword>;
-  defaultValue: string;
-  defaultPortion: number;
-  defaultDescription: string;
-  variations: Array<Variation>;
-  memberId: number;
-  createdAt: string;
-  updatedAt: string;
-  active: boolean;
 }
 
 const CreateModal: React.FC<CreateModalProps> = (props) => {
@@ -68,8 +31,8 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   const auth = useRecoilValue(AuthAtom);
 
   const [title, setTitle] = useState<string>(props.flagDetail?.title || '');
-  const [allTags, setAllTags] = useState<Array<TagItem>>([]);
-  const [tags, setTags] = useState<Array<TagItem>>(props.flagDetail?.tags || []);
+  const [allTags, setAllTags] = useState<Array<Tag>>([]);
+  const [tags, setTags] = useState<Array<Tag>>(props.flagDetail?.tags || []);
   const [description, setDescription] = useState<string>(
     props.flagDetail?.description || '',
   );
@@ -90,7 +53,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   );
 
   const [tagSearchKeyword, setTagSearchKeyword] = useState<string>('');
-  const [selectedTags, setSelectedTags] = useState<Array<TagItem>>([]);
+  const [selectedTags, setSelectedTags] = useState<Array<Tag>>([]);
 
   const [isTypeEdited, setIsTypeEdited] = useState<boolean>(false);
   const [isDuplicatedTitle, setIsDuplicatedTitle] = useState<boolean>(false);
@@ -404,7 +367,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
    */
   const setupAllTags = (): void => {
     getTagList(
-      (data: Array<TagItem>) => {
+      (data: Array<Tag>) => {
         setAllTags(data);
       },
       (err) => {
@@ -435,7 +398,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
 
     getTagListByKeyword(
       tagSearchKeyword,
-      (data: Array<TagItem>) => {
+      (data: Array<Tag>) => {
         setTags(data);
       },
       (err: AxiosError) => {

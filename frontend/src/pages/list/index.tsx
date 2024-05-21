@@ -4,15 +4,13 @@ import { createPortal } from 'react-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
+import { Tag } from '@/types/Tag';
+
 import FilteringIcon from '@/assets/filtering.svg?react';
 import SearchIcon from '@/assets/search.svg?react';
 import CreateModal from '@/components/createModal';
 import * as S from '@/pages/list/indexStyle';
 import FlagTable from '@/pages/list/table';
-export interface Tag {
-  colorHex: string;
-  content: string;
-}
 
 const index = () => {
   const [flagKeyword, setFlagKeyword] = useState<string>('');

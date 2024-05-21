@@ -4,28 +4,11 @@ import { useNavigate } from 'react-router-dom';
 
 import { confirmAuthCode, sendAuthCode, signUp } from '@/api/userDetail/userAxios';
 import * as S from '@/components/signup/indexStyle';
+import { SignUpData, SendAuthCodeData, ConfirmAuthCodeData } from '@/types/User';
 
 type Props = {
   isSignUpModal: boolean;
   onClose: () => void;
-};
-
-type SendAuthCodeData = {
-  email: string;
-};
-
-type ConfirmAuthCodeData = {
-  email: string;
-  authCode: string;
-};
-
-type SignUpData = {
-  firstName: string;
-  lastName: string;
-  telNumber: string;
-  email: string;
-  password: string;
-  authCode: string;
 };
 
 const SignUp: React.FC<Props> = ({ isSignUpModal, onClose }) => {

@@ -1,46 +1,8 @@
 import axios from '@api/axios';
 import { AxiosError, AxiosResponse } from 'axios';
-
-interface BaseResponse<T> {
-  code: number;
-  message: string;
-  data: T;
-}
-
-interface TagItem {
-  content: string;
-  colorHex: string;
-}
-
-interface Variation {
-  value: string;
-  portion: number | '';
-  description: string;
-}
-
-interface Keyword {
-  properties: Array<Property>;
-  description: string;
-  value: string;
-}
-
-interface Property {
-  property: string;
-  data: string;
-}
-
-interface FlagItem {
-  title: string;
-  tags: Array<TagItem>;
-  description: string;
-  type: string;
-  keywords: Array<Keyword>;
-  defaultValue: string;
-  defaultPortion: number;
-  defaultDescription: string;
-  variations: Array<Variation>;
-  memberId: number;
-}
+import { BaseResponse } from '@/types/Api';
+import { Tag } from '@/types/Tag';
+import { FlagItem } from '@/types/Flag';
 
 export async function createFlag<T>(
   data: FlagItem,

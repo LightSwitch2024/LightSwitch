@@ -1,21 +1,6 @@
 import axios from '@api/axios';
 import { AxiosError, AxiosResponse } from 'axios';
-
-// import axios from '@/api/mockAxios';
-
-interface BaseResponse<T> {
-  code: number;
-  message: string;
-  data: T;
-}
-
-interface SdkKeyReqDto {
-  email: string;
-}
-
-interface FlagActiveReqDto {
-  active: boolean;
-}
+import { BaseResponse, FlagActiveReqDto, SdkKeyReqDto } from '@/types/Api';
 
 export async function getMainPageOverview<T>(
   onSuccess: (data: T) => void,
