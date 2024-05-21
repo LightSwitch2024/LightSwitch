@@ -435,7 +435,7 @@ class FlagService(
         variationRepository.deleteByFlagFlagId(flagId)
         keywordRepository.deleteByFlagFlagId(flagId)
 
-        flag.delete()
+        flagRepository.deleteById(flagId)
         sseService.sendData(
             SseDto(
                 "",
