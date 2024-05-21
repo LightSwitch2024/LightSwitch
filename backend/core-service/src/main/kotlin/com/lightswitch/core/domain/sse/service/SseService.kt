@@ -4,6 +4,7 @@ import com.lightswitch.core.domain.flag.dto.req.UserKeyRequestDto
 import com.lightswitch.core.domain.sse.dto.SseDto
 import com.lightswitch.core.domain.sse.dto.req.SseRequestDto
 import com.lightswitch.core.domain.sse.dto.res.SseUserKeyResponseDto
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 import java.security.MessageDigest
@@ -11,6 +12,7 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 
+private val logger = KotlinLogging.logger {}
 @Service
 class SseService {
 
@@ -42,11 +44,16 @@ class SseService {
 
     fun sendData(sseDto: SseDto) {
         // 전체 emitter에 전송
+
         map.forEach { (_, emitter) ->
-            val event = SseEmitter.event()
-                .name("sse")
-                .data(sseDto)
-            emitter.send(event)
+            try {
+                val event = SseEmitter.event()
+                    .name("sse")
+                    .data(sseDto)
+                emitter.send(event)
+            } catch (e: Exception) {
+                logger.error { "send sse data failed, $sseDto" }
+            }
         }
     }
 

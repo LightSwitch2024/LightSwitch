@@ -20,7 +20,7 @@ logging:
     name: "./core-service.log"
   level:
     org.hibernate.SQL: INFO
-    org.hibernate.orm.jdbc.bind: trace
+    org.hibernate.orm.jdbc.bind: DEBUG
     root: INFO
     com:
       lightswitch:
