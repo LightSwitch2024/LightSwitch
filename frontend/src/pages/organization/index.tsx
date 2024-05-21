@@ -2,16 +2,12 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
+import { OrgInfo } from '@/types/Organization';
 import { fillOrg } from '@/api/userDetail/userAxios';
 // import LightswitchLogo from '@/assets/lightswitchLogo.svg?react';
 import LightswitchLogo from '@/assets/lightswitchLogo.png';
 import { AuthAtom } from '@/global/AuthAtom';
 import * as L from '@/pages/organization/indexStyle';
-
-interface OrgInfo {
-  name: string;
-  ownerId: number;
-}
 
 const FillOrg = () => {
   const [organization, setOrganization] = useState<string>('');

@@ -15,6 +15,14 @@ import { DefaultValue } from 'recoil';
 
 import { confirmDuplicateFlag } from '@/api/create/createAxios';
 import { useLoadingStore } from '@/global/LoadingAtom';
+
+import {
+  FlagDetailItem,
+  FlagInfo,
+  VariationInfo,
+  KeywordInfo,
+  Variation,
+} from '@/types/Flag';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
@@ -23,66 +31,6 @@ interface UpdateModalProps {
   flagDetail: FlagDetailItem;
   setFlagDetail: React.Dispatch<React.SetStateAction<FlagDetailItem>>;
   setIsModalOpened: (showModal: boolean) => void;
-}
-
-interface Variation {
-  variationId: number | '';
-  value: string;
-  portion: number | '';
-  description: string;
-}
-
-interface Keyword {
-  keywordId: number | '';
-  properties: Array<Property>;
-  description: string;
-  value: string;
-}
-
-interface Property {
-  propertyId: number | '';
-  property: string;
-  data: string;
-}
-
-interface FlagDetailItem {
-  flagId: number;
-  title: string;
-  tags: Array<{ content: string; colorHex: string }>;
-  description: string;
-  type: string;
-  keywords: Array<Keyword>;
-  defaultValue: string;
-  defaultPortion: number;
-  defaultDescription: string;
-  variations: Array<Variation>;
-  memberId: number;
-  createdAt: string;
-  updatedAt: string;
-  active: boolean;
-}
-
-interface FlagInfo {
-  title: string;
-  tags: Array<{ content: string; colorHex: string }>;
-  description: string;
-}
-
-interface VariationInfo {
-  type: string;
-  defaultValue: string;
-  defaultPortion: number;
-  defaultDescription: string;
-  variations: Array<Variation>;
-}
-
-interface KeywordInfo {
-  keywords: Array<Keyword>;
-}
-
-interface TagItem {
-  content: string;
-  colorHex: string;
 }
 
 const UpdateModal: React.FC<UpdateModalProps> = (props) => {

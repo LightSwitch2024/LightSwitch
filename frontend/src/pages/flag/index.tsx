@@ -18,114 +18,24 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
+import {
+  FlagDetailItem,
+  FlagDetailResponse,
+  History as HistoryInterface,
+} from '@/types/Flag';
+
 import { deleteFlag, getFlagDetail, updateFlag } from '@/api/flagDetail/flagDetailAxios';
 import { getTagList, getTagListByKeyword, patchFlagActive } from '@/api/main/mainAxios';
 import CreateModal from '@/components/createModal';
 import History from '@/components/history';
 import UpdateModal from '@/components/updateModal';
 import { useLoadingStore } from '@/global/LoadingAtom';
-interface Variation {
-  variationId: number | '';
-  value: string;
-  portion: number | '';
-  description: string;
-}
-
-interface Keyword {
-  keywordId: number | '';
-  properties: Array<Property>;
-  description: string;
-  value: string;
-}
-
-interface Property {
-  propertyId: number | '';
-  property: string;
-  data: string;
-}
-
-interface history {
-  flagTitle: string;
-  target: string | null;
-  previous: string | null;
-  current: string | null;
-  action: historyType;
-  createdAt: number[];
-}
-
-enum historyType {
-  // flag
-  CREATE_FLAG = 'CREATE_FLAG',
-  UPDATE_FLAG_TITLE = 'UPDATE_FLAG_TITLE',
-  UPDATE_FLAG_TYPE = 'UPDATE_FLAG_TYPE',
-  SWITCH_FLAG = 'SWITCH_FLAG',
-  DELETE_FLAG = 'DELETE_FLAG',
-
-  // variation
-  CREATE_VARIATION = 'CREATE_VARIATION',
-  UPDATE_VARIATION_VALUE = 'UPDATE_VARIATION_VALUE',
-  UPDATE_VARIATION_PORTION = 'UPDATE_VARIATION_PORTION',
-  DELETE_VARIATION = 'DELETE_VARIATION',
-
-  // keyword
-  CREATE_KEYWORD = 'CREATE_KEYWORD',
-  UPDATE_KEYWORD = 'UPDATE_KEYWORD',
-
-  //    UPDATE_KEYWORD_PROPERTY,
-  DELETE_KEYWORD = 'DELETE_KEYWORD',
-
-  // property
-  CREATE_PROPERTY = 'CREATE_PROPERTY',
-  UPDATE_PROPERTY_KEY = 'UPDATE_PROPERTY_KEY',
-  UPDATE_PROPERTY_VALUE = 'UPDATE_PROPERTY_VALUE',
-  DELETE_PROPERTY = 'DELETE_PROPERTY',
-}
-
-interface FlagDetailItem {
-  flagId: number;
-  title: string;
-  tags: Array<{ content: string; colorHex: string }>;
-  description: string;
-  type: string;
-  keywords: Array<Keyword>;
-  defaultValue: string;
-  defaultPortion: number;
-  defaultDescription: string;
-  variations: Array<Variation>;
-  memberId: number;
-  createdAt: string;
-  updatedAt: string;
-  active: boolean;
-}
-
-interface FlagDetailResponse {
-  flagId: number;
-  title: string;
-  tags: Array<{ content: string; colorHex: string }>;
-  description: string;
-  type: string;
-  keywords: Array<Keyword>;
-  defaultValue: string;
-  defaultPortion: number;
-  defaultDescription: string;
-  variations: Array<Variation>;
-  memberId: number;
-  createdAt: string;
-  updatedAt: string;
-  active: boolean;
-  histories: Array<history>;
-}
-
-interface TagItem {
-  content: string;
-  colorHex: string;
-}
 
 const FlagDetail = () => {
   const [isModalOpened, setIsModalOpened] = useState(false);
   const { flagId } = useParams<{ flagId: string }>();
   const [flagDetail, setFlagDetail] = useState<FlagDetailItem>({} as FlagDetailItem);
-  const [historyList, setHistoryList] = useState<history[]>([]);
+  const [historyList, setHistoryList] = useState<HistoryInterface[]>([]);
   const [isToggle, setIsToggle] = useState<boolean[]>([]);
   const navigator = useNavigate();
   const MySwal = withReactContent(Swal);

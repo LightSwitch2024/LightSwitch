@@ -1,5 +1,5 @@
 import { getFlagList, getTagList } from '@api/main/mainAxios';
-import { Tag } from '@pages/main/tag';
+import { Tag } from '@/types/Tag';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 

@@ -2,44 +2,8 @@ import React, { useEffect } from 'react';
 
 import * as S from '@/components/history/indexStyle';
 
-interface history {
-  flagTitle: string;
-  target: string | null;
-  previous: string | null;
-  current: string | null;
-  action: historyType;
-  createdAt: number[];
-}
-
-enum historyType {
-  // flag
-  CREATE_FLAG = 'CREATE_FLAG',
-  UPDATE_FLAG_TITLE = 'UPDATE_FLAG_TITLE',
-  UPDATE_FLAG_TYPE = 'UPDATE_FLAG_TYPE',
-  SWITCH_FLAG = 'SWITCH_FLAG',
-  DELETE_FLAG = 'DELETE_FLAG',
-
-  // variation
-  CREATE_VARIATION = 'CREATE_VARIATION',
-  UPDATE_VARIATION_VALUE = 'UPDATE_VARIATION_VALUE',
-  UPDATE_VARIATION_PORTION = 'UPDATE_VARIATION_PORTION',
-  DELETE_VARIATION = 'DELETE_VARIATION',
-
-  // keyword
-  CREATE_KEYWORD = 'CREATE_KEYWORD',
-  UPDATE_KEYWORD = 'UPDATE_KEYWORD',
-
-  //    UPDATE_KEYWORD_PROPERTY,
-  DELETE_KEYWORD = 'DELETE_KEYWORD',
-
-  // property
-  CREATE_PROPERTY = 'CREATE_PROPERTY',
-  UPDATE_PROPERTY_KEY = 'UPDATE_PROPERTY_KEY',
-  UPDATE_PROPERTY_VALUE = 'UPDATE_PROPERTY_VALUE',
-  DELETE_PROPERTY = 'DELETE_PROPERTY',
-}
-
-const index = (props: history) => {
+import { History, HistoryType } from '@/types/Flag';
+const index = (props: History) => {
   const setTimeOption = (createdAt: number[]) => {
     const year = createdAt[0];
     const month = createdAt[1] < 10 ? `0${createdAt[1]}` : createdAt[1];
@@ -81,8 +45,8 @@ const index = (props: history) => {
     }
   };
 
-  const renderHistoryTextByType = (history: history) => {
-    if (history.action === historyType.CREATE_FLAG) {
+  const renderHistoryTextByType = (history: History) => {
+    if (history.action === HistoryType.CREATE_FLAG) {
       return (
         <>
           <S.HistoryContentText>
@@ -91,7 +55,7 @@ const index = (props: history) => {
           <S.HistoryTimeText>{setTimeOption(history.createdAt)}</S.HistoryTimeText>
         </>
       );
-    } else if (history.action === historyType.UPDATE_FLAG_TITLE) {
+    } else if (history.action === HistoryType.UPDATE_FLAG_TITLE) {
       return (
         <>
           <S.HistoryContentText>
@@ -104,7 +68,7 @@ const index = (props: history) => {
           </S.HistoryTimeContainer>
         </>
       );
-    } else if (history.action === historyType.UPDATE_FLAG_TYPE) {
+    } else if (history.action === HistoryType.UPDATE_FLAG_TYPE) {
       return (
         <>
           <S.HistoryContentText>
@@ -117,7 +81,7 @@ const index = (props: history) => {
           </S.HistoryTimeContainer>
         </>
       );
-    } else if (history.action === historyType.SWITCH_FLAG) {
+    } else if (history.action === HistoryType.SWITCH_FLAG) {
       return (
         <>
           <S.HistoryContentText>
@@ -129,7 +93,7 @@ const index = (props: history) => {
           </S.HistoryTimeContainer>
         </>
       );
-    } else if (history.action === historyType.DELETE_FLAG) {
+    } else if (history.action === HistoryType.DELETE_FLAG) {
       return (
         <>
           <S.HistoryContentText>
@@ -140,7 +104,7 @@ const index = (props: history) => {
           </S.HistoryTimeContainer>
         </>
       );
-    } else if (history.action === historyType.CREATE_VARIATION) {
+    } else if (history.action === HistoryType.CREATE_VARIATION) {
       return (
         <>
           <S.HistoryContentText>
@@ -152,7 +116,7 @@ const index = (props: history) => {
           </S.HistoryTimeContainer>
         </>
       );
-    } else if (history.action === historyType.UPDATE_VARIATION_VALUE) {
+    } else if (history.action === HistoryType.UPDATE_VARIATION_VALUE) {
       return (
         <>
           <S.HistoryContentText>
@@ -164,7 +128,7 @@ const index = (props: history) => {
           </S.HistoryTimeContainer>
         </>
       );
-    } else if (history.action === historyType.UPDATE_VARIATION_PORTION) {
+    } else if (history.action === HistoryType.UPDATE_VARIATION_PORTION) {
       return (
         <>
           <S.HistoryContentText>
@@ -176,7 +140,7 @@ const index = (props: history) => {
           </S.HistoryTimeContainer>
         </>
       );
-    } else if (history.action === historyType.DELETE_VARIATION) {
+    } else if (history.action === HistoryType.DELETE_VARIATION) {
       return (
         <>
           <S.HistoryContentText>
@@ -188,7 +152,7 @@ const index = (props: history) => {
           </S.HistoryTimeContainer>
         </>
       );
-    } else if (history.action === historyType.CREATE_KEYWORD) {
+    } else if (history.action === HistoryType.CREATE_KEYWORD) {
       return (
         <>
           <S.HistoryContentText>
@@ -200,7 +164,7 @@ const index = (props: history) => {
           </S.HistoryTimeContainer>
         </>
       );
-    } else if (history.action === historyType.UPDATE_KEYWORD) {
+    } else if (history.action === HistoryType.UPDATE_KEYWORD) {
       return (
         <>
           <S.HistoryContentText>
@@ -212,7 +176,7 @@ const index = (props: history) => {
           </S.HistoryTimeContainer>
         </>
       );
-    } else if (history.action === historyType.DELETE_KEYWORD) {
+    } else if (history.action === HistoryType.DELETE_KEYWORD) {
       return (
         <>
           <S.HistoryContentText>
@@ -224,7 +188,7 @@ const index = (props: history) => {
           </S.HistoryTimeContainer>
         </>
       );
-    } else if (history.action === historyType.CREATE_PROPERTY) {
+    } else if (history.action === HistoryType.CREATE_PROPERTY) {
       return (
         <>
           <S.HistoryContentText>
@@ -236,7 +200,7 @@ const index = (props: history) => {
           </S.HistoryTimeContainer>
         </>
       );
-    } else if (history.action === historyType.UPDATE_PROPERTY_KEY) {
+    } else if (history.action === HistoryType.UPDATE_PROPERTY_KEY) {
       return (
         <>
           <S.HistoryContentText>
@@ -249,7 +213,7 @@ const index = (props: history) => {
           </S.HistoryTimeContainer>
         </>
       );
-    } else if (history.action === historyType.UPDATE_PROPERTY_VALUE) {
+    } else if (history.action === HistoryType.UPDATE_PROPERTY_VALUE) {
       return (
         <>
           <S.HistoryContentText>
@@ -261,7 +225,7 @@ const index = (props: history) => {
           </S.HistoryTimeContainer>
         </>
       );
-    } else if (history.action === historyType.DELETE_PROPERTY) {
+    } else if (history.action === HistoryType.DELETE_PROPERTY) {
       return (
         <>
           <S.HistoryContentText>

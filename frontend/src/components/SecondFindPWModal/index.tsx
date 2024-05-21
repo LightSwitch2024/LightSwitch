@@ -6,16 +6,12 @@ import { useRecoilState } from 'recoil';
 import { updatePassword } from '@/api/userDetail/userAxios';
 import * as S from '@/components/SecondFindPWModal/indexStyle';
 import { AuthAtom } from '@/global/AuthAtom';
+import { PWData } from '@/types/User';
 
 type Props = {
   isSecondFindPWModal: boolean;
   onClose: () => void;
   onPasswordResetSuccess: () => void;
-};
-
-type PWData = {
-  email: string;
-  newPassword: string;
 };
 
 const FindPW: React.FC<Props> = ({ isSecondFindPWModal, onClose }) => {

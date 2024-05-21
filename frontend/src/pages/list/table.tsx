@@ -22,7 +22,7 @@ import {
 } from '@mui/material';
 import { switchClasses } from '@mui/material/Switch';
 import * as S from '@pages/main/indexStyle';
-import { Tag } from '@pages/main/tag';
+import { Tag } from '@/types/Tag';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLoadingStore } from '@/global/LoadingAtom';
