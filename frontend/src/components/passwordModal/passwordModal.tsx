@@ -5,23 +5,12 @@ import { updatePassword } from '@/api/userDetail/userAxios';
 import { AuthAtom } from '@/global/AuthAtom';
 
 import * as P from './passwordModalStyle';
+import { PWData } from '@/types/User';
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
 };
-
-interface UserData {
-  email: string;
-  firstName: string;
-  lastName: string;
-  telNumber: string;
-}
-
-interface PWData {
-  email: string;
-  newPassword: string;
-}
 
 const PasswordModal: React.FC<Props> = ({ isOpen, onClose }) => {
   const auth = useRecoilValue(AuthAtom);

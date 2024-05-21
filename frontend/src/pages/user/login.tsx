@@ -2,24 +2,14 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
+import { MemberInfo } from '@/types/User';
 import { logIn } from '@/api/userDetail/userAxios';
-// import LightswitchLogo from '@/assets/lightswitchLogo.svg?react';
 import LightswitchLogo from '@/assets/lightswitchLogo.png';
 import FistFindPWModal from '@/components/FirstFindPWModal/index';
 import SecondFindPWModal from '@/components/SecondFindPWModal/index';
-// import FindPWModal from '@/components/findPWModal/index';
 import SignUpModal from '@/components/signup/index';
 import { AuthAtom } from '@/global/AuthAtom';
 import * as L from '@/pages/user/loginStyle';
-
-interface MemberInfo {
-  memberId: number;
-  email: string;
-  firstName: string;
-  lastName: string;
-  telNumber: string;
-  orgName: string | '';
-}
 
 const LogIn = () => {
   const [email, setEmail] = useState<string>('');

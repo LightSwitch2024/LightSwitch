@@ -42,6 +42,10 @@ export default defineConfig({
         find: '@routes',
         replacement: '/src/routes',
       },
+      {
+        find: '@types',
+        replacement: '/src/types',
+      },
     ],
   },
   build: {

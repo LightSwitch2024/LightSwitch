@@ -3,20 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
+import { UserData } from '@/types/User';
 import { deleteUser, getUserDetail, updateUser } from '@/api/userDetail/userAxios';
 import DelIcon from '@/assets/delete_forever.svg?react';
 import DeleteModal from '@/components/deleteModal/deleteModal';
 import PasswordModal from '@/components/passwordModal/passwordModal';
 import * as M from '@/pages/mypage/indexStyle';
 import { MyPageHeader } from '@/pages/mypage/indexStyle';
-
-interface UserData {
-  memberId: number;
-  email: string;
-  firstName: string;
-  lastName: string;
-  telNumber: string;
-}
 
 const UserDetail = () => {
   const [userDetail, setUserDetail] = useState<UserData>();

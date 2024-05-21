@@ -6,17 +6,11 @@ import { AuthAtom } from '@/global/AuthAtom';
 
 import * as P from './deleteModalStyle';
 
+import { DeleteUserData } from '@/types/User';
+
 type Props = {
   isDeleteModal: boolean;
   onClose: () => void;
-};
-
-type DeleteUserData = {
-  firstName: string;
-  lastName: string;
-  telNumber: string;
-  email: string;
-  password: string;
 };
 
 const PasswordModal: React.FC<Props> = ({ isDeleteModal, onClose }) => {

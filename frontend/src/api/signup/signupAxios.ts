@@ -1,31 +1,7 @@
 import axios from '@api/axios';
 import { AxiosError, AxiosResponse } from 'axios';
-
-interface BaseResponse<T> {
-  code: number;
-  message: string;
-  data: T;
-}
-
-interface SendAuthCodeData {
-  email: string;
-}
-
-interface ConfirmAuthCodeData {
-  email: string;
-  authCode: string;
-}
-
-interface SignUpData {
-  firstName: string;
-  lastName: string;
-  orgName: string;
-  telNumber: string;
-  email: string;
-  password: string;
-  authCode: string;
-}
-
+import { SendAuthCodeData, ConfirmAuthCodeData, SignUpData } from '@/types/User';
+import { BaseResponse } from '@/types/Api';
 export async function sendAuthCode<T>(
   data: SendAuthCodeData,
   onSuccess: (data: T) => void,
