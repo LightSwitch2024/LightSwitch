@@ -10,7 +10,7 @@ spring:
     hibernate:
       ddl-auto: update
 
-    show-sql: true
+    show-sql: false
   data:
     redis:
       host: redis

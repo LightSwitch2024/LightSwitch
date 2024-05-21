@@ -9,8 +9,6 @@ export const loadingState = selector({
   key: 'loadingState',
   get: ({ get }) => {
     const contentLoadComplete = get(contentLoadCompleteState);
-    console.log('loading called');
-    console.log(contentLoadComplete);
     return !contentLoadComplete;
   },
 });
@@ -22,12 +20,10 @@ export const useLoadingStore = () => {
   const loading = useRecoilValue(loadingState);
 
   const contentLoading = () => {
-    console.log('contentLoading called');
     setContentLoadComplete(false);
   };
 
   const contentLoaded = () => {
-    console.log('contentLoaded called');
     setContentLoadComplete(true);
   };
 
