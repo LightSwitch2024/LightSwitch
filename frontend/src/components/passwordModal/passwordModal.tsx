@@ -52,7 +52,6 @@ const PasswordModal: React.FC<Props> = ({ isOpen, onClose }) => {
         auth.email,
         passwordData,
         (data) => {
-          console.log('Password update successful:', data);
           alert('비밀번호 변경 성공!');
         },
         (err) => {

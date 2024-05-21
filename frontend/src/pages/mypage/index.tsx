@@ -122,7 +122,6 @@ const UserDetail = () => {
         telNumber: editedTelNumber,
       },
       (data: UserData) => {
-        console.log(data);
         setIsEditMode(false);
         setUserDetail(data);
       },

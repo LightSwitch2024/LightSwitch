@@ -7,7 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
 class MailServiceTest(
-    @Autowired private val mailService: MailService
+    @Autowired
+    private val mailService: MailService
 ) {
 
     @Test

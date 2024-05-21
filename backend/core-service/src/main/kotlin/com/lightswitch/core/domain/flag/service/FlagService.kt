@@ -20,34 +20,36 @@ import com.lightswitch.core.domain.member.repository.SdkKeyRepository
 import com.lightswitch.core.domain.organization.service.OrganizationService
 import com.lightswitch.core.domain.sse.dto.SseDto
 import com.lightswitch.core.domain.sse.service.SseService
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
+private val logger = KotlinLogging.logger {}
+
 @Service
-@Transactional
 class FlagService(
     @Autowired
-    private var flagRepository: FlagRepository,
+    private val flagRepository: FlagRepository,
 
     @Autowired
-    private var tagRepository: TagRepository,
+    private val tagRepository: TagRepository,
 
     @Autowired
-    private var variationRepository: VariationRepository,
+    private val variationRepository: VariationRepository,
 
     @Autowired
-    private var flagCustomRepository: FlagCustomRepository,
+    private val flagCustomRepository: FlagCustomRepository,
 
     @Autowired
-    private var sdkKeyRepository: SdkKeyRepository,
+    private val sdkKeyRepository: SdkKeyRepository,
 
     @Autowired
-    private var sseService: SseService,
+    private val sseService: SseService,
 
     @Autowired
-    private var keywordRepository: KeywordRepository,
+    private val keywordRepository: KeywordRepository,
 
     @Autowired
     private val memberRepository: MemberRepository,
@@ -131,10 +133,10 @@ class FlagService(
 
     @Transactional
     fun createFlag(flagRequestDto: FlagRequestDto): FlagResponseDto {
-
+        logger.info { "createFlag Called" }
         val member = memberRepository.findById(flagRequestDto.memberId)
             .orElseThrow { BaseException(ResponseCode.MEMBER_NOT_FOUND) }
-
+        logger.info { "member 조회 성공. member : $member" }
         val savedFlag = flagRepository.save(
             Flag(
                 title = flagRequestDto.title,
@@ -233,7 +235,9 @@ class FlagService(
         val flagInitResponseDto = buildSSEData(savedFlag)
         sseService.sendData(SseDto("", SseDto.SseType.CREATE, flagInitResponseDto))
 
-        return this.getFlag(savedFlag.flagId!!)
+        val flagResponseDto = FlagResponseDto(savedFlag)
+
+        return flagResponseDto
     }
 
     fun confirmDuplicateTitle(title: String): Boolean {
@@ -255,10 +259,13 @@ class FlagService(
     }
 
     fun getFlag(flagId: Long): FlagResponseDto {
+
 //        val flag = flagRepository.findFlagWithActiveKeywords(flagId) ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
 //        val flag = flagRepository.findById(flagId).get()
         val flag =
-            flagRepository.findFlagsWithNoDeletedKeywords(flagId) ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
+            flagRepository.findFlagsWithNoDeletedKeywords(flagId) ?: throw BaseException(
+                ResponseCode.FLAG_NOT_FOUND
+            )
         val defaultVariation =
             variationRepository.findByFlagAndDefaultFlagIsTrueAndDeletedAtIsNull(flag)
         val variations =
@@ -430,7 +437,7 @@ class FlagService(
         variationRepository.deleteByFlagFlagId(flagId)
         keywordRepository.deleteByFlagFlagId(flagId)
 
-        flag.delete()
+        flagRepository.deleteById(flagId)
         sseService.sendData(
             SseDto(
                 "",
@@ -454,7 +461,7 @@ class FlagService(
             )
         )
 
-        return flagRepository.save(flag).active
+        return flag.active
     }
 
     /*
@@ -614,7 +621,10 @@ class FlagService(
     }
 
     @Transactional
-    fun updateVariationInfo(flagId: Long, variationInfoRequestDto: VariationInfoRequestDto): FlagResponseDto {
+    fun updateVariationInfo(
+        flagId: Long,
+        variationInfoRequestDto: VariationInfoRequestDto
+    ): FlagResponseDto {
 
         val flag = flagRepository.findById(flagId).get()
         flag.type = variationInfoRequestDto.type
@@ -664,7 +674,14 @@ class FlagService(
             defaultValue = defaultVariation.value,
             defaultPortion = defaultVariation.portion,
             defaultDescription = defaultVariation.description,
-            variations = variations.map { VariationDto(null, it.value, it.portion, it.description) },
+            variations = variations.map {
+                VariationDto(
+                    null,
+                    it.value,
+                    it.portion,
+                    it.description
+                )
+            },
             maintainerId = flag.maintainer.memberId!!,
             createdAt = flag.createdAt.toString(),
             updatedAt = flag.updatedAt.toString(),
@@ -731,7 +748,10 @@ class FlagService(
     }
 
     @Transactional
-    fun updateKeywordInfo(flagId: Long, keywordInfoRequestDto: KeywordInfoRequestDto): FlagResponseDto {
+    fun updateKeywordInfo(
+        flagId: Long,
+        keywordInfoRequestDto: KeywordInfoRequestDto
+    ): FlagResponseDto {
 
         val flag = flagRepository.findById(flagId).get()
         flag.keywords.map { k ->
@@ -798,7 +818,14 @@ class FlagService(
             defaultValue = defaultVariation.value,
             defaultPortion = defaultVariation.portion,
             defaultDescription = defaultVariation.description,
-            variations = variations.map { VariationDto(null, it.value, it.portion, it.description) },
+            variations = variations.map {
+                VariationDto(
+                    null,
+                    it.value,
+                    it.portion,
+                    it.description
+                )
+            },
             maintainerId = flag.maintainer.memberId!!,
             createdAt = flag.createdAt.toString(),
             updatedAt = flag.updatedAt.toString(),
@@ -811,7 +838,10 @@ class FlagService(
     }
 
     @Transactional
-    fun updateKeywordInfoWithHardDelete(flagId: Long, keywordInfoRequestDto: KeywordInfoRequestDto): FlagResponseDto {
+    fun updateKeywordInfoWithHardDelete(
+        flagId: Long,
+        keywordInfoRequestDto: KeywordInfoRequestDto
+    ): FlagResponseDto {
 
         val flag = flagRepository.findById(flagId).get()
         val existingKeywords = mutableListOf<Keyword>()
@@ -988,7 +1018,7 @@ class FlagService(
         }
     }
 
-    fun getHistoriesOverview() : List<HistoryResponse>{
-        return  historyRepository.findAllByLimit(3)
+    fun getHistoriesOverview(): List<HistoryResponse> {
+        return historyRepository.findAllByLimit(3)
     }
 }

@@ -20,10 +20,13 @@ import org.springframework.transaction.annotation.Transactional
 class FlagCustomRepositoryImplTest(
     @Autowired
     private val flagCustomRepositoryImpl: FlagCustomRepositoryImpl,
+
     @Autowired
     private val flagRepository: FlagRepository,
+
     @Autowired
     private val tagRepository: TagRepository,
+
     @Autowired
     private val memberRepository: MemberRepository,
 ) {

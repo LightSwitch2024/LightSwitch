@@ -16,9 +16,14 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 @SpringBootTest
 class JpaTestRepositoryCustomImplTest(
-    @Autowired private val jpaTestRepositoryCustom: JpaTestRepositoryCustom,
-    @Autowired private val jpaTestFetchRepository: JpaTestFetchRepository,
-    @Autowired private val jpaTestRepository: JpaTestRepository
+    @Autowired
+    private val jpaTestRepositoryCustom: JpaTestRepositoryCustom,
+
+    @Autowired
+    private val jpaTestFetchRepository: JpaTestFetchRepository,
+
+    @Autowired
+    private val jpaTestRepository: JpaTestRepository
 ) {
 
     @BeforeEach

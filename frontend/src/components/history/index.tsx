@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 
 import * as S from '@/components/history/indexStyle';
+
 import { History, HistoryType } from '@/types/Flag';
 const index = (props: History) => {
   const setTimeOption = (createdAt: number[]) => {

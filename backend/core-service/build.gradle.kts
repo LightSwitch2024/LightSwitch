@@ -97,6 +97,9 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 
+    // logger
+    implementation("io.github.oshai:kotlin-logging-jvm:5.1.1")
+
     // swagger
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
 

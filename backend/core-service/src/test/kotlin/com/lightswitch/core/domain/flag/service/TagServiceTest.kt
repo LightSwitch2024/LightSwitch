@@ -10,12 +10,13 @@ import org.springframework.transaction.annotation.Transactional
 
 @Transactional
 @SpringBootTest
-class TagServiceTest {
+class TagServiceTest(
     @Autowired
-    private lateinit var tagService: TagService
+    private val tagService: TagService,
 
     @Autowired
-    private lateinit var tagRepository: TagRepository
+    private val tagRepository: TagRepository
+) {
 
     @Test
     fun `전체 tag 조회 테스트`() {

@@ -28,8 +28,10 @@ import org.springframework.stereotype.Service
 class HistoryService(
     @Autowired
     private var historyRepository: HistoryRepository,
+
     @Autowired
     private var flagRepository: FlagRepository,
+
     @Autowired
     private var variationRepository: VariationRepository
 ) {
@@ -104,7 +106,7 @@ class HistoryService(
         return proceed;
     }
 
-//    @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.updateFlag(..)) && args(flagId,flagRequestDto)")
+    //    @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.updateFlag(..)) && args(flagId,flagRequestDto)")
     fun updateFlag(proceedingJoinPoint: ProceedingJoinPoint, flagId: Long, flagRequestDto: FlagRequestDto): Any? {
         val flag = flagRepository.findById(flagId).orElseThrow()
         val preFlag = flag.toPrevious()
@@ -333,7 +335,7 @@ class HistoryService(
         }
     }
 
-//    @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.updateKeywordInfo(..)) && args(flagId,keywordInfoRequestDto)")
+    //    @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.updateKeywordInfo(..)) && args(flagId,keywordInfoRequestDto)")
     fun updateKeywordInfo(
         proceedingJoinPoint: ProceedingJoinPoint,
         flagId: Long,
@@ -424,7 +426,7 @@ class HistoryService(
         }
     }
 
-    @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.deleteFlagWithHardDelete(..)) && args(flagId)")
+    //    @Around("execution(* com.lightswitch.core.domain.flag.service.FlagService.deleteFlagWithHardDelete(..)) && args(flagId)")
     fun deleteFlagWithHardDelete(
         proceedingJoinPoint: ProceedingJoinPoint,
         flagId: Long,
@@ -443,5 +445,4 @@ class HistoryService(
         }
         return proceed
     }
-
 }

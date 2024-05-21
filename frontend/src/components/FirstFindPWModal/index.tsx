@@ -68,9 +68,8 @@ const BeforeFindPW: React.FC<Props> = ({
 
     sendAuthCode<SendAuthCodeData>(
       sendAuthCodeData,
-      (data) => {
-        console.log(data);
-      },
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      () => {},
       (err) => {
         console.log(err);
       },

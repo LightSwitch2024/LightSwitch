@@ -207,7 +207,6 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   const onClickTypeEdit = (): void => {
     if (isDetailMode()) return;
     setIsTypeEdited(true);
-    console.log('타입 수정 버튼 클릭');
   };
 
   /**
@@ -221,7 +220,6 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
     confirmDuplicateFlag(
       title,
       (data: boolean) => {
-        console.log(data);
         setIsDuplicatedTitle(data);
       },
       (err) => {
@@ -238,10 +236,6 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
       defaultDescription === '' ||
       (type === 'BOOLEAN' && !(defaultValue === 'TRUE' || defaultValue === 'FALSE'))
     ) {
-      console.log(title);
-      console.log(description);
-      console.log(defaultPortion);
-      console.log(defaultDescription);
       return false;
     }
 
@@ -252,9 +246,6 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
         (type === 'BOOLEAN' &&
           !(variation.value === 'TRUE' || variation.value === 'FALSE'))
       ) {
-        console.log(variation.portion);
-        console.log(variation.description);
-        console.log(variation.value);
         return false;
       }
     });
@@ -296,7 +287,6 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
         memberId: auth.memberId,
       },
       (data: FlagDetailItem) => {
-        console.log(data);
         navigator(`/flag/${data.flagId}`);
         const html = document.querySelector('html');
         html?.classList.remove('scroll-locked');
@@ -486,7 +476,6 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
         memberId: auth.memberId,
       },
       (data: FlagDetailItem) => {
-        console.log(data);
         setFlagMode('detail');
       },
       (err) => {

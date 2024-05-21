@@ -35,7 +35,6 @@ const PasswordModal: React.FC<Props> = ({ isDeleteModal, onClose }) => {
           password: password,
         },
         (data) => {
-          console.log(data);
           setisDelOK(true);
         },
         (err) => {
@@ -45,19 +44,15 @@ const PasswordModal: React.FC<Props> = ({ isDeleteModal, onClose }) => {
       );
 
       if (isDelOK) {
-        console.log('Password verification successful.');
-
         await deleteUser<DeleteUserData>(
           auth.memberId,
-          (data) => {
-            console.log(data);
-          },
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          () => {},
           (err) => {
             console.log(err);
           },
         );
       } else {
-        console.log('Password verification failed.');
         alert('비밀번호가 올바르지 않습니다.');
       }
     } catch (err) {

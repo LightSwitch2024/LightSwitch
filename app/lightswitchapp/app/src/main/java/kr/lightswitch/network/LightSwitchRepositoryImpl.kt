@@ -8,9 +8,11 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kr.lightswitch.model.request.LoginRequest
+import kr.lightswitch.model.request.SwitchRequest
 import kr.lightswitch.model.response.BaseResponse
 import kr.lightswitch.model.response.Flag
 import kr.lightswitch.model.response.LoginResponse
+import kr.lightswitch.model.response.SwitchResponse
 import javax.inject.Inject
 
 class LightSwitchRepositoryImpl @Inject constructor(
@@ -29,11 +31,12 @@ class LightSwitchRepositoryImpl @Inject constructor(
 
     override fun switchFlag(
         flagId: Int,
+        switchRequest: SwitchRequest,
         onStart: () -> Unit,
         onComplete: () -> Unit,
         onError: (cause: Throwable) -> Unit
-    ): Flow<BaseResponse<Int>> = flow {
-        val response = lightSwitchService.switchFlag(flagId = flagId)
+    ): Flow<BaseResponse<Boolean>> = flow {
+        val response = lightSwitchService.switchFlag(flagId = flagId, switchRequest = switchRequest)
         emit(response)
 }.flowOn(ioDispatcher).onStart{ onStart() }.onCompletion { onComplete() }.catch { error -> onError(error) }
     override fun login(

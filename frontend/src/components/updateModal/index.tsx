@@ -12,8 +12,6 @@ import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { DefaultValue } from 'recoil';
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
 
 import { confirmDuplicateFlag } from '@/api/create/createAxios';
 import { useLoadingStore } from '@/global/LoadingAtom';
@@ -25,11 +23,14 @@ import {
   KeywordInfo,
   Variation,
 } from '@/types/Flag';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 interface UpdateModalProps {
   closeUpdateModal: () => void;
   flagDetail: FlagDetailItem;
   setFlagDetail: React.Dispatch<React.SetStateAction<FlagDetailItem>>;
+  setIsModalOpened: (showModal: boolean) => void;
 }
 
 const UpdateModal: React.FC<UpdateModalProps> = (props) => {
@@ -223,7 +224,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
    */
   const onClickTypeEdit = (): void => {
     setIsTypeEdited(true);
-    console.log('타입 수정 버튼 클릭');
   };
 
   const handelChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -231,8 +231,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       ...editedFlagInfo,
       title: e.target.value,
     });
-
-    console.log(editedFlagInfo.title);
   };
 
   const handleChangeDescription = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -240,8 +238,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       ...editedFlagInfo,
       description: e.target.value,
     });
-
-    console.log(editedFlagInfo.description);
   };
 
   const handleChangeDefaultValue = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -269,7 +265,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       defaultPortion: Number(e.target.value),
     });
 
-    console.log(editedVariationInfo.defaultPortion);
     // type 변경 생기면 null값으로 바꿈
     if (isTypeChanged) {
       setDefaultPortion(100);
@@ -285,8 +280,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       ...editedVariationInfo,
       defaultDescription: e.target.value,
     });
-
-    console.log(editedVariationInfo.defaultDescription);
   };
 
   const handleChangeVariationValue =
@@ -317,8 +310,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
         ...editedVariationInfo,
         variations: newVariations,
       });
-
-      console.log(editedVariationInfo.variations);
     };
 
   const handleChangeVariaionPortion =
@@ -342,8 +333,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
         ...editedVariationInfo,
         variations: newVariations,
       });
-
-      console.log(editedVariationInfo.variations);
     };
 
   const handleChangeVariationDescription =
@@ -362,8 +351,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
         ...editedVariationInfo,
         variations: newVariations,
       });
-
-      console.log(editedVariationInfo.variations);
     };
 
   const handleChangeType = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -371,8 +358,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       ...editedVariationInfo,
       type: e.target.value,
     });
-
-    console.log(editedVariationInfo.type);
   };
 
   const handleChangeKeywordDescription =
@@ -391,8 +376,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
         ...editedKeywordInfo,
         keywords: newKeywords,
       });
-
-      console.log(editedKeywordInfo.keywords);
     };
 
   const handleChangeKeywordValue =
@@ -411,8 +394,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
         ...editedKeywordInfo,
         keywords: newKeywords,
       });
-
-      console.log(editedKeywordInfo.keywords);
     };
 
   const handleChangeProperty =
@@ -440,8 +421,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
         ...editedKeywordInfo,
         keywords: newKeywords,
       });
-
-      console.log(editedKeywordInfo.keywords);
     };
 
   const addProperty = (indexOfKeyword: number): void => {
@@ -464,8 +443,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       ...editedKeywordInfo,
       keywords: newKeywords,
     });
-
-    console.log(editedKeywordInfo.keywords);
   };
 
   const addKeyword = () => {
@@ -479,8 +456,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
         value: '',
       }),
     });
-
-    console.log(editedKeywordInfo.keywords);
   };
 
   const addVariation = () => {
@@ -521,8 +496,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
         description: '',
       }),
     });
-
-    console.log(editedVariationInfo.variations);
   };
 
   const deleteVariation = (indexOfVariation: number) => () => {
@@ -534,8 +507,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       ...editedVariationInfo,
       variations: newVariations,
     });
-
-    console.log(editedVariationInfo.variations);
   };
 
   const handleChangeData =
@@ -563,8 +534,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
         ...editedKeywordInfo,
         keywords: newKeywords,
       });
-
-      console.log(editedKeywordInfo.keywords);
     };
 
   const deleteProperty = (indexOfKeyword: number, indexOfProperty: number) => () => {
@@ -582,8 +551,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       ...editedKeywordInfo,
       keywords: newKeywords,
     });
-
-    console.log(editedKeywordInfo.keywords);
   };
 
   const deleteKeyword = (indexOfKeyword: number) => {
@@ -595,8 +562,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       ...editedKeywordInfo,
       keywords: newKeywords,
     });
-
-    console.log(editedKeywordInfo.keywords);
   };
 
   // 저장하기 & 취소하기 버튼 클릭 이벤트 (axios 함수 호출)
@@ -619,11 +584,19 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       props.flagDetail?.flagId,
       editedFlagInfo,
       (data: FlagDetailItem) => {
-        console.log(data);
         // 수정된 flagDetail 업데이트
         props.setFlagDetail(data);
         setIsBlankData(false);
         contentLoaded();
+        MySwal.fire({
+          title: '플래그가 성공적으로 수정되었습니다.',
+          icon: 'success',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // props.closeUpdateModal();
+            props.setIsModalOpened(false);
+          }
+        });
       },
       (err: AxiosError) => {
         console.log(err);
@@ -703,12 +676,20 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
         variations: editedVariationInfo.variations,
       },
       (data: FlagDetailItem) => {
-        console.log(data);
         // 수정된 flagDetail 업데이트
         props.setFlagDetail(data);
         setIsInvalidBooleanVariation(false);
         setIsWrongType(false);
         setIsBlankData(false);
+        MySwal.fire({
+          title: '플래그가 성공적으로 수정되었습니다.',
+          icon: 'success',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // props.closeUpdateModal();
+            props.setIsModalOpened(false);
+          }
+        });
       },
       (err: AxiosError) => {
         console.log(err);
@@ -753,13 +734,21 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
       props.flagDetail?.flagId,
       editedKeywordInfo,
       (data: FlagDetailItem) => {
-        console.log(data);
         // 수정된 flagDetail 업데이트
         props.setFlagDetail(data);
         // 경고 문구 초기화
         setIsBlankData(false);
         setIsDuplicatedTitle(false);
         setIsInvalidBooleanVariation(false);
+        MySwal.fire({
+          title: '플래그가 성공적으로 수정되었습니다.',
+          icon: 'success',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // props.closeUpdateModal();
+            props.setIsModalOpened(false);
+          }
+        });
       },
       (err: AxiosError) => {
         console.log(err);
@@ -934,7 +923,6 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
     confirmDuplicateFlag(
       editedFlagInfo.title,
       (data: boolean) => {
-        console.log(data);
         setIsDuplicatedTitle(data);
       },
       (err) => {

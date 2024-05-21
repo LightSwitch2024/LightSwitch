@@ -17,15 +17,17 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 @SpringBootTest
 @ActiveProfiles("test")
-class VariationRepositoryIntegrationTest {
+class VariationRepositoryIntegrationTest(
     @Autowired
-    private lateinit var variationRepository: VariationRepository
+    private val variationRepository: VariationRepository,
 
     @Autowired
-    private lateinit var flagRepository: FlagRepository
+    private val flagRepository: FlagRepository,
 
     @Autowired
-    private lateinit var memberRepository: MemberRepository
+    private val memberRepository: MemberRepository
+) {
+
 
     var member: Member? = null
 
