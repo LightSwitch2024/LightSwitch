@@ -19,11 +19,11 @@ export const useLoadingStore = () => {
   );
   const loading = useRecoilValue(loadingState);
 
-  const contentLoading = () => {
+  const contentLoading = (): void => {
     setContentLoadComplete(false);
   };
 
-  const contentLoaded = () => {
+  const contentLoaded = (): void => {
     setContentLoadComplete(true);
   };
 

@@ -12,15 +12,17 @@ import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { DefaultValue } from 'recoil';
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
 
 import { confirmDuplicateFlag } from '@/api/create/createAxios';
 import { useLoadingStore } from '@/global/LoadingAtom';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
 interface UpdateModalProps {
   closeUpdateModal: () => void;
   flagDetail: FlagDetailItem;
   setFlagDetail: React.Dispatch<React.SetStateAction<FlagDetailItem>>;
+  setIsModalOpened: (showModal: boolean) => void;
 }
 
 interface Variation {
@@ -638,6 +640,15 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
         props.setFlagDetail(data);
         setIsBlankData(false);
         contentLoaded();
+        MySwal.fire({
+          title: '플래그가 성공적으로 수정되었습니다.',
+          icon: 'success',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // props.closeUpdateModal();
+            props.setIsModalOpened(false);
+          }
+        });
       },
       (err: AxiosError) => {
         console.log(err);
@@ -722,6 +733,15 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
         setIsInvalidBooleanVariation(false);
         setIsWrongType(false);
         setIsBlankData(false);
+        MySwal.fire({
+          title: '플래그가 성공적으로 수정되었습니다.',
+          icon: 'success',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // props.closeUpdateModal();
+            props.setIsModalOpened(false);
+          }
+        });
       },
       (err: AxiosError) => {
         console.log(err);
@@ -772,6 +792,15 @@ const UpdateModal: React.FC<UpdateModalProps> = (props) => {
         setIsBlankData(false);
         setIsDuplicatedTitle(false);
         setIsInvalidBooleanVariation(false);
+        MySwal.fire({
+          title: '플래그가 성공적으로 수정되었습니다.',
+          icon: 'success',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // props.closeUpdateModal();
+            props.setIsModalOpened(false);
+          }
+        });
       },
       (err: AxiosError) => {
         console.log(err);

@@ -317,6 +317,7 @@ const FlagDetail = () => {
             closeUpdateModal={closeUpdateModal}
             flagDetail={flagDetail}
             setFlagDetail={setFlagDetail}
+            setIsModalOpened={setIsModalOpened}
           />,
           document.body,
         )}
