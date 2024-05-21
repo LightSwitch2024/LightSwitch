@@ -25,6 +25,7 @@ import * as S from '@pages/main/indexStyle';
 import { Tag } from '@pages/main/tag';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { useLoadingStore } from '@/global/LoadingAtom';
 
 interface FlagListItem {

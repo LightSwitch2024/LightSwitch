@@ -279,10 +279,6 @@ class LightSwitch implements ILightSwitch {
           break;
       }
 
-      this.flags.forEach((f) => {
-        logger.info(`updated flag : ${JSON.stringify(f)}`);
-      });
-
       this.onFlagChanged?.();
     });
   }
@@ -312,7 +308,6 @@ class LightSwitch implements ILightSwitch {
     const newFlag = JSON.parse(JSON.stringify(flag));
     newFlag.active = sw.active;
     this.flags.set(sw.title, newFlag);
-    logger.info(newFlag);
   }
 
   public destroy(): void {
