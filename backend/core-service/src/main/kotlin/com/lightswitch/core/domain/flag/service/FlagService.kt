@@ -20,13 +20,15 @@ import com.lightswitch.core.domain.member.repository.SdkKeyRepository
 import com.lightswitch.core.domain.organization.service.OrganizationService
 import com.lightswitch.core.domain.sse.dto.SseDto
 import com.lightswitch.core.domain.sse.service.SseService
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
+private val logger = KotlinLogging.logger {}
+
 @Service
-@Transactional
 class FlagService(
     @Autowired
     private var flagRepository: FlagRepository,
@@ -131,11 +133,11 @@ class FlagService(
 
     @Transactional
     fun createFlag(flagRequestDto: FlagRequestDto): FlagResponseDto {
-
+        logger.info { "createFlag Called" }
         val member = memberRepository.findById(flagRequestDto.memberId)
             .orElseThrow { BaseException(ResponseCode.MEMBER_NOT_FOUND) }
-
-        var savedFlag = flagRepository.save(
+        logger.info { "member 조회 성공. member : $member" }
+        val savedFlag = flagRepository.save(
             Flag(
                 title = flagRequestDto.title,
                 description = flagRequestDto.description,
@@ -257,6 +259,7 @@ class FlagService(
     }
 
     fun getFlag(flagId: Long): FlagResponseDto {
+
 //        val flag = flagRepository.findFlagWithActiveKeywords(flagId) ?: throw BaseException(ResponseCode.FLAG_NOT_FOUND)
 //        val flag = flagRepository.findById(flagId).get()
         val flag =
