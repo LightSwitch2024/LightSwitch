@@ -21,14 +21,19 @@ import org.springframework.transaction.annotation.Transactional
 class MemberServiceTest(
     @Autowired
     private val memberService: MemberService,
+
     @Autowired
     private val memberRepository: MemberRepository,
+
     @Autowired
     private val passwordService: PasswordService,
+
     @Autowired
     private val mailService: MailService,
+
     @Autowired
     private val redisService: RedisService,
+
     @Value("\${spring.data.redis.code.signup}")
     private val signupCode: String,
 ) {

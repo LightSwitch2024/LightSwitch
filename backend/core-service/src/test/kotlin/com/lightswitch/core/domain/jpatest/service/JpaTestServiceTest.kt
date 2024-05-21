@@ -15,10 +15,17 @@ import org.springframework.boot.test.context.SpringBootTest
 @org.springframework.transaction.annotation.Transactional
 @SpringBootTest
 class JpaTestServiceTest(
-    @Autowired private var jpaTestService: JpaTestService,
-    @Autowired private var jpaTestFetchService: JpaTestFetchService,
-    @Autowired private var jpaTestRepository: JpaTestRepository,
-    @Autowired private var jpaTestFetchRepository: JpaTestFetchRepository
+    @Autowired
+    private val jpaTestService: JpaTestService,
+
+    @Autowired
+    private val jpaTestFetchService: JpaTestFetchService,
+
+    @Autowired
+    private val jpaTestRepository: JpaTestRepository,
+
+    @Autowired
+    private val jpaTestFetchRepository: JpaTestFetchRepository
 
 ) {
     @BeforeEach

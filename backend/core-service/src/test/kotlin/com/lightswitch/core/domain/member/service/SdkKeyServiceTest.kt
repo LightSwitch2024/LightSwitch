@@ -18,10 +18,13 @@ import org.springframework.transaction.annotation.Transactional
 class SdkKeyServiceTest(
     @Autowired
     private val sdkKeyService: SdkKeyService,
+
     @Autowired
     private val sdkKeyRepository: SdkKeyRepository,
+
     @Autowired
     private val memberService: MemberService,
+
     @Autowired
     private val memberRepository: MemberRepository,
 ) {

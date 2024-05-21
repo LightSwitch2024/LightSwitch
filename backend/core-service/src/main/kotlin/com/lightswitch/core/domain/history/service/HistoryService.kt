@@ -28,8 +28,10 @@ import org.springframework.stereotype.Service
 class HistoryService(
     @Autowired
     private var historyRepository: HistoryRepository,
+
     @Autowired
     private var flagRepository: FlagRepository,
+
     @Autowired
     private var variationRepository: VariationRepository
 ) {
