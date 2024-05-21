@@ -40,10 +40,6 @@ enum historyType {
 }
 
 const index = (props: history) => {
-  useEffect(() => {
-    console.log(props);
-  }, []);
-
   const setTimeOption = (createdAt: number[]) => {
     const year = createdAt[0];
     const month = createdAt[1] < 10 ? `0${createdAt[1]}` : createdAt[1];

@@ -58,24 +58,18 @@ const LogIn = () => {
   };
 
   useEffect(() => {
-    console.log(auth);
-  }, [auth]);
-
-  useEffect(() => {
     let vh = 0;
     vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty('--vh', `${vh}px`);
   }, [window.innerHeight]);
 
   const onClickLogIn = (): void => {
-    console.log('Logging in with:', email, password);
     logIn<MemberInfo>(
       {
         email: email,
         password: password,
       },
       (data) => {
-        console.log(data);
         const { memberId, email, firstName, lastName, telNumber, orgName } = data;
         setAuth(() => ({
           memberId,

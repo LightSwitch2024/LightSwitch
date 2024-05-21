@@ -86,35 +86,6 @@ const CreateFlag = () => {
   };
 
   /**
-   * 플래그 "추가하기" 버튼 클릭 이벤트 핸들러
-   */
-  // const onClickAdd = (): void => {
-  //   createFlag(
-  //     {
-  //       title: title,
-  //       tags: selectedTags,
-  //       description: description,
-  //       type: type,
-  //       defaultValue: defaultValue,
-  //       defaultPortion: defaultPortion ? defaultPortion : 0,
-  //       defaultDescription: defaultDescription,
-  //       variation: variation,
-  //       variationPortion: variationPortion ? variationPortion : 0,
-  //       variationDescription: variationDescription,
-
-  //       //TODO : userId 전역설정 기능 추가 후 수정
-  //       userId: 1,
-  //     },
-  //     (data) => {
-  //       console.log(data);
-  //     },
-  //     (err) => {
-  //       console.log(err);
-  //     },
-  //   );
-  // };
-
-  /**
    * 전체 태그 목록을 가져오는 함수
    */
   const setupAllTags = (): void => {
@@ -132,7 +103,6 @@ const CreateFlag = () => {
    * 컴포넌트 마운트 시 전체 태그 목록을 가져옴
    */
   useEffect(() => {
-    console.log(auth);
     setupAllTags();
   }, []);
 
@@ -325,13 +295,7 @@ const CreateFlag = () => {
         />
       </div>
       <div>
-        <button
-          onClick={() => {
-            console.log('추가하기');
-          }}
-        >
-          추가
-        </button>
+        <button>추가</button>
       </div>
     </div>
   );

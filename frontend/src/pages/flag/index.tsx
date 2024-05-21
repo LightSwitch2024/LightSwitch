@@ -139,10 +139,8 @@ const FlagDetail = () => {
     getFlagDetail<FlagDetailResponse>(
       Number(flagId),
       (data: FlagDetailResponse) => {
-        console.log(data);
         setFlagDetail(data);
         setIsToggle(new Array(data.keywords.length).fill(false));
-        console.log(data.histories);
         setHistoryList(data.histories);
         contentLoaded();
       },

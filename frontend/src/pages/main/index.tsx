@@ -61,8 +61,6 @@ const index = () => {
   };
 
   useEffect(() => {
-    console.log('auth');
-    console.log(auth);
     if (sdkKey == '') {
       setNullSDK(true);
     } else {
@@ -83,8 +81,6 @@ const index = () => {
     contentLoading();
     getMainPageOverview(
       (data: OverviewInfo) => {
-        console.log('data');
-        console.log(auth);
         setSdkKey(data.sdkKey ? data.sdkKey : '');
         setTotalFlags(data.totalFlags);
         setActiveFlags(data.activeFlags);
@@ -96,11 +92,6 @@ const index = () => {
       },
     );
   }, [auth]);
-
-  // sdk 발급 받으면 sdk component 갱신
-  useEffect(() => {
-    console.log(sdkKey);
-  }, [sdkKey]);
 
   useEffect(() => {
     let vh = 0;
@@ -147,12 +138,9 @@ const index = () => {
   };
 
   const handleClickCreateSdkKeyButton = () => {
-    console.log('sdk key 발급');
-    console.log(auth.email);
     createSdkKey<SdkKeyResDto>(
       { email: auth.email },
       (data: SdkKeyResDto) => {
-        console.log(data);
         setSdkKey(data.key ? data.key : '');
       },
       (err) => {
