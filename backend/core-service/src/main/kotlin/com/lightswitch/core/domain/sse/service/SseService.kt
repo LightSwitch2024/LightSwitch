@@ -27,7 +27,6 @@ class SseService {
 
         emitter.onError {
             logger.error { "sse error $userKey" }
-//            map.remove(userKey)
             emitter.complete()
         }
 
@@ -37,11 +36,15 @@ class SseService {
         }
 
         map[userKey] = emitter
+        try {
+            val event = SseEmitter.event()
+                .name("sse")
+                .data("SSE connected")
+            emitter.send(event)
+        } catch (e: Exception) {
+            logger.error { "send sse init data failed, $userKey" }
+        }
 
-        val event = SseEmitter.event()
-            .name("sse")
-            .data("SSE connected")
-        emitter.send(event)
 
         return emitter
     }
