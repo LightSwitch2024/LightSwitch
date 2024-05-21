@@ -2,20 +2,17 @@ import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
+import { Tag } from '@/types/Tag';
+
 import { createFlag } from '@/api/create/createAxios';
 import { getTagList, getTagListByKeyword } from '@/api/main/mainAxios';
 import { AuthAtom } from '@/global/AuthAtom';
 
-interface TagItem {
-  content: string;
-  colorHex: string;
-}
-
 const CreateFlag = () => {
   const auth = useRecoilState(AuthAtom);
   const [title, setTitle] = useState<string>('');
-  const [allTags, setAllTags] = useState<Array<TagItem>>([]);
-  const [tags, setTags] = useState<Array<TagItem>>([]);
+  const [allTags, setAllTags] = useState<Array<Tag>>([]);
+  const [tags, setTags] = useState<Array<Tag>>([]);
   const [description, setDescription] = useState<string>('');
   const [type, setType] = useState<string>('BOOLEAN');
   const [defaultValue, setDefaultValue] = useState<string>('');
@@ -26,7 +23,7 @@ const CreateFlag = () => {
   const [variationDescription, setVariationDescription] = useState<string>('');
 
   const [tagSearchKeyword, setTagSearchKeyword] = useState<string>('');
-  const [selectedTags, setSelectedTags] = useState<Array<TagItem>>([]);
+  const [selectedTags, setSelectedTags] = useState<Array<Tag>>([]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setTitle(e.target.value);
@@ -119,7 +116,7 @@ const CreateFlag = () => {
    */
   const setupAllTags = (): void => {
     getTagList(
-      (data: Array<TagItem>) => {
+      (data: Array<Tag>) => {
         setAllTags(data);
       },
       (err) => {
@@ -151,7 +148,7 @@ const CreateFlag = () => {
 
     getTagListByKeyword(
       tagSearchKeyword,
-      (data: Array<TagItem>) => {
+      (data: Array<Tag>) => {
         setTags(data);
       },
       (err: AxiosError) => {

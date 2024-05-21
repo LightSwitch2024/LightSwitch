@@ -1,16 +1,9 @@
 import { atom, selector } from 'recoil';
 import { recoilPersist } from 'recoil-persist';
 
-const { persistAtom } = recoilPersist();
+import { MemberAtom } from '@/types/User';
 
-interface MemberAtom {
-  isAuthenticated: boolean;
-  memberId: number;
-  email: string;
-  firstName: string;
-  lastName: string;
-  orgName: string;
-}
+const { persistAtom } = recoilPersist();
 
 export const AuthAtom = atom<MemberAtom>({
   key: 'AuthAtom',

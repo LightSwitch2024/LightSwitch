@@ -1,49 +1,7 @@
 import axios from '@api/axios';
 import { Axios, AxiosError, AxiosResponse } from 'axios';
-
-interface BaseResponse<T> {
-  code: number;
-  message: string;
-  data: T;
-}
-
-interface FlagInfo {
-  title: string;
-  tags: Array<{ content: string; colorHex: string }>;
-  description: string;
-}
-
-interface Variation {
-  variationId: number | '';
-  value: string;
-  portion: number | '';
-  description: string;
-}
-
-interface VariationInfo {
-  type: string;
-  defaultValue: string;
-  defaultPortion: number | '';
-  defaultDescription: string;
-  variations: Array<Variation>;
-}
-
-interface Keyword {
-  keywordId: number | '';
-  properties: Array<Property>;
-  description: string;
-  value: string;
-}
-
-interface Property {
-  propertyId: number | '';
-  property: string;
-  data: string;
-}
-
-interface KeywordInfo {
-  keywords: Array<Keyword>;
-}
+import { BaseResponse } from '@/types/Api';
+import { FlagInfo, VariationInfo, KeywordInfo } from '@/types/Flag';
 
 export async function updateFlag<T>(
   flagId: number,

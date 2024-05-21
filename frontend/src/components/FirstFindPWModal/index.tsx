@@ -4,27 +4,12 @@ import { useRecoilState } from 'recoil';
 
 import { confirmAuthCode, sendAuthCode } from '@/api/signup/signupAxios';
 import * as S from '@/components/FirstFindPWModal/indexStyle';
-import FindPWModal from '@/components/SecondFindPWModal/index';
 import { AuthAtom } from '@/global/AuthAtom';
-
+import { SendAuthCodeData, ConfirmAuthCodeData } from '@/types/User';
 type Props = {
   isFirstFindPWModal: boolean;
   onClose: () => void;
   onOpenSecondModal: () => void;
-};
-
-type ConfirmAuthCodeData = {
-  email: string;
-  authCode: string;
-};
-
-type SendAuthCodeData = {
-  email: string;
-};
-
-type FindPWData = {
-  email: string;
-  authCode: string;
 };
 
 const BeforeFindPW: React.FC<Props> = ({
