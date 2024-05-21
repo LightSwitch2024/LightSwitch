@@ -21,14 +21,18 @@ class SseService {
     fun subscribe(userKey: String): SseEmitter {
         val emitter = createEmitter()
         emitter.onTimeout {
+            logger.error { "sse timeout, $userKey" }
             emitter.complete()
         }
 
         emitter.onError {
+            logger.error { "sse error $userKey" }
+//            map.remove(userKey)
             emitter.complete()
         }
 
         emitter.onCompletion {
+            logger.error { "sse completion $userKey" }
             map.remove(userKey)
         }
 
