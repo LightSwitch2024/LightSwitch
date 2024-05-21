@@ -1,7 +1,6 @@
 import LunitLogo from '@assets/LunitLogo.png';
 import { AuthAtom } from '@global/AuthAtom';
 import { IconButton } from '@mui/material';
-import { Tag } from '@pages/main/tag';
 import { TagsInputComponent } from '@pages/main/tagInput';
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -9,6 +8,9 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+
+import { OverviewInfo, SdkKeyResDto } from '@/types/Flag';
+import { Tag } from '@/types/Tag';
 
 import { createSdkKey, getMainPageOverview } from '@/api/main/mainAxios';
 import CopyCheck from '@/assets/check.svg?react';
@@ -22,16 +24,6 @@ import CreateModal from '@/components/createModal';
 import { useLoadingStore } from '@/global/LoadingAtom';
 import * as S from '@/pages/main/indexStyle';
 import FlagTable from '@/pages/main/table';
-
-interface OverviewInfo {
-  sdkKey: string;
-  totalFlags: number;
-  activeFlags: number;
-}
-
-interface SdkKeyResDto {
-  key: string;
-}
 
 const index = () => {
   const [sdkKey, setSdkKey] = useState<string>('');

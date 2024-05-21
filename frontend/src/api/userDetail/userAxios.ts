@@ -1,60 +1,18 @@
 import axios from '@api/axios';
 import { AxiosError, AxiosResponse } from 'axios';
-
-interface BaseResponse<T> {
-  code: number;
-  message: string;
-  data: T;
-}
-
-interface LogInData {
-  email: string;
-  password: string;
-}
-
-interface PWData {
-  email: string;
-  newPassword: string;
-}
-
-interface ForDelete {
-  memberId: number;
-  password: string;
-}
-
-interface UserData {
-  memberId: number;
-  email: string;
-  firstName: string;
-  lastName: string;
-  telNumber: string;
-}
-
-interface SignUpData {
-  firstName: string;
-  lastName: string;
-  telNumber: string;
-  email: string;
-  password: string;
-  authCode: string;
-}
-
-interface OrgData {
-  name: string;
-  ownerId: number;
-}
-
-interface sendAuthCodeData {
-  email: string;
-}
-
-interface confirmAuthCodeData {
-  email: string;
-  authCode: string;
-}
+import { BaseResponse } from '@/types/Api';
+import {
+  SendAuthCodeData,
+  SignUpData,
+  LogInData,
+  UserData,
+  PWData,
+  OrgData,
+  ForDelete,
+} from '@/types/User';
 
 export async function sendAuthCode<T>(
-  data: sendAuthCodeData,
+  data: SendAuthCodeData,
   onSuccess: (data: T) => void,
   onFail: (err: AxiosError) => void,
 ): Promise<void> {
@@ -65,7 +23,7 @@ export async function sendAuthCode<T>(
 }
 
 export async function confirmAuthCode<T>(
-  data: sendAuthCodeData,
+  data: SendAuthCodeData,
   onSuccess: (data: T) => void,
   onFail: (err: AxiosError) => void,
 ): Promise<void> {

@@ -1,13 +1,6 @@
 import axios from '@api/axios';
 import { AxiosError, AxiosResponse } from 'axios';
-
-// import axios from '@/api/mockAxios';
-
-interface BaseResponse<T> {
-  code: number;
-  message: string;
-  data: T;
-}
+import { BaseResponse } from '@/types/Api';
 
 export async function getFlagDetail<T>(
   flagId: number,
