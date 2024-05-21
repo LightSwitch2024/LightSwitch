@@ -12,10 +12,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class TestControllerTests {
-
+class TestControllerTests(
     @Autowired
-    private lateinit var mockMvc: MockMvc
+    private val mockMvc: MockMvc
+) {
 
     @Test
     fun testReturnStrEndpoint() {

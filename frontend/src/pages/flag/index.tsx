@@ -287,11 +287,13 @@ const FlagDetail = () => {
     // 서로 다른 사용자가 동시에 같은 플래그를 수정할 때 발생하는 문제를 해결하기 위해
     // 현재 상태를 active로 보내고, 서버에서도 변경된 flag의 active 상태를 반환받아
     // 클라이언트에서 다시 한 번 변경을 시도합니다.
+    contentLoading();
     patchFlagActive<boolean>(
       flagId,
       { active: currentActive },
       (changedActive) => {
         switchFlag(changedActive);
+        contentLoaded();
       },
       (err) => {
         console.log(err);
