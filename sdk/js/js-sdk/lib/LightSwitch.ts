@@ -134,8 +134,7 @@ class LightSwitch implements ILightSwitch {
       logger.info(
         `id : ${flag?.flagId} title : ${flag?.title} 플래그가 활성화 되어있지 않습니다. 기본값을 이용합니다.`,
       );
-      return defaultVal;
-      // return this.getTypedValue(flag, flag.defaultValue) as T;
+      return this.getTypedValue(flag, flag.defaultValue) as T;
     } else {
       if (flag.keywords.length > 0 && LSUser.properties?.size > 0) {
         logger.info(
