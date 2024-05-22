@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.lightswitch.domain.dto.FlagResponse;
 import com.lightswitch.domain.dto.SseResponse;
@@ -11,7 +12,7 @@ import com.lightswitch.domain.dto.SseType;
 
 public class Flags {
 
-	private static final Map<String, Flag> flags = new HashMap<>();
+	private static final Map<String, Flag> flags = new ConcurrentHashMap<>();
 
 	private Flags() {
 	}
