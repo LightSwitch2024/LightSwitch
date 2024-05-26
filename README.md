@@ -106,6 +106,7 @@ get_flag(self, flag_title: str, user: LSUser, default_value: typing.Any) -> typi
 get_boolean_flag(self, flag_title: str, user: LSUser, default_value: bool) -> bool;
 def get_number_flag(self, flag_title: str, user: LSUser, default_value: int) -> int;
 def get_string_flag(self, flag_title: str, user: LSUser, default_value: str) -> str;
+```
 
 ### LightSwitch Python SDK 실시간 데이터 수신
 
@@ -129,6 +130,7 @@ value = "1"
 
 this_user = LSUser(user_id=user_id).set_property(key, value)
 ```
+
 문자열 타입의 user_id와 딕셔너리 타입의 property = {"memberId" : "1"} 인 LSUser 클래스의
 인스턴스가 생성됩니다.
 
@@ -143,3 +145,4 @@ LSUser 클래스로 애플리케이션 사용자를 식별하고 속성을 관�
 ```
 lightswitch.destroy()
 ```
+
