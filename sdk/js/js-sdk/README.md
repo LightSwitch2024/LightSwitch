@@ -1,3 +1,6 @@
+<div style="text-align: center;">
+    <img src="https://velog.velcdn.com/images/light_switch/post/49bd83dc-cf96-4ac9-8051-2fcb75bab2c3/image.png" alt="LightSwitch Logo">
+</div>
 # LightSwitch JavaScript SDK
 
 LightSwitch는 오픈소스 피쳐플래깅 솔루션으로, 가볍고 편리하게 A/B Test, Target Test를 지원합니다. 또한, Docker Image 형태로 배포되어 편리하게 서비스와 통합 가능하며, 현재 Java, JavaScript, Python 언어를 지원합니다.
